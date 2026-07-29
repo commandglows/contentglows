@@ -78,7 +78,7 @@ jobs:
           --dart-define=SENTRY_DEBUG="${SENTRY_DEBUG}"
       - name: Print APK signing fingerprint
         working-directory: ${{ env.APP_DIR }}
-        run: apksigner verify --print-certs build/app/outputs/flutter-apk/app-release.apk
+        run: keytool -printcert -jarfile build/app/outputs/flutter-apk/app-release.apk
       - uses: actions/upload-artifact@v7
         with:
           name: contentglowz-android-apk
