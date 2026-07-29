@@ -41,8 +41,8 @@ dependencies:
 
 devDependencies:
   '@remotion/eslint-config-flat':
-    specifier: 4.0.489
-    version: 4.0.489(eslint@9.39.5)(typescript@5.7.3)
+    specifier: 4.0.494
+    version: 4.0.494(eslint@9.39.5)(typescript@5.7.3)
   '@types/express':
     specifier: 5.0.6
     version: 5.0.6
@@ -874,8 +874,8 @@ packages:
     dev: false
     optional: true
 
-  /@remotion/eslint-config-flat@4.0.489(eslint@9.39.5)(typescript@5.7.3):
-    resolution: {integrity: sha512-bztWtomjzAmrJsS3cglkIBLeR7O6ODiLFx/gRktn08pBsct8zmAgRTe3IsR0vE93e42CWU9/AEUSLbUbPSrbGQ==}
+  /@remotion/eslint-config-flat@4.0.494(eslint@9.39.5)(typescript@5.7.3):
+    resolution: {integrity: sha512-lBXOZILj4Qi9oaPuCf2qY4YzfjhvfaSIG3Bjpe8kzt2bHP1/X53HoePLonUhF8jftABnPhB9EXuJU/Mlhs5SSA==}
     peerDependencies:
       eslint: '>=9'
     dependencies:
