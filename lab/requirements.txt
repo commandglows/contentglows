@@ -1,7 +1,7 @@
 # Core AI Frameworks
 crewai>=1.6.1,<1.7  # Compatible with litellm>=1.83.14; newer CrewAI 1.14.x requires openai>=2.30.
 pydantic-ai>=1.56.0,<2.0  # Keep on supported v1; 1.56.0 fixes CVE-2026-25580.
-pydantic>=2.4.0,<3.0
+pydantic>=2.13.4,<3.0
 
 # FastAPI Server
 fastapi[standard]>=0.128.0,<1.0
