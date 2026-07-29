@@ -50,8 +50,8 @@ devDependencies:
     specifier: ^26.0.0
     version: 26.1.1
   '@types/react':
-    specifier: 19.2.16
-    version: 19.2.16
+    specifier: 19.2.17
+    version: 19.2.17
   eslint:
     specifier: ^9.39.1
     version: 9.39.5
@@ -1406,8 +1406,8 @@ packages:
     resolution: {integrity: sha512-hKormJbkJqzQGhziax5PItDUTMAM9uE2XXQmM37dyd4hVM+5aVl7oVxMVUiVQn2oCQFN/LKCZdvSM0pFRqbSmQ==}
     dev: true
 
-  /@types/react@19.2.16:
-    resolution: {integrity: sha512-esJiCAnl0kfpNdE69f3So4WJUXy95dLZydX0KwK46riIHDzHM7O9Vtf9xCHW0PXIqvgqNrswl522kA/5yx+F4w==}
+  /@types/react@19.2.17:
+    resolution: {integrity: sha512-MXfmqaVPEVgkBT/aY0aGCkRWWtByiYQXo3xdQ8r5RzuFrPiRn8Gar2tQdXSUQ2GKV3bkXckek89V8wQBY2Q/Aw==}
     dependencies:
       csstype: 3.2.3
     dev: true
