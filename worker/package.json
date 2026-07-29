@@ -20,7 +20,7 @@
     "@google-cloud/storage": "7.21.0",
     "@remotion/bundler": "4.0.482",
     "@remotion/cli": "4.0.494",
-    "@remotion/renderer": "4.0.482",
+    "@remotion/renderer": "4.0.501",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "react": "19.2.7",
