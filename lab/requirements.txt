@@ -48,7 +48,7 @@ imap-tools>=1.0.0,<2.0  # IMAP email fetching for newsletter ingestion
 # client return 503 unless this integration is supplied in an isolated runtime.
 
 # Content Quality Analysis
-textstat>=0.7.0,<1.0
+textstat>=0.7.13,<1.0
 
 # Utilities
 python-dotenv>=1.2.2,<2.0
