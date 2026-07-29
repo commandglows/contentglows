@@ -78,13 +78,14 @@ links and SDK behavior.
 - Password auth through the old Flutter beta SDK is intentionally disabled on
   web production; use the dedicated ClerkJS auth routes.
 - Android initializes Clerk once in `ContentGlowzApplication`. Its Kotlin
-  MethodChannel owns Google Credential Manager, session restore, fresh token
-  retrieval, sign-out, and callback handling; `clerk_auth_service_android.dart`
+  MethodChannel owns Clerk's native OAuth launch in the system browser, session
+  restore, fresh token retrieval, sign-out, and callback handling;
+  `clerk_auth_service_android.dart`
   only transports the active token in memory to Flutter.
-- Google native configuration is external: enable Clerk Native API, configure
-  the Android package and debug/release SHA-1 in Google Cloud, and enable the
-  matching custom credentials in Clerk. Record neither keys nor fingerprints
-  in this repository.
+- Google OAuth configuration is external: enable Clerk Native API, register
+  the Android package in Clerk, allowlist `com.contentglowz.app://callback`,
+  and enable the Google connection for sign-up and sign-in. Record neither
+  keys nor fingerprints in this repository.
 
 ## Invariants
 

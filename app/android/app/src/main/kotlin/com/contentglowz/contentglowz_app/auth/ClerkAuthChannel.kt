@@ -3,7 +3,7 @@ package com.contentglowz.app.auth
 import android.net.Uri
 import com.clerk.api.Clerk
 import com.clerk.api.network.serialization.ClerkResult
-import com.clerk.api.signin.SignIn
+import com.clerk.api.sso.OAuthProvider
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -65,8 +65,18 @@ class ClerkAuthChannel(messenger: BinaryMessenger) : MethodChannel.MethodCallHan
         activeAuthentication = scope.launch {
             try {
                 requireReady()
-                when (val outcome = SignIn.authenticateWithGoogleOneTap(transferable = true)) {
-                    is ClerkResult.Success -> result.success(requireSessionPayload())
+                when (val outcome = Clerk.auth.signInWithOAuth(OAuthProvider.GOOGLE)) {
+                    is ClerkResult.Success -> {
+                        if (Clerk.session == null || Clerk.user == null) {
+                            result.error(
+                                "oauth_incomplete",
+                                "Google sign-in returned to the app but no Clerk session was activated. Please try again.",
+                                null,
+                            )
+                        } else {
+                            result.success(requireSessionPayload())
+                        }
+                    }
                     is ClerkResult.Failure -> result.error(
                         errorCode(outcome.throwable),
                         errorMessage(outcome.throwable, "Native Google sign-in did not complete."),

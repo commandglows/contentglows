@@ -139,7 +139,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
         Text(
           context.tr(
             _isAndroid
-                ? 'Continue with Google to sign in securely in the Android app. The browser-based ClerkJS sign-in page is not used on Android.'
+                ? 'Continue with Google in your secure system browser. After approval, you return automatically to the Android app.'
                 : 'Native Clerk authentication is currently available only on Android. Use the web app on this platform.',
           ),
           style: theme.textTheme.bodyMedium?.copyWith(
@@ -182,7 +182,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
         Text(
           context.tr(
             _isAndroid
-                ? 'Google authentication remains inside the installed Android application. If it cannot start, the diagnostic below identifies the native configuration issue.'
+                ? 'Google opens in the secure system browser and returns automatically to this app. If it cannot finish, the diagnostic below identifies the native configuration issue.'
                 : 'Open the web app to use the ClerkJS sign-in flow.',
           ),
           style: theme.textTheme.bodySmall?.copyWith(
