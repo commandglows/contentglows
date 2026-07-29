@@ -56,7 +56,7 @@ pyyaml>=6.0.0,<7.0
 pandas>=2.0.0,<3.0  # Required by advertools
 libsql>=0.1.11,<1.0
 cryptography>=48.0.1,<49
-boto3>=1.43.45,<2.0  # Canonical S3 object-storage adapter; server credential chain only.
+boto3>=1.43.51,<2.0  # Canonical S3 object-storage adapter; server credential chain only.
 pillow>=12.3.0,<13.0  # Decode and re-encode image sources without EXIF/GPS metadata.
 
 # Google Analytics (Psychology Engine)
