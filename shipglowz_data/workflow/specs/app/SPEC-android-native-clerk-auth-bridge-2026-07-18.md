@@ -5,8 +5,8 @@ artifact_version: "1.0.0"
 project: app
 created: "2026-07-18"
 created_at: "2026-07-18 10:57:16 UTC"
-updated: "2026-07-18"
-updated_at: "2026-07-18 13:35:00 UTC"
+updated: "2026-07-30"
+updated_at: "2026-07-30 14:18:00 UTC"
 status: ready
 source_skill: 100-sg-spec
 source_model: "GPT-5 Codex"
@@ -285,6 +285,8 @@ None. Les paramètres opérateur matériels sont déterminés : Android natif Ko
 | 2026-07-18 | 103-sg-verify | GPT-5 Codex | Standard verification: Flutter analyzer, focused Android bridge tests, app-access regression, and diff hygiene pass; Android Gradle/device OAuth, Clerk redirect dashboard, and web runtime proof remain unavailable here. | partial | 104-sg-end |
 | 2026-07-18 | 104-sg-end | GPT-5 Codex | Closure bookkeeping prepared with evidence-based changelog and checklist; product closure deferred until required native/provider/device and web proof exists. | deferred | 005-sg-ship |
 | 2026-07-18 | 109-sg-auth-debug + 106-sg-fix | GPT-5 Codex | Diagnosed the release-only Clerk initialization timeout from redacted device diagnostics and added the missing main-manifest INTERNET permission. | fix-attempted; release/device retest remains required | Build a release APK and retest Google return-to-app. |
+| 2026-07-29 | 109-sg-auth-debug + 106-sg-fix | GPT-5 Codex | Replaced the retired One Tap helper with Clerk's native Google OAuth API; retained visible in-progress feedback. | implemented; device OAuth still failed before browser launch | Inspect the SDK callback contract and dashboard allowlist. |
+| 2026-07-30 | 109-sg-auth-debug + 106-sg-fix + 004-sg-deploy | GPT-5 Codex | Corrected the callback contract to Clerk Android's own `clerk://com.contentglowz.app.callback` receiver, removed the incompatible Activity handler, updated docs, and produced a signed release APK. | fix-attempted; CI run 30550466642 passed with APK Signature Scheme v2 verification; physical OAuth proof remains required. | Set the exact Clerk redirect allowlist and test Google sign-in on Android. |
 
 # Current Chantier Flow
 
@@ -295,4 +297,4 @@ None. Les paramètres opérateur matériels sont déterminés : Android natif Ko
 | 102-sg-start | implemented | Dart bridge tests and static analysis pass; Android Gradle/device proof is environment- and configuration-dependent. |
 | 103-sg-verify | partial | Local Dart/static/regression checks pass; required native callback/provider/device and web runtime proof remains pending. |
 | 104-sg-end | deferred | Bookkeeping is aligned, but the chantier remains open pending native/provider/device and web proof. |
-| 005-sg-ship | pending | Not started. |
+| 005-sg-ship | partial | Commits are pushed and CI run 30550466642 produced a signed APK; provider/device proof remains pending. |
