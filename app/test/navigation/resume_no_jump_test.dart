@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:app/data/models/app_access_state.dart';
 import 'package:app/data/models/app_bootstrap.dart';
+import 'package:app/data/models/auth_session.dart';
 import 'package:app/router.dart';
 
 void main() {
@@ -93,6 +94,39 @@ void main() {
         expect(redirect, isNull);
       },
     );
+
+    test(
+      'keeps an authenticated user in the app when backend is unavailable',
+      () {
+        final redirect = resolveAppRedirect(
+          uri: Uri.parse('/entry'),
+          appAccessAsync: const AsyncValue.data(
+            AppAccessState(stage: AppAccessStage.apiUnavailable),
+          ),
+          authSession: const AuthSession(
+            status: AuthStatus.authenticated,
+            bearerToken: 'redacted-test-token',
+          ),
+        );
+
+        expect(redirect, '/feed');
+      },
+    );
+
+    test('does not bypass reauthentication when bootstrap returns 401', () {
+      final redirect = resolveAppRedirect(
+        uri: Uri.parse('/feed'),
+        appAccessAsync: const AsyncValue.data(
+          AppAccessState(stage: AppAccessStage.bootstrapUnauthorized),
+        ),
+        authSession: const AuthSession(
+          status: AuthStatus.authenticated,
+          bearerToken: 'redacted-test-token',
+        ),
+      );
+
+      expect(redirect, '/entry');
+    });
 
     test('keeps deep in-app route stable during checking stage', () {
       final redirect = resolveAppRedirect(

@@ -5,6 +5,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'core/app_config.dart';
 import 'data/models/app_access_state.dart';
+import 'data/models/auth_session.dart';
 import 'providers/providers.dart';
 import 'presentation/screens/app_shell.dart';
 import 'presentation/screens/feed/feed_screen.dart';
@@ -63,7 +64,12 @@ GoRouter createAppRouter(Ref ref, {Listenable? refreshListenable}) {
     ],
     redirect: (context, state) {
       final accessAsync = ref.read(appAccessStateProvider);
-      return resolveAppRedirect(uri: state.uri, appAccessAsync: accessAsync);
+      final authSession = ref.read(authSessionProvider);
+      return resolveAppRedirect(
+        uri: state.uri,
+        appAccessAsync: accessAsync,
+        authSession: authSession,
+      );
     },
     routes: buildAppRoutes(),
   );
@@ -96,6 +102,7 @@ String _sanitizeSentryRouteName(String routeName) {
 String? resolveAppRedirect({
   required Uri uri,
   required AsyncValue<AppAccessState> appAccessAsync,
+  AuthSession? authSession,
 }) {
   final location = uri.path;
   final isRoot = location == '/';
@@ -153,6 +160,16 @@ String? resolveAppRedirect({
       return null;
     case AppAccessStage.apiUnavailable:
     case AppAccessStage.bootstrapFailed:
+      // Clerk owns the session. A temporarily unavailable FastAPI backend
+      // must not make an already authenticated user appear signed out.
+      // Workspace-dependent providers remain guarded by canUseWorkspaceData
+      // and the shell displays degraded-mode status until the API recovers.
+      if (authSession?.isAuthenticated == true) {
+        if (isAuth || isEntry) {
+          return '/feed';
+        }
+        return null;
+      }
       if (isAuth || isOnboarding) {
         return '/entry';
       }
@@ -426,6 +443,11 @@ class _AppRouterRefreshListenable extends ChangeNotifier {
       previous,
       next,
     ) {
+      if (previous != next) {
+        notifyListeners();
+      }
+    });
+    ref.listen<AuthSession>(authSessionProvider, (previous, next) {
       if (previous != next) {
         notifyListeners();
       }
