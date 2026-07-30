@@ -1,6 +1,5 @@
 package com.contentglowz.app.auth
 
-import android.net.Uri
 import com.clerk.api.Clerk
 import com.clerk.api.network.serialization.ClerkResult
 import com.clerk.api.sso.OAuthProvider
@@ -21,7 +20,6 @@ class ClerkAuthChannel(messenger: BinaryMessenger) : MethodChannel.MethodCallHan
     private val channel = MethodChannel(messenger, CHANNEL_NAME)
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var activeAuthentication: Job? = null
-    private var lastCallback: String? = null
 
     init {
         channel.setMethodCallHandler(this)
@@ -35,18 +33,6 @@ class ClerkAuthChannel(messenger: BinaryMessenger) : MethodChannel.MethodCallHan
             "signOut" -> launch(result) { signOut(); mapOf("signedOut" to true) }
             "signInWithGoogle" -> signInWithGoogle(result)
             else -> result.notImplemented()
-        }
-    }
-
-    fun handleCallback(uri: Uri?) {
-        if (!isAllowedCallback(uri)) return
-        // Do not retain or print query parameters; replayed callbacks are ignored.
-        val fingerprint = "${uri?.scheme}://${uri?.host}${uri?.path.orEmpty()}"
-        if (fingerprint == lastCallback) return
-        lastCallback = fingerprint
-        scope.launch {
-            awaitReady() ?: return@launch
-            Clerk.auth.handle(uri)
         }
     }
 
@@ -149,9 +135,6 @@ class ClerkAuthChannel(messenger: BinaryMessenger) : MethodChannel.MethodCallHan
     private suspend fun awaitReady(): Boolean =
         withTimeoutOrNull(INITIALIZATION_TIMEOUT_MS) { Clerk.isInitialized.first { it } } != null
 
-    private fun isAllowedCallback(uri: Uri?): Boolean =
-        uri?.scheme == CALLBACK_SCHEME && uri.host == CALLBACK_HOST && uri.path.isNullOrEmpty()
-
     private fun errorCode(error: Throwable?): String = when {
         error is ClerkNotReadyException -> "clerk_not_ready"
         error?.javaClass?.simpleName?.contains("Cancellation", ignoreCase = true) == true -> "cancelled"
@@ -169,8 +152,6 @@ class ClerkAuthChannel(messenger: BinaryMessenger) : MethodChannel.MethodCallHan
 
     companion object {
         const val CHANNEL_NAME = "com.contentglowz.app/clerk_auth"
-        private const val CALLBACK_SCHEME = "com.contentglowz.app"
-        private const val CALLBACK_HOST = "callback"
         private const val INITIALIZATION_TIMEOUT_MS = 15_000L
     }
 }

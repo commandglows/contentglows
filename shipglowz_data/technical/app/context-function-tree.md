@@ -119,8 +119,9 @@ next_step: "/sf-docs update shipglowz_data/technical/app/context-function-tree.m
 - `ContentGlowzApplication`
   - initializes Clerk Android once when a build-injected publishable key exists.
 - `MainActivity` + `auth/ClerkAuthChannel`
-  - keeps capture/media channels, routes strict auth callbacks once, and exposes
-    initialize, Google sign-in, restore, fresh token and sign-out to Flutter.
+  - keeps capture/media channels and exposes initialize, Google sign-in,
+    restore, fresh token and sign-out to Flutter; Clerk SDK's
+    `SSOReceiverActivity` receives its OAuth callback.
 - `feedback_service.dart`, `feedback_local_store.dart`
   - feedback submit/list/review orchestration with local draft memory.
 - `notification_service.dart`

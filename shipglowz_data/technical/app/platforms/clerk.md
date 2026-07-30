@@ -63,7 +63,7 @@ links and SDK behavior.
 | Token path | `clerk.session.getToken()` -> FastAPI bearer token | sensitive runtime value | Never log or store raw tokens in docs. |
 | Android SDK | `com.clerk:clerk-android-api:1.0.36` | no | API-only; Flutter retains UI. |
 | Android key | `CLERK_PUBLISHABLE_KEY` | key only | Environment or ignored Gradle property; never commit its value. |
-| Android callback | `com.contentglowz.app://callback` | no | Allowlist in Clerk and strict Android intent filter; never retain callback parameters. |
+| Android callback | `clerk://com.contentglowz.app.callback` | no | Clerk Android SDK's registered receiver handles this exact callback; allowlist it in Clerk and never retain its parameters. |
 
 ## Runtime And Integration Notes
 
@@ -79,11 +79,13 @@ links and SDK behavior.
   web production; use the dedicated ClerkJS auth routes.
 - Android initializes Clerk once in `ContentGlowzApplication`. Its Kotlin
   MethodChannel owns Clerk's native OAuth launch in the system browser, session
-  restore, fresh token retrieval, sign-out, and callback handling;
+  restore, fresh token retrieval, and sign-out. Clerk Android's own registered
+  `SSOReceiverActivity` owns the `clerk://com.contentglowz.app.callback`
+  callback handling;
   `clerk_auth_service_android.dart`
   only transports the active token in memory to Flutter.
 - Google OAuth configuration is external: enable Clerk Native API, register
-  the Android package in Clerk, allowlist `com.contentglowz.app://callback`,
+  the Android package in Clerk, allowlist `clerk://com.contentglowz.app.callback`,
   and enable the Google connection for sign-up and sign-in. Record neither
   keys nor fingerprints in this repository.
 
@@ -96,8 +98,9 @@ links and SDK behavior.
 - Flutter must obtain user identity and bearer tokens through the ClerkJS bridge,
   not by reintroducing the removed Clerk Flutter beta web path. Android instead
   obtains its token from Clerk Android and never shares a web session.
-- Android callbacks are handled only once by `MainActivity` for the exact
-  callback scheme/host; invalid or replayed callbacks cannot authenticate Dart.
+- Android OAuth callbacks are handled by Clerk's manifest-registered receiver
+  for the exact `clerk://com.contentglowz.app.callback` scheme/host; Flutter
+  never receives callback parameters.
 - FastAPI remains the data authority; Clerk is only the session identity layer.
 
 ## Failure Modes
