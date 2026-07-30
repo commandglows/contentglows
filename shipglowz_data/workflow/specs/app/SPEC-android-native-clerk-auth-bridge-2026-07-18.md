@@ -288,6 +288,7 @@ None. Les paramètres opérateur matériels sont déterminés : Android natif Ko
 | 2026-07-29 | 109-sg-auth-debug + 106-sg-fix | GPT-5 Codex | Replaced the retired One Tap helper with Clerk's native Google OAuth API; retained visible in-progress feedback. | implemented; device OAuth still failed before browser launch | Inspect the SDK callback contract and dashboard allowlist. |
 | 2026-07-30 | 109-sg-auth-debug + 106-sg-fix + 004-sg-deploy | GPT-5 Codex | Corrected the callback contract to Clerk Android's own `clerk://com.contentglowz.app.callback` receiver, removed the incompatible Activity handler, updated docs, and produced a signed release APK. | fix-attempted; CI run 30550466642 passed with APK Signature Scheme v2 verification; physical OAuth proof remains required. | Set the exact Clerk redirect allowlist and test Google sign-in on Android. |
 | 2026-07-30 | 900-shipglowz-core | GPT-5 Codex | Refreshed the shared Flutter/Clerk auth-debug reference with the pinned Android SDK 1.0.36 callback contract, dashboard prerequisites, redaction boundaries, and visible async-feedback requirements. | documented; no product code change; device/provider OAuth proof remains pending. | Reuse this reference for future Flutter + Clerk Android investigations. |
+| 2026-07-30 | 103-sg-verify | GPT-5 Codex | Excellence pass: rechecked the shared reference, project callback consistency, Flutter analysis, focused Android bridge tests, diagnostics/redaction contract, and manual checklist state. | partial; standard local/docs gates pass, but all required device/provider/web checklist rows remain NOT_RUN, so no excellence or ship-readiness claim is made. | Route Android scenarios to 107-sg-test with the signed APK and configured Clerk instance; route web preview proof to 108-sg-browser/405-sg-prod. |
 
 # Current Chantier Flow
 
@@ -300,3 +301,4 @@ None. Les paramètres opérateur matériels sont déterminés : Android natif Ko
 | 104-sg-end | deferred | Bookkeeping is aligned, but the chantier remains open pending native/provider/device and web proof. |
 | 005-sg-ship | partial | Commits are pushed and CI run 30550466642 produced a signed APK; provider/device proof remains pending. |
 | 900-shipglowz-core | completed | Shared Clerk/Android reference refreshed and aligned with the shipped bridge and SDK 1.0.36 contract. |
+| 103-sg-verify | partial | Excellence pass completed for docs/local proof; required Android provider/device and web preview evidence is still missing. |
