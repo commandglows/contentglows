@@ -264,7 +264,7 @@ Exception-with-proof: le test OAuth réel ne peut pas être automatisé de bout 
 # Execution Notes
 
 - Décision opérateur confirmée : adopter le SDK Android officiel Clerk encapsulé en Kotlin, pas le SDK Flutter bêta et pas un handoff web maison.
-- Fresh-docs verdict : `fresh-docs checked` le 2026-07-18 contre les sources Clerk Android officielles. Les docs confirment l’API-only, l’initialisation Application, la gestion deep link Activity, `getToken`, `signOut` et la voie Google native. Recontrôler les versions avant modification Gradle, car le SDK évolue.
+- Fresh-docs verdict : `fresh-docs checked` le 2026-07-30 contre les sources Clerk Android officielles et le code source du SDK épinglé. Les docs confirment l’API-only, l’initialisation Application, la gestion deep link Activity, `getToken`, `signOut` et la voie Google native. Le contrat effectif de `com.clerk:clerk-android-api:1.0.36` est `clerk://<applicationId>.callback`, reçu par `SSOReceiverActivity`; les exemples d’URL génériques ne doivent pas remplacer ce contrat vérifié. Recontrôler les versions avant modification Gradle, car le SDK évolue.
 - Prévol Android nécessaire : inspecter le minSdk effectif généré par Flutter avant ajout; Clerk exige >=24 alors que le projet le délègue aujourd’hui à `flutter.minSdkVersion`.
 - Ordre de lecture/implémentation : `build.gradle.kts` et manifest → `MainActivity` et channels existants → services Clerk Dart → `AuthSessionNotifier`/`ApiService` → écran entry/l10n → tests/checklist/docs. Stopper l’implémentation si Native API, la configuration Google/redirect ou une dépendance SDK officiellement compatible ne peut pas être prouvée; ne jamais substituer le chemin web ou un token URL comme contournement.
 - Backend : aucune mutation FastAPI prévue; une incompatibilité de claims/issuer/JWKS révélée par une session native est un finding distinct à routage auth/backend, pas un contournement client.
@@ -287,6 +287,7 @@ None. Les paramètres opérateur matériels sont déterminés : Android natif Ko
 | 2026-07-18 | 109-sg-auth-debug + 106-sg-fix | GPT-5 Codex | Diagnosed the release-only Clerk initialization timeout from redacted device diagnostics and added the missing main-manifest INTERNET permission. | fix-attempted; release/device retest remains required | Build a release APK and retest Google return-to-app. |
 | 2026-07-29 | 109-sg-auth-debug + 106-sg-fix | GPT-5 Codex | Replaced the retired One Tap helper with Clerk's native Google OAuth API; retained visible in-progress feedback. | implemented; device OAuth still failed before browser launch | Inspect the SDK callback contract and dashboard allowlist. |
 | 2026-07-30 | 109-sg-auth-debug + 106-sg-fix + 004-sg-deploy | GPT-5 Codex | Corrected the callback contract to Clerk Android's own `clerk://com.contentglowz.app.callback` receiver, removed the incompatible Activity handler, updated docs, and produced a signed release APK. | fix-attempted; CI run 30550466642 passed with APK Signature Scheme v2 verification; physical OAuth proof remains required. | Set the exact Clerk redirect allowlist and test Google sign-in on Android. |
+| 2026-07-30 | 900-shipglowz-core | GPT-5 Codex | Refreshed the shared Flutter/Clerk auth-debug reference with the pinned Android SDK 1.0.36 callback contract, dashboard prerequisites, redaction boundaries, and visible async-feedback requirements. | documented; no product code change; device/provider OAuth proof remains pending. | Reuse this reference for future Flutter + Clerk Android investigations. |
 
 # Current Chantier Flow
 
@@ -298,3 +299,4 @@ None. Les paramètres opérateur matériels sont déterminés : Android natif Ko
 | 103-sg-verify | partial | Local Dart/static/regression checks pass; required native callback/provider/device and web runtime proof remains pending. |
 | 104-sg-end | deferred | Bookkeeping is aligned, but the chantier remains open pending native/provider/device and web proof. |
 | 005-sg-ship | partial | Commits are pushed and CI run 30550466642 produced a signed APK; provider/device proof remains pending. |
+| 900-shipglowz-core | completed | Shared Clerk/Android reference refreshed and aligned with the shipped bridge and SDK 1.0.36 contract. |
