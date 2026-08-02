@@ -3,9 +3,9 @@ module.exports = {
     name: "contentglowz_lab",
     cwd: "/home/claude/contentglowz/lab",
     script: "bash",
-    args: ["-lc", "export PORT=3000 && flox activate -- bash -lc './venv/bin/python main.py'"],
+    args: ["-lc", "export PORT=45000 && flox activate -- bash -lc './venv/bin/python main.py'"],
     env: {
-      PORT: 3000
+      PORT: 45000
     },
     autorestart: true,
     max_restarts: 3,
