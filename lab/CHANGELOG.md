@@ -215,7 +215,7 @@ All notable changes to ContentGlowz are documented here.
   - `api/routers/preview.py` — `GET /api/preview?url=...` endpoint
   - Zero new dependencies (httpx + bs4 already in stack)
   - 5 tests (full OG, fallbacks, relative images, empty HTML, model)
-- `shipglowz_data/workflow/specs/lab/social-listener.md` — technical specification for social listener module
+- `shipglows_data/workflow/specs/lab/social-listener.md` — technical specification for social listener module
 - Feature documentation on ContentGlowz site:
   - `platform/social-listening.md` — Social Listening feature page
   - `platform/content-quality-scoring.md` — Content Quality Scoring feature page

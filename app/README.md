@@ -6,12 +6,12 @@ This local README is an entrypoint, not the canonical technical or product sourc
 
 ## Canonical Docs
 
-- Technical index: `shipglowz_data/technical/app/README.md`
-- Architecture: `shipglowz_data/technical/app/architecture.md`
-- Context: `shipglowz_data/technical/app/context.md`
-- Product: `shipglowz_data/product/app/product.md`
-- Workflow backlog: `shipglowz_data/workflow/app/TASKS.md`
-- Audit history: `shipglowz_data/workflow/app/AUDIT_LOG.md`
+- Technical index: `shipglows_data/technical/app/README.md`
+- Architecture: `shipglows_data/technical/app/architecture.md`
+- Context: `shipglows_data/technical/app/context.md`
+- Product: `shipglows_data/product/app/product.md`
+- Workflow backlog: `shipglows_data/workflow/app/TASKS.md`
+- Audit history: `shipglows_data/workflow/app/AUDIT_LOG.md`
 
 ## Quick Start
 
@@ -21,4 +21,4 @@ This local README is an entrypoint, not the canonical technical or product sourc
 
 ## Rule
 
-If a local `app/*` doc and a `shipglowz_data/*` doc disagree, treat `shipglowz_data/*` as canonical and reduce the local file instead of expanding it.
+If a local `app/*` doc and a `shipglows_data/*` doc disagree, treat `shipglows_data/*` as canonical and reduce the local file instead of expanding it.

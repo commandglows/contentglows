@@ -11,7 +11,7 @@ Canonical monorepo for the full ContentGlowz platform.
 
 ## Setup
 
-Start with [shipglowz_data/technical/SETUP.md](shipglowz_data/technical/SETUP.md) after cloning the repository. It lists the required local tools, Flox commands, app/site/backend checks, and Turso CLI authentication flow.
+Start with [shipglows_data/technical/SETUP.md](shipglows_data/technical/SETUP.md) after cloning the repository. It lists the required local tools, Flox commands, app/site/backend checks, and Turso CLI authentication flow.
 
 ## Deployment Model
 

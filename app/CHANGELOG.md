@@ -139,7 +139,7 @@ The format is based on Keep a Changelog.
 - Added a persisted app theme preference with `light`, `dark`, and `system` modes, plus Flutter tests covering theme normalization and app-level theme restoration.
 - Added a shared editorial theme palette and semantic color tokens so surfaces, accents, and status tones can be reused consistently across the Flutter shell.
 - Added queue-aware offline sync badges on supported list surfaces so projects, personas, affiliations, content cards, and drip plans can show `Pending sync` or `Sync failed`.
-- Added the offline sync V2 reference spec in `shipglowz_data/workflow/specs/app/SPEC-offline-sync-v2.md` and aligned project documentation with the current degraded-mode behavior.
+- Added the offline sync V2 reference spec in `shipglows_data/workflow/specs/app/SPEC-offline-sync-v2.md` and aligned project documentation with the current degraded-mode behavior.
 - Added a multi-project management flow with a dedicated `Projects` screen, a global current-project switcher, and backend-aligned project selection persistence.
 - Added Drip plan scheduling window fields (`publish_time_start`, `publish_time_end`) so plans can configure random publish slots instead of one fixed time.
 
@@ -258,7 +258,7 @@ The format is based on Keep a Changelog.
 - **ContentType.short** in Flutter enum with parser, serializer, icon, and theme color.
 - **Format-specific metadata** in Flutter: content cards and editor show SEO keyword, platform, duration, hashtags, narrative thread depending on content type.
 - **Settings: Content Frequency section** with sliders for each format.
-- Spec document: `shipglowz_data/workflow/specs/app/SPEC-content-pipeline-unification.md`.
+- Spec document: `shipglows_data/workflow/specs/app/SPEC-content-pipeline-unification.md`.
 - Flutter repo initialized and pushed to GitHub (`dianedef/ContentGlowz-app`).
 
 ### Changed

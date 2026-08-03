@@ -6,11 +6,11 @@ This root README is now an entrypoint, not the canonical technical source of tru
 
 ## Canonical Docs
 
-- Technical index: `shipglowz_data/technical/lab/README.md`
-- Architecture: `shipglowz_data/technical/lab/architecture.md`
-- Context: `shipglowz_data/technical/lab/context.md`
-- Workflow backlog: `shipglowz_data/workflow/lab/TASKS.md`
-- QA log: `shipglowz_data/workflow/qa/TEST_LOG.md`
+- Technical index: `shipglows_data/technical/lab/README.md`
+- Architecture: `shipglows_data/technical/lab/architecture.md`
+- Context: `shipglows_data/technical/lab/context.md`
+- Workflow backlog: `shipglows_data/workflow/lab/TASKS.md`
+- QA log: `shipglows_data/workflow/qa/TEST_LOG.md`
 
 ## Quick Start
 
@@ -38,4 +38,4 @@ Useful local checks:
 
 ## Rule
 
-If a local `lab/*` doc and a `shipglowz_data/*` doc disagree, treat `shipglowz_data/*` as canonical and reduce the local file instead of expanding it.
+If a local `lab/*` doc and a `shipglows_data/*` doc disagree, treat `shipglows_data/*` as canonical and reduce the local file instead of expanding it.

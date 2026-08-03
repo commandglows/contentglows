@@ -2,4 +2,4 @@
 
 This local tracker is deprecated.
 
-Canonical backlog for `app` now lives in `shipglowz_data/workflow/app/TASKS.md`.
+Canonical backlog for `app` now lives in `shipglows_data/workflow/app/TASKS.md`.

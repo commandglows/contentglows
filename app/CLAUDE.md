@@ -14,10 +14,10 @@ risk_level: medium
 security_impact: none
 docs_impact: yes
 evidence:
-  - "shipglowz_data/technical/app/README.md"
-  - "shipglowz_data/technical/app/architecture.md"
+  - "shipglows_data/technical/app/README.md"
+  - "shipglows_data/technical/app/architecture.md"
 depends_on:
-  - shipglowz_data/technical/app/guidelines.md
+  - shipglows_data/technical/app/guidelines.md
 supersedes: []
 linked_systems:
   - Flutter
@@ -35,11 +35,11 @@ next_step: /sf-docs audit CLAUDE.md
 
 ## Canonical References
 
-- `shipglowz_data/technical/app/README.md`
-- `shipglowz_data/technical/app/architecture.md`
-- `shipglowz_data/technical/app/context.md`
-- `shipglowz_data/workflow/app/TASKS.md`
-- `shipglowz_data/workflow/app/AUDIT_LOG.md`
+- `shipglows_data/technical/app/README.md`
+- `shipglows_data/technical/app/architecture.md`
+- `shipglows_data/technical/app/context.md`
+- `shipglows_data/workflow/app/TASKS.md`
+- `shipglows_data/workflow/app/AUDIT_LOG.md`
 
 ## Common Commands
 
@@ -51,6 +51,6 @@ next_step: /sf-docs audit CLAUDE.md
 
 ## Operating Rules
 
-- Keep local docs short and defer durable truth to `shipglowz_data`.
+- Keep local docs short and defer durable truth to `shipglows_data`.
 - Update canonical docs when routing, auth, offline replay, publish, capture, or API contract behavior changes.
 - Before manual QA, run the strongest local Flutter checks that match the changed surface.

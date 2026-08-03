@@ -17,11 +17,11 @@ docs_impact: yes
 evidence:
   - "README.md"
   - "CLAUDE.md"
-  - "shipglowz_data/technical/app/README.md"
-  - "shipglowz_data/technical/app/architecture.md"
+  - "shipglows_data/technical/app/README.md"
+  - "shipglows_data/technical/app/architecture.md"
 depends_on:
-  - shipglowz_data/technical/app/guidelines.md
-  - shipglowz_data/product/app/product.md
+  - shipglows_data/technical/app/guidelines.md
+  - shipglows_data/product/app/product.md
 supersedes: []
 linked_systems:
   - "lab FastAPI backend"
@@ -36,26 +36,26 @@ next_step: "/sf-docs audit AGENT.md"
 ## Canonical file policy
 
 `app/AGENT.md` remains a local compatibility contract.
-Canonical technical truth for `app` lives under `shipglowz_data/technical/app/`.
+Canonical technical truth for `app` lives under `shipglows_data/technical/app/`.
 
 ## Mission
 
-Keep `app` as the Flutter product application for ContentGlowz while preserving the app, backend, and auth contracts documented in `shipglowz_data`.
+Keep `app` as the Flutter product application for ContentGlowz while preserving the app, backend, and auth contracts documented in `shipglows_data`.
 
 ## Canonical sources
 
-- `shipglowz_data/technical/app/README.md`
-- `shipglowz_data/technical/app/context.md`
-- `shipglowz_data/technical/app/context-function-tree.md`
-- `shipglowz_data/technical/app/architecture.md`
-- `shipglowz_data/technical/app/guidelines.md`
-- `shipglowz_data/workflow/app/TASKS.md`
+- `shipglows_data/technical/app/README.md`
+- `shipglows_data/technical/app/context.md`
+- `shipglows_data/technical/app/context-function-tree.md`
+- `shipglows_data/technical/app/architecture.md`
+- `shipglows_data/technical/app/guidelines.md`
+- `shipglows_data/workflow/app/TASKS.md`
 
 ## Invariants
 
 - Do not expand local facade docs with durable architecture or product detail.
-- Keep Flutter access, auth, offline queue, and API behavior aligned with canonical `shipglowz_data/technical/app/*` docs.
-- If app routing, auth, offline replay, publish, capture, or API contract behavior changes, update the relevant `shipglowz_data` artifact first.
+- Keep Flutter access, auth, offline queue, and API behavior aligned with canonical `shipglows_data/technical/app/*` docs.
+- If app routing, auth, offline replay, publish, capture, or API contract behavior changes, update the relevant `shipglows_data` artifact first.
 
 ## Validation
 

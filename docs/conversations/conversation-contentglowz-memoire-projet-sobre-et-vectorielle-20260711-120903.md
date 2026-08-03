@@ -152,10 +152,10 @@
   - lab/README.md:17 et lab/CLAUDE.md:48 expliquent l’install
     optionnelle.
 
-  - shipglowz_data/workflow/reports/lab/optional-
+  - shipglows_data/workflow/reports/lab/optional-
     integrations.md:26 documente la stratégie d’isolation.
 
-  - shipglowz_data/workflow/TASKS.md:7 marque la revue
+  - shipglows_data/workflow/TASKS.md:7 marque la revue
     d’exposition comme faite et laisse le suivi upstream.
 
   Vérifs:
@@ -181,10 +181,10 @@
 
   Next spec en attente côté top tracker:
 
-  1. shipglowz_data/workflow/TASKS.md:9 lab: ajouter
+  1. shipglows_data/workflow/TASKS.md:9 lab: ajouter
      l’automation Dependabot pour pip et github-actions
 
-  2. shipglowz_data/workflow/TASKS.md:4 worker: traiter le uuid
+  2. shipglows_data/workflow/TASKS.md:4 worker: traiter le uuid
      transitif via @google-cloud/storage / gaxios
 
   Si tu veux, j’enchaîne sur le lab Dependabot.
@@ -1086,7 +1086,7 @@
 
   - Mode : scrollback
   - Puis création d’un pack de réutilisation durable dans
-    shipglowz_data/workflow/repurpose-packs/
+    shipglows_data/workflow/repurpose-packs/
 
   Le scrollback contient aussi des échanges antérieurs, donc
   le pack sera limité à la discussion sur la mémoire projet.

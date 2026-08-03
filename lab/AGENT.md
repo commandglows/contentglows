@@ -26,13 +26,13 @@ linked_systems:
 evidence:
   - README.md
   - CLAUDE.md
-  - shipglowz_data/technical/lab/README.md
-  - shipglowz_data/technical/lab/context.md
-  - shipglowz_data/technical/lab/architecture.md
+  - shipglows_data/technical/lab/README.md
+  - shipglows_data/technical/lab/context.md
+  - shipglows_data/technical/lab/architecture.md
 depends_on:
-  - shipglowz_data/business/business.md
-  - shipglowz_data/branding/branding.md
-  - shipglowz_data/technical/lab/guidelines.md
+  - shipglows_data/business/business.md
+  - shipglows_data/branding/branding.md
+  - shipglows_data/technical/lab/guidelines.md
 supersedes: []
 next_step: /sf-docs audit AGENT.md
 ---
@@ -43,26 +43,26 @@ next_step: /sf-docs audit AGENT.md
 `AGENT.md` remains the local compatibility contract for `lab`.
 `AGENTS.md` must remain a compatibility symlink to this file.
 
-Canonical technical truth lives under `shipglowz_data/technical/lab/`.
+Canonical technical truth lives under `shipglows_data/technical/lab/`.
 
 ## Purpose
 
-Keep one short local operating contract for tools that still resolve `lab/AGENT.md`, while moving durable technical documentation into the monorepo root `shipglowz_data/` corpus.
+Keep one short local operating contract for tools that still resolve `lab/AGENT.md`, while moving durable technical documentation into the monorepo root `shipglows_data/` corpus.
 
 ## Canonical technical sources
 
-- `shipglowz_data/technical/lab/README.md`
-- `shipglowz_data/technical/lab/context.md`
-- `shipglowz_data/technical/lab/context-function-tree.md`
-- `shipglowz_data/technical/lab/architecture.md`
-- `shipglowz_data/technical/lab/guidelines.md`
+- `shipglows_data/technical/lab/README.md`
+- `shipglows_data/technical/lab/context.md`
+- `shipglows_data/technical/lab/context-function-tree.md`
+- `shipglows_data/technical/lab/architecture.md`
+- `shipglows_data/technical/lab/guidelines.md`
 
 ## Documentation operating rules
 
 - Do not document non-existent API or agent modules.
 - Do not add production-level guarantees without corresponding code paths.
-- Keep local façade docs short; move durable detail into `shipglowz_data`.
-- If dependency, auth, scheduler, or architecture behavior changes, update the relevant `shipglowz_data/technical/lab/*` artifact first.
+- Keep local façade docs short; move durable detail into `shipglows_data`.
+- If dependency, auth, scheduler, or architecture behavior changes, update the relevant `shipglows_data/technical/lab/*` artifact first.
 
 ## Operator boundary
 

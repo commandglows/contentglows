@@ -15,8 +15,8 @@ security_impact: yes
 docs_impact: yes
 evidence:
   - README.md
-  - shipglowz_data/technical/lab/README.md
-  - shipglowz_data/technical/lab/architecture.md
+  - shipglows_data/technical/lab/README.md
+  - shipglows_data/technical/lab/architecture.md
 depends_on: []
 supersedes: []
 linked_systems:
@@ -40,10 +40,10 @@ next_step: /sf-docs audit CLAUDE.md
 
 ## Canonical References
 
-- `shipglowz_data/technical/lab/README.md`
-- `shipglowz_data/technical/lab/context.md`
-- `shipglowz_data/technical/lab/architecture.md`
-- `shipglowz_data/technical/lab/guidelines.md`
+- `shipglows_data/technical/lab/README.md`
+- `shipglows_data/technical/lab/context.md`
+- `shipglows_data/technical/lab/architecture.md`
+- `shipglows_data/technical/lab/guidelines.md`
 
 ## Common Commands
 
@@ -58,7 +58,7 @@ curl http://localhost:8000/health
 
 - Preserve authenticated contracts consumed by `app`.
 - Keep Turso/libSQL schema changes explicit and documented.
-- Update canonical `shipglowz_data` docs when backend behavior changes.
+- Update canonical `shipglows_data` docs when backend behavior changes.
 
 ## Forbidden Paths
 

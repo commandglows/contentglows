@@ -6,11 +6,11 @@ This root README is now an entrypoint, not the canonical technical or editorial 
 
 ## Canonical Docs
 
-- Technical index: `shipglowz_data/technical/site/README.md`
-- Architecture: `shipglowz_data/technical/site/architecture.md`
-- Context: `shipglowz_data/technical/site/context.md`
-- Editorial index: `shipglowz_data/editorial/site/README.md`
-- Workflow backlog: `shipglowz_data/workflow/site/TASKS.md`
+- Technical index: `shipglows_data/technical/site/README.md`
+- Architecture: `shipglows_data/technical/site/architecture.md`
+- Context: `shipglows_data/technical/site/context.md`
+- Editorial index: `shipglows_data/editorial/site/README.md`
+- Workflow backlog: `shipglows_data/workflow/site/TASKS.md`
 
 ## Quick Start
 
@@ -26,4 +26,4 @@ This root README is now an entrypoint, not the canonical technical or editorial 
 
 ## Rule
 
-If a local `site/*` doc and a `shipglowz_data/*` doc disagree, treat `shipglowz_data/*` as canonical and reduce the local file instead of expanding it.
+If a local `site/*` doc and a `shipglows_data/*` doc disagree, treat `shipglows_data/*` as canonical and reduce the local file instead of expanding it.
