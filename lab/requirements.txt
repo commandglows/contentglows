@@ -38,7 +38,7 @@ python-louvain>=0.16,<1.0  # Community detection for topical mesh analysis
 
 # Email & Templates
 jinja2>=3.1.6,<4.0
-sendgrid>=6.11.0,<7.0
+sendgrid>=6.12.5,<7.0
 imap-tools>=1.0.0,<2.0  # IMAP email fetching for newsletter ingestion
 
 # Instagram Reels
