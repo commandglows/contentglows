@@ -13,7 +13,7 @@ sentry-sdk>=2.54.0,<3.0
 # security floor below.
 
 # LLM Provider - Simplified with OpenRouter
-openai>=1.0.0,<3.0  # Single package for ALL models via OpenRouter (Groq, GPT-4, Claude, etc.)
+openai>=2.51.0,<3.0  # Single package for ALL models via OpenRouter (Groq, GPT-4, Claude, etc.)
 litellm>=1.83.14,<3.0  # Keep floor above known proxy/security advisory ranges.
 
 # Data Collection & Analysis
