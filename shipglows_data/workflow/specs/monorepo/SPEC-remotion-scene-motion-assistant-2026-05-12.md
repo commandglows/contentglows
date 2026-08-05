@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-05-12"
 created_at: "2026-05-12 19:37:34 UTC"
 updated: "2026-05-12"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
 confidence: "high"
-user_story: "En tant que creatrice ContentGlowz authentifiee dans l'editeur video d'un contenu, je veux appliquer des animations de scene guidees optimisees pour les reseaux sociaux, afin de produire des videos plus lisibles, rythmées et efficaces sans utiliser un studio d'animation artistique libre."
+user_story: "En tant que creatrice ContentGlows authentifiee dans l'editeur video d'un contenu, je veux appliquer des animations de scene guidees optimisees pour les reseaux sociaux, afin de produire des videos plus lisibles, rythmées et efficaces sans utiliser un studio d'animation artistique libre."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -21,8 +21,8 @@ linked_systems:
   - "app"
   - "lab"
   - "worker"
-  - "contentglowz/v0-ai-powered-animation-studio"
-  - "contentglowz/remotion-template"
+  - "contentglows/v0-ai-powered-animation-studio"
+  - "contentglows/remotion-template"
   - "Remotion video editor workflow"
   - "Unified Project Asset Library"
   - "AI audio/music/backgrounds"
@@ -39,16 +39,16 @@ depends_on:
   - artifact: "shipglows_data/workflow/specs/SPEC-unified-project-asset-library-2026-05-11.md"
     artifact_version: "1.0.0"
     required_status: "ready"
-  - artifact: "contentglowz/INSPIRATION.md"
+  - artifact: "contentglows/INSPIRATION.md"
     artifact_version: "unknown"
     required_status: "inspiration-only"
-  - artifact: "contentglowz/BUSINESS.md"
+  - artifact: "contentglows/BUSINESS.md"
     artifact_version: "unknown"
     required_status: "inspiration-only"
-  - artifact: "contentglowz/v0-ai-powered-animation-studio"
+  - artifact: "contentglows/v0-ai-powered-animation-studio"
     artifact_version: "local prototype"
     required_status: "inspiration-only"
-  - artifact: "contentglowz/remotion-template"
+  - artifact: "contentglows/remotion-template"
     artifact_version: "local prototype; Remotion dependencies ^4.0.0"
     required_status: "inspiration-only"
   - artifact: "Remotion interpolate docs"
@@ -62,17 +62,17 @@ depends_on:
     required_status: "official"
 supersedes: []
 evidence:
-  - "User direction 2026-05-12: create a ShipGlowz spec for AI Animation / Motion Assistant for Remotion Scenes from contentglowz inspirations, not an implementation."
+  - "User direction 2026-05-12: create a ShipGlowz spec for AI Animation / Motion Assistant for Remotion Scenes from contentglows inspirations, not an implementation."
   - "User direction 2026-05-12: V1 must be integrated into existing guided workflows and future /editor/:id/video, not a global playground or free animation studio."
   - "User decision 2026-05-12: prefer effective social content over artistic animation work; motion should optimize readability, hook, retention and platform formats."
   - "Prior ready spec evidence: SPEC-remotion-video-editor-workflow-2026-05-11 defines /editor/:id/video, guided storyboard, immutable video versions, trusted assets, preview gate and Remotion render delegation."
   - "Prior ready spec evidence: SPEC-video-editor-ai-audio-music-backgrounds-2026-05-11 adds procedural Remotion animated backgrounds, audio/music versioning and editor-linked guided controls."
   - "Prior ready spec evidence: SPEC-unified-project-asset-library-2026-05-11 defines project-scoped assets and workflow-guided reuse across images, audio, music, background configs and render outputs."
-  - "Prototype evidence: contentglowz/v0-ai-powered-animation-studio/contexts/animation-context.tsx models layers with x, y, width, height, rotation, opacity, scaleX, scaleY and keyframes with easing."
-  - "Prototype evidence: contentglowz/v0-ai-powered-animation-studio/components/animation-templates.tsx contains useful preset categories: entrance, emphasis, exit, motion and special."
-  - "Prototype evidence: contentglowz/v0-ai-powered-animation-studio/components/ai-chat-panel.tsx uses prompt-like quick actions and tool-call-shaped mutations, but it is a standalone Next/Gemini demo and should not be ported as-is."
-  - "Prototype evidence: contentglowz/v0-ai-powered-animation-studio/components/timeline-panel.tsx has a free keyframe timeline; V1 should only reuse simplified preview/keyframe concepts, not expose a full timeline."
-  - "Prototype evidence: contentglowz/remotion-template/remotion/Root.tsx registers Remotion compositions and contentglowz/remotion-template/server/render-queue.ts uses selectComposition/renderMedia for server rendering."
+  - "Prototype evidence: contentglows/v0-ai-powered-animation-studio/contexts/animation-context.tsx models layers with x, y, width, height, rotation, opacity, scaleX, scaleY and keyframes with easing."
+  - "Prototype evidence: contentglows/v0-ai-powered-animation-studio/components/animation-templates.tsx contains useful preset categories: entrance, emphasis, exit, motion and special."
+  - "Prototype evidence: contentglows/v0-ai-powered-animation-studio/components/ai-chat-panel.tsx uses prompt-like quick actions and tool-call-shaped mutations, but it is a standalone Next/Gemini demo and should not be ported as-is."
+  - "Prototype evidence: contentglows/v0-ai-powered-animation-studio/components/timeline-panel.tsx has a free keyframe timeline; V1 should only reuse simplified preview/keyframe concepts, not expose a full timeline."
+  - "Prototype evidence: contentglows/remotion-template/remotion/Root.tsx registers Remotion compositions and contentglows/remotion-template/server/render-queue.ts uses selectComposition/renderMedia for server rendering."
   - "Code evidence: app/lib/router.dart currently exposes /editor/:id and sanitizes all /editor/* as /editor/:id; /editor/:id/video is not implemented yet."
   - "Code evidence: app/lib/presentation/screens/editor/editor_screen.dart already has editor-linked project asset access; future video/motion controls should remain editor-linked."
   - "Code evidence: lab/status/db.py and status/service.py already include project asset and usage tables/flows, including media kinds for video, video_cover, remotion_background and remotion_render."
@@ -88,15 +88,15 @@ Remotion Scene Motion Assistant
 
 ## Status
 
-Draft. This spec frames a guided AI animation and motion assistant for ContentGlowz's future `/editor/:id/video` workflow. It intentionally does not implement a standalone animation studio and does not replace the ready Remotion video editor, audio/backgrounds, asset library, or render service specs.
+Draft. This spec frames a guided AI animation and motion assistant for ContentGlows's future `/editor/:id/video` workflow. It intentionally does not implement a standalone animation studio and does not replace the ready Remotion video editor, audio/backgrounds, asset library, or render service specs.
 
 ## User Story
 
-En tant que creatrice ContentGlowz authentifiee dans l'editeur video d'un contenu, je veux appliquer des animations de scene guidees optimisees pour les reseaux sociaux, afin de produire des videos plus lisibles, rythmées et efficaces sans utiliser un studio d'animation artistique libre.
+En tant que creatrice ContentGlows authentifiee dans l'editeur video d'un contenu, je veux appliquer des animations de scene guidees optimisees pour les reseaux sociaux, afin de produire des videos plus lisibles, rythmées et efficaces sans utiliser un studio d'animation artistique libre.
 
 ## Minimal Behavior Contract
 
-Depuis `/editor/:id/video`, ContentGlowz permet a une creatrice authentifiee d'appliquer a une scene, un texte, un asset visuel ou un fond anime des presets de mouvement allowlistes concus pour les contenus sociaux: accroche lisible, rythme clair, retention courte, focus sur le message et compatibilite verticale/landscape. Un assistant prompté peut proposer uniquement des changements de motion structurés et validés, sans chercher une direction artistique libre. Le systeme enregistre ces changements dans la version video courante, les convertit en props Remotion deterministes, invalide les previews/finals stale et exige une nouvelle preview avant rendu final. Si le prompt, la scene, l'asset, les keyframes, les droits, le worker ou la validation echouent, aucune mutation partielle incoherente n'est appliquee et l'utilisateur voit une erreur recuperable. Le cas facile a rater est de laisser l'IA ou le client ecrire une timeline libre ou des animations décoratives: V1 accepte des intentions et presets bornés qui servent l'efficacite sociale, pas du JSX, des URLs, du code, ni un studio global.
+Depuis `/editor/:id/video`, ContentGlows permet a une creatrice authentifiee d'appliquer a une scene, un texte, un asset visuel ou un fond anime des presets de mouvement allowlistes concus pour les contenus sociaux: accroche lisible, rythme clair, retention courte, focus sur le message et compatibilite verticale/landscape. Un assistant prompté peut proposer uniquement des changements de motion structurés et validés, sans chercher une direction artistique libre. Le systeme enregistre ces changements dans la version video courante, les convertit en props Remotion deterministes, invalide les previews/finals stale et exige une nouvelle preview avant rendu final. Si le prompt, la scene, l'asset, les keyframes, les droits, le worker ou la validation echouent, aucune mutation partielle incoherente n'est appliquee et l'utilisateur voit une erreur recuperable. Le cas facile a rater est de laisser l'IA ou le client ecrire une timeline libre ou des animations décoratives: V1 accepte des intentions et presets bornés qui servent l'efficacite sociale, pas du JSX, des URLs, du code, ni un studio global.
 
 ## Success Behavior
 
@@ -124,7 +124,7 @@ Depuis `/editor/:id/video`, ContentGlowz permet a une creatrice authentifiee d'a
 
 ## Problem
 
-ContentGlowz has already framed the base Remotion video editor, AI audio/music/backgrounds and unified asset library. The remaining inspiration from `contentglowz/v0-ai-powered-animation-studio` is valuable but dangerous if copied directly: it is a standalone animation studio with layers, canvas, free timeline and AI chat. ContentGlowz needs the useful parts, namely presets, keyframes, prompt-assisted edits and animated scene composition, but only when they make social videos clearer, more rhythmic and more publishable inside the guided `/editor/:id/video` workflow.
+ContentGlows has already framed the base Remotion video editor, AI audio/music/backgrounds and unified asset library. The remaining inspiration from `contentglows/v0-ai-powered-animation-studio` is valuable but dangerous if copied directly: it is a standalone animation studio with layers, canvas, free timeline and AI chat. ContentGlows needs the useful parts, namely presets, keyframes, prompt-assisted edits and animated scene composition, but only when they make social videos clearer, more rhythmic and more publishable inside the guided `/editor/:id/video` workflow.
 
 ## Solution
 
@@ -171,7 +171,7 @@ Add a scene motion layer to the video editor model and UI. V1 exposes curated so
 - This spec depends on the base Remotion video project model from `SPEC-remotion-video-editor-workflow-2026-05-11.md`; implement after that model exists.
 - This spec depends on the audio/backgrounds spec only for procedural background concepts; it must not reimplement audio/music generation.
 - This spec depends on the project asset library for selecting eligible images/background assets; motion props may reference asset ids only through backend-resolved descriptors.
-- ContentGlowz app remains Flutter; backend remains FastAPI; durable state uses Turso/libSQL; auth uses Clerk.
+- ContentGlows app remains Flutter; backend remains FastAPI; durable state uses Turso/libSQL; auth uses Clerk.
 - Flutter sends desired actions, preset ids and bounded parameter edits, not trusted final Remotion props.
 - Backend remains the permission, validation, versioning and props-adapter boundary.
 - Remotion receives only schema-validated motion descriptors and resolved asset descriptors.
@@ -185,13 +185,13 @@ Add a scene motion layer to the video editor model and UI. V1 exposes curated so
 - Ready audio/background extension spec: `shipglows_data/workflow/specs/monorepo/SPEC-video-editor-ai-audio-music-backgrounds-2026-05-11.md`.
 - Ready asset library spec: `shipglows_data/workflow/specs/SPEC-unified-project-asset-library-2026-05-11.md`.
 - Local inspiration only:
-  - `contentglowz/v0-ai-powered-animation-studio/contexts/animation-context.tsx`
-  - `contentglowz/v0-ai-powered-animation-studio/components/animation-templates.tsx`
-  - `contentglowz/v0-ai-powered-animation-studio/components/ai-chat-panel.tsx`
-  - `contentglowz/v0-ai-powered-animation-studio/components/timeline-panel.tsx`
-  - `contentglowz/v0-ai-powered-animation-studio/components/animation-canvas.tsx`
-  - `contentglowz/remotion-template/remotion/Root.tsx`
-  - `contentglowz/remotion-template/server/render-queue.ts`
+  - `contentglows/v0-ai-powered-animation-studio/contexts/animation-context.tsx`
+  - `contentglows/v0-ai-powered-animation-studio/components/animation-templates.tsx`
+  - `contentglows/v0-ai-powered-animation-studio/components/ai-chat-panel.tsx`
+  - `contentglows/v0-ai-powered-animation-studio/components/timeline-panel.tsx`
+  - `contentglows/v0-ai-powered-animation-studio/components/animation-canvas.tsx`
+  - `contentglows/remotion-template/remotion/Root.tsx`
+  - `contentglows/remotion-template/server/render-queue.ts`
 - Existing app files to integrate after base video editor exists:
   - `app/lib/router.dart`
   - `app/lib/presentation/screens/editor/editor_screen.dart`
@@ -212,7 +212,7 @@ Add a scene motion layer to the video editor model and UI. V1 exposes curated so
   - `app/lib/data/models/video_project.dart`
   - `app/lib/presentation/screens/editor/video_editor_screen.dart`
   - `worker/src/schema/video-props.ts`
-  - `worker/src/compositions/ContentGlowzSceneVideo.tsx`
+  - `worker/src/compositions/ContentGlowsSceneVideo.tsx`
 - Fresh external docs checked:
   - `fresh-docs checked`: Remotion `interpolate()` docs at `https://www.remotion.dev/docs/interpolate`.
   - `fresh-docs checked`: Remotion `renderMedia()` docs at `https://www.remotion.dev/docs/renderer/render-media`.
@@ -252,7 +252,7 @@ Add a scene motion layer to the video editor model and UI. V1 exposes curated so
 - Update `worker/README.md` with motion prop schema, supported presets, sample props, local render smoke commands and known render limits.
 - Update product/support docs to say this is guided scene motion, not a standalone animation studio.
 - Add changelog entries for manual motion presets, AI motion suggestions, stale preview handling and Remotion render support.
-- Do not document the contentglowz prototype as production behavior.
+- Do not document the contentglows prototype as production behavior.
 
 ## Edge Cases
 
@@ -308,7 +308,7 @@ Add a scene motion layer to the video editor model and UI. V1 exposes curated so
   - User story link : Gives users useful animations without exposing arbitrary timeline editing.
   - Depends on : Task 2.
   - Validate with : Unit tests for each V1 preset category, incompatible targets, duration normalization, landscape/vertical compatibility and conservative defaults.
-  - Notes : Use prototype presets as inspiration, but translate them into ContentGlowz scene targets.
+  - Notes : Use prototype presets as inspiration, but translate them into ContentGlows scene targets.
 
 - [ ] Task 5: Add AI motion suggestion service
   - Fichier : `lab/api/services/video_motion_assistant.py`
@@ -343,7 +343,7 @@ Add a scene motion layer to the video editor model and UI. V1 exposes curated so
   - Notes : If the worker path differs when implemented, use the actual schema file.
 
 - [ ] Task 9: Render motion in the Remotion scene composition
-  - Fichier : `worker/src/compositions/ContentGlowzSceneVideo.tsx`
+  - Fichier : `worker/src/compositions/ContentGlowsSceneVideo.tsx`
   - Action : Implement deterministic motion rendering for V1 presets using Remotion frame APIs, interpolation/easing, clamping, scene-relative timing and background motion loops.
   - User story link : Produces the visible animated result in preview and final export.
   - Depends on : Task 8.
@@ -434,7 +434,7 @@ Add a scene motion layer to the video editor model and UI. V1 exposes curated so
 ## Risks
 
 - High product risk: copying the prototype too literally would create a standalone studio and violate the guided workflow direction.
-- High product risk: optimizing for artistic animation instead of social effectiveness would make the feature slower, harder to use and less aligned with ContentGlowz's publishing value.
+- High product risk: optimizing for artistic animation instead of social effectiveness would make the feature slower, harder to use and less aligned with ContentGlows's publishing value.
 - High security risk: accepting arbitrary animation code, raw URLs or LLM-generated props could leak data or compromise render safety.
 - High dependency risk: this chantier depends on the base video editor and worker being implemented first.
 - Medium UX risk: even bounded keyframes can make mobile editing dense; V1 should default to presets and simple parameters.
@@ -448,17 +448,17 @@ Add a scene motion layer to the video editor model and UI. V1 exposes curated so
   - `shipglows_data/workflow/specs/monorepo/SPEC-remotion-video-editor-workflow-2026-05-11.md`
   - `shipglows_data/workflow/specs/monorepo/SPEC-video-editor-ai-audio-music-backgrounds-2026-05-11.md`
   - `shipglows_data/workflow/specs/SPEC-unified-project-asset-library-2026-05-11.md`
-  - `contentglowz/v0-ai-powered-animation-studio/contexts/animation-context.tsx`
-  - `contentglowz/v0-ai-powered-animation-studio/components/animation-templates.tsx`
-  - `contentglowz/v0-ai-powered-animation-studio/components/ai-chat-panel.tsx`
-  - `contentglowz/remotion-template/remotion/Root.tsx`
+  - `contentglows/v0-ai-powered-animation-studio/contexts/animation-context.tsx`
+  - `contentglows/v0-ai-powered-animation-studio/components/animation-templates.tsx`
+  - `contentglows/v0-ai-powered-animation-studio/components/ai-chat-panel.tsx`
+  - `contentglows/remotion-template/remotion/Root.tsx`
   - `app/lib/router.dart`
   - `app/lib/presentation/screens/editor/editor_screen.dart`
   - `lab/status/service.py`
 - Implementation order: backend models and preset registry, persistence/versioning, AI suggestion service, video router endpoints, props adapter, worker schema/rendering, Flutter models/providers/UI, route safeguards, docs.
 - Fresh external docs verdict: `fresh-docs checked` for Remotion interpolation, composition and programmatic rendering. Re-check official Remotion docs during implementation if the actual worker version differs materially from the local prototype's Remotion `^4.0.0`.
 - Use Remotion frame-based primitives and schema-validated props. Do not introduce a custom render engine or dynamic code execution.
-- Use existing ContentGlowz BYOK/app-visible LLM constraints for prompt interpretation. If BYOK foundations are unavailable, ship manual presets first and block AI suggestions.
+- Use existing ContentGlows BYOK/app-visible LLM constraints for prompt interpretation. If BYOK foundations are unavailable, ship manual presets first and block AI suggestions.
 - Stop and reroute if implementation requires free timeline editing, arbitrary layer creation, Lottie/Rive import, AI video backgrounds, 3D motion, custom scripts, public animation templates, cross-project animation libraries or artistic/freeform motion generation.
 - Stop and ask the user if reduced-motion policy, visible version history for animation revisions, a trend/effects marketplace, or square/custom format support becomes necessary.
 - Suggested validation commands after implementation:
@@ -474,7 +474,7 @@ None blocking for the draft. Product decisions confirmed: V1 remains preset-led 
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
-| 2026-05-12 19:37:34 UTC | sf-spec | GPT-5 Codex | Created draft spec for guided AI motion assistant from contentglowz animation/remotion inspirations, existing Remotion editor/audio/background/asset specs, local code scan and official Remotion docs freshness check. | Draft saved. | /sf-ready Remotion scene motion assistant |
+| 2026-05-12 19:37:34 UTC | sf-spec | GPT-5 Codex | Created draft spec for guided AI motion assistant from contentglows animation/remotion inspirations, existing Remotion editor/audio/background/asset specs, local code scan and official Remotion docs freshness check. | Draft saved. | /sf-ready Remotion scene motion assistant |
 | 2026-05-12 19:42:54 UTC | sf-spec | GPT-5 Codex | Integrated product decision that motion should optimize social content effectiveness, not artistic animation. | Draft updated. | /sf-ready Remotion scene motion assistant |
 
 ## Current Chantier Flow

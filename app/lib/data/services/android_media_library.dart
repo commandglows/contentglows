@@ -7,7 +7,7 @@ class AndroidMediaLibrary {
   AndroidMediaLibrary({MethodChannel? channel})
     : _channel = channel ?? const MethodChannel(_channelName);
 
-  static const _channelName = 'contentglowz/android_media_library';
+  static const _channelName = 'contentglows/android_media_library';
   final MethodChannel _channel;
 
   bool get isAvailable =>

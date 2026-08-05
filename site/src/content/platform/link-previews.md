@@ -2,7 +2,7 @@
 title: "Link Previews"
 description: "See what your links look like before you share them. Instant OpenGraph extraction for your content calendar — titles, descriptions, images, and favicons from any URL."
 pubDate: 2026-03-30
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["link preview", "opengraph", "content calendar", "social sharing", "metadata"]
 featured: false
 image: "/images/blog/link-previews.jpg"
@@ -66,7 +66,7 @@ The system follows a smart fallback chain: OpenGraph tags first, then standard H
 ### Simple API Call
 
 ```bash
-curl "https://api.contentglowz.com/api/preview?url=https://example.com/blog/post" \
+curl "https://api.contentglows.com/api/preview?url=https://example.com/blog/post" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 

@@ -1,6 +1,6 @@
 ---
 artifact: research
-project: "contentglowz / ShipGlowz"
+project: "contentglows / ShipGlowz"
 created: "2026-05-17"
 updated: "2026-05-17"
 status: reviewed
@@ -179,7 +179,7 @@ Prochaine etape: creer une spec ShipGlowz dediee avant modification du corpus.
 
 ## Chantier
 
-non trace: aucun chantier unique ContentGlowz ne porte cette recherche ShipGlowz transverse.
+non trace: aucun chantier unique ContentGlows ne porte cette recherche ShipGlowz transverse.
 
 Flux: sf-spec pending -> sf-ready pending -> sf-start pending -> sf-verify pending -> sf-end pending -> sf-ship pending
 Reste a faire: creer une spec dediee si on decide d'integrer ces patterns dans ShipGlowz.

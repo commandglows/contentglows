@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: feature
 owner: "Diane"
 confidence: medium
-user_story: "En tant que créateur ContentGlowz, je veux transformer une idée ou un angle en script vidéo structuré pour Short, Reel, TikTok, YouTube Shorts ou vidéo paysage longue, afin de préparer un contenu filmable et révisable sans encore produire la vidéo finale."
+user_story: "En tant que créateur ContentGlows, je veux transformer une idée ou un angle en script vidéo structuré pour Short, Reel, TikTok, YouTube Shorts ou vidéo paysage longue, afin de préparer un contenu filmable et révisable sans encore produire la vidéo finale."
 risk_level: medium
 security_impact: "yes"
 docs_impact: "yes"
@@ -78,11 +78,11 @@ Draft spec updated after readiness review. Product decisions are locked: `/reels
 
 ## User Story
 
-En tant que créateur ContentGlowz, je veux transformer une idée ou un angle en script vidéo structuré pour Short, Reel, TikTok, YouTube Shorts ou vidéo paysage longue, afin de préparer un contenu filmable et révisable sans encore produire la vidéo finale.
+En tant que créateur ContentGlows, je veux transformer une idée ou un angle en script vidéo structuré pour Short, Reel, TikTok, YouTube Shorts ou vidéo paysage longue, afin de préparer un contenu filmable et révisable sans encore produire la vidéo finale.
 
 ## Minimal Behavior Contract
 
-When a creator opens Reels or starts from an existing angle, ContentGlowz must present script creation as the primary action, let the creator choose a vertical short format or press a visible landscape / long-format button, validate the topic, platform, duration, and creative constraints, then start one authenticated generation job that creates a script content record as `in_progress` and moves it to review only after a readable full body is persisted. On success, the creator sees progress and can open the review/editor lifecycle for a structured script package with hook, timed script, on-screen text, visual notes, CTA, hashtags when relevant, cover concept, orientation, duration, and platform metadata. On validation, runtime, ownership, generation, body persistence, or editor loading failure, the creator gets a recoverable error and no incomplete script is presented as ready to film. The easy edge case is mixing vertical labels (`short`, `reel`, TikTok, YouTube Shorts) with the new landscape long mode: labels may differ in the UI, but saved content must be either a coherent `short` package or a coherent `video_script` package, never a rendered video or an article fallback.
+When a creator opens Reels or starts from an existing angle, ContentGlows must present script creation as the primary action, let the creator choose a vertical short format or press a visible landscape / long-format button, validate the topic, platform, duration, and creative constraints, then start one authenticated generation job that creates a script content record as `in_progress` and moves it to review only after a readable full body is persisted. On success, the creator sees progress and can open the review/editor lifecycle for a structured script package with hook, timed script, on-screen text, visual notes, CTA, hashtags when relevant, cover concept, orientation, duration, and platform metadata. On validation, runtime, ownership, generation, body persistence, or editor loading failure, the creator gets a recoverable error and no incomplete script is presented as ready to film. The easy edge case is mixing vertical labels (`short`, `reel`, TikTok, YouTube Shorts) with the new landscape long mode: labels may differ in the UI, but saved content must be either a coherent `short` package or a coherent `video_script` package, never a rendered video or an article fallback.
 
 ## Success Behavior
 
@@ -114,7 +114,7 @@ When a creator opens Reels or starts from an existing angle, ContentGlowz must p
 
 ## Problem
 
-ContentGlowz already has useful building blocks for script-first video preparation: `ShortContentCrew`, the async `dispatch-pipeline`, content types for `video_script`, `short`, and `reel`, body versioning, review queue cards, and the universal editor. The pieces are not assembled into a clear "build me a script I can film" flow. The current `/reels` page is an Instagram reel download/audio extraction tool, while the Flutter service currently maps `video_script` angles to the article pipeline. This creates product and data-contract confusion: creators need a script workbench, but the app either shows an import tool or risks generating article content for a video-script request.
+ContentGlows already has useful building blocks for script-first video preparation: `ShortContentCrew`, the async `dispatch-pipeline`, content types for `video_script`, `short`, and `reel`, body versioning, review queue cards, and the universal editor. The pieces are not assembled into a clear "build me a script I can film" flow. The current `/reels` page is an Instagram reel download/audio extraction tool, while the Flutter service currently maps `video_script` angles to the article pipeline. This creates product and data-contract confusion: creators need a script workbench, but the app either shows an import tool or risks generating article content for a video-script request.
 
 ## Solution
 
@@ -217,7 +217,7 @@ Turn `/reels` into a script-first workbench with import/repurpose as a secondary
 
 ## Links & Consequences
 
-- Product: ContentGlowz gains a concrete "prepare a video script" workflow before true video generation exists.
+- Product: ContentGlows gains a concrete "prepare a video script" workflow before true video generation exists.
 - Navigation: `/reels` remains the route, but its primary label/copy becomes script creation; import/repurpose is secondary and clearly separate.
 - App shell: the Reels menu item can remain, but screen header and onboarding/help copy must clarify "scripts for vertical and landscape video".
 - Angles: `video_script`, `short`, and `reel` angles must open or seed the `/reels` workbench and must not dispatch `video_script` as `article`.

@@ -22,12 +22,12 @@ function normalizeOptionalAbsoluteUrl(value: string | undefined) {
 
 export const siteUrl = normalizeUrl(
   import.meta.env.APP_SITE_URL,
-  'https://contentglowz.com',
+  'https://contentglows.com',
 );
 
 export const appWebUrl = normalizeUrl(
   import.meta.env.APP_WEB_URL,
-  'https://app.contentglowz.com',
+  'https://app.contentglows.com',
 );
 
 export const appSignInUrl = `${appWebUrl}/sign-in`;
@@ -50,7 +50,7 @@ export const proCheckoutUrl =
 
 export const apiBaseUrl = normalizeUrl(
   import.meta.env.API_BASE_URL,
-  'https://api.contentglowz.com',
+  'https://api.contentglows.com',
 );
 
 export const buildCommitSha = normalizeBuildValue(

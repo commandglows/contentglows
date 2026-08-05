@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
 confidence: "high"
-user_story: "En tant que visiteur francophone ou anglophone du site ContentGlowz, je veux accéder aux pages coeur dans ma langue avec des URLs et métadonnées cohérentes, afin de comprendre l'offre et entrer dans l'app sans ambiguïté de langue ni dette SEO."
+user_story: "En tant que visiteur francophone ou anglophone du site ContentGlows, je veux accéder aux pages coeur dans ma langue avec des URLs et métadonnées cohérentes, afin de comprendre l'offre et entrer dans l'app sans ambiguïté de langue ni dette SEO."
 risk_level: "high"
 security_impact: "none"
 docs_impact: "yes"
@@ -55,13 +55,13 @@ next_step: "/101-sf-ready shipglows_data/workflow/specs/site/SPEC-bilingual-fr-e
 ---
 
 ## Title
-Implement bilingual `fr/en` routing and SEO metadata for ContentGlowz core site pages
+Implement bilingual `fr/en` routing and SEO metadata for ContentGlows core site pages
 
 ## Status
 Ready. Scope, locale decisions, proof path, and bounded implementation plan are explicit enough for immediate execution.
 
 ## User Story
-En tant que visiteur francophone ou anglophone du site ContentGlowz, je veux accéder aux pages coeur dans ma langue avec des URLs et métadonnées cohérentes, afin de comprendre l'offre et entrer dans l'app sans ambiguïté de langue ni dette SEO.
+En tant que visiteur francophone ou anglophone du site ContentGlows, je veux accéder aux pages coeur dans ma langue avec des URLs et métadonnées cohérentes, afin de comprendre l'offre et entrer dans l'app sans ambiguïté de langue ni dette SEO.
 
 Actor: visiteur marketing public.
 
@@ -97,7 +97,7 @@ Si une page française coeur manque ou n'est pas prête:
 - le chantier ne doit pas étendre en douce le blog ou les collections éditoriales hors scope.
 
 ## Problem
-Le site marketing ContentGlowz contient déjà des surfaces EN et du contenu FR/EN mixte, mais son socle technique reste mono-locale. `Layout.astro` force actuellement `<html lang="en">`, le canonical est calculé uniquement depuis `Astro.url.pathname`, et aucun `hreflang` n'est émis. Sans stratégie de locale explicite, Google et les visiteurs voient un corpus bilingue mal signalé, et l'équipe ne peut pas corriger proprement les pages coeur sans choisir une structure d'URLs et de métadonnées.
+Le site marketing ContentGlows contient déjà des surfaces EN et du contenu FR/EN mixte, mais son socle technique reste mono-locale. `Layout.astro` force actuellement `<html lang="en">`, le canonical est calculé uniquement depuis `Astro.url.pathname`, et aucun `hreflang` n'est émis. Sans stratégie de locale explicite, Google et les visiteurs voient un corpus bilingue mal signalé, et l'équipe ne peut pas corriger proprement les pages coeur sans choisir une structure d'URLs et de métadonnées.
 
 Le produit a maintenant tranché la stratégie: anglais à la racine, français sous `/fr`, priorité aux pages coeur seulement. Le chantier doit traduire cette décision en contrat de routing et SEO sans promettre un blog bilingue global qui n'existe pas encore.
 
@@ -144,7 +144,7 @@ La solution reste volontairement bornée: aucun routage de collections Markdown,
 - Les alternates SEO doivent être exacts: ne jamais annoncer une page non publiée.
 - La mise en oeuvre doit rester reviewable et éviter une duplication logique inutile entre EN et FR.
 - Aucun changement ne doit casser les liens app issus de `src/config/site.ts`.
-- Toute adaptation visuelle liée au switcher de langue, à la nav ou au footer doit réutiliser les tokens existants de `tools/design-tokens/contentglowz_theme.json` injectés par `Layout.astro`; aucun nouveau literal visuel ad hoc.
+- Toute adaptation visuelle liée au switcher de langue, à la nav ou au footer doit réutiliser les tokens existants de `tools/design-tokens/contentglows_theme.json` injectés par `Layout.astro`; aucun nouveau literal visuel ad hoc.
 
 ## Test Contract
 - surface: `Astro marketing site core pages`
@@ -189,7 +189,7 @@ External docs freshness verdict:
 - `fresh-docs not needed` for the spec and first implementation pass because the chosen routing strategy is fully defined by existing Astro static file conventions already used in the repo; no new framework feature or external service contract is required.
 
 ## Invariants
-- `https://contentglowz.com` remains the canonical site origin unless `APP_SITE_URL` overrides it.
+- `https://contentglows.com` remains the canonical site origin unless `APP_SITE_URL` overrides it.
 - English remains the default public locale at the root paths.
 - French public core pages live under `/fr`.
 - Core English pages keep their current public paths.

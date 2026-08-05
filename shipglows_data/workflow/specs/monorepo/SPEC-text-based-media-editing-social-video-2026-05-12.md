@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-05-12"
 created_at: "2026-05-12 19:57:05 UTC"
 updated: "2026-05-12"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
 confidence: "medium"
-user_story: "En tant que creatrice ContentGlowz authentifiee dans l'editeur video d'un contenu, je veux transcrire une video ou une piste audio puis editer les coupes, captions et segments depuis le texte, afin de produire des videos sociales plus lisibles, rythmees et efficaces sans ouvrir un studio de montage libre."
+user_story: "En tant que creatrice ContentGlows authentifiee dans l'editeur video d'un contenu, je veux transcrire une video ou une piste audio puis editer les coupes, captions et segments depuis le texte, afin de produire des videos sociales plus lisibles, rythmees et efficaces sans ouvrir un studio de montage libre."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -21,9 +21,9 @@ linked_systems:
   - "app"
   - "lab"
   - "worker"
-  - "contentglowz/INSPIRATION.md"
-  - "contentglowz/v0-cool-design-ressemble-gocharbon-connexion-reseaux-sociaux"
-  - "contentglowz/remotion-template"
+  - "contentglows/INSPIRATION.md"
+  - "contentglows/v0-cool-design-ressemble-gocharbon-connexion-reseaux-sociaux"
+  - "contentglows/remotion-template"
   - "Remotion video editor workflow"
   - "Video editor AI audio/music/backgrounds"
   - "Unified Project Asset Library"
@@ -47,10 +47,10 @@ depends_on:
   - artifact: "shipglows_data/workflow/specs/SPEC-ai-generation-quotas-billing-2026-05-11.md"
     artifact_version: "1.0.0"
     required_status: "ready"
-  - artifact: "contentglowz/INSPIRATION.md"
+  - artifact: "contentglows/INSPIRATION.md"
     artifact_version: "unknown"
     required_status: "inspiration-only"
-  - artifact: "contentglowz/v0-cool-design-ressemble-gocharbon-connexion-reseaux-sociaux"
+  - artifact: "contentglows/v0-cool-design-ressemble-gocharbon-connexion-reseaux-sociaux"
     artifact_version: "local prototype"
     required_status: "inspiration-only"
   - artifact: "Remotion captions docs"
@@ -70,12 +70,12 @@ depends_on:
     required_status: "candidate-provider"
 supersedes: []
 evidence:
-  - "User request 2026-05-12: create a ShipGlowz spec draft for Descript-like text-based media editing from the contentglowz inspiration folder."
-  - "Product context: remain in the existing ContentGlowz app and stack; do not port contentglowz code or create a free studio/playground."
+  - "User request 2026-05-12: create a ShipGlowz spec draft for Descript-like text-based media editing from the contentglows inspiration folder."
+  - "Product context: remain in the existing ContentGlows app and stack; do not port contentglows code or create a free studio/playground."
   - "Product context: optimize social content effectiveness, readability, rhythm, hook, captions, clean cuts and social formats, not artistic editing."
-  - "contentglowz/INSPIRATION.md explicitly lists Descript as text-based audio/video editing through transcription."
-  - "contentglowz/v0-cool-design-ressemble-gocharbon-connexion-reseaux-sociaux/components/studios/video-studio.tsx contains standalone upload, preview, split, timeline and layer UI ideas, but it is not stack-compatible and must stay inspiration-only."
-  - "contentglowz/v0-cool-design-ressemble-gocharbon-connexion-reseaux-sociaux/components/studios/audio-studio.tsx contains standalone upload, waveform and playback controls, but no production transcript model."
+  - "contentglows/INSPIRATION.md explicitly lists Descript as text-based audio/video editing through transcription."
+  - "contentglows/v0-cool-design-ressemble-gocharbon-connexion-reseaux-sociaux/components/studios/video-studio.tsx contains standalone upload, preview, split, timeline and layer UI ideas, but it is not stack-compatible and must stay inspiration-only."
+  - "contentglows/v0-cool-design-ressemble-gocharbon-connexion-reseaux-sociaux/components/studios/audio-studio.tsx contains standalone upload, waveform and playback controls, but no production transcript model."
   - "app/lib/router.dart currently exposes /editor/:id and no /editor/:id/video route; prior specs reserve the video editor entrypoint."
   - "app/lib/presentation/screens/editor/editor_screen.dart is the existing content editor surface with project asset access, markdown editing, save and publish controls."
   - "app/lib/data/services/api_service.dart and app/lib/providers/providers.dart already contain typed project asset APIs/providers and stale active-project response guards."
@@ -97,15 +97,15 @@ Text-Based Media Editing for Social Video
 
 ## Status
 
-Draft. This spec defines a Descript-like editing layer for the future ContentGlowz video editor: transcription, captions, clean cuts, scene splitting and text-driven media edit plans inside `/editor/:id/video`. It intentionally does not create a standalone studio. The spec is concrete enough for readiness review, but provider choice for speech-to-text must be confirmed before implementation starts.
+Draft. This spec defines a Descript-like editing layer for the future ContentGlows video editor: transcription, captions, clean cuts, scene splitting and text-driven media edit plans inside `/editor/:id/video`. It intentionally does not create a standalone studio. The spec is concrete enough for readiness review, but provider choice for speech-to-text must be confirmed before implementation starts.
 
 ## User Story
 
-En tant que creatrice ContentGlowz authentifiee dans l'editeur video d'un contenu, je veux transcrire une video ou une piste audio puis editer les coupes, captions et segments depuis le texte, afin de produire des videos sociales plus lisibles, rythmees et efficaces sans ouvrir un studio de montage libre.
+En tant que creatrice ContentGlows authentifiee dans l'editeur video d'un contenu, je veux transcrire une video ou une piste audio puis editer les coupes, captions et segments depuis le texte, afin de produire des videos sociales plus lisibles, rythmees et efficaces sans ouvrir un studio de montage libre.
 
 ## Minimal Behavior Contract
 
-Depuis `/editor/:id/video`, ContentGlowz permet a une creatrice authentifiee de lancer une transcription asynchrone sur la version video, la narration, une piste audio ou un asset video owned, puis d'afficher un transcript horodate qui sert a creer des captions sociales, selectionner des mots/phrases pour couper ou masquer des segments, separer une scene, resynchroniser des captions et sauvegarder un plan d'edition versionne. Le systeme ne modifie jamais destructivement le media original: il produit une nouvelle version video avec un edit plan, des captions et des references serveur validees, puis exige une preview de cette version avant tout rendu final ou publication. En cas d'echec d'auth, droits, provider, quota, stockage, alignement, conflit de version ou rendu Remotion, la version precedente reste intacte et l'utilisateur voit un etat recuperable. Le cas facile a rater est la staleness: des qu'une piste audio, une scene, une duree ou un asset change, le transcript et les captions derives doivent etre marques obsoletes jusqu'a regeneration, re-alignement ou acceptation explicite.
+Depuis `/editor/:id/video`, ContentGlows permet a une creatrice authentifiee de lancer une transcription asynchrone sur la version video, la narration, une piste audio ou un asset video owned, puis d'afficher un transcript horodate qui sert a creer des captions sociales, selectionner des mots/phrases pour couper ou masquer des segments, separer une scene, resynchroniser des captions et sauvegarder un plan d'edition versionne. Le systeme ne modifie jamais destructivement le media original: il produit une nouvelle version video avec un edit plan, des captions et des references serveur validees, puis exige une preview de cette version avant tout rendu final ou publication. En cas d'echec d'auth, droits, provider, quota, stockage, alignement, conflit de version ou rendu Remotion, la version precedente reste intacte et l'utilisateur voit un etat recuperable. Le cas facile a rater est la staleness: des qu'une piste audio, une scene, une duree ou un asset change, le transcript et les captions derives doivent etre marques obsoletes jusqu'a regeneration, re-alignement ou acceptation explicite.
 
 ## Success Behavior
 
@@ -138,11 +138,11 @@ Depuis `/editor/:id/video`, ContentGlowz permet a une creatrice authentifiee de 
 
 ## Problem
 
-ContentGlowz is moving toward a guided Remotion video editor with AI audio, music, motion and project assets. The remaining Descript-like inspiration is highly valuable for social video production because editing through text is faster than manipulating a timeline, especially for hooks, captions and clean cuts. The repo currently has no production transcript/caption/edit-plan model, and the `contentglowz` demos are standalone upload studios rather than stack-compatible editor extensions. Without a clear spec, this feature could drift into a free-form media studio or a destructive timeline editor, both of which conflict with the product direction.
+ContentGlows is moving toward a guided Remotion video editor with AI audio, music, motion and project assets. The remaining Descript-like inspiration is highly valuable for social video production because editing through text is faster than manipulating a timeline, especially for hooks, captions and clean cuts. The repo currently has no production transcript/caption/edit-plan model, and the `contentglows` demos are standalone upload studios rather than stack-compatible editor extensions. Without a clear spec, this feature could drift into a free-form media studio or a destructive timeline editor, both of which conflict with the product direction.
 
 ## Solution
 
-Add a text-based editing layer to the existing/future video editor. The backend creates provider-backed transcripts from server-owned media, normalizes words/segments into a ContentGlowz transcript schema, lets Flutter present guided text actions, persists non-destructive edit plans on immutable video versions, and renders captions/cuts through Remotion. V1 focuses on social-content outcomes: faster hook cleanup, readable captions, clean cuts, scene splits and preview-gated final renders.
+Add a text-based editing layer to the existing/future video editor. The backend creates provider-backed transcripts from server-owned media, normalizes words/segments into a ContentGlows transcript schema, lets Flutter present guided text actions, persists non-destructive edit plans on immutable video versions, and renders captions/cuts through Remotion. V1 focuses on social-content outcomes: faster hook cleanup, readable captions, clean cuts, scene splits and preview-gated final renders.
 
 ## Scope In
 
@@ -164,7 +164,7 @@ Add a text-based editing layer to the existing/future video editor. The backend 
 ## Scope Out
 
 - Standalone Descript clone, global podcast/audio/video studio, free playground or arbitrary upload workspace.
-- Porting Next.js, Supabase, Vercel, React, canvas, upload or studio code from `contentglowz`.
+- Porting Next.js, Supabase, Vercel, React, canvas, upload or studio code from `contentglows`.
 - Full frame-accurate professional timeline, waveform editor, multitrack DAW, nested timeline, green-screen editor, color correction or CapCut effect marketplace.
 - Destructive media editing; originals remain immutable assets.
 - User voice cloning, overdub, voice isolation, speech-to-speech, dubbing or voice consent workflows.
@@ -182,7 +182,7 @@ Add a text-based editing layer to the existing/future video editor. The backend 
 - Product decision: V1 is guided and preview-gated. Text edits can propose cuts/captions quickly, but final render/publication requires preview validation.
 - `app` remains Flutter and talks only to `lab`.
 - `lab` remains the authenticated API boundary for provider calls, Bunny access, ownership checks, quota preflight, transcript persistence and render orchestration.
-- Durable state uses Turso/libSQL-compatible schema patterns; schema changes must use the ContentGlowz Turso migration guardrails during implementation.
+- Durable state uses Turso/libSQL-compatible schema patterns; schema changes must use the ContentGlows Turso migration guardrails during implementation.
 - Clerk auth and existing project/content ownership helpers remain mandatory for every route.
 - Provider calls are backend-managed/PAYG unless the readiness decision explicitly chooses a BYOK transcription provider path.
 - Client requests pass server ids, selected ranges and guided actions, not trusted final Remotion props, arbitrary URLs or provider model ids.
@@ -198,7 +198,7 @@ Add a text-based editing layer to the existing/future video editor. The backend 
 - Existing stack: Flutter app, FastAPI lab backend, Clerk auth, Turso/libSQL, Bunny Storage/CDN, Remotion worker, project asset library and quota/billing hooks.
 - Local dependency evidence:
   - `app/pubspec.yaml`: Flutter SDK `^3.11.3`, Riverpod `^3.3.1`, GoRouter `^17.2.2`, Dio `^5.9.2`, audioplayers `^6.6.0`.
-  - `contentglowz/remotion-template/package.json`: Remotion dependencies `^4.0.0`, React 19, `@remotion/renderer`, `@remotion/bundler`, TypeScript.
+  - `contentglows/remotion-template/package.json`: Remotion dependencies `^4.0.0`, React 19, `@remotion/renderer`, `@remotion/bundler`, TypeScript.
 - Required prior specs:
   - `shipglows_data/workflow/specs/monorepo/SPEC-remotion-video-editor-workflow-2026-05-11.md`
   - `shipglows_data/workflow/specs/monorepo/SPEC-video-editor-ai-audio-music-backgrounds-2026-05-11.md`
@@ -216,7 +216,7 @@ Add a text-based editing layer to the existing/future video editor. The backend 
   - OpenAI Speech to Text: `https://developers.openai.com/api/docs/guides/speech-to-text`
 - Documentation interpretation:
   - Remotion supports a caption workflow centered on a `Caption` type and `@remotion/captions`, with utilities for social caption grouping and Sequence-based rendering.
-  - Remotion audio/video components can trim, mute, sequence and render media from validated props; ContentGlowz should generate an edit decision list rather than editing raw media files.
+  - Remotion audio/video components can trim, mute, sequence and render media from validated props; ContentGlows should generate an edit decision list rather than editing raw media files.
   - ElevenLabs STT is a natural provider candidate if the existing audio-provider decision remains ElevenLabs, because it supports audio/video input, word timestamps, diarization and long files.
   - OpenAI STT is an alternative candidate if the product wants OpenAI for transcription quality/diarization; it has stronger file-size constraints for common endpoints and would add/extend managed provider surface.
 
@@ -291,7 +291,7 @@ Add a text-based editing layer to the existing/future video editor. The backend 
   - User story link : Makes transcript and text edits durable, versioned and auditable.
   - Depends on : Task 1.
   - Validate with : migration/startup tests using empty DB and upgraded DB fixtures.
-  - Notes : Follow ContentGlowz Turso migration guardrails; no destructive migration.
+  - Notes : Follow ContentGlows Turso migration guardrails; no destructive migration.
 
 - [ ] Task 3: Add transcript/edit-plan store service
   - Fichier : `lab/api/services/video_text_editing_store.py`
@@ -358,7 +358,7 @@ Add a text-based editing layer to the existing/future video editor. The backend 
   - Notes : If worker path differs at implementation time, modify the actual schema module created by the Remotion specs.
 
 - [ ] Task 11: Render captions and non-destructive text edits in Remotion
-  - Fichier : `worker/src/compositions/ContentGlowzSceneVideo.tsx`
+  - Fichier : `worker/src/compositions/ContentGlowsSceneVideo.tsx`
   - Action : Render caption pages using `@remotion/captions` compatible data, apply cut/mute/split ranges through Sequenced audio/video descriptors, and preserve scene layout/format presets.
   - User story link : Makes preview/final video reflect text edits and captions.
   - Depends on : Task 10.
@@ -488,7 +488,7 @@ Add a text-based editing layer to the existing/future video editor. The backend 
 ## Open Questions
 
 - Provider V1: should transcription use ElevenLabs STT to consolidate with the existing managed audio direction, OpenAI STT for its transcription/diarization options, or a later local Whisper path? This blocks `/sf-ready`.
-- Source scope V1: should this handle only videos/audio generated inside ContentGlowz first, or also imported/durable reel/video assets from day one? Draft assumes both if the source is a durable owned project asset, but implementation can narrow.
+- Source scope V1: should this handle only videos/audio generated inside ContentGlows first, or also imported/durable reel/video assets from day one? Draft assumes both if the source is a durable owned project asset, but implementation can narrow.
 - Stale acceptance: when audio changed slightly after transcription, should users be allowed to explicitly accept an old transcript for preview, or should regeneration always be required? Draft allows a bounded explicit accept flow.
 - Transcript retention: draft aligns transcript/caption history with project asset/version retention and tombstone behavior. Confirm if transcript text needs shorter retention than media assets.
 
@@ -496,7 +496,7 @@ Add a text-based editing layer to the existing/future video editor. The backend 
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
-| 2026-05-12 19:57:05 UTC | sf-spec | GPT-5 Codex | Created draft spec for Descript-like text-based media editing from contentglowz inspiration, local repo scan and fresh official Remotion/transcription docs. | Draft saved. | /sf-ready Text-Based Media Editing for Social Video |
+| 2026-05-12 19:57:05 UTC | sf-spec | GPT-5 Codex | Created draft spec for Descript-like text-based media editing from contentglows inspiration, local repo scan and fresh official Remotion/transcription docs. | Draft saved. | /sf-ready Text-Based Media Editing for Social Video |
 
 ## Current Chantier Flow
 

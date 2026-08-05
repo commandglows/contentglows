@@ -2,7 +2,7 @@
 title: "Technical Tutorials & Implementation Guides"
 description: "Step-by-step tutorials for developers and technical teams. From FastAPI deployment to API security, master modern development practices with our comprehensive guides."
 pubDate: 2026-01-15
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["tutorials", "technical guides", "fastapi", "api security", "deployment"]
 featured: true
 image: "/images/blog/tutorials-hub.jpg"

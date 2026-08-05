@@ -41,7 +41,7 @@ next_step: "/sf-docs update shipglows_data/technical/app/context.md"
 # shipglows_data/technical/app/context.md — app
 
 ## Product technical context
-`app` is the primary Flutter application for ContentGlowz. It hosts:
+`app` is the primary Flutter application for ContentGlows. It hosts:
 - Entry/auth gate (`/entry`, `/auth`).
 - Authenticated shell and feature screens (`/feed`, `/projects`, `/drip`, `/settings`, etc.).
 - Feature state orchestration via Riverpod providers and a FastAPI-backed `ApiService`.
@@ -53,7 +53,7 @@ next_step: "/sf-docs update shipglows_data/technical/app/context.md"
 - **State layer:** Flutter Riverpod (single `providers.dart` root)
 - **Routing:** GoRouter with refreshable auth redirect gate
 - **Backend transport:** Dio client in `lib/data/services/api_service.dart`
-- **Identity/auth:** Clerk web bridge (`contentglowzClerkBridge`) and tokens forwarded to FastAPI
+- **Identity/auth:** Clerk web bridge (`contentglowsClerkBridge`) and tokens forwarded to FastAPI
 - **Persistence:** SharedPreferences for prefs + offline cache/queue/id-mapping stores
 - **Build chain:** Flutter web -> injected Clerk keys/runtime metadata via `build.sh` and `scripts/*`
 - **Android release boundary:** APK release builds are CI-only on GitHub Actions/Blacksmith; this VM is not an approved release-build surface.

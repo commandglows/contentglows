@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-07-08"
 created_at: "2026-07-08 00:00:00 UTC"
 updated: "2026-07-09"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
 confidence: "high"
-user_story: "En tant que creatrice ContentGlowz authentifiee, je veux que mes videos branded soient preparees en amont et exposees au feed avec un etat simple prete, en cours ou bloquee, afin de swiper sur des contenus deja fabriques au lieu de lancer la preparation au dernier moment."
+user_story: "En tant que creatrice ContentGlows authentifiee, je veux que mes videos branded soient preparees en amont et exposees au feed avec un etat simple prete, en cours ou bloquee, afin de swiper sur des contenus deja fabriques au lieu de lancer la preparation au dernier moment."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -22,7 +22,7 @@ linked_systems:
   - "app"
   - "worker"
   - "Turso/libSQL"
-  - "Unified ContentGlowz Video Timeline"
+  - "Unified ContentGlows Video Timeline"
   - "publish accounts"
 depends_on:
   - artifact: "shipglows_data/workflow/specs/monorepo/SPEC-ai-first-branded-video-generation-and-swipe-publish-2026-07-04.md"
@@ -55,15 +55,15 @@ Draft. This spec defines the missing orchestration substrate that prepares brand
 
 ## User Story
 
-En tant que creatrice ContentGlowz authentifiee, je veux que mes videos branded soient preparees en amont et exposees au feed avec un etat simple prete, en cours ou bloquee, afin de swiper sur des contenus deja fabriques au lieu de lancer la preparation au dernier moment.
+En tant que creatrice ContentGlows authentifiee, je veux que mes videos branded soient preparees en amont et exposees au feed avec un etat simple prete, en cours ou bloquee, afin de swiper sur des contenus deja fabriques au lieu de lancer la preparation au dernier moment.
 
 ## Minimal Behavior Contract
 
-Pour un contenu video-compatible appartenant au projet actif, ContentGlowz peut lancer ou reprendre un run de preparation durable qui assemble une timeline branded, cree les versions necessaires, gere preview et final render selon les capacites disponibles, puis expose un etat feed-simple `ready_to_publish`, `preparing`, `blocked` ou `failed` avec raisons compactes. Si la marque, les assets, la capacite de rendu, le contenu ou les comptes de publication ne permettent pas de finir le run, le systeme conserve un etat recuperable et observable plutot que de cacher l'echec derriere un simple fallback editeur.
+Pour un contenu video-compatible appartenant au projet actif, ContentGlows peut lancer ou reprendre un run de preparation durable qui assemble une timeline branded, cree les versions necessaires, gere preview et final render selon les capacites disponibles, puis expose un etat feed-simple `ready_to_publish`, `preparing`, `blocked` ou `failed` avec raisons compactes. Si la marque, les assets, la capacite de rendu, le contenu ou les comptes de publication ne permettent pas de finir le run, le systeme conserve un etat recuperable et observable plutot que de cacher l'echec derriere un simple fallback editeur.
 
 ## Success Behavior
 
-- Given eligible video-first content exists in a project, when background preparation is scheduled, then ContentGlowz creates or reuses one idempotent branded-video generation run for that content plus format preset.
+- Given eligible video-first content exists in a project, when background preparation is scheduled, then ContentGlows creates or reuses one idempotent branded-video generation run for that content plus format preset.
 - Given the run starts, when brand defaults and render-safe assets are available, then the backend assembles or refreshes the canonical branded timeline draft and version without requiring a feed-triggered HTTP request from the user.
 - Given preview and final render capacity are available, when the run progresses, then the system requests the necessary render jobs and tracks their result until the feed-facing state becomes `ready_to_publish` or a typed blocked state.
 - Given the final artifact is current and publish prerequisites pass, when the feed queries candidates, then the item is exposed as `ready_to_publish` with stable identifiers for the content, timeline, version and final artifact.

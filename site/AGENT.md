@@ -37,7 +37,7 @@ Canonical technical and editorial truth for `site` lives under `shipglows_data/t
 
 ## Mission
 
-Keep `site` as a stable public entry surface aligned with the real behavior of the ContentGlowz ecosystem.
+Keep `site` as a stable public entry surface aligned with the real behavior of the ContentGlows ecosystem.
 
 ## Canonical sources
 

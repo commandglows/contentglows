@@ -20,7 +20,7 @@ Le Newsletter Robot est un système multi-agents qui automatise :
 python --version  # 3.11+
 
 # Installation
-cd ~/contentglowz
+cd ~/contentglows
 pip install -r requirements.txt
 
 # Configurer l'accès IMAP (voir section Configuration)
@@ -48,7 +48,7 @@ EXA_API_KEY=...                      # Recherche web
 NEWSLETTER_IMAP_EMAIL=your-newsletters@gmail.com
 NEWSLETTER_IMAP_PASSWORD=xxxx-xxxx-xxxx-xxxx  # Gmail App Password
 NEWSLETTER_IMAP_FOLDER=Newsletters            # Optionnel
-NEWSLETTER_IMAP_ARCHIVE=CONTENTGLOWZ_DONE # Optionnel
+NEWSLETTER_IMAP_ARCHIVE=CONTENTGLOWS_DONE # Optionnel
 
 # --- Envoi (optionnel) ---
 SENDGRID_API_KEY=SG...
@@ -70,7 +70,7 @@ NEWSLETTER_FROM_NAME="My Newsletter"
 
 4. **Créer labels Gmail** :
    - `Newsletters` - pour les newsletters entrantes
-   - `CONTENTGLOWZ_DONE` - archive après traitement
+   - `CONTENTGLOWS_DONE` - archive après traitement
 
 5. **Créer filtre Gmail** :
    - Settings → Filters → Create new filter
@@ -302,7 +302,7 @@ reader.fetch_newsletters(
 
 Créer les labels Gmail :
 - `Newsletters`
-- `CONTENTGLOWZ_DONE`
+- `CONTENTGLOWS_DONE`
 
 Le système fallback vers INBOX si les labels n'existent pas.
 

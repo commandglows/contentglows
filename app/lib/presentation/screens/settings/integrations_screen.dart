@@ -80,7 +80,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
     _emailSourceHostController = TextEditingController(text: 'imap.gmail.com');
     _emailSourceFolderController = TextEditingController(text: 'Newsletters');
     _emailSourceArchiveController = TextEditingController(
-      text: 'CONTENTGLOWZ_DONE',
+      text: 'CONTENTGLOWS_DONE',
     );
   }
 
@@ -140,7 +140,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
             SettingsGroup(
               title: 'AI runtime',
               caption:
-                  'How AI features are funded. BYOK uses your OpenRouter key. Platform uses ContentGlowz-managed credits.',
+                  'How AI features are funded. BYOK uses your OpenRouter key. Platform uses ContentGlows-managed credits.',
               gap: 0,
               children: [
                 SettingsBlock(
@@ -973,7 +973,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
             const SizedBox(height: AppSpacing.sm),
             Text(
               context.tr(
-                'Connect a mailbox folder once. ContentGlowz checks it every 6 hours, turns useful emails into ideas, then moves processed emails to the archive folder.',
+                'Connect a mailbox folder once. ContentGlows checks it every 6 hours, turns useful emails into ideas, then moves processed emails to the archive folder.',
               ),
               style: TextStyle(
                 color: theme.colorScheme.onSurfaceVariant,
@@ -1055,7 +1055,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
                     enabled: canManage && !busy,
                     decoration: InputDecoration(
                       labelText: context.tr('Processed folder'),
-                      hintText: 'CONTENTGLOWZ_DONE',
+                      hintText: 'CONTENTGLOWS_DONE',
                       isDense: true,
                     ),
                   ),
@@ -1268,7 +1268,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
             ? 'Newsletters'
             : _emailSourceFolderController.text.trim(),
         archiveFolder: _emailSourceArchiveController.text.trim().isEmpty
-            ? 'CONTENTGLOWZ_DONE'
+            ? 'CONTENTGLOWS_DONE'
             : _emailSourceArchiveController.text.trim(),
         projectId: activeProjectId,
       );

@@ -20,19 +20,19 @@
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta
     name="description"
-    content="ContentGlowz turns your product into a content workflow from angle to publish."
+    content="ContentGlows turns your product into a content workflow from angle to publish."
   >
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="ContentGlowz">
+  <meta name="apple-mobile-web-app-title" content="ContentGlows">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>ContentGlowz</title>
+  <title>ContentGlows</title>
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
@@ -54,18 +54,18 @@
 
       var params = new URLSearchParams(window.location.search);
       var shouldEnable =
-        params.get('eruda') === '1' || localStorage.getItem('contentglowz:eruda') === '1';
+        params.get('eruda') === '1' || localStorage.getItem('contentglows:eruda') === '1';
 
       if (!shouldEnable) return;
 
-      localStorage.setItem('contentglowz:eruda', '1');
+      localStorage.setItem('contentglows:eruda', '1');
 
       var script = document.createElement('script');
       script.src = 'https://cdn.jsdelivr.net/npm/eruda';
       script.onload = function () {
         if (window.eruda) {
           window.eruda.init();
-          console.log('[ContentGlowz] Eruda enabled');
+          console.log('[ContentGlows] Eruda enabled');
         }
       };
       document.head.appendChild(script);

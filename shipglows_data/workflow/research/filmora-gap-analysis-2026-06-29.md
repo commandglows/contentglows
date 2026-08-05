@@ -1,11 +1,11 @@
 ---
 artifact: research
-project: "contentglowz"
+project: "contentglows"
 created: "2026-06-29"
 updated: "2026-06-29"
 status: reviewed
 source_skill: 203-sf-research
-scope: "Filmora competitive gap analysis for ContentGlowz video editing"
+scope: "Filmora competitive gap analysis for ContentGlows video editing"
 confidence: "high"
 risk_level: "high"
 security_impact: "yes"
@@ -29,13 +29,13 @@ evidence:
 next_step: "Convert the parity roadmap into shipped specs and execution slices across app, lab, and worker."
 ---
 
-# Research: Filmora gap analysis for ContentGlowz
+# Research: Filmora gap analysis for ContentGlows
 
 > Generated 2026-06-29 — Sources: 14
 
 ## Executive summary
 
-Filmora currently positions itself as an easy-but-powerful editor with multi-layer editing, templates, transitions, built-in media libraries, and a wide AI toolbox. The current ContentGlowz repo already has useful foundations for timeline editing, Remotion rendering, project assets, and a content-first workflow, but it is still much closer to a guided internal video pipeline than to a polished professional editor.
+Filmora currently positions itself as an easy-but-powerful editor with multi-layer editing, templates, transitions, built-in media libraries, and a wide AI toolbox. The current ContentGlows repo already has useful foundations for timeline editing, Remotion rendering, project assets, and a content-first workflow, but it is still much closer to a guided internal video pipeline than to a polished professional editor.
 
 The biggest gap is not rendering. The biggest gap is editing ergonomics and workflow depth: timeline operations, keyframes, audio tooling, captioning, masking/tracking, reusable presets, AI-assisted rough-cut tools, export/publishing polish, and real-time confidence in the preview loop.
 
@@ -43,10 +43,10 @@ The biggest gap is not rendering. The biggest gap is editing ergonomics and work
 
 ### What the repo already has
 
-- Flutter timeline UI with tracks, clips, text edits, asset insertion, preview approval, and final render flow in [app/lib/presentation/screens/editor/video_timeline_screen.dart](/home/claude/contentglowz/app/lib/presentation/screens/editor/video_timeline_screen.dart).
-- Backend video timeline contracts with draft/version/preview/final orchestration in [lab/api/routers/video_timelines.py](/home/claude/contentglowz/lab/api/routers/video_timelines.py) and [lab/api/models/video_timeline.py](/home/claude/contentglowz/lab/api/models/video_timeline.py).
-- Remotion worker composition for timeline rendering in [worker/remotion/ContentGlowzTimelineVideo.tsx](/home/claude/contentglowz/worker/remotion/ContentGlowzTimelineVideo.tsx).
-- Existing product intent for a storyboard-first video workflow in [shipglows_data/workflow/specs/monorepo/SPEC-remotion-video-editor-workflow-2026-05-11.md](/home/claude/contentglowz/shipglows_data/workflow/specs/monorepo/SPEC-remotion-video-editor-workflow-2026-05-11.md).
+- Flutter timeline UI with tracks, clips, text edits, asset insertion, preview approval, and final render flow in [app/lib/presentation/screens/editor/video_timeline_screen.dart](/home/claude/contentglows/app/lib/presentation/screens/editor/video_timeline_screen.dart).
+- Backend video timeline contracts with draft/version/preview/final orchestration in [lab/api/routers/video_timelines.py](/home/claude/contentglows/lab/api/routers/video_timelines.py) and [lab/api/models/video_timeline.py](/home/claude/contentglows/lab/api/models/video_timeline.py).
+- Remotion worker composition for timeline rendering in [worker/remotion/ContentGlowsTimelineVideo.tsx](/home/claude/contentglows/worker/remotion/ContentGlowsTimelineVideo.tsx).
+- Existing product intent for a storyboard-first video workflow in [shipglows_data/workflow/specs/monorepo/SPEC-remotion-video-editor-workflow-2026-05-11.md](/home/claude/contentglows/shipglows_data/workflow/specs/monorepo/SPEC-remotion-video-editor-workflow-2026-05-11.md).
 
 ### What the repo still lacks versus a Filmora-class editor
 
@@ -89,13 +89,13 @@ Filmora is not winning by being the deepest NLE on the market. It wins by combin
 - AI acceleration in the rough-cut stage;
 - fast output for short-form creators.
 
-That matters for ContentGlowz because the repo is already creator-workflow-centric. The path to parity is not “become Premiere.” The path is “become a content-native editor with Filmora-grade speed, enough precision, and better workflow automation for creator repurposing.”
+That matters for ContentGlows because the repo is already creator-workflow-centric. The path to parity is not “become Premiere.” The path is “become a content-native editor with Filmora-grade speed, enough precision, and better workflow automation for creator repurposing.”
 
 ## Recommended parity roadmap
 
 ### 1. Stabilize the editing core first
 
-Before adding more AI, ContentGlowz needs a stronger editing substrate:
+Before adding more AI, ContentGlows needs a stronger editing substrate:
 
 - property animation model for clips, layers, and transitions;
 - explicit clip trim/split/duplicate/ripple operations;
@@ -107,7 +107,7 @@ Without this, every AI feature will produce output the user cannot comfortably r
 
 ### 2. Make transcript and audio first-class
 
-Filmora’s text-based editing, silence detection, captions, and speech tooling directly match ContentGlowz’s content repurposing angle. This is the highest strategic overlap.
+Filmora’s text-based editing, silence detection, captions, and speech tooling directly match ContentGlows’s content repurposing angle. This is the highest strategic overlap.
 
 Priority outcomes:
 
@@ -119,7 +119,7 @@ Priority outcomes:
 
 ### 3. Add creator-native AI rough-cut automation
 
-This is where ContentGlowz can approach Filmora and also differentiate:
+This is where ContentGlows can approach Filmora and also differentiate:
 
 - highlight extraction from long content;
 - speaker/object-aware short clip suggestions;
@@ -147,7 +147,7 @@ To feel “professional,” the app must make users trust outputs:
 
 ## Recommendation for this repo
 
-ContentGlowz should not chase every Filmora feature at once. The right move is a three-layer roadmap:
+ContentGlows should not chase every Filmora feature at once. The right move is a three-layer roadmap:
 
 - **Layer 1:** make the current timeline genuinely comfortable to use.
 - **Layer 2:** make spoken-content repurposing dramatically faster than generic editors.

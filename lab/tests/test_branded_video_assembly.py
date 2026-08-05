@@ -44,7 +44,7 @@ def test_assemble_branded_timeline_draft_uses_assets_and_brand_rules():
         SimpleNamespace(
             id="asset-2",
             media_kind="video",
-            storage_uri="https://contentglowz-test.b-cdn.net/assets/b.mp4",
+            storage_uri="https://contentglows-test.b-cdn.net/assets/b.mp4",
             status="active",
             mime_type="video/mp4",
         ),

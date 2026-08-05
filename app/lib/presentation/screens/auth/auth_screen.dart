@@ -218,7 +218,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
         const SizedBox(height: AppSpacing.sm),
         Text(
           context.tr(
-            'ContentGlowz web authentication now uses the official Clerk JavaScript SDK directly on the app domain. The old site handoff and the Flutter beta SDK are no longer the primary path.',
+            'ContentGlows web authentication now uses the official Clerk JavaScript SDK directly on the app domain. The old site handoff and the Flutter beta SDK are no longer the primary path.',
           ),
           style: theme.textTheme.bodyMedium?.copyWith(
             color: theme.colorScheme.onSurfaceVariant,

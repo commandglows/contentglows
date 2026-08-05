@@ -1,6 +1,6 @@
 ---
 artifact: research
-project: "contentglowz"
+project: "contentglows"
 created: "2026-05-07"
 updated: "2026-05-07"
 status: reviewed
@@ -28,13 +28,13 @@ Generated 2026-05-07. Scope: Android only.
 
 ## Executive Summary
 
-For ContentGlowz's Android-only privacy capture mode, the best technical direction is a native Kotlin pipeline built on `MediaProjection` + GPU rendering/OpenGL + `MediaCodec` + `MediaMuxer`, with ML Kit Text Recognition v2 providing text bounding boxes and ML Kit Face Detection/Object Detection/Image Labeling used selectively for photos and sensitive visual regions.
+For ContentGlows's Android-only privacy capture mode, the best technical direction is a native Kotlin pipeline built on `MediaProjection` + GPU rendering/OpenGL + `MediaCodec` + `MediaMuxer`, with ML Kit Text Recognition v2 providing text bounding boxes and ML Kit Face Detection/Object Detection/Image Labeling used selectively for photos and sensitive visual regions.
 
 Do not base V1 on character rewriting in third-party apps. For arbitrary apps, "scramble" should be visual: detect text regions in pixels or accessibility nodes, cover the real text, then draw fake scrambled glyphs or apply strong blur/pixelation. Do not rely on FFmpegKit for a new Android implementation because the project is officially retired.
 
 ## Current Project Context
 
-ContentGlowz currently has an Android MediaProjection capture implementation. The normal recording path uses native Android screen capture and stores local PNG/MP4 assets. A privacy mode should not merely add a Flutter overlay after the fact; it needs a native path that can transform frames before the final export is considered safe.
+ContentGlows currently has an Android MediaProjection capture implementation. The normal recording path uses native Android screen capture and stores local PNG/MP4 assets. A privacy mode should not merely add a Flutter overlay after the fact; it needs a native path that can transform frames before the final export is considered safe.
 
 ## Technology Findings
 
@@ -42,7 +42,7 @@ ContentGlowz currently has an Android MediaProjection capture implementation. Th
 
 Android's MediaProjection APIs capture display or app-window contents as a media stream and project the captured image to a virtual display rendered on an app-provided `Surface`. Android documentation explicitly lists `MediaRecorder`, `SurfaceTexture`, and `ImageReader` as possible consumers.
 
-Verdict: keep MediaProjection. For normal capture, `MediaRecorder` is fine. For privacy capture, use `SurfaceTexture`/GPU or `ImageReader` so ContentGlowz can inspect and alter frames before encoding.
+Verdict: keep MediaProjection. For normal capture, `MediaRecorder` is fine. For privacy capture, use `SurfaceTexture`/GPU or `ImageReader` so ContentGlows can inspect and alter frames before encoding.
 
 Source: Android MediaProjection docs.
 

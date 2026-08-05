@@ -24,7 +24,7 @@ def build_openrouter_model(
     api_key: str,
     model_name: str = DEFAULT_OPENROUTER_MODEL,
     app_url: str | None = None,
-    app_title: str | None = "ContentGlowz",
+    app_title: str | None = "ContentGlows",
 ) -> Any:
     """Build a PydanticAI OpenRouter model with an explicit request-scoped key."""
     cleaned_key = _clean_api_key(api_key)

@@ -25,7 +25,7 @@ LIVE_API_TEST_FILES = {
 
 
 def _live_api_available() -> bool:
-    base_url = os.getenv("CONTENTGLOWZ_LIVE_TEST_BASE_URL", "http://localhost:8000").rstrip("/")
+    base_url = os.getenv("CONTENTGLOWS_LIVE_TEST_BASE_URL", "http://localhost:8000").rstrip("/")
     try:
         response = requests.get(f"{base_url}/health", timeout=1)
     except requests.RequestException:
@@ -62,7 +62,7 @@ def pytest_collection_modifyitems(config, items):
                 item.add_marker(
                     pytest.mark.skip(
                         reason=(
-                            "Live API tests require CONTENTGLOWZ_LIVE_TEST_BASE_URL "
+                            "Live API tests require CONTENTGLOWS_LIVE_TEST_BASE_URL "
                             "or http://localhost:8000 to be reachable"
                         )
                     )

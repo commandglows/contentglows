@@ -2,7 +2,7 @@
 title: "AI Agents Development Hub"
 description: "Complete guides to building AI agents and multi-agent systems. From research automation to content generation, learn how we create production-ready AI agents."
 pubDate: 2026-01-15
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["ai agents", "multi-agent systems", "crewai", "automation", "python"]
 featured: true
 image: "/images/blog/ai-agents-hub.jpg"
@@ -445,9 +445,9 @@ def select_agent(task_type: str):
 ### Code Examples
 
 **Our Open Source Projects:**
-- [SEO Research Analyst](https://github.com/user/contentglowz) - Complete agent implementation
-- [Multi-Agent Orchestration](https://github.com/user/contentglowz) - CrewAI patterns
-- [LLM Optimization](https://github.com/user/contentglowz) - Cost and performance tuning
+- [SEO Research Analyst](https://github.com/user/contentglows) - Complete agent implementation
+- [Multi-Agent Orchestration](https://github.com/user/contentglows) - CrewAI patterns
+- [LLM Optimization](https://github.com/user/contentglows) - Cost and performance tuning
 
 ---
 

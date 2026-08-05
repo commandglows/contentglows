@@ -2,7 +2,7 @@
 title: "Social Listening"
 description: "Discover what your audience is talking about right now. Scan Reddit, X, Hacker News, and YouTube to find trending topics, detect cross-platform convergence, and fuel your content calendar with data-driven ideas."
 pubDate: 2026-03-30
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["social listening", "idea generation", "content strategy", "reddit", "hacker news", "youtube", "trending"]
 featured: true
 image: "/images/blog/social-listening.jpg"
@@ -170,7 +170,7 @@ Navigate to **Ideas > Ingest > Social Listening**, enter your topics, and click 
 ### Via the API
 
 ```bash
-curl -X POST https://api.contentglowz.com/api/ideas/ingest/social \
+curl -X POST https://api.contentglows.com/api/ideas/ingest/social \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{

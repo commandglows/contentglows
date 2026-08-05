@@ -56,7 +56,7 @@ L'offre à vendre n'est pas "de l'IA gratuite à vie".
 
 L'offre à vendre est:
 
-> un accès à vie à la couche produit ContentGlowz, avec un mode BYOK qui permet à chaque utilisateur de payer ses appels IA directement chez son provider, pendant que la plateforme fournit l'orchestration, les workflows, la mémoire de travail, l'UI et la couche métier.
+> un accès à vie à la couche produit ContentGlows, avec un mode BYOK qui permet à chaque utilisateur de payer ses appels IA directement chez son provider, pendant que la plateforme fournit l'orchestration, les workflows, la mémoire de travail, l'UI et la couche métier.
 
 Autrement dit:
 
@@ -67,7 +67,7 @@ Autrement dit:
 
 ## Contexte produit
 
-ContentGlowz n'est pas un simple chat IA.
+ContentGlows n'est pas un simple chat IA.
 
 La valeur du produit vient du système complet:
 
@@ -98,7 +98,7 @@ Le produit vend donc:
 
 ### Formulation simple
 
-> Soutiens la construction maintenant, verrouille un accès à vie à ContentGlowz en mode BYOK, et paie ensuite tes consommations IA directement chez ton provider.
+> Soutiens la construction maintenant, verrouille un accès à vie à ContentGlows en mode BYOK, et paie ensuite tes consommations IA directement chez ton provider.
 
 ### Positionnement
 
@@ -162,7 +162,7 @@ Pour éviter toute ambiguïté, le deal doit être défini proprement.
 
 ### Ce que le Lifetime Deal inclut
 
-- accès à vie à la plateforme ContentGlowz en mode BYOK;
+- accès à vie à la plateforme ContentGlows en mode BYOK;
 - accès aux workflows coeur du produit dans ce mode;
 - accès aux évolutions du produit tant qu'elles restent dans le périmètre BYOK coeur;
 - stockage standard du compte et du workspace;
@@ -181,7 +181,7 @@ Pour éviter toute ambiguïté, le deal doit être défini proprement.
 
 ### Définition recommandée de "lifetime"
 
-> Accès à vie signifie accès pendant toute la durée de vie commerciale du produit ContentGlowz, pour le compte acheté, sur le périmètre explicitement inclus par l'offre.
+> Accès à vie signifie accès pendant toute la durée de vie commerciale du produit ContentGlows, pour le compte acheté, sur le périmètre explicitement inclus par l'offre.
 
 Cette formulation doit rester honnête et défendable.
 
@@ -189,16 +189,16 @@ Cette formulation doit rester honnête et défendable.
 
 ### Explication simple
 
-1. l'utilisateur crée son compte ContentGlowz;
+1. l'utilisateur crée son compte ContentGlows;
 2. il ajoute sa clé OpenRouter dans l'application;
 3. l'application utilise cette clé pour les actions IA compatibles;
 4. OpenRouter facture directement l'utilisateur selon sa consommation;
-5. ContentGlowz ne refacture pas ces tokens dans le mode BYOK;
+5. ContentGlows ne refacture pas ces tokens dans le mode BYOK;
 6. le Lifetime Deal couvre l'accès au produit, pas la consommation variable.
 
 ### Ce que l'utilisateur paie réellement
 
-- **une fois**: le Lifetime Deal ContentGlowz;
+- **une fois**: le Lifetime Deal ContentGlows;
 - **au fil de l'eau**: sa consommation LLM chez son provider.
 
 ### Ce que nous payons encore
@@ -230,7 +230,7 @@ Il veut dire:
 
 ### Version plus pédagogique
 
-> ContentGlowz te fournit l'application, les workflows, le système de production, la mémoire, l'orchestration et l'expérience produit. Pour la génération IA, tu peux brancher ta propre clé OpenRouter. Dans ce cas, les appels modèles sont facturés directement par OpenRouter selon ton usage réel. Ton Lifetime Deal couvre donc l'accès au produit, pas les tokens.
+> ContentGlows te fournit l'application, les workflows, le système de production, la mémoire, l'orchestration et l'expérience produit. Pour la génération IA, tu peux brancher ta propre clé OpenRouter. Dans ce cas, les appels modèles sont facturés directement par OpenRouter selon ton usage réel. Ton Lifetime Deal couvre donc l'accès au produit, pas les tokens.
 
 ### Bénéfices psychologiques
 
@@ -263,7 +263,7 @@ C'est le point qui protège l'économie de l'offre.
 
 Formulation recommandée:
 
-> Le Lifetime Deal garantit l'accès à vie à ContentGlowz en mode BYOK. Si des plans managés ou avec crédits sont lancés plus tard, ils pourront exister comme options séparées.
+> Le Lifetime Deal garantit l'accès à vie à ContentGlows en mode BYOK. Si des plans managés ou avec crédits sont lancés plus tard, ils pourront exister comme options séparées.
 
 ## Pourquoi cette offre est forte
 
@@ -389,16 +389,16 @@ Paie une fois. Garde la plateforme à vie. Branche ta propre IA.
 ### Alternatives
 
 - Le Lifetime Deal le plus simple: la plateforme à vie, tes coûts IA sous contrôle.
-- Soutiens ContentGlowz tôt, verrouille ton accès à vie, paie seulement ta conso réelle.
+- Soutiens ContentGlows tôt, verrouille ton accès à vie, paie seulement ta conso réelle.
 - L'accès à vie au système. Les tokens restent chez ton provider.
 
 ### Subheadline candidate
 
-ContentGlowz t'offre la machine de production complète. En mode BYOK, tu conserves le contrôle de ta facture IA en branchant ta propre clé OpenRouter.
+ContentGlows t'offre la machine de production complète. En mode BYOK, tu conserves le contrôle de ta facture IA en branchant ta propre clé OpenRouter.
 
 ### Bullets de vente
 
-- accès à vie à ContentGlowz en mode BYOK;
+- accès à vie à ContentGlows en mode BYOK;
 - aucun abonnement mensuel requis pour utiliser la plateforme;
 - tu paies tes appels IA directement à ton provider;
 - tu soutiens le produit au moment où ton aide compte le plus;
@@ -418,7 +418,7 @@ Le récit:
 
 1. la plupart des outils IA mélangent produit + tokens + marge;
 2. ça rend les prix opaques et les deals fragiles;
-3. ContentGlowz sépare la plateforme de la consommation;
+3. ContentGlows sépare la plateforme de la consommation;
 4. le Lifetime Deal devient enfin crédible;
 5. les premiers supporters récupèrent la meilleure version de cette logique.
 

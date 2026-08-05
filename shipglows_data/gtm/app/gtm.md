@@ -50,7 +50,7 @@ next_step: "/sf-docs audit shipglows_data/gtm/app/gtm.md"
 # Go-to-Market Context — app
 
 ## Public promise
-ContentGlowz App is a practical operator interface for creators and lean teams who want to move from idea to publish-ready content with less tooling friction and stronger continuity. It does **not** claim complete automation; it claims controlled, traceable execution backed by human review and resilient workflows.
+ContentGlows App is a practical operator interface for creators and lean teams who want to move from idea to publish-ready content with less tooling friction and stronger continuity. It does **not** claim complete automation; it claims controlled, traceable execution backed by human review and resilient workflows.
 
 ## Primary segment
 - **Primary:** creators, solopreneurs, founders, and small content teams.

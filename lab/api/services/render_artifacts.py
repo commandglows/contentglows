@@ -15,7 +15,10 @@ class RenderArtifactError(RuntimeError):
 
 
 def _storage_mode() -> str:
-    return (os.getenv("CONTENTGLOWZ_RENDER_STORAGE") or "local").strip().lower() or "local"
+    return (
+        os.getenv("CONTENTGLOWS_RENDER_STORAGE")
+        or "local"
+    ).strip().lower() or "local"
 
 
 def _gcs_bucket() -> str | None:

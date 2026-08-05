@@ -2,7 +2,7 @@
 artifact: business_context
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: contentglowz
+project: contentglows
 created: "2026-04-25"
 updated: "2026-06-28"
 status: reviewed
@@ -15,7 +15,7 @@ security_impact: none
 docs_impact: yes
 target_audience: creators, independent operators, founders, and SMB content teams
 value_proposition: turn content ideas and source assets into ready-made publishable outputs with predictable, transparent execution
-business_model: one ContentGlowz product expressed across multiple surfaces with shared business truth
+business_model: one ContentGlows product expressed across multiple surfaces with shared business truth
 market: content teams, founders, and solo operators
 depends_on: []
 supersedes:
@@ -35,7 +35,7 @@ next_step: /sf-docs audit shipglows_data/business/business.md
 
 ## Purpose
 
-ContentGlowz is one product system with multiple delivery surfaces.
+ContentGlows is one product system with multiple delivery surfaces.
 The business truth is shared across the project even when the runtimes differ.
 
 The project exists to help creators and lean teams move from idea or source assets to ready-made publishable content with less tooling friction, more continuity, and clearer operational control.
@@ -49,7 +49,7 @@ The target users often face:
 - fragile systems when backend services are temporarily unavailable,
 - unclear boundaries between marketing promise, operator workflow, and automation layer.
 
-ContentGlowz reduces this friction by keeping the promise explicit:
+ContentGlows reduces this friction by keeping the promise explicit:
 AI assembles publishable drafts by default, users can approve fast or modify when needed, and the system must remain understandable when dependencies fail.
 
 ## Shared Product Positioning
@@ -62,7 +62,7 @@ The shared business model is:
 - `worker`: supporting execution service for render workflows.
 
 These are not separate businesses.
-They are surfaces of one ContentGlowz offer and must stay aligned on audience, promise, and constraints.
+They are surfaces of one ContentGlows offer and must stay aligned on audience, promise, and constraints.
 
 ## Core User Value
 

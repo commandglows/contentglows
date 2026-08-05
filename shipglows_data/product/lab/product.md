@@ -38,7 +38,7 @@ next_step: /sf-docs audit shipglows_data/product/lab/product.md
 
 ## Positionnement produit
 
-`lab` est le noyau backend de **ContentGlowz** côté service. Il fournit les API FastAPI, les orchestrations asynchrones, les pipelines IA et les services de planification nécessaires pour les produits clients (`app`) et web (`site`).
+`lab` est le noyau backend de **ContentGlows** côté service. Il fournit les API FastAPI, les orchestrations asynchrones, les pipelines IA et les services de planification nécessaires pour les produits clients (`app`) et web (`site`).
 
 La promesse opérationnelle du dépôt est la suivante :
 

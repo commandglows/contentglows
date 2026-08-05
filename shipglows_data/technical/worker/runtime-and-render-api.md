@@ -52,9 +52,9 @@ Preserve the operational runtime contract, protected render API, and artifact st
 
 - `PORT`: optional, default `3210`
 - `REMOTION_WORKER_TOKEN`: required bearer token for protected routes
-- `CONTENTGLOWZ_RENDER_DIR`: local render root, defaults to `./renders`
-- `CONTENTGLOWZ_RENDER_STORAGE`: `local` or `gcs`, defaults to `local`
-- `GCS_RENDER_BUCKET`: required when `CONTENTGLOWZ_RENDER_STORAGE=gcs`
+- `CONTENTGLOWS_RENDER_DIR`: local render root, defaults to `./renders`
+- `CONTENTGLOWS_RENDER_STORAGE`: `local` or `gcs`, defaults to `local`
+- `GCS_RENDER_BUCKET`: required when `CONTENTGLOWS_RENDER_STORAGE=gcs`
 - `GCS_RENDER_PREFIX`: optional object prefix, default `renders`
 - `RENDER_ARTIFACT_RETENTION_DAYS`: optional, default `30`
 - `REMOTION_SERVE_URL`: optional prebuilt Remotion bundle URL
@@ -99,7 +99,7 @@ Optional request fields:
 
 Timeline expectations:
 
-- `ContentGlowzTimelineVideo` supports `vertical_9_16` (`1080x1920`) and `landscape_16_9` (`1920x1080`) at `30fps`
+- `ContentGlowsTimelineVideo` supports `vertical_9_16` (`1080x1920`) and `landscape_16_9` (`1920x1080`) at `30fps`
 - composition metadata is derived from `inputProps.format`
 - timeline renders should receive resolved `assets[asset_id].render_url` values from `lab`
 - missing media asset URLs render a neutral visual placeholder instead of crashing local composition development
@@ -124,7 +124,7 @@ Local mode:
 
 GCS mode:
 
-- requires `CONTENTGLOWZ_RENDER_STORAGE=gcs`
+- requires `CONTENTGLOWS_RENDER_STORAGE=gcs`
 - requires `GCS_RENDER_BUCKET`
 - preview object: `{GCS_RENDER_PREFIX}/previews/{jobId}.mp4`
 - final object: `{GCS_RENDER_PREFIX}/finals/{jobId}.mp4`
@@ -141,7 +141,7 @@ Retention metadata:
 - `npm run lint`
 - `npm run test:storage`
 - `npm run test:timeline`
-- `npx remotion render remotion/index.ts ContentGlowzTimelineVideo /tmp/contentglowz-timeline-smoke.mp4 --props=remotion/timeline-smoke-props.json --overwrite`
+- `npx remotion render remotion/index.ts ContentGlowsTimelineVideo /tmp/contentglows-timeline-smoke.mp4 --props=remotion/timeline-smoke-props.json --overwrite`
 
 The smoke render uses text/background-only props so it validates the Remotion runtime and H.264 output path without depending on network media assets.
 

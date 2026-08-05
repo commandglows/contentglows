@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the ContentGlowz monorepo are documented here.
+All notable changes to the ContentGlows monorepo are documented here.
 
 ## [2026-06-12]
 
@@ -17,7 +17,7 @@ All notable changes to the ContentGlowz monorepo are documented here.
 
 ### Fixed
 - Fixed the Clerk email sign-up OTP flow by keeping SignUp verification steps inside the static auth page hash route and guarding against duplicate Clerk component mounts.
-- Fixed Flutter app API availability detection when production builds receive `API_BASE_URL` as `api.contentglowz.com` without an explicit `https://` scheme.
+- Fixed Flutter app API availability detection when production builds receive `API_BASE_URL` as `api.contentglows.com` without an explicit `https://` scheme.
 
 ### Added
 - Added regression coverage for the dual-mode AI runtime platform branch and dispatch-pipeline provider matrices.
@@ -33,7 +33,7 @@ All notable changes to the ContentGlowz monorepo are documented here.
 ### Added
 - Added AI asset understanding auto-tagging and recommendation capabilities across backend and Flutter surfaces: async understanding jobs, normalized suggested/accepted/rejected tag flows, confidence-scored fit reasons, and rights/attribution warnings for third-party/social footage.
 - Added global-library candidate recommendation plus explicit project attach flow so same-user reusable assets can be suggested across projects with `candidate_global_asset` and `requires_project_attachment` semantics.
-- Added the unified ContentGlowz video timeline foundation across Flutter, FastAPI, and the Remotion worker, including versioned timeline APIs, render-safe asset resolution, preview/final gates, and a local Remotion MP4 smoke fixture.
+- Added the unified ContentGlows video timeline foundation across Flutter, FastAPI, and the Remotion worker, including versioned timeline APIs, render-safe asset resolution, preview/final gates, and a local Remotion MP4 smoke fixture.
 - Added Remotion worker GCS artifact storage support, backend GCS signed playback URL handling, and a Cloud Run deployment runbook for durable video preview/final renders.
 
 ### Changed
@@ -67,7 +67,7 @@ All notable changes to the ContentGlowz monorepo are documented here.
 ### Added
 - Added privacy capture planning artifacts for Android, Web, Windows, macOS, iOS, and Linux, plus shared contract, post-production review, and QA matrix documents.
 - Added root monorepo task tracking and a site-specific tracker aligned with the ready Astro 6 migration spec.
-- Added a ShipGlowz master dashboard entry for ContentGlowz.
+- Added a ShipGlowz master dashboard entry for ContentGlows.
 - Added Android APK CI setup documentation and a Blacksmith-backed GitHub Actions workflow.
 - Added baseline `shipglows_data/technical/` governance for `app` and `site`.
 - Added baseline `shipglows_data/editorial/` governance for the public Astro site.
@@ -75,8 +75,8 @@ All notable changes to the ContentGlowz monorepo are documented here.
 ### Changed
 - Added bilingual `fr/en` core routes for the marketing site with English at `/`, French under `/fr`, localized homepage/privacy/handoff copy, and locale-aware `lang`, canonical, `og:url`, `hreflang`, and `x-default` metadata on the shipped core pages.
 - Added bilingual `fr/en` blog routing with English articles under `/blog`, French articles under `/fr/blog`, locale-filtered blog indexes and tag pages, and locale-aware blog metadata plus localized shared blog CTAs/links.
-- Reprioritized ContentGlowz trackers so feedback production checks are no longer treated as the next blocking win after the admin allowlist was configured.
-- Reconnected ContentGlowz site and app Vercel auto-deploys to the organization monorepo and verified deployment from `main`.
+- Reprioritized ContentGlows trackers so feedback production checks are no longer treated as the next blocking win after the admin allowlist was configured.
+- Reconnected ContentGlows site and app Vercel auto-deploys to the organization monorepo and verified deployment from `main`.
 - Reconciled the Flutter app tracker so the previously fixed light-mode contrast regression is marked done.
 - Migrated `site` tracking to Astro 6 completion and documented the site migration closure.
 - Prioritized Vercel monorepo reconnect verification for the organization repository.

@@ -3,7 +3,7 @@ import 'in_app_tour_step.dart';
 const List<InAppTourStep> kInAppTourSteps = [
   InAppTourStep(
     id: 'welcome',
-    title: 'Welcome to ContentGlowz',
+    title: 'Welcome to ContentGlows',
     description:
         'We will take a quick tour of the app, screen by screen. '
         'The goal is to show you the best order to use each page, what the main controls do, '

@@ -46,3 +46,4 @@ Thumbs.db
 # ShipGlowz injected dev tools
 shipglowz-*.js
 **/shipglowz-*.js
+.vercel

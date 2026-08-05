@@ -2,7 +2,7 @@
 title: "Save $5,328/Year: Free Open Source SEO Tools vs SEMrush"
 description: "Replace expensive SEO tools with free open source alternatives. Complete guide to Advertools, STORM, and AI-powered automation that saves $5,328 annually."
 pubDate: 2026-01-15
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["seo tools", "semrush alternative", "advertools", "cost savings"]
 featured: true
 image: "/images/blog/free-seo-tools-comparison.jpg"

@@ -8,7 +8,7 @@ import 'package:app/core/shared_preferences_provider.dart';
 import 'package:app/main.dart';
 
 void main() {
-  testWidgets('ContentGlowz app uses persisted theme preference', (
+  testWidgets('ContentGlows app uses persisted theme preference', (
     tester,
   ) async {
     SharedPreferences.setMockInitialValues({
@@ -22,7 +22,7 @@ void main() {
           sharedPrefsProvider.overrideWithValue(prefs),
           appDiagnosticsProvider.overrideWithValue(AppDiagnostics()),
         ],
-        child: const ContentGlowzApp(),
+        child: const ContentGlowsApp(),
       ),
     );
     await tester.pump();

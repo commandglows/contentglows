@@ -479,7 +479,7 @@ class AuthSessionNotifier extends StateNotifier<AuthSession> {
       state = const AuthSession(
         status: AuthStatus.authenticated,
         bearerToken: 'devserver-auth-bypass',
-        email: 'devserver@contentglowz.local',
+        email: 'devserver@contentglows.local',
       );
       diagnostics.info(
         scope: 'auth.restore',

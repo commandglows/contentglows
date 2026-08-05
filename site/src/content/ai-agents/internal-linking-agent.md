@@ -2,7 +2,7 @@
 title: "Internal Linking Specialist: Smart SEO + Conversion Optimization"
 description: "How the Internal Linking Specialist agent optimizes your website's link structure for both search rankings and conversions. Understand the 50/50 balance, conversion-first approach, and personalization system."
 pubDate: 2026-02-02
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["internal linking", "seo", "conversion optimization", "ai agents", "personalization"]
 featured: true
 image: "/images/blog/internal-linking-agent.jpg"

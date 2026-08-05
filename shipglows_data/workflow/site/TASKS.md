@@ -1,4 +1,4 @@
-# Tasks — ContentGlowz Site
+# Tasks — ContentGlows Site
 
 > **Priority:** 🔴 P0 blocker · 🟠 P1 high · 🟡 P2 normal · 🟢 P3 low · ⚪ deferred
 > **Status:** 📋 todo · 🔄 in progress · ✅ done · ⛔ blocked · 💤 deferred
@@ -68,6 +68,6 @@
 
 | Pri | Task | Status |
 |-----|------|--------|
-| 🔴 | Migrer les 223 valeurs CSS site hardcodées de typographie, spacing, radius et motion vers les variables générées depuis `tools/design-tokens/contentglowz_theme.json` | 🔄 in progress |
+| 🔴 | Migrer les 223 valeurs CSS site hardcodées de typographie, spacing, radius et motion vers les variables générées depuis `tools/design-tokens/contentglows_theme.json` | 🔄 in progress |
 | 🟠 | Remplacer les couleurs directes restantes (`white`, `rgba`, hex affichés hors cas de documentation) par variables sémantiques | 📋 todo |
 | 🟠 | Ajouter des variables CSS mobile-first compactes pour sections, cards, listes, CTA et pages article/blog | 📋 todo |

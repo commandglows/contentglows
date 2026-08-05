@@ -358,7 +358,7 @@ class _VideoSourceIntakeScreenState
         title: Text(context.tr('Delete from this device?')),
         content: Text(
           context.tr(
-            'This copy is stored safely in ContentGlowz. Android will ask you for final confirmation before it is deleted from this device.',
+            'This copy is stored safely in ContentGlows. Android will ask you for final confirmation before it is deleted from this device.',
           ),
         ),
         actions: [
@@ -699,7 +699,7 @@ class _SourceCard extends StatelessWidget {
               const SizedBox(height: AppSpacing.md),
               Semantics(
                 container: true,
-                label: context.tr('Stored safely on ContentGlowz'),
+                label: context.tr('Stored safely on ContentGlows'),
                 child: Container(
                   padding: const EdgeInsets.all(AppSpacing.sm),
                   decoration: BoxDecoration(
@@ -710,7 +710,7 @@ class _SourceCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        context.tr('Stored safely on ContentGlowz'),
+                        context.tr('Stored safely on ContentGlows'),
                         style: theme.textTheme.labelLarge,
                       ),
                       const SizedBox(height: AppSpacing.xs),

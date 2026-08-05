@@ -594,7 +594,7 @@ class SchedulerService:
                 persona_context=persona_context,
                 archive_folder=config.get("archive_folder")
                 or (email_config or {}).get("archiveFolder")
-                or "CONTENTGLOWZ_DONE",
+                or "CONTENTGLOWS_DONE",
                 user_id=user_id if user_id != "system" else None,
                 reader=reader,
             )

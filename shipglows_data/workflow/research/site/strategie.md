@@ -1,4 +1,4 @@
-# Stratégie Copywriting — ContentGlowz
+# Stratégie Copywriting — ContentGlows
 
 > Dernière mise à jour : 2026-04-06
 
@@ -27,7 +27,7 @@
 | 🔴 | Ajouter CTA produit dans chaque article blog | BlogPost.astro | Fort — 42 pages TOFU sans conversion |
 | 🔴 | Déplacer "Who It's For" avant Pricing | index.astro | Fort — identification avant prix |
 | 🟠 | Réduire Features à 3-4 bénéfices en langage client | Features.astro | Moyen-Fort |
-| 🟠 | Framer pricing en valeur ("freelance = 500€, ContentGlowz = 19€") | Pricing.astro | Moyen-Fort |
+| 🟠 | Framer pricing en valeur ("freelance = 500€, ContentGlows = 19€") | Pricing.astro | Moyen-Fort |
 | 🟠 | Éliminer jargon technique (CrewAI, DataForSEO, OAuth, topical mesh) | Features, Robots, Pricing | Moyen |
 | 🟠 | Ajouter CTA post-FAQ (moment de conviction max) | Nouveau composant | Moyen |
 | 🟠 | Intégrer la promesse de continuité offline + queue dans les pages de conversion clés | Hero, FAQ, Features, ClosingCta, plateforme | Moyen |

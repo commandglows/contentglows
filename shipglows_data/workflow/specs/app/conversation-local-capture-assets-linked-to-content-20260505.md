@@ -971,7 +971,7 @@ f
   Si ce shell n’est pas authentifié, je le noterai comme preuve
   manquante plutôt que de masquer le risque.
 
-• Ran command -v turso && turso db shell contentglowz-prod2 "PRAGMA
+• Ran command -v turso && turso db shell contentglows-prod2 "PRAGMA
   │ table_info(content_assets);"
   └ (no output)
 
@@ -1139,7 +1139,7 @@ Something went wrong? Hit `/feedback` to report the issue.
   reste pending. Je vais maintenant installer pytest, vérifier Turso
   avec le chemin CLI trouvé, puis relancer les checks utiles.
 
-• Ran /home/ubuntu/.turso/turso db shell contentglowz-prod2 "PRAGMA
+• Ran /home/ubuntu/.turso/turso db shell contentglows-prod2 "PRAGMA
   │ table_info(content_assets);"
   └ You are not logged in, please login with turso auth login before
     running other commands.
@@ -1177,12 +1177,12 @@ presentation/screens/onboarding/onboarding_back_test.dart
     onboardingComplete=false
     00:07 +8: All tests passed!
 
-• Ran python3 -m venv /tmp/contentglowz-pytest-venv && /tmp/
-  │ contentglowz-pytest-venv/bin/python -m pip install pytest
+• Ran python3 -m venv /tmp/contentglows-pytest-venv && /tmp/
+  │ contentglows-pytest-venv/bin/python -m pip install pytest
   └ The virtual environment was not created successfully because
     ensurepip is not
     … +10 lines (ctrl + t to view transcript)
-    Failing command: /tmp/contentglowz-pytest-venv/bin/python3
+    Failing command: /tmp/contentglows-pytest-venv/bin/python3
 
 
 ──────────────────────────────────────────────────────────────────────
@@ -1223,11 +1223,11 @@ install -y python3.12-venv
   └ (no output)
 
 • Waited for background terminal · python3 -m venv --system-site-
-packages /tmp/contentglowz-pytest-venv && /tmp/contentglowz-pytest-venv/
+packages /tmp/contentglows-pytest-venv && /tmp/contentglows-pytest-venv/
 bin/python -m pip install pytest
 
 • Ran python3 -m venv --system-site-packages /tmp/
-  │ contentglowz-pytest-venv && /tmp/contentglowz-pytest-venv/bin/
+  │ contentglows-pytest-venv && /tmp/contentglows-pytest-venv/bin/
   │ python -m pip install pytest
   └ Collecting pytest
       Downloading pytest-9.0.3-py3-none-any.whl.metadata (7.6 kB)
@@ -1242,7 +1242,7 @@ bin/python -m pip install pytest
     lab/status/schemas.py
     lab/status/service.py
 
-• Ran /tmp/contentglowz-pytest-venv/bin/python -m pytest tests/
+• Ran /tmp/contentglows-pytest-venv/bin/python -m pytest tests/
   │ test_status_content_body.py -q
   └ ============================= test session starts
     ==============================
@@ -1264,10 +1264,10 @@ bin/python -m pip install pytest
     requirements-dev.lock:422:libsql==0.1.11
     requirements.lock:2122:libsql==0.1.11 \
 
-• Waited for background terminal · /tmp/contentglowz-pytest-venv/bin/
+• Waited for background terminal · /tmp/contentglows-pytest-venv/bin/
 python -m pip install libsql-client
 
-• Ran /tmp/contentglowz-pytest-venv/bin/python -m pip install
+• Ran /tmp/contentglows-pytest-venv/bin/python -m pip install
   │ libsql-client
   └ Collecting libsql-client
       Downloading libsql_client-0.3.1-py3-none-any.whl.metadata (4.1
@@ -1284,7 +1284,7 @@ python -m pip install libsql-client
 • Ran git diff --check
   └ (no output)
 
-• Waited for background terminal · /tmp/contentglowz-pytest-venv/bin/
+• Waited for background terminal · /tmp/contentglows-pytest-venv/bin/
 python -m pip install 'libsql==0.1.11'
 
 ──────────────────────────────────────────────────────────────────────
@@ -1293,7 +1293,7 @@ python -m pip install 'libsql==0.1.11'
   plus longtemps qu’un wheel Python classique. Je laisse finir parce
   que c’est le check backend qui conditionne un ship propre.
 
-• Waited for background terminal · /tmp/contentglowz-pytest-venv/bin/
+• Waited for background terminal · /tmp/contentglows-pytest-venv/bin/
 python -m pip install 'libsql==0.1.11'
 
 ──────────────────────────────────────────────────────────────────────
@@ -1303,10 +1303,10 @@ python -m pip install 'libsql==0.1.11'
   termine pas, je stopperai le ship avec ce check backend comme
   blocage plutôt que pousser un changement de migration non testé.
 
-• Waited for background terminal · /tmp/contentglowz-pytest-venv/bin/
+• Waited for background terminal · /tmp/contentglows-pytest-venv/bin/
 python -m pip install 'libsql==0.1.11'
 
-• Ran /tmp/contentglowz-pytest-venv/bin/python -m pip install
+• Ran /tmp/contentglows-pytest-venv/bin/python -m pip install
   │ 'libsql==0.1.11'
   └ Collecting libsql==0.1.11
       Downloading libsql-0.1.11.tar.gz (33 kB)
@@ -1318,7 +1318,7 @@ python -m pip install 'libsql==0.1.11'
   │ status/schemas.py status/service.py status/db.py
   └ (no output)
 
-• Ran /tmp/contentglowz-pytest-venv/bin/python -m pytest tests/
+• Ran /tmp/contentglows-pytest-venv/bin/python -m pytest tests/
   │ test_status_content_body.py -q
   └ ============================= test session starts
     ==============================
@@ -1332,13 +1332,13 @@ python -m pip install 'libsql==0.1.11'
   pydantic dans le venv temporaire. J’installe les dépendances runtime
   minimales nécessaires plutôt que tout le lockfile.
 
-• Waited for background terminal · /tmp/contentglowz-pytest-venv/bin/
+• Waited for background terminal · /tmp/contentglows-pytest-venv/bin/
 python -m pip install 'pydantic>=2,<3'
 
 • Explored
   └ Search ^pydantic in requirements.txt
 
-• Ran /tmp/contentglowz-pytest-venv/bin/python -m pip install
+• Ran /tmp/contentglows-pytest-venv/bin/python -m pip install
   │ 'pydantic>=2,<3'
   └ Collecting pydantic<3,>=2
       Downloading pydantic-2.13.3-py3-none-any.whl.metadata (108 kB)
@@ -1346,7 +1346,7 @@ python -m pip install 'pydantic>=2,<3'
     pydantic-core-2.46.3 typing-extensions-4.15.0
     typing-inspection-0.4.2
 
-• Ran /tmp/contentglowz-pytest-venv/bin/python -m pytest tests/
+• Ran /tmp/contentglows-pytest-venv/bin/python -m pytest tests/
   │ test_status_content_body.py -q
   └ ============================= test session starts
     ==============================
@@ -1401,7 +1401,7 @@ f
          py`.
     176 -- Blocked: backend pytest could not run because `pytest` is n
          ot installed in this shell.
-    177 +- Passed: `/tmp/contentglowz-pytest-venv/bin/python -m pytest
+    177 +- Passed: `/tmp/contentglows-pytest-venv/bin/python -m pytest
          tests/test_status_content_body.py -q`.
     178  - Blocked: Turso production schema check could not run becaus
          e the `turso` CLI is not available in this shell.
@@ -1416,7 +1416,7 @@ f
 
 • Edited shipglows_data/workflow/specs/app/SPEC-local-capture-assets-linked-to-
 content.md (+1 -1)
-    177  - Passed: `/tmp/contentglowz-pytest-venv/bin/python -m pytest
+    177  - Passed: `/tmp/contentglows-pytest-venv/bin/python -m pytest
          tests/test_status_content_body.py -q`.
     178 -- Blocked: Turso production schema check could not run becaus
          e the `turso` CLI is not available in this shell.
@@ -1455,7 +1455,7 @@ content.md (+1 -1)
   l’upstream manque, je le configurerai sur origin/main.
 
 • Ran git push
-  └ To github.com:diane-defores/contentglowz.git
+  └ To github.com:diane-defores/contentglows.git
        5f4704e..cf4a393  main -> main
 
 • Ran git status --short
@@ -1521,6 +1521,6 @@ content.md (+1 -1)
 
 › Run /review on my current changes
 
-  gpt-5.5 high · ~/contentglowz · Context 20% left · 5h 88% · weekly 8…
+  gpt-5.5 high · ~/contentglows · Context 20% left · 5h 88% · weekly 8…
 
 /home/ubuntu/home/ubuntu/home/ubuntu

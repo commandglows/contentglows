@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: feature
 owner: "Diane"
 confidence: medium
-user_story: "As a ContentGlowz creator who captures screens on multiple platforms for public sharing, I want one shared privacy capture contract for metadata, temporary files, backend payloads, disclosure, and review gates, so Android, Web, Windows, and future iOS/Linux/macOS implementations reduce leaks consistently without forcing the same native pipeline."
+user_story: "As a ContentGlows creator who captures screens on multiple platforms for public sharing, I want one shared privacy capture contract for metadata, temporary files, backend payloads, disclosure, and review gates, so Android, Web, Windows, and future iOS/Linux/macOS implementations reduce leaks consistently without forcing the same native pipeline."
 risk_level: high
 security_impact: "yes"
 docs_impact: "yes"
@@ -86,11 +86,11 @@ The contract is intentionally platform-neutral. Android may use MediaProjection/
 
 ## User Story
 
-As a ContentGlowz creator who captures screens on multiple platforms for public sharing, I want one shared privacy capture contract for metadata, temporary files, backend payloads, disclosure, and review gates, so Android, Web, Windows, and future iOS/Linux/macOS implementations reduce leaks consistently without forcing the same native pipeline.
+As a ContentGlows creator who captures screens on multiple platforms for public sharing, I want one shared privacy capture contract for metadata, temporary files, backend payloads, disclosure, and review gates, so Android, Web, Windows, and future iOS/Linux/macOS implementations reduce leaks consistently without forcing the same native pipeline.
 
 ## Minimal Behavior Contract
 
-When any ContentGlowz platform starts or completes a privacy capture, the app must treat it through one shared contract: the platform may use its own capture and redaction technology, but the normal capture history, preview, share/export, and content attachment flows may receive only a flattened redacted asset with privacy metadata, no persisted OCR text, no exposed clear temporary file, a backend-safe metadata payload, and a review acknowledgement gate before public use. If the privacy pipeline fails, falls behind, cannot clean a clear intermediate, or cannot prove the final asset is flattened and redacted, ContentGlowz must avoid registering a misleading privacy asset, delete or quarantine unsafe intermediates, and explain the recoverable state. The easy edge case is platform drift: each native implementation can be technically correct while using different field names or failure semantics, so this shared contract must be the source of truth at the Flutter model/service/API boundary.
+When any ContentGlows platform starts or completes a privacy capture, the app must treat it through one shared contract: the platform may use its own capture and redaction technology, but the normal capture history, preview, share/export, and content attachment flows may receive only a flattened redacted asset with privacy metadata, no persisted OCR text, no exposed clear temporary file, a backend-safe metadata payload, and a review acknowledgement gate before public use. If the privacy pipeline fails, falls behind, cannot clean a clear intermediate, or cannot prove the final asset is flattened and redacted, ContentGlows must avoid registering a misleading privacy asset, delete or quarantine unsafe intermediates, and explain the recoverable state. The easy edge case is platform drift: each native implementation can be technically correct while using different field names or failure semantics, so this shared contract must be the source of truth at the Flutter model/service/API boundary.
 
 ## Success Behavior
 
@@ -98,8 +98,8 @@ When any ContentGlowz platform starts or completes a privacy capture, the app mu
 - Given any platform returns a successfully redacted privacy screenshot or recording, when Flutter registers the asset, then the asset includes `privacyMode=true`, `privacyContractVersion=1.0`, a platform label, redaction status, text/photo style, strength, review state, and aggregate processing stats.
 - Given privacy capture succeeds, when the asset is added to recent captures, then the file path points to the flattened redacted output only; clear originals, editable redaction layers, OCR sidecars, and frame caches are not added to normal history.
 - Given privacy capture succeeds with nonfatal degradation, when the asset is registered, then `redactionStatus=degradedBestEffort`, `reviewState=needsReview`, and a sanitized degradation reason is visible to the user without exposing OCR text, local clear paths, or frame data.
-- Given a privacy asset has `reviewState=needsReview`, when the user attempts share, export, download, OS share, create-content-from-capture, or attach-to-content, then ContentGlowz blocks the action until the user acknowledges manual review.
-- Given the user acknowledges review, when share/export/content attachment continues, then ContentGlowz updates local metadata to `reviewState=reviewed` and uses only the flattened redacted output plus backend-safe metadata.
+- Given a privacy asset has `reviewState=needsReview`, when the user attempts share, export, download, OS share, create-content-from-capture, or attach-to-content, then ContentGlows blocks the action until the user acknowledges manual review.
+- Given the user acknowledges review, when share/export/content attachment continues, then ContentGlows updates local metadata to `reviewState=reviewed` and uses only the flattened redacted output plus backend-safe metadata.
 - Given platform code uses OCR, text detection, accessibility nodes, visual detectors, or recognition APIs, when it derives redaction regions, then recognized text strings are used only transiently and are discarded before any persistence, logging, analytics, backend payload, or user-visible diagnostics.
 - Given a platform implementation needs clear buffers or temporary clear files internally, when the session succeeds, fails, or is canceled, then those intermediates stay app-private, are never exposed through preview/history/share/backend, and are deleted before the flow is considered safe.
 - Given deletion of a clear intermediate cannot be confirmed, when the platform reports completion, then Flutter treats the result as unsafe: no normal privacy asset is registered unless the clear file is quarantined outside normal history and the user sees a cleanup warning.
@@ -207,7 +207,7 @@ Fresh external docs verdict: `fresh-docs not needed` for the shared contract its
 - Privacy capture output is local-first unless a separate backend media upload spec explicitly changes that.
 - Normal asset history may contain only normal captures and finalized safe privacy assets, never clear privacy intermediates.
 - Backend capture metadata may contain privacy settings and sanitized aggregate stats, never OCR text, frame data, local clear paths, temp paths, or raw region maps.
-- Review acknowledgement is a product safety gate, not a claim that ContentGlowz verified the asset as safe.
+- Review acknowledgement is a product safety gate, not a claim that ContentGlows verified the asset as safe.
 - `reviewState=reviewed` means the user acknowledged reviewing the flattened output; it does not mean the app guarantees no sensitive content remains.
 - Platform implementations may use different APIs and output containers, but they must map into the same Dart and backend metadata contract.
 - Unsupported platforms must fail closed: no startable privacy controls that imply support and no clear fallback marked as privacy output.
@@ -303,7 +303,7 @@ Localization keys and required semantics:
 | `privacyCapture.disclosure.title` | Privacy capture is being enabled. | `{platformLabel}` |
 | `privacyCapture.disclosure.bestEffort` | Redaction is best-effort and non-exhaustive. | none |
 | `privacyCapture.disclosure.localProcessing` | Capture/redaction runs locally for this feature version. | `{platformLabel}` |
-| `privacyCapture.disclosure.noGuarantee` | ContentGlowz does not guarantee every sensitive item is hidden. | none |
+| `privacyCapture.disclosure.noGuarantee` | ContentGlows does not guarantee every sensitive item is hidden. | none |
 | `privacyCapture.disclosure.reviewRequired` | The user must manually review before sharing/exporting/attaching. | none |
 | `privacyCapture.disclosure.tempFiles` | Unsafe clear intermediates are not exposed and failed cleanup blocks use. | none |
 | `privacyCapture.disclosure.accept` | User accepts starting privacy capture with those limits. | none |

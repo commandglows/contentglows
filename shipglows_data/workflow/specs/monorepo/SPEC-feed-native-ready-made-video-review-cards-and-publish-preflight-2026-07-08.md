@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-07-08"
 created_at: "2026-07-08 00:00:00 UTC"
 updated: "2026-07-10"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
 confidence: "high"
-user_story: "En tant que creatrice ContentGlowz authentifiee, je veux voir dans le feed une vraie carte video prete a publier avec ses etats et son preflight, afin de swiper en confiance sans ouvrir l'editeur sauf si je le choisis."
+user_story: "En tant que creatrice ContentGlows authentifiee, je veux voir dans le feed une vraie carte video prete a publier avec ses etats et son preflight, afin de swiper en confiance sans ouvrir l'editeur sauf si je le choisis."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -21,7 +21,7 @@ linked_systems:
   - "app"
   - "lab"
   - "publish accounts"
-  - "Unified ContentGlowz Video Timeline"
+  - "Unified ContentGlows Video Timeline"
 depends_on:
   - artifact: "shipglows_data/workflow/specs/monorepo/SPEC-ahead-of-time-branded-video-generation-runs-and-feed-readiness-2026-07-08.md"
     artifact_version: "1.0.0"
@@ -54,7 +54,7 @@ Ready after repo-alignment review. The current feed is still visually and textua
 
 ## User Story
 
-En tant que creatrice ContentGlowz authentifiee, je veux voir dans le feed une vraie carte video prete a publier avec ses etats et son preflight, afin de swiper en confiance sans ouvrir l'editeur sauf si je le choisis.
+En tant que creatrice ContentGlows authentifiee, je veux voir dans le feed une vraie carte video prete a publier avec ses etats et son preflight, afin de swiper en confiance sans ouvrir l'editeur sauf si je le choisis.
 
 ## Minimal Behavior Contract
 

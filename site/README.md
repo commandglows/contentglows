@@ -1,6 +1,6 @@
-# ContentGlowz Site
+# ContentGlows Site
 
-Public Astro site for ContentGlowz.
+Public Astro site for ContentGlows.
 
 This root README is now an entrypoint, not the canonical technical or editorial source of truth.
 

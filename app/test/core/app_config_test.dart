@@ -19,23 +19,23 @@ void main() {
   group('AppConfig.normalizeHttpOrigin', () {
     test('normalizes the compiled API_BASE_URL value', () {
       expect(AppConfig.apiBaseUrl, startsWith('https://'));
-      expect(AppConfig.apiBaseUrl, isNot(contains('://api.contentglowz.com/')));
+      expect(AppConfig.apiBaseUrl, isNot(contains('://api.contentglows.com/')));
     });
 
     test('adds https scheme when production API host is provided without one', () {
       expect(
         AppConfig.normalizeHttpOrigin(
-          'api.contentglowz.com',
+          'api.contentglows.com',
           fallback: 'https://fallback.example',
         ),
-        'https://api.contentglowz.com',
+        'https://api.contentglows.com',
       );
     });
 
     test('rejects pathful API origins and keeps the fallback', () {
       expect(
         AppConfig.normalizeHttpOrigin(
-          'https://api.contentglowz.com/api',
+          'https://api.contentglows.com/api',
           fallback: 'https://fallback.example',
         ),
         'https://fallback.example',

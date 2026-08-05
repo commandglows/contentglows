@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  const channel = MethodChannel('com.contentglowz.app/clerk_auth');
+  const channel = MethodChannel('com.contentglows.app/clerk_auth');
 
   setUp(() {
     SharedPreferences.setMockInitialValues({});

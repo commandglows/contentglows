@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
 confidence: "high"
-user_story: "En tant que lecteur francophone ou anglophone du blog ContentGlowz, je veux accéder à un index, des tags, des articles et des métadonnées cohérents avec la langue réelle du contenu, afin de ne pas naviguer dans un blog mixte avec de faux signaux SEO."
+user_story: "En tant que lecteur francophone ou anglophone du blog ContentGlows, je veux accéder à un index, des tags, des articles et des métadonnées cohérents avec la langue réelle du contenu, afin de ne pas naviguer dans un blog mixte avec de faux signaux SEO."
 risk_level: "high"
 supersedes: []
 security_impact: "none"
@@ -51,13 +51,13 @@ next_step: "/101-sf-ready shipglows_data/workflow/specs/site/SPEC-bilingual-fr-e
 ---
 
 ## Title
-Implement bilingual `fr/en` routing and locale-aware metadata for the ContentGlowz blog surfaces
+Implement bilingual `fr/en` routing and locale-aware metadata for the ContentGlows blog surfaces
 
 ## Status
 Ready. The next bounded tranche is the blog only: English remains at `/blog`, French moves under `/fr/blog`, and existing mixed-language publishing gets explicit locale handling.
 
 ## User Story
-En tant que lecteur francophone ou anglophone du blog ContentGlowz, je veux accéder à un index, des tags, des articles et des métadonnées cohérents avec la langue réelle du contenu, afin de ne pas naviguer dans un blog mixte avec de faux signaux SEO.
+En tant que lecteur francophone ou anglophone du blog ContentGlows, je veux accéder à un index, des tags, des articles et des métadonnées cohérents avec la langue réelle du contenu, afin de ne pas naviguer dans un blog mixte avec de faux signaux SEO.
 
 ## Minimal Behavior Contract
 Le site publie les articles anglais du blog sous `/blog/...` et les articles français sous `/fr/blog/...`. Les index et pages tag n'affichent que les articles de leur locale. Chaque article rend le bon `lang`, le bon canonical, et n'émet un alternate `hreflang` que lorsqu'une vraie paire EN/FR existe. Les CTA et liens blog partagés ne doivent pas renvoyer un visiteur francophone vers l'index anglais par défaut.

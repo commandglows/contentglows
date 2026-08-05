@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ContentGlowz Sign In</title>
+    <title>ContentGlows Sign In</title>
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="stylesheet" href="/clerk-auth.css" />
     <script src="/clerk-runtime.js"></script>
@@ -14,7 +14,7 @@
         <div class="eyebrow">ClerkJS Sign-In</div>
         <h1>Continue with Google</h1>
         <p>
-          ContentGlowz web authentication now runs directly on the app domain with the
+          ContentGlows web authentication now runs directly on the app domain with the
           official Clerk JavaScript SDK and Clerk's prebuilt sign-in component.
         </p>
         <div class="stack">
@@ -33,7 +33,7 @@
 
     <script>
       (function () {
-        const bridge = window.contentglowzClerkBridge;
+        const bridge = window.contentglowsClerkBridge;
         const signInNode = document.getElementById('clerk-sign-in');
         const copyButton = document.getElementById('copy-button');
         const entryButton = document.getElementById('entry-button');
@@ -55,7 +55,7 @@
             `commit/build: ${diagnostics.buildId || diagnostics.buildCommitSha}`,
             `build_at_paris: ${diagnostics.buildAtParis}`,
             `build_at_utc: ${diagnostics.buildAtUtc}`,
-            'ContentGlowz sign-in diagnostics',
+            'ContentGlows sign-in diagnostics',
             `Build commit: ${diagnostics.buildCommitSha}`,
             `Build id: ${diagnostics.buildId}`,
             `Build environment: ${diagnostics.buildEnvironment}`,
@@ -125,7 +125,7 @@
             await bridge.mountSignIn(signInNode);
             setStatus('Ready.');
           } catch (error) {
-            console.error('[ContentGlowz] Clerk sign-in bootstrap failed.', error);
+            console.error('[ContentGlows] Clerk sign-in bootstrap failed.', error);
             setStatus(String(error), true);
           }
         }

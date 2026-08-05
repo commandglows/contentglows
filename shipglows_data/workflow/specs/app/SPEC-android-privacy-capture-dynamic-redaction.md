@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: feature
 owner: "Diane"
 confidence: medium
-user_story: "En tant que createur ContentGlowz sur Android qui enregistre tout son ecran pour publier des videos en ligne, je veux activer un mode confidentialite qui rend les textes illisibles et floute ou pixelise les photos tout en gardant l'interface comprehensible, afin de reduire les fuites d'informations sans produire une video inutilisable."
+user_story: "En tant que createur ContentGlows sur Android qui enregistre tout son ecran pour publier des videos en ligne, je veux activer un mode confidentialite qui rend les textes illisibles et floute ou pixelise les photos tout en gardant l'interface comprehensible, afin de reduire les fuites d'informations sans produire une video inutilisable."
 risk_level: high
 security_impact: "yes"
 docs_impact: "yes"
@@ -54,7 +54,7 @@ depends_on:
     required_status: "reviewed"
 supersedes: []
 evidence:
-  - "User clarified that the target is arbitrary Android whole-screen capture: messaging apps, browser, and third-party apps, not only ContentGlowz screens."
+  - "User clarified that the target is arbitrary Android whole-screen capture: messaging apps, browser, and third-party apps, not only ContentGlows screens."
   - "User prioritized visually pleasant public videos over large static masks, accepting best-effort dynamic blur/scramble plus post-production review."
   - "app currently records video through ScreenRecordService using MediaProjection -> VirtualDisplay -> MediaRecorder surface, which does not expose a per-frame edit step."
   - "app currently captures screenshots through ImageReader, which can be extended for privacy screenshot redaction."
@@ -74,22 +74,22 @@ Draft spec for an Android-only privacy capture mode. This chantier adds best-eff
 
 ## User Story
 
-En tant que createur ContentGlowz sur Android qui enregistre tout son ecran pour publier des videos en ligne, je veux activer un mode confidentialite qui rend les textes illisibles et floute ou pixelise les photos tout en gardant l'interface comprehensible, afin de reduire les fuites d'informations sans produire une video inutilisable.
+En tant que createur ContentGlows sur Android qui enregistre tout son ecran pour publier des videos en ligne, je veux activer un mode confidentialite qui rend les textes illisibles et floute ou pixelise les photos tout en gardant l'interface comprehensible, afin de reduire les fuites d'informations sans produire une video inutilisable.
 
 ## Minimal Behavior Contract
 
-When an Android user enables privacy mode from Capture and starts a screenshot or recording, ContentGlowz must show an explicit best-effort disclosure, request Android MediaProjection consent, process captured screen pixels through a redaction pipeline, save only a privacy-marked local PNG/MP4 asset for normal preview/share flows, and require post-production review acknowledgement before sharing; if consent is denied, redaction dependencies fail, the device cannot keep up, or Android stops the projection, the app must stop cleanly, avoid exposing a clear asset through normal UI, delete or quarantine temporary clear files, and explain that the capture was not safely finalized. The easy edge case is fast scrolling: OCR will miss frames unless detected regions persist across time with expanded margins and motion-aware smoothing.
+When an Android user enables privacy mode from Capture and starts a screenshot or recording, ContentGlows must show an explicit best-effort disclosure, request Android MediaProjection consent, process captured screen pixels through a redaction pipeline, save only a privacy-marked local PNG/MP4 asset for normal preview/share flows, and require post-production review acknowledgement before sharing; if consent is denied, redaction dependencies fail, the device cannot keep up, or Android stops the projection, the app must stop cleanly, avoid exposing a clear asset through normal UI, delete or quarantine temporary clear files, and explain that the capture was not safely finalized. The easy edge case is fast scrolling: OCR will miss frames unless detected regions persist across time with expanded margins and motion-aware smoothing.
 
 ## Success Behavior
 
 - Given an Android user opens Capture, when they enable privacy mode, then the UI shows privacy controls for text style, photo style, redaction strength, and a disclosure that the result is best-effort and requires manual review.
-- Given privacy mode is enabled, when the user starts a screenshot and grants MediaProjection consent, then ContentGlowz captures the screen, detects likely text/photo/face regions, applies the selected redaction style, stores a local PNG whose metadata says `privacyMode=true` and `reviewState=needsReview`, and never adds the clear screenshot to recent captures.
-- Given privacy mode is enabled, when the user starts a recording and grants MediaProjection consent, then ContentGlowz captures video frames, tracks text regions through scroll/motion, applies blur/pixelation/scramble overlays before producing the final MP4, stores a local MP4 whose metadata says `privacyMode=true` and `reviewState=needsReview`, and never exposes a clear MP4 through preview/share.
+- Given privacy mode is enabled, when the user starts a screenshot and grants MediaProjection consent, then ContentGlows captures the screen, detects likely text/photo/face regions, applies the selected redaction style, stores a local PNG whose metadata says `privacyMode=true` and `reviewState=needsReview`, and never adds the clear screenshot to recent captures.
+- Given privacy mode is enabled, when the user starts a recording and grants MediaProjection consent, then ContentGlows captures video frames, tracks text regions through scroll/motion, applies blur/pixelation/scramble overlays before producing the final MP4, stores a local MP4 whose metadata says `privacyMode=true` and `reviewState=needsReview`, and never exposes a clear MP4 through preview/share.
 - Given the user chooses text style `scramble`, when text regions are detected, then real text pixels are covered and replaced visually with fake glyphs or line fragments that preserve layout without storing recognized text.
 - Given the user chooses text style `blur` or `pixelate`, when text regions are detected, then the selected effect is applied with enough expansion around each region to cover ascenders, descenders, antialiasing, and scroll jitter.
-- Given photo redaction is enabled, when image-like regions or faces are detected, then ContentGlowz applies the selected photo redaction effect without masking the entire screen by default.
+- Given photo redaction is enabled, when image-like regions or faces are detected, then ContentGlows applies the selected photo redaction effect without masking the entire screen by default.
 - Given the user scrolls a messaging app or browser during recording, when OCR detects text on nearby frames, then redaction boxes remain active for a short temporal window and move/expand conservatively so text does not flash clear between OCR runs.
-- Given a privacy-marked asset exists, when the user taps share/export before review acknowledgement, then ContentGlowz shows a review confirmation explaining that anonymization is best-effort and the user is responsible for checking the final video before upload.
+- Given a privacy-marked asset exists, when the user taps share/export before review acknowledgement, then ContentGlows shows a review confirmation explaining that anonymization is best-effort and the user is responsible for checking the final video before upload.
 - Given the user acknowledges review, when they share/export a privacy-marked asset, then only the redacted flattened PNG/MP4 is shared through Android intents.
 - Given privacy mode is off, when the user records normally, then the existing capture path and behavior remain unchanged.
 
@@ -150,7 +150,7 @@ Add an Android-only privacy capture mode that uses a separate native capture pip
 - Privacy recording must not use the current direct `MediaRecorder` output path as the final privacy asset because it bypasses per-frame redaction.
 - The final shareable file must be flattened raster video/image output; it must not include editable redaction layers, OCR text, source frames, or unblurred auxiliary tracks.
 - ML Kit recognized text content must be discarded immediately after deriving bounds; only region geometry and aggregate stats may be stored.
-- The UI must state "best-effort", "non exhaustive", and "manual review required"; it must not state that ContentGlowz is fully responsible for every leak or that the output is guaranteed safe.
+- The UI must state "best-effort", "non exhaustive", and "manual review required"; it must not state that ContentGlows is fully responsible for every leak or that the output is guaranteed safe.
 - Legal copy must be product-safe but implementation should leave final liability wording reviewable; do not hard-code aggressive legal claims that need counsel.
 - Privacy mode must preserve normal capture mode behavior.
 - Use app-scoped storage for outputs and temporary files.
@@ -165,9 +165,9 @@ Local dependencies and contracts:
 - `app/lib/data/services/device_capture_service.dart`: extend platform-channel contract to pass privacy options and parse privacy events/assets.
 - `app/lib/data/models/capture_asset.dart`: extend local asset metadata for privacy/redaction status.
 - `app/lib/data/services/capture_local_store.dart`: persist new metadata only; no binary data.
-- `app/android/app/src/main/kotlin/com/contentglowz/app/capture/ScreenCaptureChannel.kt`: route normal vs privacy operations and expose typed native errors/events.
-- `app/android/app/src/main/kotlin/com/contentglowz/app/capture/ScreenRecordService.kt`: keep normal recording unchanged; do not overload it with privacy behavior if a separate service keeps lifecycle clearer.
-- New native privacy classes under `app/android/app/src/main/kotlin/com/contentglowz/app/capture/privacy/`.
+- `app/android/app/src/main/kotlin/com/contentglows/app/capture/ScreenCaptureChannel.kt`: route normal vs privacy operations and expose typed native errors/events.
+- `app/android/app/src/main/kotlin/com/contentglows/app/capture/ScreenRecordService.kt`: keep normal recording unchanged; do not overload it with privacy behavior if a separate service keeps lifecycle clearer.
+- New native privacy classes under `app/android/app/src/main/kotlin/com/contentglows/app/capture/privacy/`.
 - `app/android/app/build.gradle.kts`: add Android native dependencies for ML Kit and Media3 if used.
 - `app/android/app/src/main/AndroidManifest.xml`: update only if new service metadata is required; do not add AccessibilityService in V1.
 - `app/lib/data/services/api_service.dart`: include privacy metadata in capture asset/content metadata payloads without backend schema changes.
@@ -199,7 +199,7 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-05-08.
 - Recognized text content must never be persisted, logged, sent to backend, or included in asset metadata.
 - Backend metadata may contain redaction settings and aggregate stats only.
 - Capture and redaction must remain local-first; no cloud processing in this chantier.
-- Protected-content black frames or omitted content remain platform behavior, not a ContentGlowz bug.
+- Protected-content black frames or omitted content remain platform behavior, not a ContentGlows bug.
 
 ## Links & Consequences
 
@@ -290,7 +290,7 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-05-08.
   - Notes: If local `flutter.minSdkVersion` is below dependency requirements, gate privacy mode on Android API support or explicitly bump minSdk in a separate readiness decision.
 
 - [ ] Task 7: Create native privacy option and event data classes.
-  - File: `app/android/app/src/main/kotlin/com/contentglowz/app/capture/privacy/PrivacyCaptureOptions.kt`
+  - File: `app/android/app/src/main/kotlin/com/contentglows/app/capture/privacy/PrivacyCaptureOptions.kt`
   - Action: Define Kotlin representations for privacy options, redaction styles, strength, review/status metadata, processing stats, and typed error codes from platform-channel arguments.
   - User story link: Keeps platform-channel parsing out of the low-level rendering pipeline.
   - Depends on: Task 2.
@@ -298,7 +298,7 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-05-08.
   - Notes: Keep option names aligned with Dart enums.
 
 - [ ] Task 8: Route privacy requests through a separate native path.
-  - File: `app/android/app/src/main/kotlin/com/contentglowz/app/capture/ScreenCaptureChannel.kt`
+  - File: `app/android/app/src/main/kotlin/com/contentglows/app/capture/ScreenCaptureChannel.kt`
   - Action: Parse privacy options, request MediaProjection exactly like normal capture, and start privacy screenshot/recording classes instead of `ScreenShotService`/`ScreenRecordService` when privacy mode is enabled.
   - User story link: Lets privacy mode use a redaction pipeline without disturbing normal recording.
   - Depends on: Tasks 7 and existing capture consent flow.
@@ -306,7 +306,7 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-05-08.
   - Notes: Keep Android 14 single-use token behavior intact.
 
 - [ ] Task 9: Implement privacy screenshot redaction.
-  - File: `app/android/app/src/main/kotlin/com/contentglowz/app/capture/privacy/PrivacyScreenshotCapture.kt`
+  - File: `app/android/app/src/main/kotlin/com/contentglows/app/capture/privacy/PrivacyScreenshotCapture.kt`
   - Action: Capture one frame through ImageReader, run text/face/photo detection on the bitmap, apply selected effects, save only the redacted PNG, and return privacy metadata.
   - User story link: Provides best-effort privacy for still captures.
   - Depends on: Tasks 6-8.
@@ -314,7 +314,7 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-05-08.
   - Notes: This is the lowest-risk native redaction path and should be implemented before video.
 
 - [ ] Task 10: Implement frame analysis service.
-  - File: `app/android/app/src/main/kotlin/com/contentglowz/app/capture/privacy/PrivacyFrameAnalyzer.kt`
+  - File: `app/android/app/src/main/kotlin/com/contentglows/app/capture/privacy/PrivacyFrameAnalyzer.kt`
   - Action: Run ML Kit Text Recognition at a throttled cadence, run face detection when enabled, derive redaction boxes, discard recognized text content immediately, and emit only boxes/stats.
   - User story link: Finds sensitive regions while preserving user privacy and avoiding OCR text persistence.
   - Depends on: Task 6.
@@ -322,7 +322,7 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-05-08.
   - Notes: Use lower analysis resolution where needed; map boxes back to output coordinates.
 
 - [ ] Task 11: Implement temporal redaction tracking for scroll.
-  - File: `app/android/app/src/main/kotlin/com/contentglowz/app/capture/privacy/PrivacyRedactionTracker.kt`
+  - File: `app/android/app/src/main/kotlin/com/contentglows/app/capture/privacy/PrivacyRedactionTracker.kt`
   - Action: Persist detected boxes across a configurable frame/time window, expand margins, merge overlapping boxes, and apply conservative behavior during high motion or dropped OCR frames.
   - User story link: Prevents clear-text flashes during scroll while keeping the video visually pleasant.
   - Depends on: Task 10.
@@ -330,7 +330,7 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-05-08.
   - Notes: This task is critical for the user's stated scroll concern.
 
 - [ ] Task 12: Implement visual redaction renderer.
-  - File: `app/android/app/src/main/kotlin/com/contentglowz/app/capture/privacy/PrivacyRedactionRenderer.kt`
+  - File: `app/android/app/src/main/kotlin/com/contentglows/app/capture/privacy/PrivacyRedactionRenderer.kt`
   - Action: Render redaction effects over detected boxes: blur, pixelate, and fake scrambled glyph/line overlays; preserve surrounding UI layout and avoid large full-screen masks by default.
   - User story link: Produces internet-friendly videos where viewers understand the flow but cannot read sensitive text.
   - Depends on: Tasks 10 and 11.
@@ -338,7 +338,7 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-05-08.
   - Notes: If full GPU blur is too heavy, V1 may approximate blur/pixelation with downscale/upscale regions or opaque/fake glyph overlays, but the output must be visibly unreadable.
 
 - [ ] Task 13: Implement privacy recording encode pipeline.
-  - File: `app/android/app/src/main/kotlin/com/contentglowz/app/capture/privacy/PrivacyScreenRecordService.kt`
+  - File: `app/android/app/src/main/kotlin/com/contentglows/app/capture/privacy/PrivacyScreenRecordService.kt`
   - Action: Build a foreground service that captures MediaProjection frames through a processable surface path, applies analyzer/tracker/renderer output, writes final video through MediaCodec input Surface and MediaMuxer MP4, enforces the existing duration cap, and emits progress/stats events.
   - User story link: Delivers dynamic best-effort privacy for whole-screen recordings.
   - Depends on: Tasks 8, 10, 11, and 12.
@@ -381,7 +381,7 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-05-08.
 - [ ] CA 8: Given a messaging app or browser scrolls during privacy recording, when text regions move quickly, then redaction persists across adjacent frames and no obvious clear-text flashes appear in manual review.
 - [ ] CA 9: Given photo redaction is enabled, when faces or image-like regions are detected, then the selected photo effect is applied while preserving the surrounding app layout.
 - [ ] CA 10: Given ML Kit text recognition cannot initialize, when privacy capture is requested, then the app blocks privacy capture and does not silently record clear output.
-- [ ] CA 11: Given a privacy asset has `reviewState=needsReview`, when the user taps Share, then ContentGlowz requires review acknowledgement before invoking Android share.
+- [ ] CA 11: Given a privacy asset has `reviewState=needsReview`, when the user taps Share, then ContentGlows requires review acknowledgement before invoking Android share.
 - [ ] CA 12: Given the user confirms review, when Share is retried, then Android share receives only the redacted flattened PNG/MP4 path.
 - [ ] CA 13: Given a privacy capture fails mid-session, when the app returns to idle, then no clear output is listed in recent captures and any temp file is deleted or quarantined.
 - [ ] CA 14: Given privacy mode is off, when the user records normally, then existing normal capture tests and behavior still pass.
@@ -411,7 +411,7 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-05-08.
   - Stop projection via Android status chip.
   - Lock screen during privacy recording.
   - Share gate and review acknowledgement.
-  - Confirm no clear temp asset appears in ContentGlowz recent captures.
+  - Confirm no clear temp asset appears in ContentGlows recent captures.
 - Validation commands:
   - `flutter test test/data/capture_asset_test.dart test/data/capture_local_store_test.dart test/presentation/screens/capture/capture_screen_test.dart`
   - `flutter analyze`
@@ -434,8 +434,8 @@ Read first:
 
 - `app/lib/data/services/device_capture_service.dart`
 - `app/lib/presentation/screens/capture/capture_screen.dart`
-- `app/android/app/src/main/kotlin/com/contentglowz/app/capture/ScreenCaptureChannel.kt`
-- `app/android/app/src/main/kotlin/com/contentglowz/app/capture/ScreenRecordService.kt`
+- `app/android/app/src/main/kotlin/com/contentglows/app/capture/ScreenCaptureChannel.kt`
+- `app/android/app/src/main/kotlin/com/contentglows/app/capture/ScreenRecordService.kt`
 - `shipglows_data/workflow/research/shared/android-privacy-screen-redaction-technologies.md`
 
 Implementation approach:

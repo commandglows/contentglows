@@ -15,7 +15,7 @@ security_impact: "yes"
 
 Cette exploration transpose le mode Android `privacy_best_effort` au desktop macOS: capturer un ecran, une fenetre ou une zone, detecter les textes et visages dans les pixels rendus, appliquer une redaction visuelle, puis exporter uniquement un PNG/MP4 aplati marque comme confidentiel. L'objectif produit reste identique: reduire les fuites dans des videos publiques sans rendre l'interface incomprehensible.
 
-Le mode ne peut pas promettre une anonymisation parfaite. Sur macOS, comme sur iOS et Android, les APIs de capture donnent des pixels deja composes, pas un arbre semantique modifiable de l'app tierce. Les textes ne peuvent donc pas etre "remplaces" dans l'app source; ils peuvent seulement etre couverts, floutes, pixelises ou remplaces visuellement dans la sortie ContentGlowz.
+Le mode ne peut pas promettre une anonymisation parfaite. Sur macOS, comme sur iOS et Android, les APIs de capture donnent des pixels deja composes, pas un arbre semantique modifiable de l'app tierce. Les textes ne peuvent donc pas etre "remplaces" dans l'app source; ils peuvent seulement etre couverts, floutes, pixelises ou remplaces visuellement dans la sortie ContentGlows.
 
 La contrainte de privacy est forte: le flux partageable doit etre un export aplati, sans couche de redaction editable, sans texte OCR stocke, sans frames claires persistantes dans l'historique normal, et avec une revue post-production obligatoire avant partage/export.
 

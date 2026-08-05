@@ -10,7 +10,7 @@ source_skill: sf-spec
 scope: "migration"
 owner: "Diane"
 confidence: medium
-user_story: "En tant que mainteneuse du site marketing ContentGlowz, je veux migrer site d'Astro 5 vers Astro 6, afin de garder un build supporté, sécurisé et déployable sans régression SEO ni rupture des pages de contenu."
+user_story: "En tant que mainteneuse du site marketing ContentGlows, je veux migrer site d'Astro 5 vers Astro 6, afin de garder un build supporté, sécurisé et déployable sans régression SEO ni rupture des pages de contenu."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -19,7 +19,7 @@ linked_systems:
   - "Vercel deployment"
   - "Content collections Markdown"
   - "Sitemap and robots endpoints"
-  - "ContentGlowz app handoff routes"
+  - "ContentGlows app handoff routes"
 depends_on:
   - artifact: "shipglows_data/business/business.md"
     artifact_version: "1.0.0"
@@ -60,8 +60,8 @@ Ready. Spec implementable without blocking gaps.
 
 Baseline observed on 2026-04-27:
 
-- Current working directory: `/home/claude/contentglowz/site`
-- Current package name: `contentglowz-landing`
+- Current working directory: `/home/claude/contentglows/site`
+- Current package name: `contentglows-landing`
 - Current Astro dependency: `astro@^5.17.1`
 - Current sitemap integration: `@astrojs/sitemap@^3.7.2`
 - Current package manager: `npm@11.12.1`
@@ -71,9 +71,9 @@ Baseline observed on 2026-04-27:
 - Current repo state includes pre-existing uncommitted changes in docs and package files. The migration implementation must not revert or overwrite unrelated parallel agent changes.
 
 ## User Story
-En tant que mainteneuse du site marketing ContentGlowz, je veux migrer `site` d'Astro 5 vers Astro 6, afin de garder un build supporté, sécurisé et déployable sans régression SEO, contenu, sitemap, pages marketing, ni routes de redirection vers l'application.
+En tant que mainteneuse du site marketing ContentGlows, je veux migrer `site` d'Astro 5 vers Astro 6, afin de garder un build supporté, sécurisé et déployable sans régression SEO, contenu, sitemap, pages marketing, ni routes de redirection vers l'application.
 
-Actor: mainteneuse du site marketing ContentGlowz.
+Actor: mainteneuse du site marketing ContentGlows.
 
 Trigger: décision de migration majeure Astro 5 -> 6 sur le repo `site`.
 
@@ -94,7 +94,7 @@ Après migration:
 - Les pages dynamiques rendent le contenu avec `render(post)` depuis `astro:content`, pas `post.render()`.
 - Les pages index et related posts construisent leurs URLs avec l'identifiant compatible Astro 6.
 - `/robots.txt` répond sans trailing slash et pointe vers `${siteUrl}/sitemap-index.xml`.
-- Les routes `/sign-in`, `/sign-up`, et `/launch` conservent leur handoff vers `app.contentglowz.winflowz.com` et la transmission de `redirect_url` quand applicable.
+- Les routes `/sign-in`, `/sign-up`, et `/launch` conservent leur handoff vers `app.contentglows.winflowz.com` et la transmission de `redirect_url` quand applicable.
 - Les métadonnées SEO de `Layout.astro` restent générées: canonical, Open Graph, Twitter Card, JSON-LD Organization/WebSite/Article.
 - Les pages de contenu principales restent générées: `blog`, `ai-agents`, `platform`, `seo-strategy`, `startup-journey`, `technical-optimization`, `tutorials`.
 - Le sitemap généré ne contient pas de drafts et ne référence pas de chemins cassés causés par le passage de `slug` à `id`.
@@ -158,8 +158,8 @@ La migration doit être incrémentale:
 - Revert des changements parallèles déjà présents dans le working tree.
 
 ## Constraints
-- Repo autorisé: `/home/claude/contentglowz/site` uniquement.
-- Fichier de spec autorisé: `/home/claude/contentglowz/shipglows_data/workflow/specs/site/SPEC-migrate-astro-v6.md`.
+- Repo autorisé: `/home/claude/contentglows/site` uniquement.
+- Fichier de spec autorisé: `/home/claude/contentglows/shipglows_data/workflow/specs/site/SPEC-migrate-astro-v6.md`.
 - Ne jamais annuler ou écraser les changements d'autres agents.
 - Le working tree actuel contient déjà des modifications non liées dans plusieurs fichiers docs et package files; l'implémentation doit inspecter les diffs avant d'éditer un fichier modifié.
 - Node doit rester `>=22 <23`; Astro 6 requiert Node `22.12.0` ou supérieur selon la doc officielle.
@@ -196,8 +196,8 @@ External dependencies and fresh-docs verdict:
 - Zod 4 migration guide: needed if current schemas fail after Astro 6 because `baseSchema` uses transform/default/coerce. Verdict: `fresh-docs gap acceptable for spec; implementation should consult if build/type errors point to Zod`.
 
 ## Invariants
-- Public site URL remains `https://contentglowz.winflowz.com` by default unless `APP_SITE_URL` overrides it.
-- App URL remains `https://app.contentglowz.winflowz.com` by default unless `APP_WEB_URL` overrides it.
+- Public site URL remains `https://contentglows.winflowz.com` by default unless `APP_SITE_URL` overrides it.
+- App URL remains `https://app.contentglows.winflowz.com` by default unless `APP_WEB_URL` overrides it.
 - `/sign-in`, `/sign-up`, and `/launch` stay noindex redirect pages.
 - `/robots.txt` remains a generated endpoint with `Content-Type: text/plain; charset=utf-8`.
 - Sitemap URL in robots remains `${siteUrl}/sitemap-index.xml`.
@@ -458,7 +458,7 @@ Investigation performed for this spec on 2026-04-27:
 Recommended incremental migration command sequence:
 
 ```bash
-cd /home/claude/contentglowz/site
+cd /home/claude/contentglows/site
 git status --short
 git diff -- package.json package-lock.json src/content/config.ts src/layouts/BlogPost.astro src/pages src/config/site.ts astro.config.mjs
 node -v

@@ -141,7 +141,7 @@ Tous nos articles blog suivent cette structure:
 title: "How to [Benefit] with [Technology] - [Year] Guide"
 description: "Learn [outcome]. [Specific value prop]. Step-by-step guide with examples."
 pubDate: 2026-01-15
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["primary keyword", "secondary", "tertiary"]
 featured: true/false
 image: "/images/blog/slug.jpg"

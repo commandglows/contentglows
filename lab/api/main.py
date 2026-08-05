@@ -358,7 +358,7 @@ app = FastAPI(
     openapi_url="/openapi.json",
     contact={
         "name": "SEO Robots Team",
-        "url": "https://github.com/diane-defores/contentglowz",
+        "url": "https://github.com/commandglows/contentglows",
     },
     license_info={
         "name": "MIT",
@@ -442,15 +442,15 @@ app.add_middleware(
         "http://127.0.0.1:3000",      # Alternative localhost
         "http://127.0.0.1:3050",      # Flutter web dev/PM2
         "http://127.0.0.1:3023",      # Flutter web PM2/devserver
-        "https://www.contentglowz.com",
-        "https://contentglowz.com",
-        "https://app.contentglowz.com",
+        "https://www.contentglows.com",
+        "https://contentglows.com",
+        "https://app.contentglows.com",
         "https://site.vercel.app",
     ],
     allow_origin_regex=(
         r"https://("
-        r"contentglowz[a-z0-9-]*\.(vercel\.app|railway\.app)"
-        r"|([a-z0-9-]+\.)*contentglowz\.com"
+        r"contentglows[a-z0-9-]*\.(vercel\.app|railway\.app)"
+        r"|([a-z0-9-]+\.)*contentglows\.com"
         r")$"
     ),
     allow_credentials=True,

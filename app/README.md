@@ -1,6 +1,6 @@
-# ContentGlowz App
+# ContentGlows App
 
-Flutter product application for ContentGlowz.
+Flutter product application for ContentGlows.
 
 This local README is an entrypoint, not the canonical technical or product source of truth.
 

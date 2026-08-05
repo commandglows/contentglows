@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 17:20:22 UTC"
 updated: "2026-05-11"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
 confidence: "high"
-user_story: "En tant que créatrice ContentGlowz authentifiée travaillant dans un projet, je veux retrouver et réutiliser tous les assets de projet utiles aux contenus, images IA, vidéos, audio, musiques, thumbnails et fonds animés, afin de garder une production cohérente sans dupliquer les fichiers ni sortir du workflow guidé."
+user_story: "En tant que créatrice ContentGlows authentifiée travaillant dans un projet, je veux retrouver et réutiliser tous les assets de projet utiles aux contenus, images IA, vidéos, audio, musiques, thumbnails et fonds animés, afin de garder une production cohérente sans dupliquer les fichiers ni sortir du workflow guidé."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -88,11 +88,11 @@ Ready. This spec defines the cross-media project asset library that sits above t
 
 ## User Story
 
-En tant que créatrice ContentGlowz authentifiée travaillant dans un projet, je veux retrouver et réutiliser tous les assets de projet utiles aux contenus, images IA, vidéos, audio, musiques, thumbnails et fonds animés, afin de garder une production cohérente sans dupliquer les fichiers ni sortir du workflow guidé.
+En tant que créatrice ContentGlows authentifiée travaillant dans un projet, je veux retrouver et réutiliser tous les assets de projet utiles aux contenus, images IA, vidéos, audio, musiques, thumbnails et fonds animés, afin de garder une production cohérente sans dupliquer les fichiers ni sortir du workflow guidé.
 
 ## Minimal Behavior Contract
 
-For an authenticated creator inside an owned project, ContentGlowz exposes a unified project asset library that lists and filters server-known assets across media types, including generated images, uploaded references, local-only captures, thumbnails, video covers, narration tracks, music beds, Remotion background configs and future render artifacts. The library returns only owned, safe metadata plus backend-approved preview/playback URLs, lets editor-linked flows pick or reuse eligible assets for a content placement or video version, and lets users tombstone assets from future reuse while preserving 30-day history and existing provenance. If ownership, eligibility, storage, source metadata, stale version, or media-kind compatibility fails, the action is rejected with a recoverable typed error and no downstream publish/render state changes. The edge case easy to miss is treating this as a public DAM or upload playground: V1 is a project-scoped, workflow-guided inventory and picker layer, not a public media browser or a generic file manager.
+For an authenticated creator inside an owned project, ContentGlows exposes a unified project asset library that lists and filters server-known assets across media types, including generated images, uploaded references, local-only captures, thumbnails, video covers, narration tracks, music beds, Remotion background configs and future render artifacts. The library returns only owned, safe metadata plus backend-approved preview/playback URLs, lets editor-linked flows pick or reuse eligible assets for a content placement or video version, and lets users tombstone assets from future reuse while preserving 30-day history and existing provenance. If ownership, eligibility, storage, source metadata, stale version, or media-kind compatibility fails, the action is rejected with a recoverable typed error and no downstream publish/render state changes. The edge case easy to miss is treating this as a public DAM or upload playground: V1 is a project-scoped, workflow-guided inventory and picker layer, not a public media browser or a generic file manager.
 
 ## Success Behavior
 
@@ -123,7 +123,7 @@ For an authenticated creator inside an owned project, ContentGlowz exposes a uni
 
 ## Problem
 
-ContentGlowz already has multiple asset concepts that are correct in isolation but not unified: content-scoped `content_assets`, local-only captures, AI-generated image candidates, uploaded visual references, video covers, Remotion video versions, AI narration tracks, music beds, and procedural animated backgrounds. The existing ready `Project Visual Asset Picker Library` covers visual/image reuse, but the product direction now needs a broader asset foundation so the app can reason consistently about every project asset used by content and video workflows. Without a unified contract, each feature will invent its own eligibility, tombstone, storage, usage and picker rules.
+ContentGlows already has multiple asset concepts that are correct in isolation but not unified: content-scoped `content_assets`, local-only captures, AI-generated image candidates, uploaded visual references, video covers, Remotion video versions, AI narration tracks, music beds, and procedural animated backgrounds. The existing ready `Project Visual Asset Picker Library` covers visual/image reuse, but the product direction now needs a broader asset foundation so the app can reason consistently about every project asset used by content and video workflows. Without a unified contract, each feature will invent its own eligibility, tombstone, storage, usage and picker rules.
 
 ## Solution
 

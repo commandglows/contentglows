@@ -32,7 +32,7 @@ def _load_context_tools_module():
     sys.modules["crewai.tools"] = fake_tools
 
     spec = importlib.util.spec_from_file_location(
-        "contentglowz_newsletter_context_tools",
+        "contentglows_newsletter_context_tools",
         _MEMORY_TOOLS_PATH,
     )
     assert spec is not None and spec.loader is not None

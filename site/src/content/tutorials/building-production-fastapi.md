@@ -2,7 +2,7 @@
 title: "Building Production-Ready FastAPI: From Python Agents to Next.js Dashboard"
 description: "How we built a FastAPI 0.128.0 server to expose our Python AI agents to a Next.js dashboard. Real-time WebSockets, auto-validation, Swagger docs, and deployment strategies."
 pubDate: 2026-01-15
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["fastapi", "python", "api design", "nextjs", "websockets", "build in public"]
 featured: true
 image: "/images/blog/fastapi-production.jpg"
@@ -125,7 +125,7 @@ import uvicorn
 
 # Initialize FastAPI
 app = FastAPI(
-    title="ContentGlowz API",
+    title="ContentGlows API",
     description="AI-powered SEO automation agents",
     version="0.1.0",
     docs_url="/docs",  # Swagger UI
@@ -155,7 +155,7 @@ app.include_router(research.router, prefix="/api/research", tags=["Research"])
 @app.get("/")
 async def root():
     return {
-        "name": "ContentGlowz API",
+        "name": "ContentGlows API",
         "version": "0.1.0",
         "status": "operational",
         "docs": "/docs",
@@ -706,7 +706,7 @@ async def version():
 ### Local Development
 
 ```bash
-cd /root/contentglowz
+cd /root/contentglows
 source venv/bin/activate
 python api/main.py
 
@@ -1082,9 +1082,9 @@ async def analyze(request: AnalyzeRequest):
 ## 📚 Resources
 
 **Code:**
-- [api/main.py](https://github.com/user/contentglowz/blob/master/api/main.py)
-- [api/routers/mesh.py](https://github.com/user/contentglowz/blob/master/api/routers/mesh.py)
-- [api/models/mesh.py](https://github.com/user/contentglowz/blob/master/api/models/mesh.py)
+- [api/main.py](https://github.com/user/contentglows/blob/master/api/main.py)
+- [api/routers/mesh.py](https://github.com/user/contentglows/blob/master/api/routers/mesh.py)
+- [api/models/mesh.py](https://github.com/user/contentglows/blob/master/api/models/mesh.py)
 
 **Documentation:**
 - [FastAPI Docs](https://fastapi.tiangolo.com/)
@@ -1112,7 +1112,7 @@ async def analyze(request: AnalyzeRequest):
 
 ---
 
-**Questions about our FastAPI implementation?** Comment below or reach out: contact@contentglowz.com
+**Questions about our FastAPI implementation?** Comment below or reach out: contact@contentglows.com
 
 *Last updated: January 15, 2026*  
 *Status: ✅ Production-ready, deployed to Railway*  

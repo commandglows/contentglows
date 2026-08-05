@@ -1,8 +1,8 @@
 ---
 title: "Platform Documentation"
-description: "Everything you need to get started with ContentGlowz. Connect your website, run SEO analysis, and automate your content strategy."
+description: "Everything you need to get started with ContentGlows. Connect your website, run SEO analysis, and automate your content strategy."
 pubDate: 2026-02-02
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["platform", "documentation", "getting started", "api"]
 featured: true
 image: "/images/blog/platform-docs.jpg"
@@ -10,7 +10,7 @@ image: "/images/blog/platform-docs.jpg"
 
 # Platform Documentation
 
-Welcome to the ContentGlowz platform. This documentation will help you connect your website, understand the analysis tools, and automate your SEO workflow.
+Welcome to the ContentGlows platform. This documentation will help you connect your website, understand the analysis tools, and automate your SEO workflow.
 
 ---
 
@@ -18,7 +18,7 @@ Welcome to the ContentGlowz platform. This documentation will help you connect y
 
 ### ⚡ Resilience
 
-ContentGlowz is usable during short backend disruptions. If API connectivity is interrupted, the app continues to show available cached data and stores supported edits in a local queue.
+ContentGlows is usable during short backend disruptions. If API connectivity is interrupted, the app continues to show available cached data and stores supported edits in a local queue.
 When the API recovers, queued actions are replayed automatically.
 
 ### 1. Connect Your Website (5 minutes)
@@ -27,7 +27,7 @@ Link your GitHub repository to start analyzing your content:
 
 ```bash
 # Start onboarding
-curl -X POST https://api.contentglowz.com/api/projects/onboard \
+curl -X POST https://api.contentglows.com/api/projects/onboard \
   -H "Content-Type: application/json" \
   -d '{"github_url": "https://github.com/you/your-site"}'
 ```
@@ -39,7 +39,7 @@ curl -X POST https://api.contentglowz.com/api/projects/onboard \
 Once connected, analyze your topical mesh:
 
 ```bash
-curl -X POST https://api.contentglowz.com/api/mesh/analyze \
+curl -X POST https://api.contentglows.com/api/mesh/analyze \
   -H "Content-Type: application/json" \
   -d '{"repo_url": "https://github.com/you/your-site"}'
 ```
@@ -112,7 +112,7 @@ Automatically detected from lock files:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                   CONTENTGLOWZ WORKFLOW                      │
+│                   CONTENTGLOWS WORKFLOW                      │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
 │  1. CONNECT                                                 │
@@ -188,7 +188,7 @@ import httpx
 
 # Analyze your site
 response = httpx.post(
-    "https://api.contentglowz.com/api/mesh/analyze",
+    "https://api.contentglows.com/api/mesh/analyze",
     json={"repo_url": "https://github.com/you/your-site"},
     headers={"Authorization": "Bearer YOUR_API_KEY"}
 )
@@ -213,7 +213,7 @@ Add to your deployment pipeline:
 # .github/workflows/seo-check.yml
 - name: SEO Analysis
   run: |
-    curl -X POST https://api.contentglowz.com/api/mesh/analyze \
+    curl -X POST https://api.contentglows.com/api/mesh/analyze \
       -H "Authorization: Bearer ${{ secrets.SEO_API_KEY }}" \
       -d '{"repo_url": "${{ github.repository }}"}'
 ```
@@ -230,9 +230,9 @@ Add to your deployment pipeline:
 
 ### Support
 
-- **Email:** support@contentglowz.com
+- **Email:** support@contentglows.com
 - **Discord:** [Join our community](#discord)
-- **GitHub:** [Report issues](https://github.com/diane-defores/contentglowz/issues)
+- **GitHub:** [Report issues](https://github.com/commandglows/contentglows/issues)
 
 ---
 

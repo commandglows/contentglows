@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: feature
 owner: "Diane"
 confidence: medium
-user_story: "En tant que créateur ContentGlowz sur Android, je veux capturer une photo ou une vidéo de tout l'écran de mon appareil avec consentement système explicite, afin de produire rapidement des assets visuels réutilisables dans mes contenus."
+user_story: "En tant que créateur ContentGlows sur Android, je veux capturer une photo ou une vidéo de tout l'écran de mon appareil avec consentement système explicite, afin de produire rapidement des assets visuels réutilisables dans mes contenus."
 risk_level: high
 security_impact: "yes"
 docs_impact: "yes"
@@ -45,7 +45,7 @@ supersedes: []
 evidence:
   - "pubspec.yaml already has Flutter/Riverpod/Dio/shared_preferences and the audio-only record package, but no screen capture or MediaProjection dependency."
   - "android/app/src/main/AndroidManifest.xml currently declares only RECORD_AUDIO and no mediaProjection foreground service permissions."
-  - "android/app/src/main/kotlin/com/contentglowz/app/MainActivity.kt is a minimal FlutterActivity, so native platform-channel capture work is clean-slate."
+  - "android/app/src/main/kotlin/com/contentglows/app/MainActivity.kt is a minimal FlutterActivity, so native platform-channel capture work is clean-slate."
   - "lib/data/services/feedback_service.dart and lab/api/routers/feedback.py already implement a signed upload/finalize pattern for binary audio feedback; this is a future reference pattern only, not V1 scope."
   - "SPEC-offline-sync-v2 explicitly blocks binary/audio uploads offline, which should apply to capture media uploads too."
   - "Android official MediaProjection docs confirm full display/app-window capture through MediaProjection, VirtualDisplay, MediaRecorder/ImageReader, user consent, and foreground-service requirements."
@@ -62,7 +62,7 @@ Implemented Android-first feature spec, pending real-device Android QA. V1 is An
 
 ## User Story
 
-En tant que créateur ContentGlowz sur Android, je veux capturer une photo ou une vidéo de tout l'écran de mon appareil avec consentement système explicite, afin de produire rapidement des assets visuels réutilisables dans mes contenus.
+En tant que créateur ContentGlows sur Android, je veux capturer une photo ou une vidéo de tout l'écran de mon appareil avec consentement système explicite, afin de produire rapidement des assets visuels réutilisables dans mes contenus.
 
 ## Minimal Behavior Contract
 
@@ -70,8 +70,8 @@ When a signed-in Android user opens the new Capture surface and starts a screens
 
 ## Success Behavior
 
-- Given the user taps "Screenshot" on Android, when Android grants capture consent, then ContentGlowz captures one frame of the device display through MediaProjection and stores a local PNG in app-scoped storage.
-- Given the user taps "Record", when Android grants capture consent, then ContentGlowz records the device display to a local MP4 until the user taps stop or Android stops the projection.
+- Given the user taps "Screenshot" on Android, when Android grants capture consent, then ContentGlows captures one frame of the device display through MediaProjection and stores a local PNG in app-scoped storage.
+- Given the user taps "Record", when Android grants capture consent, then ContentGlows records the device display to a local MP4 until the user taps stop or Android stops the projection.
 - Given the device is on Android 14 or newer, when full-display capture can be requested, then the native layer should request the default display capture mode so the user flow is biased toward whole-device capture rather than app-window capture.
 - Given the user grants app-window capture instead of full-display capture because the OS/OEM prompts that way, then the app must not lie: it should label the capture result as system-selected capture and keep the file usable.
 - Given a local capture completes, when preview loads, then the user can discard or share/export the file from app-scoped storage.
@@ -90,11 +90,11 @@ When a signed-in Android user opens the new Capture surface and starts a screens
 - If microphone audio is enabled and `RECORD_AUDIO` is denied, video-only recording should remain available.
 - If internal app audio capture is attempted in a later version and Android or the source app disallows playback capture, continue with screen video and surface that internal audio was unavailable.
 - If the 5-minute cap is reached, stop recording, finalize the local file when possible, and show that the maximum duration was reached.
-- If capture contains sensitive third-party screen content, it must remain local unless the user explicitly shares or exports it outside ContentGlowz.
+- If capture contains sensitive third-party screen content, it must remain local unless the user explicitly shares or exports it outside ContentGlows.
 
 ## Problem
 
-ContentGlowz currently helps creators plan, draft, review, and publish content, but it does not let the creator capture what is happening on their own Android device. Existing media code is limited to audio feedback. That is not enough for tutorials, walkthroughs, bug/UX examples, app demos, swipeable proof, or short-form B-roll captured from the device. The user explicitly accepts the Android consent prompt as part of the feature, so the problem is not consent friction; the problem is designing a correct native Android capture boundary that records the whole device screen, handles Android privacy constraints honestly, and fits ContentGlowz's local-first/offline model.
+ContentGlows currently helps creators plan, draft, review, and publish content, but it does not let the creator capture what is happening on their own Android device. Existing media code is limited to audio feedback. That is not enough for tutorials, walkthroughs, bug/UX examples, app demos, swipeable proof, or short-form B-roll captured from the device. The user explicitly accepts the Android consent prompt as part of the feature, so the problem is not consent friction; the problem is designing a correct native Android capture boundary that records the whole device screen, handles Android privacy constraints honestly, and fits ContentGlows's local-first/offline model.
 
 ## Solution
 
@@ -149,8 +149,8 @@ Local app dependencies and contracts:
 
 - `app/pubspec.yaml`: currently has no MediaProjection/screen capture package and may need `permission_handler` only if runtime permission handling is not implemented natively.
 - `android/app/src/main/AndroidManifest.xml`: add foreground service permissions/service declaration and possibly `POST_NOTIFICATIONS`.
-- `android/app/src/main/kotlin/com/contentglowz/app/MainActivity.kt`: add or delegate MethodChannel/EventChannel registration.
-- New native Kotlin classes under `android/app/src/main/kotlin/com/contentglowz/app/capture/`.
+- `android/app/src/main/kotlin/com/contentglows/app/MainActivity.kt`: add or delegate MethodChannel/EventChannel registration.
+- New native Kotlin classes under `android/app/src/main/kotlin/com/contentglows/app/capture/`.
 - New Flutter data/model/provider/UI files under `lib/data/models`, `lib/data/services`, `lib/providers`, and `lib/presentation/screens/capture`.
 - `lib/router.dart` and `lib/presentation/screens/app_shell.dart`: add route/navigation entry if the feature is part of the app shell.
 - `lab/api/routers/feedback.py` and `api/services/feedback_storage.py`: future reference pattern for signed upload only; do not call, modify, or overload feedback routes in V1.
@@ -169,13 +169,13 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-05-04.
 
 - Capture starts only after explicit Android consent.
 - Recording is visibly active through Android foreground-service/system indicators.
-- The user can stop recording from ContentGlowz; Android can also stop it externally.
+- The user can stop recording from ContentGlows; Android can also stop it externally.
 - Each projection token is single-use.
 - Completed local media remains under user control until discard or share/export.
 - V1 never uploads captured media to a backend or stores capture metadata in a server asset library.
 - Captured media is never silently attached to feedback, diagnostics, content records, or analytics.
 - Degraded/offline mode does not block local capture, preview, discard, or share/export.
-- Protected or black-screen content from other apps is an expected platform outcome, not a ContentGlowz bug.
+- Protected or black-screen content from other apps is an expected platform outcome, not a ContentGlows bug.
 
 ## Links & Consequences
 
@@ -201,10 +201,10 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-05-04.
 - User rotates the device during recording.
 - User locks the device during recording.
 - User taps Android's status bar capture chip and stops projection.
-- Another app starts a projection and terminates ContentGlowz's session.
+- Another app starts a projection and terminates ContentGlows's session.
 - Device policy disables screen capture.
 - Source app marks content secure, yielding black frames or omitted protected content.
-- Recording starts while ContentGlowz goes to background to capture another app.
+- Recording starts while ContentGlows goes to background to capture another app.
 - Notification permission is denied.
 - Microphone permission is denied while video capture is allowed.
 - App process is killed while the foreground service is recording.
@@ -216,7 +216,7 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-05-04.
 ## Implementation Tasks
 
 - [x] Task 1: Decide custom native implementation vs plugin adoption after a short Android spike.
-  - File: `app/pubspec.yaml`, `app/android/app/src/main/kotlin/com/contentglowz/app/MainActivity.kt`
+  - File: `app/pubspec.yaml`, `app/android/app/src/main/kotlin/com/contentglows/app/MainActivity.kt`
   - Action: Evaluate whether `flutter_screen_recording` satisfies screenshot, Android 14 consent, foreground service, local output path, lifecycle callbacks, notification, and storage requirements. Default to custom Kotlin if any requirement is not met cleanly.
   - User story link: Ensures the Android capture foundation can actually capture device screen media for creator assets.
   - Depends on: None.
@@ -232,7 +232,7 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-05-04.
   - Notes: Avoid legacy external storage permissions unless an explicit gallery export task scopes them.
 
 - [x] Task 3: Implement native MediaProjection consent bridge.
-  - File: `app/android/app/src/main/kotlin/com/contentglowz/app/capture/ScreenCaptureChannel.kt`
+  - File: `app/android/app/src/main/kotlin/com/contentglows/app/capture/ScreenCaptureChannel.kt`
   - Action: Register MethodChannel/EventChannel APIs for `isSupported`, `requestScreenshotConsent`, `startRecordingConsent`, `stopRecording`, and status events; use Activity Result APIs or equivalent safe request flow.
   - User story link: Lets Flutter trigger Android's explicit consent prompt and receive reliable state.
   - Depends on: Task 2.
@@ -240,7 +240,7 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-05-04.
   - Notes: Do not reuse Activity result `Intent` across sessions.
 
 - [x] Task 4: Implement native screenshot capture.
-  - File: `app/android/app/src/main/kotlin/com/contentglowz/app/capture/ScreenShotCapture.kt`
+  - File: `app/android/app/src/main/kotlin/com/contentglows/app/capture/ScreenShotCapture.kt`
   - Action: Use MediaProjection + VirtualDisplay + ImageReader to capture one frame, save PNG to app-scoped storage, release all resources, and return file metadata.
   - User story link: Provides the "prendre en photo tout l'ecran" capability.
   - Depends on: Task 3.
@@ -248,7 +248,7 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-05-04.
   - Notes: Timeout if no frame arrives; never leave projection alive after one-shot capture.
 
 - [x] Task 5: Implement native recording foreground service.
-  - File: `app/android/app/src/main/kotlin/com/contentglowz/app/capture/ScreenRecordService.kt`
+  - File: `app/android/app/src/main/kotlin/com/contentglows/app/capture/ScreenRecordService.kt`
   - Action: Start a foreground service, configure MediaRecorder MP4 output, create VirtualDisplay from MediaProjection, stream status/duration, enforce a 5-minute maximum, stop/finalize file safely, and release resources in `MediaProjection.Callback.onStop()`.
   - User story link: Provides the "enregistrer une video de tout l'ecran" capability.
   - Depends on: Task 3.
@@ -256,7 +256,7 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-05-04.
   - Notes: Register callbacks before `createVirtualDisplay()`.
 
 - [x] Task 6: Add optional microphone audio toggle, off by default.
-  - File: `app/lib/presentation/screens/capture/capture_screen.dart`, `app/android/app/src/main/kotlin/com/contentglowz/app/capture/ScreenRecordService.kt`
+  - File: `app/lib/presentation/screens/capture/capture_screen.dart`, `app/android/app/src/main/kotlin/com/contentglows/app/capture/ScreenRecordService.kt`
   - Action: Add a disabled-by-default microphone toggle; request runtime mic permission only when enabled; continue video-only if denied.
   - User story link: Lets creators record voiceover while capturing the device screen.
   - Depends on: Task 5.
@@ -272,7 +272,7 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-05-04.
   - Notes: Include local path, mime type, duration, width/height, file size, createdAt, microphone-enabled flag, and system-selected capture label metadata. Do not include upload metadata in V1.
 
 - [x] Task 8: Add capture state recovery and local history.
-  - File: `app/lib/data/services/capture_local_store.dart`, `app/lib/presentation/screens/capture/capture_screen.dart`, `app/android/app/src/main/kotlin/com/contentglowz/app/capture/ScreenRecordService.kt`
+  - File: `app/lib/data/services/capture_local_store.dart`, `app/lib/presentation/screens/capture/capture_screen.dart`, `app/android/app/src/main/kotlin/com/contentglows/app/capture/ScreenRecordService.kt`
   - Action: Add native recording-state replay for screen recreation, plus local metadata persistence for recent captures.
   - User story link: Keeps capture status visible and recoverable across UI transitions.
   - Depends on: Task 7.
@@ -288,7 +288,7 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-05-04.
   - Notes: Avoid in-app text that promises hidden/universal capture. Do not show upload actions in V1.
 
 - [x] Task 10: Add share/export integration for local files.
-  - File: `app/lib/data/services/device_capture_service.dart`, `app/android/app/src/main/kotlin/com/contentglowz/app/capture/CaptureFileProvider.kt`, `app/lib/presentation/screens/capture/capture_screen.dart`
+  - File: `app/lib/data/services/device_capture_service.dart`, `app/android/app/src/main/kotlin/com/contentglows/app/capture/CaptureFileProvider.kt`, `app/lib/presentation/screens/capture/capture_screen.dart`
   - Action: Wire local PNG/MP4 share/export from app-scoped storage through a native Android read-only content provider and share intent.
   - User story link: Lets creators reuse captured local assets in their content workflows without backend storage.
   - Depends on: Task 9.
@@ -313,7 +313,7 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-05-04.
 
 ## Acceptance Criteria
 
-- [ ] CA1: Given an Android user selects Screenshot and grants system consent, when capture completes, then a PNG of the system-granted display/app region is saved locally and previewed in ContentGlowz.
+- [ ] CA1: Given an Android user selects Screenshot and grants system consent, when capture completes, then a PNG of the system-granted display/app region is saved locally and previewed in ContentGlows.
 - [ ] CA2: Given an Android user selects Record and grants system consent, when they stop recording, then an MP4 is saved locally, can be previewed/shared, and has duration/file-size metadata.
 - [ ] CA3: Given the user denies consent, when the system dialog closes, then no file is created and the Capture screen returns to idle with a declined message.
 - [ ] CA4: Given Android stops projection externally, when `onStop()` fires, then all native resources are released and Flutter state leaves recording mode.
@@ -371,7 +371,7 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-05-04.
   - Microphone audio: optional toggle, off by default.
   - Internal audio: out of scope until explicitly requested.
   - Backend upload, synced asset library, and Turso migration: out of scope and deferred to `SPEC-android-capture-backend-upload.md` or equivalent future spec.
-- Read first: `android/app/src/main/AndroidManifest.xml`, `android/app/src/main/kotlin/com/contentglowz/app/MainActivity.kt`, `lib/router.dart`, `lib/presentation/screens/app_shell.dart`, existing provider/service patterns, and feedback upload files only as future-pattern reference.
+- Read first: `android/app/src/main/AndroidManifest.xml`, `android/app/src/main/kotlin/com/contentglows/app/MainActivity.kt`, `lib/router.dart`, `lib/presentation/screens/app_shell.dart`, existing provider/service patterns, and feedback upload files only as future-pattern reference.
 - Stop conditions: do not implement backend upload, ApiService capture upload methods, capture backend routes, capture migrations, automatic upload, internal app audio capture, or web/iOS capture in this chantier.
 - Use `MediaProjectionConfig.createConfigForDefaultDisplay()` on API 34+ if implementation confirms it reliably biases toward whole-display capture; gracefully fallback to system user choice on older APIs or unsupported OEM behavior.
 - Do not run Android release builds locally on Linux ARM64; use permitted local checks and x64 CI/device smoke.

@@ -70,18 +70,18 @@ Preserve the durable backend contracts that were previously documented in `lab/R
 
 ## Production API Domain Migration
 
-The public API should resolve to `https://api.contentglowz.com`. `https://api.winflowz.com` may remain a temporary alias during DNS/client migration.
+The public API should resolve to `https://api.contentglows.com`. `https://api.winflowz.com` may remain a temporary alias during DNS/client migration.
 
 Migration checklist:
 
-- Point DNS for `api.contentglowz.com` to the server currently serving the Lab API.
+- Point DNS for `api.contentglows.com` to the server currently serving the Lab API.
 - Keep Clerk validation aligned in production secrets:
   - `CLERK_JWT_ISSUER`
   - `CLERK_JWKS_URL`
   - optional aliases only if used: `CLERK_ISSUER`, `CLERK_AUDIENCE`, `CLERK_JWT_AUDIENCE`
 - Keep the legacy API alias until all clients are rebuilt.
-- Rebuild/redeploy clients with `API_BASE_URL=https://api.contentglowz.com`.
-- Verify `curl -i https://api.contentglowz.com/health` returns FastAPI health JSON, not a Vercel `DEPLOYMENT_NOT_FOUND` response.
+- Rebuild/redeploy clients with `API_BASE_URL=https://api.contentglows.com`.
+- Verify `curl -i https://api.contentglows.com/health` returns FastAPI health JSON, not a Vercel `DEPLOYMENT_NOT_FOUND` response.
 
 PM2 and live server mutation remain operator-only.
 
@@ -183,7 +183,7 @@ Operational requirements:
 - Required render env vars follow the worker contract:
   - `REMOTION_WORKER_URL`
   - `REMOTION_WORKER_TOKEN`
-  - `CONTENTGLOWZ_RENDER_DIR`
+  - `CONTENTGLOWS_RENDER_DIR`
   - `RENDER_ARTIFACT_SIGNING_KEY`
 - `BUNNY_CDN_HOSTNAME` is required when timeline assets are stored as `bunny://` URIs.
 - Durable Bunny HTTP URLs are normalized without query strings before being sent to Remotion props.
@@ -279,9 +279,9 @@ Supported project routes used by the app:
 
 `lab` remains the authenticated boundary for video preview/final renders. Flutter polls backend render jobs and receives `artifact.playback_url`; it never calls the Remotion worker, Cloud Run, or GCS directly.
 
-Local mode uses the existing HMAC-protected artifact route backed by `CONTENTGLOWZ_RENDER_DIR`. Production mode uses a private GCS bucket:
+Local mode uses the existing HMAC-protected artifact route backed by `CONTENTGLOWS_RENDER_DIR`. Production mode uses a private GCS bucket:
 
-- `CONTENTGLOWZ_RENDER_STORAGE=gcs`
+- `CONTENTGLOWS_RENDER_STORAGE=gcs`
 - `REMOTION_WORKER_URL`
 - `REMOTION_WORKER_TOKEN`
 - `GCS_RENDER_BUCKET`

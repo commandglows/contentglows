@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-05-14"
 created_at: "2026-05-14 20:30:29 UTC"
 updated: "2026-05-14"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "deployment"
 owner: "Diane"
 confidence: "high"
-user_story: "En tant que creatrice ContentGlowz authentifiee, je veux que les previews et rendus finaux de la timeline video soient produits par un renderer Remotion durable sur Google Cloud, afin de pouvoir obtenir des MP4 fiables hors machine locale sans exposer les secrets, les chemins de stockage ou les artefacts d'autres utilisateurs."
+user_story: "En tant que creatrice ContentGlows authentifiee, je veux que les previews et rendus finaux de la timeline video soient produits par un renderer Remotion durable sur Google Cloud, afin de pouvoir obtenir des MP4 fiables hors machine locale sans exposer les secrets, les chemins de stockage ou les artefacts d'autres utilisateurs."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -28,7 +28,7 @@ linked_systems:
   - "Clerk auth"
   - "Remotion renderer"
 depends_on:
-  - artifact: "shipglows_data/workflow/specs/monorepo/SPEC-unified-contentglowz-video-timeline-2026-05-14.md"
+  - artifact: "shipglows_data/workflow/specs/monorepo/SPEC-unified-contentglows-video-timeline-2026-05-14.md"
     artifact_version: "0.1.0"
     required_status: "partial; local implementation verified, production durable renderer proof missing"
   - artifact: "shipglows_data/workflow/specs/monorepo/remotion-render-service-integration.md"
@@ -75,15 +75,15 @@ Remotion Cloud Run GCS Render Deployment
 
 ## Status
 
-Partial local implementation complete after targeted readiness correction. This spec is the production-readiness child chantier for the unified ContentGlowz video timeline. It does not replace the timeline model, Flutter editor, backend timeline API or Remotion composition. The local code now supports a deployable Cloud Run worker path with GCS artifact metadata and backend-signed playback URLs, but real Cloud Run deployment and private GCS E2E proof are still missing.
+Partial local implementation complete after targeted readiness correction. This spec is the production-readiness child chantier for the unified ContentGlows video timeline. It does not replace the timeline model, Flutter editor, backend timeline API or Remotion composition. The local code now supports a deployable Cloud Run worker path with GCS artifact metadata and backend-signed playback URLs, but real Cloud Run deployment and private GCS E2E proof are still missing.
 
 ## User Story
 
-En tant que creatrice ContentGlowz authentifiee, je veux que les previews et rendus finaux de la timeline video soient produits par un renderer Remotion durable sur Google Cloud, afin de pouvoir obtenir des MP4 fiables hors machine locale sans exposer les secrets, les chemins de stockage ou les artefacts d'autres utilisateurs.
+En tant que creatrice ContentGlows authentifiee, je veux que les previews et rendus finaux de la timeline video soient produits par un renderer Remotion durable sur Google Cloud, afin de pouvoir obtenir des MP4 fiables hors machine locale sans exposer les secrets, les chemins de stockage ou les artefacts d'autres utilisateurs.
 
 ## Minimal Behavior Contract
 
-Depuis une timeline video ContentGlowz valide et versionnee, le backend peut demander une preview ou un rendu final a un service Remotion deploye sur Google Cloud Run, stocker le MP4 termine dans un bucket Google Cloud Storage prive, puis retourner a Flutter uniquement un statut pollable et une URL de lecture signee de courte duree pour l'utilisateur autorise. Si Cloud Run, Remotion, GCS, l'auth worker, la signature d'URL, la capacite ou la configuration echoue, le job devient observable comme recoverable ou failed sans perdre la timeline, sans annoncer un artefact pret, et sans exposer token, chemin local, bucket interne ou media d'un autre projet. L'edge case facile a rater est le stockage local: sur Cloud Run, le filesystem du conteneur n'est pas durable; un rendu ne doit donc jamais dependre de `CONTENTFLOW_RENDER_DIR` comme source de verite production.
+Depuis une timeline video ContentGlows valide et versionnee, le backend peut demander une preview ou un rendu final a un service Remotion deploye sur Google Cloud Run, stocker le MP4 termine dans un bucket Google Cloud Storage prive, puis retourner a Flutter uniquement un statut pollable et une URL de lecture signee de courte duree pour l'utilisateur autorise. Si Cloud Run, Remotion, GCS, l'auth worker, la signature d'URL, la capacite ou la configuration echoue, le job devient observable comme recoverable ou failed sans perdre la timeline, sans annoncer un artefact pret, et sans exposer token, chemin local, bucket interne ou media d'un autre projet. L'edge case facile a rater est le stockage local: sur Cloud Run, le filesystem du conteneur n'est pas durable; un rendu ne doit donc jamais dependre de `CONTENTFLOW_RENDER_DIR` comme source de verite production.
 
 ## Success Behavior
 
@@ -112,7 +112,7 @@ Depuis une timeline video ContentGlowz valide et versionnee, le backend peut dem
 
 The unified video timeline now works locally, including backend asset resolution, Flutter editing, worker tests and an MP4 smoke render. It still cannot ship because production rendering is not durable: the worker stores job state in memory and writes MP4s to local disk, while `lab` serves artifacts by reading `CONTENTFLOW_RENDER_DIR`. Google Cloud Run containers can lose local filesystem state when instances stop, so local render storage is not a production artifact boundary.
 
-There is also a product-boundary decision: Remotion's official Cloud Run package exists, but current official docs mark it Alpha and not actively developed. ContentGlowz should keep using mature Remotion renderer APIs inside its own worker container, deploy that worker to Cloud Run, and use GCS as the durable artifact store.
+There is also a product-boundary decision: Remotion's official Cloud Run package exists, but current official docs mark it Alpha and not actively developed. ContentGlows should keep using mature Remotion renderer APIs inside its own worker container, deploy that worker to Cloud Run, and use GCS as the durable artifact store.
 
 ## Solution
 
@@ -137,7 +137,7 @@ Add a production storage/deployment layer to `worker` and `lab`: containerize th
 
 ## Scope Out
 
-- Replacing the ContentGlowz timeline model, timeline API or Flutter editor.
+- Replacing the ContentGlows timeline model, timeline API or Flutter editor.
 - Migrating all project assets from Bunny to GCS. Timeline source assets may remain Bunny/render-safe in this chantier.
 - Using Remotion Timeline or Editor Starter UI.
 - Making Flutter call Cloud Run or GCS directly.
@@ -214,9 +214,9 @@ Add a production storage/deployment layer to `worker` and `lab`: containerize th
 
 | Identity | Runtime owner | Required permissions | Forbidden permissions | Secrets/config source |
 | --- | --- | --- | --- | --- |
-| `contentglowz-remotion-worker@PROJECT_ID.iam.gserviceaccount.com` | Cloud Run worker service | Write completed MP4 objects under the configured bucket/prefix; read/delete only its own temporary/render-prefix objects if cleanup is enabled; write structured logs | Project Editor/Owner, broad Storage Admin outside the render bucket, service account key creation, public bucket ACL mutation, direct access to user databases | Cloud Run env/secrets: `REMOTION_WORKER_TOKEN`, `CONTENTFLOW_RENDER_STORAGE=gcs`, `GCS_RENDER_BUCKET`, `GCS_RENDER_PREFIX`, `RENDER_ARTIFACT_RETENTION_DAYS`, optional `REMOTION_SERVE_URL` |
-| `contentglowz-lab-api@PROJECT_ID.iam.gserviceaccount.com` | `lab` API runtime | Invoke private worker service; read/check render objects; generate signed URLs for render objects via service identity/IAM signing; read runtime secrets needed by backend | Storage object write/delete unless explicitly required by later cleanup spec, Project Editor/Owner, downloaded key-file dependency | Backend env/secrets: `REMOTION_WORKER_URL`, `REMOTION_WORKER_TOKEN`, `GCS_RENDER_BUCKET`, `GCS_RENDER_PREFIX`, `GCS_SIGNED_URL_TTL_SECONDS`, `RENDER_ARTIFACT_SIGNING_KEY` for local mode only |
-| `contentglowz-deployer@PROJECT_ID.iam.gserviceaccount.com` or human deployer group | CI/operator deploy path | Build/push Artifact Registry images, deploy/update the worker Cloud Run service, set env/secrets, assign the worker service account | Runtime data access beyond deployment needs, broad bucket object read of user artifacts unless explicitly audited | CI secret store or operator auth, not committed files |
+| `contentglows-remotion-worker@PROJECT_ID.iam.gserviceaccount.com` | Cloud Run worker service | Write completed MP4 objects under the configured bucket/prefix; read/delete only its own temporary/render-prefix objects if cleanup is enabled; write structured logs | Project Editor/Owner, broad Storage Admin outside the render bucket, service account key creation, public bucket ACL mutation, direct access to user databases | Cloud Run env/secrets: `REMOTION_WORKER_TOKEN`, `CONTENTFLOW_RENDER_STORAGE=gcs`, `GCS_RENDER_BUCKET`, `GCS_RENDER_PREFIX`, `RENDER_ARTIFACT_RETENTION_DAYS`, optional `REMOTION_SERVE_URL` |
+| `contentglows-lab-api@PROJECT_ID.iam.gserviceaccount.com` | `lab` API runtime | Invoke private worker service; read/check render objects; generate signed URLs for render objects via service identity/IAM signing; read runtime secrets needed by backend | Storage object write/delete unless explicitly required by later cleanup spec, Project Editor/Owner, downloaded key-file dependency | Backend env/secrets: `REMOTION_WORKER_URL`, `REMOTION_WORKER_TOKEN`, `GCS_RENDER_BUCKET`, `GCS_RENDER_PREFIX`, `GCS_SIGNED_URL_TTL_SECONDS`, `RENDER_ARTIFACT_SIGNING_KEY` for local mode only |
+| `contentglows-deployer@PROJECT_ID.iam.gserviceaccount.com` or human deployer group | CI/operator deploy path | Build/push Artifact Registry images, deploy/update the worker Cloud Run service, set env/secrets, assign the worker service account | Runtime data access beyond deployment needs, broad bucket object read of user artifacts unless explicitly audited | CI secret store or operator auth, not committed files |
 | Cloud Run invoker principal for worker | `lab` service identity or authenticated internal caller | `run.invoker` on the worker service only | `allUsers` public invocation, browser/client invocation, broad project invocation grants | IAM binding, not an app secret |
 | Secret manager/admin operator | Security/operator only | Create/update worker token and deployment secrets | Reading user artifacts by default, committing secret values | Secret Manager or existing secret platform; values redacted in docs/logs |
 
@@ -228,7 +228,7 @@ Implementation must map these logical identities to actual GCP project ids and n
 - Update `lab/README.md` with production render artifact flow, required env vars, GCS signed URL behavior and deployment E2E checklist.
 - Add `worker/DEPLOYMENT.md` or `docs/technical/remotion-cloud-run-gcs.md` if command/runbook length would overload the README.
 - Update `CHANGELOG.md`, `lab/CHANGELOG.md` and worker docs/changelog if present.
-- Record that Remotion official Cloud Run package is Alpha/not actively developed; ContentGlowz uses its own Cloud Run worker container.
+- Record that Remotion official Cloud Run package is Alpha/not actively developed; ContentGlows uses its own Cloud Run worker container.
 - Include a short operator note: signed playback URLs are bearer-like secrets and must not be copied into support tickets with query strings.
 
 ## Edge Cases

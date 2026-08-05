@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 15:02:43 UTC"
 updated: "2026-05-11"
@@ -13,7 +13,7 @@ source_model: "gpt-5.5"
 scope: "feature"
 owner: "Diane"
 confidence: "high"
-user_story: "En tant que créatrice ContentGlowz authentifiée, je veux uploader, valider et maintenir des références visuelles de projet durables, afin que Image Robot puisse générer des visuels cohérents à partir de références fiables sans exposer de fichiers non contrôlés."
+user_story: "En tant que créatrice ContentGlows authentifiée, je veux uploader, valider et maintenir des références visuelles de projet durables, afin que Image Robot puisse générer des visuels cohérents à partir de références fiables sans exposer de fichiers non contrôlés."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -73,11 +73,11 @@ Ready. This spec defines the advanced upload and lifecycle contract for user-fac
 
 ## User Story
 
-En tant que créatrice ContentGlowz authentifiée, je veux uploader, valider et maintenir des références visuelles de projet durables, afin que Image Robot puisse générer des visuels cohérents à partir de références fiables sans exposer de fichiers non contrôlés.
+En tant que créatrice ContentGlows authentifiée, je veux uploader, valider et maintenir des références visuelles de projet durables, afin que Image Robot puisse générer des visuels cohérents à partir de références fiables sans exposer de fichiers non contrôlés.
 
 ## Minimal Behavior Contract
 
-When an authenticated creator selects image files inside a project workflow, ContentGlowz validates project ownership, declared upload intent, MIME/type sniffing, byte size, decoded dimensions, duplicate hash, filename safety, metadata stripping, and per-user/project abuse limits before storing sanitized bytes in Bunny Storage, recording durable metadata in Turso, and returning project asset records. Those assets can be attached to one content item and one or more placements, then selected for Image Robot reference/image-to-image use after backend eligibility validation; there is no human approval gate in V1. Failed uploads return clear recoverable errors and leave no selectable/promotable partial asset behind. The easiest edge case to miss is replacement/deletion: a new file must not silently change past generation provenance, and a deleted or retired asset must remain traceable for 30 days while being unavailable for future reuse.
+When an authenticated creator selects image files inside a project workflow, ContentGlows validates project ownership, declared upload intent, MIME/type sniffing, byte size, decoded dimensions, duplicate hash, filename safety, metadata stripping, and per-user/project abuse limits before storing sanitized bytes in Bunny Storage, recording durable metadata in Turso, and returning project asset records. Those assets can be attached to one content item and one or more placements, then selected for Image Robot reference/image-to-image use after backend eligibility validation; there is no human approval gate in V1. Failed uploads return clear recoverable errors and leave no selectable/promotable partial asset behind. The easiest edge case to miss is replacement/deletion: a new file must not silently change past generation provenance, and a deleted or retired asset must remain traceable for 30 days while being unavailable for future reuse.
 
 ## Success Behavior
 
@@ -106,7 +106,7 @@ When an authenticated creator selects image files inside a project workflow, Con
 
 ## Problem
 
-ContentGlowz's current AI visual direction is intentionally constrained: Image Robot uses validated project references and Bunny-hosted durable assets, while the editor-linked UI avoids arbitrary binary upload. That protects consistency and security, but it leaves a future gap: creators need a controlled way to add their own project visual assets without turning the product into an unsafe playground upload surface. Existing `content_assets` metadata can represent attached assets, and Bunny tooling can upload/delete storage objects, but there is no user-facing binary upload boundary, no project asset/reference eligibility lifecycle, no replacement/deletion semantics, and no hardened bridge from uploaded files to Image Robot reference selection.
+ContentGlows's current AI visual direction is intentionally constrained: Image Robot uses validated project references and Bunny-hosted durable assets, while the editor-linked UI avoids arbitrary binary upload. That protects consistency and security, but it leaves a future gap: creators need a controlled way to add their own project visual assets without turning the product into an unsafe playground upload surface. Existing `content_assets` metadata can represent attached assets, and Bunny tooling can upload/delete storage objects, but there is no user-facing binary upload boundary, no project asset/reference eligibility lifecycle, no replacement/deletion semantics, and no hardened bridge from uploaded files to Image Robot reference selection.
 
 ## Solution
 
@@ -114,7 +114,7 @@ Add a backend-owned, proxied upload lifecycle for project visual assets and refe
 
 ## Scope In
 
-- User-facing binary upload of project visual assets from ContentGlowz app surfaces tied to project/editor visual workflows.
+- User-facing binary upload of project visual assets from ContentGlows app surfaces tied to project/editor visual workflows.
 - Authenticated backend-proxied bounded multipart upload contract; direct-to-Bunny client upload is out of scope for V1.
 - V1 allowlist: `image/jpeg`, `image/png`, and `image/webp`; reject GIF, SVG, TIFF, HEIC/HEIF, PDF, archives, video, audio, and unknown content.
 - V1 limits: max 10 MiB per file, max 8 files per request, max 4096 px per side, max 16 decoded megapixels, max 50 active reference assets per project, and max 20 upload attempts per user per project per hour until the quota/billing spec replaces these caps.

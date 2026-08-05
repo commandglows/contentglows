@@ -1,4 +1,4 @@
-# ContentGlowz Lab — Tasks
+# ContentGlows Lab — Tasks
 
 ## Documentation Migration (2026-06-29)
 
@@ -43,7 +43,7 @@ Research source: `shipglows_data/workflow/research/filmora-gap-analysis-2026-06-
 - [ ] Implement multicam workflows with sync by waveform/markers, angle switching in preview, and automatic camera-cut generation.
 - [ ] Add short-form automation: smart scene cut, highlight extraction, auto reframe, and candidate short clips generated from long-form source content.
 - [ ] Add a live retake recording mode inspired by Vento: pause, rewind a few seconds, and re-record over mistakes without restarting the whole take.
-- [ ] Turn ContentGlowz strategy context into editing assistance: AI copilot suggestions for hooks, scene ordering, B-roll slots, text overlays, CTA placement, and per-platform pacing.
+- [ ] Turn ContentGlows strategy context into editing assistance: AI copilot suggestions for hooks, scene ordering, B-roll slots, text overlays, CTA placement, and per-platform pacing.
 - [ ] Create reusable templates and presets for video formats, titles, lower thirds, intros/outros, caption styles, and project-scoped brand kits.
 - [ ] Upgrade preview/render confidence: background queues, stale-preview states, proxy previews, deterministic cache invalidation, and recovery after failed renders.
 - [ ] Expand export/publish readiness with platform presets, ratio/duration/safe-zone validation, thumbnail/cover packaging, and final asset bundles per channel.
@@ -70,10 +70,10 @@ Direction produit retenue le 2026-07-04:
 
 Spec source: `shipglows_data/workflow/specs/monorepo/SPEC-ai-first-branded-video-generation-and-swipe-publish-2026-07-04.md`.
 
-- [ ] Make AI-first branded video assembly the default workflow: users provide images/videos/content inputs, ContentGlowz generates a finished video draft automatically, and manual editing stays optional.
+- [ ] Make AI-first branded video assembly the default workflow: users provide images/videos/content inputs, ContentGlows generates a finished video draft automatically, and manual editing stays optional.
 - [ ] Add a canonical brand-to-video system: one brand profile should drive templates, scene sequencing, motion rules, transitions, typography, overlays, CTA blocks, caption style, and export defaults.
 - [ ] Add a dedicated branding editor surface so users can tune brand kits, template rules, animation language, and reusable video systems separately from one-off timeline edits.
-- [x] Review product/docs promise alignment because current docs still frame ContentGlowz as human-in-the-loop and not fully automated; update canonical product language if this AI-first direction is adopted.
+- [x] Review product/docs promise alignment because current docs still frame ContentGlows as human-in-the-loop and not fully automated; update canonical product language if this AI-first direction is adopted.
 - [x] Persist ahead-of-time branded-video generation runs and expose feed readiness states (`ready_to_publish`, `preparing`, `blocked`) with scheduler handoff and idempotent reuse; targeted backend and Flutter verification passed 2026-07-11.
 
 #### P0 — editor core and trust
@@ -94,7 +94,7 @@ Spec source: `shipglows_data/workflow/specs/monorepo/SPEC-ai-first-branded-video
 - [ ] Add audio finishing tools: normalization, denoise, ducking, fade handles, beat sync, audio meters, and music/voice balance presets.
 - [ ] Add recording-session structure tools: rewind checkpoints, quick alternate takes from the last checkpoint, chapter markers, and post-record author annotations for async viewing.
 - [ ] Add short-form automation: smart scene cut, highlight extraction, auto reframe, and candidate short clips generated from long-form source content.
-- [ ] Turn ContentGlowz strategy context into editing assistance: AI copilot suggestions for hooks, scene ordering, B-roll slots, text overlays, CTA placement, and per-platform pacing.
+- [ ] Turn ContentGlows strategy context into editing assistance: AI copilot suggestions for hooks, scene ordering, B-roll slots, text overlays, CTA placement, and per-platform pacing.
 - [ ] Let users edit generated videos indirectly through brand rules: changing a brand preset should update future drafts and offer controlled regeneration of existing videos.
 - [ ] Add per-brand video archetypes such as testimonial, product demo, UGC ad, talking-head highlight, faceless reel, and recap, each with default pacing and scene grammar.
 
@@ -121,8 +121,8 @@ Spec source: `shipglows_data/workflow/specs/monorepo/SPEC-ai-first-branded-video
 | Social Listener spec — `shipglows_data/workflow/specs/lab/social-listener.md` | Done |
 | Production API publish — expose backend on `api.winflowz.com` via Caddy + PM2 | Done |
 | Turso production connectivity — replace deprecated `libsql-client`, restore DB health to operational | Done |
-| Branding alignment — rename ContentGlowzz defaults, paths, domains, and archive labels to ContentGlowz | Done |
-| Feature documentation on ContentGlowz site (3 pages + index update) | Done |
+| Branding alignment — rename ContentGlowsz defaults, paths, domains, and archive labels to ContentGlows | Done |
+| Feature documentation on ContentGlows site (3 pages + index update) | Done |
 | P0.2 — Rename fake agents to pipelines (SchedulerPipeline, ImagePipeline) | Done |
 | P0.3 — Remove hollow SEO tools, wire KeywordIntegrator to DataForSEO | Done |
 | P0.4 — Wire Firecrawl + Exa as shared CrewAI tools | Done |
@@ -187,7 +187,7 @@ Note infra:
 - On ne rajoute pas une nouvelle base de données
 - Le flux feedback réutilise la base Turso/libsql déjà en place dans le backend
 - "Configurer Turso" ici veut seulement dire: vérifier que les variables Turso existantes sont bien présentes sur le serveur où tourne FastAPI
-- Le texte est déjà live sur `https://api.contentglowz.com/api/feedback/text`
+- Le texte est déjà live sur `https://api.contentglows.com/api/feedback/text`
 - L'upload audio crée maintenant bien une `uploadUrl`, mais l'upload réel reste bloqué tant que `BUNNY_STORAGE_ZONE` et `BUNNY_STORAGE_API_KEY` ne sont pas configurés en prod
 - L'admin côté serveur a maintenant l'allowlist `FEEDBACK_ADMIN_EMAILS`; la validation admin connectée reste à tester
 - Le process PM2 live et le checkout de déploiement sont operator-only: les agents ne doivent pas les lire, les modifier, les tester, ni les redémarrer
@@ -197,7 +197,7 @@ Note infra:
 
 | Pri | Task | Status |
 |-----|------|--------|
-| ✅ | Require an owned `content_record_id` for `POST /api/publish` so authenticated callers cannot publish arbitrary text outside the ContentGlowz review/status lifecycle | ✅ done |
+| ✅ | Require an owned `content_record_id` for `POST /api/publish` so authenticated callers cannot publish arbitrary text outside the ContentGlows review/status lifecycle | ✅ done |
 | ✅ | Decision: keep one shared Zernio API key for all connected publish accounts for now; publishing is provider-wide, not per-user tenant-isolated | ✅ done |
 | ✅ | Implement `ProjectPublishAccount` (or equivalent) so each Zernio `account_id` is explicitly authorized for `userId + projectId` before `/api/publish` calls Zernio | ✅ done |
 | ✅ | Add product/operator guardrails for the shared Zernio model: do not present it as tenant-isolated until project-level account scoping is implemented | ✅ done |
@@ -237,13 +237,13 @@ Note infra:
 | P2 | Android 17 creator workflow benchmark | Étudier Screen Reactions, qualité Instagram, Edits IA on-device, séparation audio, Adobe Premiere tablette et APV comme inspirations pour reels/shorts, génération médias et publication mobile — source: Google Blog 2026-05-12 |
 | P2 | DataForSEO LLM Mentions API — veille marketing externalisée | Étudier l'API comme inspiration pour mesurer mentions de marque, concurrents, domaines et mots-clés dans les réponses LLM/AI search; cadrer un futur module GEO/AI visibility et reporting de veille marketing externalisée — source: https://dataforseo.com/apis/ai-optimization-api/llm-mentions-api (veille 2026-06-10) |
 | P2 | Firecrawl Fire PDF + `/parse` endpoint — sources de contenu | Étudier l'usage futur pour ingérer PDFs, documents locaux/non publics et sources longues dans l'Idea Pool avec extraction Markdown/JSON, limites fichier, coût, sécurité et rétention — sources: https://www.firecrawl.dev/blog/fire-pdf-launch et https://docs.firecrawl.dev/api-reference/endpoint/parse (veille 2026-06-10) |
-| P2 | Alpic MCP / ChatGPT Apps benchmark | Étudier Alpic comme inspiration pour exposer ContentGlowz à des agents via MCP servers et ChatGPT Apps: création d'idées, ingestion de sources, briefs, calendrier, lancement de pipelines, monitoring, sécurité et distribution — sources: https://alpic.ai/ et https://alpic.ai/blog/deploy-chatgpt-apps-on-alpic (veille 2026-06-10) |
+| P2 | Alpic MCP / ChatGPT Apps benchmark | Étudier Alpic comme inspiration pour exposer ContentGlows à des agents via MCP servers et ChatGPT Apps: création d'idées, ingestion de sources, briefs, calendrier, lancement de pipelines, monitoring, sécurité et distribution — sources: https://alpic.ai/ et https://alpic.ai/blog/deploy-chatgpt-apps-on-alpic (veille 2026-06-10) |
 | P2 | AppSumo VOC mining for creator tools | Étudier comment exploiter pages AppSumo, reviews, questions et réponses fondateur comme source structurée de voix du client pour concurrents/inspirations creator tools; commencer par Subscribr pour extraire objections, demandes réelles, limites produit et wording utilisateur — sources: https://subscribr.ai/ et https://appsumo.com/products/subscribr/ (veille 2026-07-07) |
 | P2 | Readability endpoint — `POST /api/content/{id}/readability` | Score existing content from calendar |
 | P3 | OG Preview caching — avoid refetching same URLs | Simple dict or store-based cache |
-| P3 | OpenPostern-style vendor risk scoring inspiration | Inspiration légère: scoring 0-100, alertes, sources sécurité et prochaines actions pour futurs patterns de monitoring; non central pour ContentGlowz — source: https://betalist.com/startups/openpostern et https://openpostern.com/ (veille 2026-06-10) |
-| P3 | Benchmark concurrent Firecrawl Web Agent | Future task: comparer skills, subagents parallèles, structured output, streaming et sécurité URL vs agents recherche/SEO ContentGlowz — source: https://github.com/firecrawl/web-agent (veille 2026-06-10) |
-| P3 | Krotos-style video SFX enrichment | Future task: étudier l'ajout d'effets sonores et de "video-to-sound" aux vidéos ContentGlowz, avec génération/personnalisation SFX puis export dans le workflow Remotion/publication — inspiration: https://krotos.studio/ (veille 2026-06-10) |
+| P3 | OpenPostern-style vendor risk scoring inspiration | Inspiration légère: scoring 0-100, alertes, sources sécurité et prochaines actions pour futurs patterns de monitoring; non central pour ContentGlows — source: https://betalist.com/startups/openpostern et https://openpostern.com/ (veille 2026-06-10) |
+| P3 | Benchmark concurrent Firecrawl Web Agent | Future task: comparer skills, subagents parallèles, structured output, streaming et sécurité URL vs agents recherche/SEO ContentGlows — source: https://github.com/firecrawl/web-agent (veille 2026-06-10) |
+| P3 | Krotos-style video SFX enrichment | Future task: étudier l'ajout d'effets sonores et de "video-to-sound" aux vidéos ContentGlows, avec génération/personnalisation SFX puis export dans le workflow Remotion/publication — inspiration: https://krotos.studio/ (veille 2026-06-10) |
 | P3 | Columns.ai integration — générer des illustrations éditoriales pour les contenus | Intégration future via l'accès produit disponible; prévoir specs API, droits d'usage, stockage asset library et insertion dans le workflow contenu |
 | P3 | Unsplash API integration — stock photos for content | Nice-to-have complement to AI images |
 
@@ -594,7 +594,7 @@ Garder `allow_delegation=False` sur les agents terminaux (ceux qui produisent l'
 ### OpenAI Skills in API — Compatibilité multi-LLM
 
 **Lien :** https://developers.openai.com/cookbook/examples/skills_in_api
-**Pertinence :** ContentGlowz ne doit pas être verrouillé sur un seul LLM. Le pattern "skills" d'OpenAI montre comment encapsuler des agents comme des bundles réutilisables avec un manifeste. Ce pattern est LLM-agnostique dans son concept : un skill = instructions + fichiers + outils, monté sur n'importe quel runtime.
+**Pertinence :** ContentGlows ne doit pas être verrouillé sur un seul LLM. Le pattern "skills" d'OpenAI montre comment encapsuler des agents comme des bundles réutilisables avec un manifeste. Ce pattern est LLM-agnostique dans son concept : un skill = instructions + fichiers + outils, monté sur n'importe quel runtime.
 
 **Actions à explorer :**
 - [ ] Étudier comment rendre les agents CrewAI compatibles avec plusieurs LLMs (Claude, GPT, Codex, Gemini)

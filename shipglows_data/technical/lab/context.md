@@ -51,7 +51,7 @@ next_step: /sf-docs audit shipglows_data/technical/lab/context.md
 
 ## What `lab` is
 
-`lab` is a FastAPI backend that serves ContentGlowz client surfaces and orchestrates AI-driven content workflows.
+`lab` is a FastAPI backend that serves ContentGlows client surfaces and orchestrates AI-driven content workflows.
 It combines:
 
 - REST + WebSocket endpoints in `api/`
@@ -107,5 +107,5 @@ It combines:
 
 - This backend is consumed by at least:
   - Flutter app (`app`)
-  - downstream web/chat surfaces in the wider ContentGlowz ecosystem
+  - downstream web/chat surfaces in the wider ContentGlows ecosystem
 - Any contract change touching auth, payload shape, IDs, job semantics, or migration strategy must be coordinated with related consumers before rollout.

@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 15:03:05 UTC"
 updated: "2026-05-11"
@@ -13,7 +13,7 @@ source_model: "gpt-5.5"
 scope: "feature"
 owner: "Diane"
 confidence: "medium"
-user_story: "En tant que créatrice ContentGlowz authentifiée, je veux pouvoir entraîner et activer un modèle visuel spécialisé pour un projet avec consentement, droits, contrôle qualité et limites explicites, afin d'obtenir une cohérence visuelle plus forte que les références guidées sans promettre une identité parfaite."
+user_story: "En tant que créatrice ContentGlows authentifiée, je veux pouvoir entraîner et activer un modèle visuel spécialisé pour un projet avec consentement, droits, contrôle qualité et limites explicites, afin d'obtenir une cohérence visuelle plus forte que les références guidées sans promettre une identité parfaite."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -70,21 +70,21 @@ Ready for `/sf-start` as a future research and controlled-workflow chantier, exp
 
 ## User Story
 
-En tant que créatrice ContentGlowz authentifiée, je veux pouvoir entraîner et activer un modèle visuel spécialisé pour un projet avec consentement, droits, contrôle qualité et limites explicites, afin d'obtenir une cohérence visuelle plus forte que les références guidées sans promettre une identité parfaite.
+En tant que créatrice ContentGlows authentifiée, je veux pouvoir entraîner et activer un modèle visuel spécialisé pour un projet avec consentement, droits, contrôle qualité et limites explicites, afin d'obtenir une cohérence visuelle plus forte que les références guidées sans promettre une identité parfaite.
 
 ## Minimal Behavior Contract
 
-When an admin-qualified authenticated project owner/operator starts a visual identity training workflow, ContentGlowz collects only project assets with documented rights, consent where required, retention settings, and training purpose; validates that the dataset meets quality, safety, likeness, copyright, and minimum-volume rules; creates a controlled training job with provider-specific metadata; registers the resulting model or LoRA artifact only after evaluation; and allows Image Robot generation to opt into that trained identity for that project. If consent, rights, dataset quality, provider availability, legal review, budget, or evaluation gates fail, the workflow must stop or remain inactive and generation must fall back to guided references. The easy edge case to miss is treating training as a stronger prompt feature: trained artifacts create new data-retention, likeness, copyright, deletion, cost, and safety obligations that must be product-visible and auditable even when normal user videos may contain people.
+When an admin-qualified authenticated project owner/operator starts a visual identity training workflow, ContentGlows collects only project assets with documented rights, consent where required, retention settings, and training purpose; validates that the dataset meets quality, safety, likeness, copyright, and minimum-volume rules; creates a controlled training job with provider-specific metadata; registers the resulting model or LoRA artifact only after evaluation; and allows Image Robot generation to opt into that trained identity for that project. If consent, rights, dataset quality, provider availability, legal review, budget, or evaluation gates fail, the workflow must stop or remain inactive and generation must fall back to guided references. The easy edge case to miss is treating training as a stronger prompt feature: trained artifacts create new data-retention, likeness, copyright, deletion, cost, and safety obligations that must be product-visible and auditable even when normal user videos may contain people.
 
 ## Success Behavior
 
 - Given an admin-qualified project owner/operator opens the future training workflow, when they create a dataset, then every included asset records source, ownership/rights basis, consent status where applicable, subject/likeness flags, copyright/style risk flags, retention policy, and whether it may be used for model training.
 - Given the dataset includes people, faces, brand mascots, customer images, employee images, creator likenesses, or any biometric-adjacent likeness, when training is requested, then the workflow requires explicit consent metadata and a recorded legal/product approval decision before provider submission.
-- Given a dataset passes automated and manual review, when training starts, then ContentGlowz creates a durable training job with provider, model family, training type, dataset version, cost estimate, owner, project id, status, admin approver, and audit trail.
+- Given a dataset passes automated and manual review, when training starts, then ContentGlows creates a durable training job with provider, model family, training type, dataset version, cost estimate, owner, project id, status, admin approver, and audit trail.
 - Given the provider returns a trained LoRA/model artifact, when evaluation passes defined quality and safety thresholds, then the artifact is added to a project-scoped model registry as inactive or staged until a human explicitly activates it.
 - Given a trained artifact is active for a project, when Image Robot generates an eligible visual, then the backend may pass the trained model/LoRA identifier through the provider-specific generation path and records `visual_identity_mode=trained_project_model`.
 - Given a trained artifact is not active, revoked, expired, deleted, over budget, unsafe, or unavailable, when generation runs, then Image Robot uses the existing guided-reference path and records the fallback reason.
-- Given the owner, administrator, or authorized depicted subject requests opt-out or deletion, when the request is accepted, then ContentGlowz disables the artifact immediately, stops future use, deletes or requests deletion of provider-side training artifacts where supported, updates retention/audit records, and communicates any provider limitations. Provider inability to truly untrain is not automatically blocking, but it must be explicit before any training submission.
+- Given the owner, administrator, or authorized depicted subject requests opt-out or deletion, when the request is accepted, then ContentGlows disables the artifact immediately, stops future use, deletes or requests deletion of provider-side training artifacts where supported, updates retention/audit records, and communicates any provider limitations. Provider inability to truly untrain is not automatically blocking, but it must be explicit before any training submission.
 - Given model quality is evaluated, when results are shown internally, then the system reports measured consistency and failure rates, not identity guarantees.
 
 ## Error Behavior
@@ -105,7 +105,7 @@ The current ready AI visual specs deliberately promise only `coherence visuelle 
 
 ## Solution
 
-Define a future controlled workflow for project-specific visual identity training. The system treats training as a governed lifecycle: dataset intake, rights/consent review, provider training job, artifact registry, evaluation, staged activation, generation-time selection, monitoring, opt-out/deletion, and documentation. Public self-serve access remains out of scope. The product language must remain prudent: trained identity may improve consistency under supported conditions, but ContentGlowz must not promise absolute identity preservation or perfect likeness.
+Define a future controlled workflow for project-specific visual identity training. The system treats training as a governed lifecycle: dataset intake, rights/consent review, provider training job, artifact registry, evaluation, staged activation, generation-time selection, monitoring, opt-out/deletion, and documentation. Public self-serve access remains out of scope. The product language must remain prudent: trained identity may improve consistency under supported conditions, but ContentGlows must not promise absolute identity preservation or perfect likeness.
 
 ## Scope In
 

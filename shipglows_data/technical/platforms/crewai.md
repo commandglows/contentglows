@@ -2,7 +2,7 @@
 artifact: technical_module_context
 metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
-project: contentglowz
+project: contentglows
 created: "2026-05-24"
 updated: "2026-05-24"
 status: draft
@@ -27,7 +27,7 @@ supersedes: []
 evidence:
   - "lab/requirements.txt pins crewai>=1.6.1,<1.7 and notes newer CrewAI 1.14.x requires openai>=2.30."
   - "lab imports CrewAI Agent, Task, Crew, Process, LLM, and @tool wrappers across SEO, psychology, newsletter, social, short, scheduler, and shared tools."
-  - "Contentglowz App references CrewAI as backend-owned; CrewAI usage belongs to the lab/backend surface."
+  - "ContentGlows App references CrewAI as backend-owned; CrewAI usage belongs to the lab/backend surface."
 next_review: "2026-06-24"
 next_step: "/sf-docs technical audit lab"
 ---
@@ -36,7 +36,7 @@ next_step: "/sf-docs technical audit lab"
 
 ## Purpose
 
-Document how the Contentglowz monorepo uses CrewAI. This is the governance-root usage contract for the backend agent runtime, scoped primarily to `lab/`.
+Document how the ContentGlows monorepo uses CrewAI. This is the governance-root usage contract for the backend agent runtime, scoped primarily to `lab/`.
 
 Use the global CrewAI note for current source links and release behavior:
 
@@ -70,7 +70,7 @@ Use the global CrewAI note for current source links and release behavior:
 - `agents/seo/seo_crew.py` runs a unified six-agent SEO crew with `Process.sequential` and task-level Pydantic output schemas.
 - Several individual agents still create one-agent crews with `Crew(...).kickoff()`. Do not refactor these patterns without checking current CrewAI docs and local tests.
 - Shared Exa and Firecrawl tools are LLM-callable. URL safety must run before provider client creation, as documented in `shipglows_data/technical/lab/ai-runtime-and-url-safety.md`.
-- Contentglowz App should not own a CrewAI usage note. The Flutter app calls backend APIs; CrewAI orchestration is backend-owned by `lab`.
+- ContentGlows App should not own a CrewAI usage note. The Flutter app calls backend APIs; CrewAI orchestration is backend-owned by `lab`.
 
 ## Invariants
 

@@ -186,7 +186,7 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
           : 'FastAPI is unavailable';
       final description = isUnauthorized
           ? 'Your Clerk session reached the app, but FastAPI rejected the bootstrap request. Sign in again to refresh the bearer token.'
-          : 'Your Clerk session is active, but ContentGlowz cannot load product state from FastAPI right now. Use the degraded mode tools to inspect backend status, retry, or wait for the API to recover.';
+          : 'Your Clerk session is active, but ContentGlows cannot load product state from FastAPI right now. Use the degraded mode tools to inspect backend status, retry, or wait for the API to recover.';
 
       return _card(
         eyebrow: stage == AppAccessStage.apiUnavailable
@@ -227,7 +227,7 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
     if (stage == AppAccessStage.ready) {
       return _card(
         eyebrow: 'Session active',
-        title: 'Welcome back to ContentGlowz',
+        title: 'Welcome back to ContentGlows',
         description:
             'Your account is already recognized. Jump back into the content pipeline instead of going through onboarding again.',
         icon: Icons.verified_user_rounded,
@@ -318,7 +318,7 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
             copyDiagnosticsToClipboard(
               context,
               ref,
-              title: 'ContentGlowz entry diagnostics',
+              title: 'ContentGlows entry diagnostics',
               scope: 'entry.copy_flow_diagnostics',
               currentError: accessState?.message,
               contextData: {

@@ -2,7 +2,7 @@
 title: "Topical Mesh & Semantic Cocoons: The Advanced SEO Strategy Dominating 2026"
 description: "Learn how topical mesh SEO (cocon sémantique) uses graph theory and PageRank to build topical authority. Complete guide with NetworkX implementation and visualization examples."
 pubDate: 2026-01-15
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["topical mesh", "semantic cocoon", "topical authority", "topic clusters", "advanced seo"]
 featured: true
 image: "/images/blog/topical-mesh-seo-strategy.jpg"

@@ -1,4 +1,4 @@
-"""Test fixtures and data for contentglowz tests."""
+"""Test fixtures and data for contentglows tests."""
 
 import pytest
 from typing import Dict, Any, List

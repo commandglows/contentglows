@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
 confidence: "medium"
-user_story: "As a ContentGlowz operator on mobile, I want the dashboard Flow home to show one clear action card at a time, so I can swipe to postpone or start the next useful action without CTA overload."
+user_story: "As a ContentGlows operator on mobile, I want the dashboard Flow home to show one clear action card at a time, so I can swipe to postpone or start the next useful action without CTA overload."
 risk_level: "medium"
 security_impact: "none"
 docs_impact: "yes"
@@ -52,7 +52,7 @@ ready
 
 ## User Story
 
-As a ContentGlowz operator on mobile, I want the dashboard Flow home to show one clear action card at a time, so I can swipe to postpone or start the next useful action without CTA overload.
+As a ContentGlows operator on mobile, I want the dashboard Flow home to show one clear action card at a time, so I can swipe to postpone or start the next useful action without CTA overload.
 
 ## Minimal Behavior Contract
 

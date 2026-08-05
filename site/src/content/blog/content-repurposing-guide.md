@@ -2,7 +2,7 @@
 title: "Content Repurposing Strategy: How We Generate 172,000+ Words from Technical Documentation"
 description: "Discover our systematic approach to transforming technical documentation into SEO-optimized blog content that drives 2,000-5,000 monthly visitors and generates $37K+ MRR."
 pubDate: 2026-01-16
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["content repurposing", "seo strategy", "content marketing", "documentation", "ai automation"]
 featured: true
 image: "/images/blog/content-repurposing-strategy.jpg"

@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: feature
 owner: "Diane"
 confidence: medium
-user_story: "As a ContentGlowz creator on Windows desktop who records arbitrary windows or monitors for public videos, I want to enable a privacy mode that dynamically makes text unreadable and redacts sensitive visual regions while preserving workflow readability, so that I can reduce accidental data leaks before sharing without pretending the result is guaranteed safe."
+user_story: "As a ContentGlows creator on Windows desktop who records arbitrary windows or monitors for public videos, I want to enable a privacy mode that dynamically makes text unreadable and redacts sensitive visual regions while preserving workflow readability, so that I can reduce accidental data leaks before sharing without pretending the result is guaranteed safe."
 risk_level: high
 security_impact: "yes"
 docs_impact: "yes"
@@ -78,24 +78,24 @@ V2 goal: add stronger visual detection and resilience, including optional ONNX R
 
 ## User Story
 
-As a ContentGlowz creator on Windows desktop who records arbitrary windows or monitors for public videos, I want to enable a privacy mode that dynamically makes text unreadable and redacts sensitive visual regions while preserving workflow readability, so that I can reduce accidental data leaks before sharing without pretending the result is guaranteed safe.
+As a ContentGlows creator on Windows desktop who records arbitrary windows or monitors for public videos, I want to enable a privacy mode that dynamically makes text unreadable and redacts sensitive visual regions while preserving workflow readability, so that I can reduce accidental data leaks before sharing without pretending the result is guaranteed safe.
 
 ## Minimal Behavior Contract
 
-When a Windows desktop user enables privacy mode and starts a screenshot or recording, ContentGlowz must show an explicit best-effort disclosure, let the user select a window or monitor through Windows capture UI, process captured pixels through local redaction before registering the saved asset, store only a flattened privacy-marked PNG/MP4 for normal preview/share flows, and require review acknowledgement before share/export; if capture support, picker consent, OCR, rendering, encoding, temp cleanup, or protected-content access fails, the app must stop cleanly, avoid exposing a clear asset through normal UI, delete or quarantine clear intermediates, and explain that the privacy capture was not safely finalized. The easy edge case is a mixed-DPI multi-monitor setup: capture coordinates, OCR boxes, redaction boxes, and encoded output dimensions can drift unless all transforms are normalized and tested across monitor scale factors.
+When a Windows desktop user enables privacy mode and starts a screenshot or recording, ContentGlows must show an explicit best-effort disclosure, let the user select a window or monitor through Windows capture UI, process captured pixels through local redaction before registering the saved asset, store only a flattened privacy-marked PNG/MP4 for normal preview/share flows, and require review acknowledgement before share/export; if capture support, picker consent, OCR, rendering, encoding, temp cleanup, or protected-content access fails, the app must stop cleanly, avoid exposing a clear asset through normal UI, delete or quarantine clear intermediates, and explain that the privacy capture was not safely finalized. The easy edge case is a mixed-DPI multi-monitor setup: capture coordinates, OCR boxes, redaction boxes, and encoded output dimensions can drift unless all transforms are normalized and tested across monitor scale factors.
 
 ## Success Behavior
 
 - Given a Windows desktop user opens Capture, when Windows capture support is available, then the app exposes Windows privacy capture controls without enabling the Android-only path.
 - Given privacy mode is enabled, when the user starts capture, then the app shows a best-effort disclosure that says manual review is required and no guarantee is provided.
 - Given the user accepts the disclosure, when they start a screenshot or recording, then Windows system UI lets them select a single window or display through `GraphicsCapturePicker`.
-- Given the user selects a capturable window or display, when capture begins, then ContentGlowz receives frames from `Direct3D11CaptureFramePool` and processes them locally before any user-facing asset is registered.
+- Given the user selects a capturable window or display, when capture begins, then ContentGlows receives frames from `Direct3D11CaptureFramePool` and processes them locally before any user-facing asset is registered.
 - Given text appears in captured content, when OCR runs, then detected word/line geometry is converted to output-space redaction boxes and recognized text content is discarded immediately.
 - Given text redaction style is `blur`, `pixelate`, or `scramble`, when text boxes are active, then the corresponding Win2D/Direct3D effect covers the real pixels with expanded margins so the final output is unreadable in review.
 - Given visual redaction is enabled in V1, when the app can identify conservative image-like regions through heuristics, then those regions can be blurred or pixelated without masking the full screen by default.
 - Given a privacy screenshot succeeds, when the asset appears in local captures, then it is a flattened PNG with privacy metadata and `reviewState=needsReview`.
 - Given a privacy recording succeeds, when the asset appears in local captures, then it is a flattened MP4 whose frames already include redaction and whose metadata includes processing stats and `reviewState=needsReview`.
-- Given a privacy-marked asset has `reviewState=needsReview`, when the user tries to share/export or link it into normal content flows, then ContentGlowz requires review acknowledgement first.
+- Given a privacy-marked asset has `reviewState=needsReview`, when the user tries to share/export or link it into normal content flows, then ContentGlows requires review acknowledgement first.
 - Given the user acknowledges review, when share/export continues, then only the flattened redacted PNG/MP4 path is passed to the OS share/export mechanism.
 - Given privacy mode is off, when a platform supports normal capture, then existing non-privacy capture behavior and metadata remain unchanged.
 
@@ -169,7 +169,7 @@ Add a Windows desktop privacy capture path behind the existing Flutter capture s
 - Direct3D/Win2D resources must handle device loss, frame-pool resize, HDR/SDR pixel format decisions, and target closure without leaking surfaces.
 - Multi-monitor and DPI transforms must treat capture frame coordinates, OCR coordinates, preview coordinates, and encoded output coordinates as separate spaces until normalized.
 - Protected content, black frames, and unavailable targets are platform constraints, not a guarantee that redaction succeeded.
-- The UI copy must say best-effort, non-exhaustive, and manual review required; it must not imply ContentGlowz assumes full liability for every leak.
+- The UI copy must say best-effort, non-exhaustive, and manual review required; it must not imply ContentGlows assumes full liability for every leak.
 - If implementation cannot avoid writing a clear intermediate file for any stage, that design must be reviewed before shipping and must meet the temp clear file rules in this spec.
 
 ## Dependencies
@@ -210,7 +210,7 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-05-08 through official
 - Android privacy capture remains governed by the Android spec; this chantier must not edit Android native capture unless a shared Dart contract requires backwards-compatible fields.
 - Backend metadata may contain redaction settings and aggregate stats only.
 - Capture and redaction remain local-first; no cloud processing is introduced in this chantier.
-- Protected-content black frames or omitted frames remain Windows platform behavior, not a ContentGlowz privacy guarantee.
+- Protected-content black frames or omitted frames remain Windows platform behavior, not a ContentGlows privacy guarantee.
 
 ## Links & Consequences
 
@@ -309,7 +309,7 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-05-08 through official
 
 - [ ] Task 7: Add Windows native channel registration.
   - File: `app/windows/runner/flutter_window.cpp`
-  - Action: Register method and event channels matching `contentglowz/device_capture` and `contentglowz/device_capture_events`, route only Windows-supported calls to the native privacy capture controller, and return typed unsupported errors otherwise.
+  - Action: Register method and event channels matching `contentglows/device_capture` and `contentglows/device_capture_events`, route only Windows-supported calls to the native privacy capture controller, and return typed unsupported errors otherwise.
   - User story link: Connects Flutter controls to Windows native capture without bypassing model/service typing.
   - Depends on: Tasks 1 and 4.
   - Validate with: Windows desktop compile and a channel smoke test.
@@ -418,9 +418,9 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-05-08 through official
 - [ ] CA 11: Given OCR detects text, when text style is `scramble`, then real text pixels are covered by fake glyphs/lines and recognized text is not stored.
 - [ ] CA 12: Given fast scrolling occurs during recording, when OCR runs at a throttled cadence, then redaction boxes persist across adjacent frames and no obvious clear-text flashes appear in manual review.
 - [ ] CA 13: Given the selected target is resized or moved between monitors with different DPI scales, when capture continues, then redaction boxes stay aligned or the session fails with a clear degraded message.
-- [ ] CA 14: Given protected content produces black or blank frames, when the asset is finalized or failed, then ContentGlowz does not claim the protected content was successfully redacted.
+- [ ] CA 14: Given protected content produces black or blank frames, when the asset is finalized or failed, then ContentGlows does not claim the protected content was successfully redacted.
 - [ ] CA 15: Given encoding fails or cancellation occurs mid-session, when Capture returns to idle, then no clear or partial output appears in recent captures and temp output is deleted or quarantined.
-- [ ] CA 16: Given a privacy asset has `reviewState=needsReview`, when the user tries to share/export or link it to content, then ContentGlowz requires review acknowledgement first.
+- [ ] CA 16: Given a privacy asset has `reviewState=needsReview`, when the user tries to share/export or link it to content, then ContentGlows requires review acknowledgement first.
 - [ ] CA 17: Given the user acknowledges review, when share/export continues, then only the flattened redacted PNG/MP4 path is passed to the OS.
 - [ ] CA 18: Given a privacy asset is linked to backend content metadata, when the payload is sent, then privacy status/settings are included and OCR text, clear paths, temp paths, and local paths as durable truth are absent.
 

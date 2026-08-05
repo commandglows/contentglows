@@ -1,6 +1,6 @@
 ---
 import { siteUrl } from '../config/site';
-import themeTokens from '../../../tools/design-tokens/contentglowz_theme.json';
+import themeTokens from '../../../tools/design-tokens/contentglows_theme.json';
 
 interface Props {
   title: string;
@@ -30,7 +30,7 @@ const {
   alternateLocales = [],
   xDefaultUrl,
   publishDate,
-  author = 'ContentGlowz Team',
+  author = 'ContentGlows Team',
   tags = [],
   noindex = false,
 } = Astro.props;
@@ -63,7 +63,7 @@ const articleSchema = ogType === 'article' ? {
   "author": { "@type": "Person", "name": author },
   "publisher": {
     "@type": "Organization",
-    "name": "ContentGlowz",
+    "name": "ContentGlows",
     "url": resolvedSiteUrl,
   },
   "datePublished": publishDate?.toISOString(),
@@ -74,7 +74,7 @@ const articleSchema = ogType === 'article' ? {
 const orgSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  "name": "ContentGlowz",
+  "name": "ContentGlows",
   "url": resolvedSiteUrl,
   "description": "AI content pipeline — generate, review, and publish multi-format content",
 };
@@ -82,7 +82,7 @@ const orgSchema = {
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "name": "ContentGlowz",
+  "name": "ContentGlows",
   "url": resolvedSiteUrl,
 };
 
@@ -303,7 +303,7 @@ const themeCssVars = `
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImageAbsolute} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:site_name" content="ContentGlowz" />
+    <meta property="og:site_name" content="ContentGlows" />
     {publishDate && <meta property="article:published_time" content={publishDate.toISOString()} />}
     {tags.map(tag => <meta property="article:tag" content={tag} />)}
 
@@ -331,9 +331,9 @@ const themeCssVars = `
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-    <!-- ContentGlowz Analytics (cookie-free, production only) -->
+    <!-- ContentGlows Analytics (cookie-free, production only) -->
     {import.meta.env.PROD && (
-      <script defer src="https://api.contentglowz.com/a/s.js"></script>
+      <script defer src="https://api.contentglows.com/a/s.js"></script>
     )}
   </head>
   <body>
@@ -343,7 +343,7 @@ const themeCssVars = `
 
 <style is:global>
   /* =============================================
-     CONTENTGLOWZ DESIGN TOKENS
+     CONTENTGLOWS DESIGN TOKENS
      Single source of truth for all visual values
      ============================================= */
   /* =============================================

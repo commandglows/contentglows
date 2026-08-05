@@ -26,15 +26,16 @@ class CurrentUser(BaseModel):
 bearer_scheme = HTTPBearer(auto_error=False)
 
 _DEV_BYPASS_USER_ID = "devserver-local-user"
-_DEV_BYPASS_EMAIL = "devserver@contentglowz.local"
+_DEV_BYPASS_EMAIL = "devserver@contentglows.local"
 _DEV_BYPASS_TOKEN = "devserver-auth-bypass"
 
 
 def _dev_auth_bypass_enabled() -> bool:
     """Return whether the explicit, development-only auth bypass is enabled."""
     return (
-        os.getenv("CONTENTGLOWZ_RUNTIME_ENV", "").strip().lower() == "dev"
-        and os.getenv("CONTENTGLOWZ_DEV_AUTH_BYPASS", "").strip().lower()
+        os.getenv("CONTENTGLOWS_RUNTIME_ENV", "").strip().lower()
+        == "dev"
+        and os.getenv("CONTENTGLOWS_DEV_AUTH_BYPASS", "").strip().lower()
         in {"1", "true", "yes", "on"}
     )
 

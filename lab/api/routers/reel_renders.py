@@ -57,7 +57,7 @@ RETRY_AFTER_SECONDS = 60
 
 
 def _render_root_dir() -> Path:
-    configured = os.getenv("CONTENTGLOWZ_RENDER_DIR")
+    configured = os.getenv("CONTENTGLOWS_RENDER_DIR")
     if configured:
         return Path(configured).resolve()
     return (Path.cwd() / "renders").resolve()

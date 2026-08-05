@@ -13,7 +13,7 @@ source_model: "GPT-5"
 scope: feature
 owner: "Diane"
 confidence: medium
-user_story: "En tant que créateur ContentGlowz sur Android, je veux rattacher une capture locale à un contenu existant ou à créer, afin de transformer immédiatement un screenshot ou une vidéo d'écran en asset de travail sans upload cloud automatique."
+user_story: "En tant que créateur ContentGlows sur Android, je veux rattacher une capture locale à un contenu existant ou à créer, afin de transformer immédiatement un screenshot ou une vidéo d'écran en asset de travail sans upload cloud automatique."
 risk_level: high
 security_impact: "yes"
 docs_impact: "yes"
@@ -49,7 +49,7 @@ Shipped pending manual Android QA. This chantier extends the Android capture V1 
 
 ## User Story
 
-En tant que créateur ContentGlowz sur Android, je veux rattacher une capture locale à un contenu existant ou à créer, afin de transformer immédiatement un screenshot ou une vidéo d'écran en asset de travail sans upload cloud automatique.
+En tant que créateur ContentGlows sur Android, je veux rattacher une capture locale à un contenu existant ou à créer, afin de transformer immédiatement un screenshot ou une vidéo d'écran en asset de travail sans upload cloud automatique.
 
 ## Minimal Behavior Contract
 
@@ -175,7 +175,7 @@ sf-spec ✅ -> sf-ready ✅ -> sf-start ✅ -> sf-verify ⚠️ -> sf-end ✅ ->
 - Passed: `flutter test test/data/capture_asset_test.dart test/data/capture_local_store_test.dart test/presentation/screens/capture/capture_screen_test.dart`.
 - Passed: `flutter analyze`.
 - Passed: `python3 -m py_compile api/models/status.py api/routers/status.py status/schemas.py status/service.py status/db.py`.
-- Passed: `/tmp/contentglowz-pytest-venv/bin/python -m pytest tests/test_status_content_body.py -q`.
+- Passed: `/tmp/contentglows-pytest-venv/bin/python -m pytest tests/test_status_content_body.py -q`.
 - Blocked: Turso production schema check could not run because the local Turso CLI is not authenticated in this shell.
 - Pending: manual Android QA for creating content from a real capture and attaching capture metadata to an existing content record.
 - Shipped in quick mode with full dirty scope at user request.

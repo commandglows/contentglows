@@ -81,7 +81,7 @@ source = "."
 ### 2. **L'Architecture Multi-Cloud Sans Douleur**
 
 ```bash
-# Notre stack ContentGlowz
+# Notre stack ContentGlows
 ┌──────────────────────────────────────────┐
 │  Frontend (Next.js)                       │
 │  → Vercel (Edge globale)                  │
@@ -130,7 +130,7 @@ Railway: Votre API reste active si traffic régulier
 Heroku: Sleep après 30 minutes d'inactivité
 ```
 
-**Notre utilisation ContentGlowz :**
+**Notre utilisation ContentGlows :**
 ```bash
 # Monitoring réel sur 30 jours
 API Calls: 45,232
@@ -355,7 +355,7 @@ startCommand = "uvicorn api.main:app --host 0.0.0.0 --port $PORT"
 
 **Résultat :** Chaque Pull Request = environnement de test automatique
 
-## 🎯 Cas d'Usage Réel : Notre API ContentGlowz
+## 🎯 Cas d'Usage Réel : Notre API ContentGlows
 
 ### Architecture en Production
 

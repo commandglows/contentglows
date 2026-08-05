@@ -16,14 +16,14 @@
     mountedSignInNode: null,
     mountedSignUpNode: null,
   };
-  const CLERK_UI_SCRIPT_ID = 'contentglowz-clerk-ui';
-  const CLERK_JS_SCRIPT_ID = 'contentglowz-clerk-js';
+  const CLERK_UI_SCRIPT_ID = 'contentglows-clerk-ui';
+  const CLERK_JS_SCRIPT_ID = 'contentglows-clerk-js';
 
   function deriveClerkDomain(publishableKey) {
     try {
       return atob(publishableKey.split('_')[2]).slice(0, -1);
     } catch (error) {
-      console.error('[ContentGlowz] Failed to derive Clerk Frontend API.', error);
+      console.error('[ContentGlows] Failed to derive Clerk Frontend API.', error);
       return '';
     }
   }
@@ -344,7 +344,7 @@
     };
   }
 
-  window.contentglowzClerkBridge = {
+  window.contentglowsClerkBridge = {
     load,
     isSignedIn,
     getToken,

@@ -3,7 +3,7 @@ title: "Les skills ShipGlowz de création de contenu"
 description: "Comment ShipGlowz transforme recherche, plan, rédaction, enrichissement et structure SEO en workflow de contenu exploitable sans bricolage manuel."
 locale: "fr"
 pubDate: "2026-07-07"
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["shipglowz", "création de contenu", "seo", "content ops", "ia"]
 featured: false
 ---

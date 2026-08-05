@@ -97,7 +97,7 @@ void _runAppWithDiagnostics({
           sharedPrefsProvider.overrideWithValue(prefs),
           appDiagnosticsProvider.overrideWithValue(diagnostics),
         ],
-        child: const ContentGlowzApp(),
+        child: const ContentGlowsApp(),
       );
       if (AppConfig.sentryDsn.isNotEmpty) {
         app = SentryWidget(child: app);
@@ -124,8 +124,8 @@ void _captureWithSentry(Object error, StackTrace? stackTrace) {
   unawaited(Sentry.captureException(error, stackTrace: stackTrace));
 }
 
-class ContentGlowzApp extends ConsumerWidget {
-  const ContentGlowzApp({super.key});
+class ContentGlowsApp extends ConsumerWidget {
+  const ContentGlowsApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -139,7 +139,7 @@ class ContentGlowzApp extends ConsumerWidget {
     final useAppTheme = themePreference == appThemeApp;
 
     return MaterialApp.router(
-      onGenerateTitle: (context) => context.tr('ContentGlowz'),
+      onGenerateTitle: (context) => context.tr('ContentGlows'),
       debugShowCheckedModeBanner: false,
       theme: useAppTheme ? AppTheme.appTheme : AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,

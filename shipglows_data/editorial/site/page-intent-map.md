@@ -36,7 +36,7 @@ next_step: "/sf-docs editorial audit site"
 
 | Route or file | Intent | Primary CTA | Source contracts | Shared-file risk |
 | --- | --- | --- | --- | --- |
-| `/` via `src/pages/index.astro` | Explain ContentGlowz and move qualified visitors toward the app | Open app or start/sign in | `shipglows_data/business/business.md`, `shipglows_data/product/site/product.md`, `shipglows_data/gtm/site/gtm.md` | High: homepage copy affects positioning and claims |
+| `/` via `src/pages/index.astro` | Explain ContentGlows and move qualified visitors toward the app | Open app or start/sign in | `shipglows_data/business/business.md`, `shipglows_data/product/site/product.md`, `shipglows_data/gtm/site/gtm.md` | High: homepage copy affects positioning and claims |
 | `/fr` via `src/pages/fr/index.astro` | French localized entry surface with the same product promise and CTA structure | Open app or start/sign in | same as `/` + French copy rules | High: localized promise drift |
 | `/launch` | Route users into the app experience | Continue to app | `shipglows_data/product/site/product.md`, app handoff config | Medium: app URL and auth state must stay current |
 | `/fr/launch` | French localized launch handoff | Continue to app | same as `/launch` | Medium: localized handoff drift |

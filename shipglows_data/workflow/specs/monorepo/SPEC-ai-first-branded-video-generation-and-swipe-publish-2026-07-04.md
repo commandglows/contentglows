@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-07-04"
 created_at: "2026-07-04 00:00:00 UTC"
 updated: "2026-07-08"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
 confidence: "high"
-user_story: "En tant que creatrice ContentGlowz authentifiee, je veux marquer un contenu comme complet, definir un rythme de generation, puis recevoir automatiquement en arriere-plan des videos brandees deja fabriquees a partir de mon contenu, de mes images, de mes videos et de mon branding, afin qu'elles apparaissent ensuite dans le feed pour que je puisse swiper pour publier ou ajuster rapidement si besoin."
+user_story: "En tant que creatrice ContentGlows authentifiee, je veux marquer un contenu comme complet, definir un rythme de generation, puis recevoir automatiquement en arriere-plan des videos brandees deja fabriquees a partir de mon contenu, de mes images, de mes videos et de mon branding, afin qu'elles apparaissent ensuite dans le feed pour que je puisse swiper pour publier ou ajuster rapidement si besoin."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -25,12 +25,12 @@ linked_systems:
   - "Turso/libSQL"
   - "Bunny Storage/CDN"
   - "Project Asset Library"
-  - "Unified ContentGlowz Video Timeline"
+  - "Unified ContentGlows Video Timeline"
   - "Templates"
   - "Branding system"
   - "publish accounts"
 depends_on:
-  - artifact: "shipglows_data/workflow/specs/monorepo/SPEC-unified-contentglowz-video-timeline-2026-05-14.md"
+  - artifact: "shipglows_data/workflow/specs/monorepo/SPEC-unified-contentglows-video-timeline-2026-05-14.md"
     artifact_version: "0.1.0"
     required_status: "ready"
   - artifact: "shipglows_data/workflow/specs/monorepo/SPEC-text-based-media-editing-social-video-2026-05-12.md"
@@ -57,7 +57,7 @@ evidence:
   - "User direction 2026-07-04: give images and videos as inputs to AI and let it output a complete video that follows a specific branding."
   - "User direction 2026-07-04: editing should remain possible from the video editor or from the branding editor."
   - "Business and product docs were updated 2026-07-04 to shift canonical positioning from human-in-the-loop review-first to ready-made output with optional edits."
-  - "The canonical video model already exists as one ContentGlowz-owned timeline; this spec must not create a second competing editor model."
+  - "The canonical video model already exists as one ContentGlows-owned timeline; this spec must not create a second competing editor model."
   - "User direction 2026-07-07: think DRY; manual video creation and feed-driven auto creation must share one video entrypoint, not two."
 next_step: "/100-sg-spec AI-first branded video generation and swipe publish feed-semantic alignment"
 ---
@@ -68,28 +68,28 @@ AI-first branded video generation and swipe publish
 
 ## Status
 
-Draft. This spec defines the target default experience for ContentGlowz video: users provide source content, media assets and a brand system, ContentGlowz assembles a ready-made branded video draft automatically, previews it through the existing render stack, and lets the user publish fast with a swipe-style confirmation or perform optional edits through the canonical video timeline or a dedicated branding editor. The product default is no longer "open an editor and start assembling." The default is "receive a finished draft, then approve, tweak, or regenerate." This revision also hardens the architecture rule that video creation has exactly one backend orchestration entrypoint regardless of whether the request starts from the feed, a content detail CTA, or a manual "create video" surface.
+Draft. This spec defines the target default experience for ContentGlows video: users provide source content, media assets and a brand system, ContentGlows assembles a ready-made branded video draft automatically, previews it through the existing render stack, and lets the user publish fast with a swipe-style confirmation or perform optional edits through the canonical video timeline or a dedicated branding editor. The product default is no longer "open an editor and start assembling." The default is "receive a finished draft, then approve, tweak, or regenerate." This revision also hardens the architecture rule that video creation has exactly one backend orchestration entrypoint regardless of whether the request starts from the feed, a content detail CTA, or a manual "create video" surface.
 
 ## User Story
 
-En tant que creatrice ContentGlowz authentifiee, je veux fournir du contenu, des images, des videos et un branding, puis recevoir automatiquement une video prete a publier que je peux swiper pour publier ou ajuster rapidement si besoin.
+En tant que creatrice ContentGlows authentifiee, je veux fournir du contenu, des images, des videos et un branding, puis recevoir automatiquement une video prete a publier que je peux swiper pour publier ou ajuster rapidement si besoin.
 
 ## Minimal Behavior Contract
 
-Depuis un contenu appartenant au projet actif, avec des assets media eligibles et un profil de marque defini, ContentGlowz attend d'abord un signal explicite de maturite du contenu, puis prepare automatiquement en arriere-plan un ou plusieurs drafts video brandes dans la timeline canonique, lance une preview serveur de ces versions, puis expose ces contenus deja fabriques dans le feed comme surfaces de decision. L'utilisateur peut alors publier d'un geste, modifier legerement, changer le branding apres validation reelle, ou regenerer avec des contraintes. Si le branding est incomplet, si les assets sont insuffisants, si la timeline auto-generee n'est pas valide, si le rendu echoue, si le publish preflight echoue ou si les droits d'acces ne correspondent pas au projet actif, l'utilisateur voit un etat recuperable avec explication courte et action suivante claire. Le cas facile a rater est la derive de modele: le "draft pret a publier" doit etre une version normale de la timeline ContentGlowz, pas un objet cache ou un rendu jetable impossible a corriger.
+Depuis un contenu appartenant au projet actif, avec des assets media eligibles et un profil de marque defini, ContentGlows attend d'abord un signal explicite de maturite du contenu, puis prepare automatiquement en arriere-plan un ou plusieurs drafts video brandes dans la timeline canonique, lance une preview serveur de ces versions, puis expose ces contenus deja fabriques dans le feed comme surfaces de decision. L'utilisateur peut alors publier d'un geste, modifier legerement, changer le branding apres validation reelle, ou regenerer avec des contraintes. Si le branding est incomplet, si les assets sont insuffisants, si la timeline auto-generee n'est pas valide, si le rendu echoue, si le publish preflight echoue ou si les droits d'acces ne correspondent pas au projet actif, l'utilisateur voit un etat recuperable avec explication courte et action suivante claire. Le cas facile a rater est la derive de modele: le "draft pret a publier" doit etre une version normale de la timeline ContentGlows, pas un objet cache ou un rendu jetable impossible a corriger.
 
 ## Success Behavior
 
-- Given an authenticated user with an active project, owned content, eligible media assets and a selected brand profile, when the user marks a content item as complete and the schedule allows generation, then ContentGlowz creates or refreshes branded drafts in the canonical video timeline in the background before the user acts.
+- Given an authenticated user with an active project, owned content, eligible media assets and a selected brand profile, when the user marks a content item as complete and the schedule allows generation, then ContentGlows creates or refreshes branded drafts in the canonical video timeline in the background before the user acts.
 - Given those ready-made drafts already exist, when the user opens the feed, then the app surfaces publish-ready video cards instead of asking the user to start a montage session.
 - Given the brand profile contains approved defaults for typography, colors, logo treatment, caption style, intro/outro, CTA behavior, scene rhythm and transition family, when the auto-assembly runs, then those rules shape the generated scene order and visual treatment without requiring manual keyframe editing.
 - Given the source content has text, assets and optional transcript or hook candidates, when the assembly runs, then the backend creates a complete first-cut timeline with scene sequencing, text overlays, media placements, audio defaults, caption defaults and export preset selection.
 - Given a branded draft version is created, when preview is requested or auto-triggered under allowed cost rules, then the existing render stack produces a preview MP4 tied to that exact immutable timeline version.
 - Given the preview completes and publish prerequisites pass, when the user reaches the final approval surface, then the app presents a compact review card with playback, key metadata, channel/format, and a swipe-to-publish confirmation.
-- Given the user accepts the draft, when they complete the swipe action, then ContentGlowz triggers the publish flow or queues the final publish action through the owned publish account path for the active project.
+- Given the user accepts the draft, when they complete the swipe action, then ContentGlows triggers the publish flow or queues the final publish action through the owned publish account path for the active project.
 - Given the user wants changes, when they choose "Edit video", then the app opens the canonical `/editor/:id/video` timeline with the already-generated version loaded.
 - Given the user wants systemic rather than one-off changes, when they choose "Edit branding", then the app opens a branding editor for that brand profile and can offer regeneration against the new rules.
-- Given the user wants a new automatic cut, when they choose regenerate, then ContentGlowz preserves explicit locks such as chosen assets, locked scenes, forbidden colors, fixed captions or CTA copy according to the request.
+- Given the user wants a new automatic cut, when they choose regenerate, then ContentGlows preserves explicit locks such as chosen assets, locked scenes, forbidden colors, fixed captions or CTA copy according to the request.
 - Proof of success is a flow where a user can go from owned content plus brand inputs to a previewable, publishable video without doing manual montage first, while still keeping optional timeline and branding edits on the same canonical data.
 
 ## Error Behavior
@@ -108,7 +108,7 @@ Depuis un contenu appartenant au projet actif, avec des assets media eligibles e
 
 ## Problem
 
-ContentGlowz now has the foundations for a canonical video timeline, render preview/final workflows, templates, project assets and a stronger product promise around ready-made outputs. But the current direction of the video system still assumes too much manual assembly and too much editor-first thinking. That is the wrong default for the stated product goal.
+ContentGlows now has the foundations for a canonical video timeline, render preview/final workflows, templates, project assets and a stronger product promise around ready-made outputs. But the current direction of the video system still assumes too much manual assembly and too much editor-first thinking. That is the wrong default for the stated product goal.
 
 Users do not want to spend time doing montage. They want the platform to output already-made, on-brand videos from their content and source assets. Editing must remain available, but as a correction layer. Without an explicit spec, the system risks drifting into a general-purpose editor, a disconnected AI playground, or a brittle set of one-off templates with no canonical tie to the timeline or publish flow.
 
@@ -157,7 +157,7 @@ It also imposes a stricter architectural rule: there is one video-generation orc
   - `talking_head_highlight`
   - `testimonial_cut`
   - `recap`
-- An auto-assembly service that outputs a normal ContentGlowz timeline draft version rather than a parallel format.
+- An auto-assembly service that outputs a normal ContentGlows timeline draft version rather than a parallel format.
 - Preview orchestration tied to the current immutable timeline version.
 - A compact approval surface in the app with playback, metadata, warnings and swipe-to-publish confirmation.
 - Optional transitions into:
@@ -233,7 +233,7 @@ Preview-only changes, raw imports, and feed refreshes are not generation trigger
 ## Dependencies
 
 - Canonical timeline spec:
-  - `shipglows_data/workflow/specs/monorepo/SPEC-unified-contentglowz-video-timeline-2026-05-14.md`
+  - `shipglows_data/workflow/specs/monorepo/SPEC-unified-contentglows-video-timeline-2026-05-14.md`
 - Existing video generation/editor-related specs:
   - `shipglows_data/workflow/specs/monorepo/SPEC-ai-video-broll-generation-workflow-2026-05-13.md`
   - `shipglows_data/workflow/specs/monorepo/SPEC-text-based-media-editing-social-video-2026-05-12.md`
@@ -439,7 +439,7 @@ But it is not the default entry point for V1 of this product direction, and it i
 
 ## Documentation Coherence
 
-- Product promise docs must continue to describe ContentGlowz as `ready-made first, editable second`, not as a manual editor.
+- Product promise docs must continue to describe ContentGlows as `ready-made first, editable second`, not as a manual editor.
 - The public blog article created for this architecture must stay aligned with the shipped sequencing: one generation engine, one editable timeline, one optional branding editor.
 - App copy in feed/editor surfaces must avoid implying blind autopublish; `swipe to publish` still depends on a current preview and destination readiness.
 - No broad marketing-site rewrite is required in this chantier beyond copy directly affected by the new feed/manual-create unification.
@@ -588,7 +588,7 @@ None. This spec is ready only for the bounded first implementation slice that un
 - Global `shipglows_data/workflow/specs` metadata lint still fails as of `2026-07-04`, but due to pre-existing invalid artifacts outside this chantier, not due to this spec.
 - Historical invalid specs currently reported by the global lint:
   - `shipglows_data/workflow/specs/SPEC-ai-asset-understanding-auto-tagging-2026-05-13.md`
-  - `shipglows_data/workflow/specs/app/SPEC-contentglowz-app-dependency-hygiene-and-reproducible-flutter-install-2026-06-12.md`
+  - `shipglows_data/workflow/specs/app/SPEC-contentglows-app-dependency-hygiene-and-reproducible-flutter-install-2026-06-12.md`
   - `shipglows_data/workflow/specs/app/SPEC-record-package-migration-flutter-3-41.md`
   - `shipglows_data/workflow/specs/app/android-back-history-outside-onboarding-2026-05-16.md`
   - `shipglows_data/workflow/specs/lab/SPEC-dual-mode-ai-runtime-all-providers.md`
@@ -596,7 +596,7 @@ None. This spec is ready only for the bounded first implementation slice that un
   - `shipglows_data/workflow/specs/lab/SPEC-project-intelligence-engine-data-layer-2026-05-13.md`
   - `shipglows_data/workflow/specs/lab/SPEC-strict-byok-llm-app-visible-ai.md`
   - `shipglows_data/workflow/specs/monorepo/SPEC-remotion-cloud-run-gcs-render-deployment-2026-05-14.md`
-  - `shipglows_data/workflow/specs/monorepo/SPEC-unified-contentglowz-video-timeline-2026-05-14.md`
+  - `shipglows_data/workflow/specs/monorepo/SPEC-unified-contentglows-video-timeline-2026-05-14.md`
   - `shipglows_data/workflow/specs/site/SPEC-bilingual-fr-en-blog-routing-and-locale-metadata-2026-06-12.md`
   - `shipglows_data/workflow/specs/site/SPEC-bilingual-fr-en-routing-seo-metadata-core-pages-2026-06-12.md`
 

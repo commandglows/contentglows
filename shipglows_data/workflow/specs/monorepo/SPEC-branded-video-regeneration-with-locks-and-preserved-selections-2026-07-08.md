@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-07-08"
 created_at: "2026-07-08 00:00:00 UTC"
 updated: "2026-07-08"
@@ -13,14 +13,14 @@ source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
 confidence: "high"
-user_story: "En tant que creatrice ContentGlowz authentifiee, je veux regenerer une video branded tout en preservant certains choix comme des assets, scenes ou copies, afin d'obtenir une nouvelle proposition sans perdre mes decisions importantes."
+user_story: "En tant que creatrice ContentGlows authentifiee, je veux regenerer une video branded tout en preservant certains choix comme des assets, scenes ou copies, afin d'obtenir une nouvelle proposition sans perdre mes decisions importantes."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
 linked_systems:
   - "lab"
   - "app"
-  - "Unified ContentGlowz Video Timeline"
+  - "Unified ContentGlows Video Timeline"
   - "Brand Video Blueprints"
 depends_on:
   - artifact: "shipglows_data/workflow/specs/monorepo/SPEC-ai-first-branded-video-generation-and-swipe-publish-2026-07-04.md"
@@ -50,7 +50,7 @@ Draft. This spec defines regeneration of branded videos from a previous canonica
 
 ## User Story
 
-En tant que creatrice ContentGlowz authentifiee, je veux regenerer une video branded tout en preservant certains choix comme des assets, scenes ou copies, afin d'obtenir une nouvelle proposition sans perdre mes decisions importantes.
+En tant que creatrice ContentGlows authentifiee, je veux regenerer une video branded tout en preservant certains choix comme des assets, scenes ou copies, afin d'obtenir une nouvelle proposition sans perdre mes decisions importantes.
 
 ## Minimal Behavior Contract
 

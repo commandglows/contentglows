@@ -10,7 +10,7 @@ source_skill: sf-spec
 scope: "migration"
 owner: "Diane"
 confidence: medium
-user_story: "En tant que mainteneur de ContentGlowz, je veux migrer les dépendances Flutter coeur vers leurs versions majeures actuelles par lots sûrs, afin de réduire la dette de maintenance sans casser l'accès, l'état applicatif, la navigation ni le build web."
+user_story: "En tant que mainteneur de ContentGlows, je veux migrer les dépendances Flutter coeur vers leurs versions majeures actuelles par lots sûrs, afin de réduire la dette de maintenance sans casser l'accès, l'état applicatif, la navigation ni le build web."
 risk_level: "high"
 security_impact: "low, mitigated by preserving server-side/auth contracts, validating guarded routes, avoiding prereleases/untrusted sources, and keeping diagnostics sanitized"
 docs_impact: "yes"
@@ -71,7 +71,7 @@ Implementation status on 2026-04-27: verified. Docs/changelog are updated, runti
 
 # User Story
 
-En tant que mainteneur de ContentGlowz, je veux migrer les dépendances Flutter coeur vers leurs versions majeures actuelles par lots sûrs, afin de réduire la dette de maintenance sans casser l'accès, l'état applicatif, la navigation ni le build web.
+En tant que mainteneur de ContentGlows, je veux migrer les dépendances Flutter coeur vers leurs versions majeures actuelles par lots sûrs, afin de réduire la dette de maintenance sans casser l'accès, l'état applicatif, la navigation ni le build web.
 
 # Minimal Behavior Contract
 
@@ -79,9 +79,9 @@ Quand le mainteneur déclenche la migration des dépendances coeur, l'applicatio
 
 # Success Behavior
 
-- Précondition: le travail démarre dans `/home/claude/contentglowz/app` après lecture du worktree sale; les changements existants non liés ne sont pas revert.
+- Précondition: le travail démarre dans `/home/claude/contentglows/app` après lecture du worktree sale; les changements existants non liés ne sont pas revert.
 - Action: le mainteneur exécute la migration par lots ordonnés: baseline, Riverpod runtime, Riverpod API fixes, annotation/generator, GoRouter, Google Fonts, full validation, docs.
-- Résultat utilisateur/opérateur: l'application démarre avec `ProviderScope`, `ContentGlowzApp`, `MaterialApp.router`, thème light/dark, localizations, offline sync bridge et in-app tour overlay.
+- Résultat utilisateur/opérateur: l'application démarre avec `ProviderScope`, `ContentGlowsApp`, `MaterialApp.router`, thème light/dark, localizations, offline sync bridge et in-app tour overlay.
 - Résultat système: `pubspec.yaml` et `pubspec.lock` résolvent les majors stables compatibles, sans prerelease et sans dependency override permanent.
 - Les routes `/`, `/entry`, `/auth`, `/feed`, `/settings`, `/projects`, `/onboarding`, `/editor/:id`, `/feedback`, `/feedback-admin`, `/settings/integrations`, `/angles`, `/templates` et `/drip` conservent leurs contrats de navigation.
 - Le no-jump sur resume reste garanti: `restoringSession`, `checkingBackend` et `checkingWorkspace` ne redirigent pas hors des routes utilisables en cours.
@@ -205,7 +205,7 @@ Official sources consulted:
 
 # Invariants
 
-- `ContentGlowzApp` remains bootstrapped through a top-level `ProviderScope`.
+- `ContentGlowsApp` remains bootstrapped through a top-level `ProviderScope`.
 - `sharedPrefsProvider` and `appDiagnosticsProvider` remain overridden before app render.
 - `appRouterProvider` returns a stable `GoRouter` and disposes `_AppRouterRefreshListenable`.
 - `resolveAppRedirect` remains pure and directly testable.
@@ -224,7 +224,7 @@ Official sources consulted:
 
 # Links & Consequences
 
-- `lib/main.dart`: owns `ProviderScope`, diagnostics observer, shared prefs overrides, `ContentGlowzApp`, `_OfflineSyncBridge`, periodic replay and resume-triggered access refresh.
+- `lib/main.dart`: owns `ProviderScope`, diagnostics observer, shared prefs overrides, `ContentGlowsApp`, `_OfflineSyncBridge`, periodic replay and resume-triggered access refresh.
 - `lib/router.dart`: owns guarded redirects, route table, `appRouterProvider`, `_AppRouterRefreshListenable`, `AsyncValue<AppAccessState>` reads and GoRouter signatures.
 - `lib/providers/providers.dart`: largest Riverpod surface; uses `StateNotifierProvider`, `StateProvider`, `AsyncNotifierProvider`, `FutureProvider`, `Provider.family`, `.future`, invalidation and many `valueOrNull` reads.
 - `lib/core/app_diagnostics.dart`: extends `ProviderObserver`; migration must keep provider failure observability without logging secrets.
@@ -475,7 +475,7 @@ Official sources consulted:
 
 # Acceptance Criteria
 
-- [x] CA 1 : Given the repo is in `/home/claude/contentglowz/app`, when the migration starts, then `git status --short` is reviewed and unrelated dirty files are not reverted.
+- [x] CA 1 : Given the repo is in `/home/claude/contentglows/app`, when the migration starts, then `git status --short` is reviewed and unrelated dirty files are not reverted.
 - [x] CA 2 : Given current official docs and `flutter pub outdated`, when selecting package versions, then only stable compatible pub.dev versions are used and prereleases are rejected, except the documented dev transitive `riverpod_analyzer_utils 1.0.0-dev.9` imposed by stable `riverpod_generator 4.0.3`.
 - [x] CA 3 : Given local SDK constraint `^3.11.3`, when selecting GoRouter 17.x, then `flutter --version` and `flutter pub get` prove SDK compatibility.
 - [x] CA 4 : Given Riverpod legacy providers exist, when Riverpod runtime is migrated, then `StateProvider` and `StateNotifierProvider` compile via the correct legacy import or documented minimal adaptation.

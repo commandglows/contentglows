@@ -1,4 +1,4 @@
-"""Renderer adapter boundary for ContentGlowz video timelines."""
+"""Renderer adapter boundary for ContentGlows video timelines."""
 
 from __future__ import annotations
 
@@ -61,12 +61,12 @@ class UnavailableVideoRendererAdapter:
         client_request_id: str | None = None,
     ) -> VideoRenderDispatchResult:
         raise VideoRendererUnavailableError(
-            "ContentGlowz timeline Remotion composition is not enabled yet"
+            "ContentGlows timeline Remotion composition is not enabled yet"
         )
 
     async def get_render_status(self, *, job_id: str) -> VideoRenderDispatchResult:
         raise VideoRendererUnavailableError(
-            "ContentGlowz timeline Remotion composition is not enabled yet"
+            "ContentGlows timeline Remotion composition is not enabled yet"
         )
 
 
@@ -158,8 +158,8 @@ class RemotionTimelineRendererAdapter:
             "jobId": job_id,
             "renderMode": render_mode,
             "durationSeconds": duration_seconds,
-            "templateId": "contentglowz-timeline-v1",
-            "compositionId": "ContentGlowzTimelineVideo",
+            "templateId": "contentglows-timeline-v1",
+            "compositionId": "ContentGlowsTimelineVideo",
             "inputProps": timeline_props,
         }
 

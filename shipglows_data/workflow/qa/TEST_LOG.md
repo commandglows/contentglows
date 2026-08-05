@@ -84,7 +84,7 @@
 - Source: sf-test
 - Status: pass
 - Confidence: high
-- Result summary: `https://app.contentglowz.com/sign-up` returns 200, deployed `clerk-runtime.js` contains the hash-routing OTP fix, Clerk SignUp mounts with email/password fields, and Playwright observed no console or failed-request errors before entering an email.
+- Result summary: `https://app.contentglows.com/sign-up` returns 200, deployed `clerk-runtime.js` contains the hash-routing OTP fix, Clerk SignUp mounts with email/password fields, and Playwright observed no console or failed-request errors before entering an email.
 - Bug pointer: none
 - Evidence pointer: `shipglows_data/workflow/qa/evidence/auth-otp-signup-2026-06-10/sign-up.png`; Playwright summary observed HTTP 200, final URL `/sign-up`, no console errors, no failed requests, `Ready.` status, and mounted email/password fields. Deployed build `b283b478e698ecdf4dbe868e05415e7977f11d84`, timestamp `2026-06-02T14:46:27Z`.
 - Follow-up: run full hosted OTP account creation with an accessible test inbox; do not log raw OTP.
@@ -123,7 +123,7 @@
 - Source: sf-test
 - Status: blocked
 - Confidence: high
-- Result summary: `POST /api/personas/draft` on `https://api.contentglowz.com` returned `401`; the job was not created and polling could not be exercised.
+- Result summary: `POST /api/personas/draft` on `https://api.contentglows.com` returned `401`; the job was not created and polling could not be exercised.
 - Bug pointer: BUG-2026-05-10-001 -> shipglows_data/workflow/bugs/lab/BUG-2026-05-10-001.md
-- Evidence pointer: `curl https://api.contentglowz.com/health` (200), `curl -X POST https://api.contentglowz.com/api/personas/draft` (401), outputs saved to local temp files during the retest
+- Evidence pointer: `curl https://api.contentglows.com/health` (200), `curl -X POST https://api.contentglows.com/api/personas/draft` (401), outputs saved to local temp files during the retest
 - Follow-up: /sf-fix BUG-2026-05-10-001

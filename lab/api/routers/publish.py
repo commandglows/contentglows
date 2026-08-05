@@ -49,7 +49,7 @@ SUPPORTED_PLATFORMS = {
     "snapchat",
     "discord",
 }
-UNSUPPORTED_CONTENTGLOWZ_CHANNELS = {"wordpress", "ghost"}
+UNSUPPORTED_CONTENTGLOWS_CHANNELS = {"wordpress", "ghost"}
 
 
 # -- Models -----------------------------------------------------------------
@@ -126,7 +126,7 @@ def _headers() -> dict[str, str]:
 
 def _normalize_platform(platform: str) -> str:
     normalized = platform.strip().lower()
-    if normalized in UNSUPPORTED_CONTENTGLOWZ_CHANNELS:
+    if normalized in UNSUPPORTED_CONTENTGLOWS_CHANNELS:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=f"{normalized} is not supported by the Zernio integration in this release.",
@@ -275,8 +275,8 @@ async def _ensure_zernio_profile(user_id: str, project_id: str) -> dict[str, Any
             f"{ZERNIO_BASE}/profiles",
             headers=_headers(),
             json={
-                "name": f"ContentGlowz project {project_id}",
-                "description": "ContentGlowz project-scoped publishing profile",
+                "name": f"ContentGlows project {project_id}",
+                "description": "ContentGlows project-scoped publishing profile",
             },
         )
     if resp.status_code >= 400:
@@ -611,7 +611,7 @@ async def connect_callback(state: str = Query(...)):
         "projectId": session["projectId"],
         "platform": session["platform"],
         "accounts": accounts,
-        "message": "Connection completed. You can return to ContentGlowz Settings.",
+        "message": "Connection completed. You can return to ContentGlows Settings.",
     }
 
 

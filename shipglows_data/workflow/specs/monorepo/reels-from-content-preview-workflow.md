@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 09:15:20 UTC"
 updated: "2026-05-11"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
 confidence: "medium"
-user_story: "En tant que createur ContentGlowz authentifie, je veux transformer un contenu existant en reel depuis l'ecran Reels, afin de previsualiser puis exporter un MP4 local."
+user_story: "En tant que createur ContentGlows authentifie, je veux transformer un contenu existant en reel depuis l'ecran Reels, afin de previsualiser puis exporter un MP4 local."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -59,11 +59,11 @@ Ready after `sf-ready` rerun. This spec depends on `shipglows_data/workflow/spec
 
 ## User Story
 
-En tant que createur ContentGlowz authentifie, je veux transformer un contenu existant en reel depuis l'ecran Reels, afin de previsualiser puis exporter un MP4 local.
+En tant que createur ContentGlows authentifie, je veux transformer un contenu existant en reel depuis l'ecran Reels, afin de previsualiser puis exporter un MP4 local.
 
 ## Minimal Behavior Contract
 
-Dans `/reels`, ContentGlowz affiche un parcours "Create from content" ou l'utilisateur choisit un contenu de son projet actif, lance une preview 60 secondes, voit le statut du job, lit la preview video dans l'app via une URL d'artefact signee valable 24h, puis lance l'export final seulement apres une preview terminee. Si le contenu manque, si l'utilisateur est hors ligne, si le rendu echoue, si l'API renvoie `429` avec `Retry-After`, ou si l'artefact video ne peut pas etre lu, l'ecran garde un etat recuperable avec une action de retry ou un message clair. Le cas facile a rater est la lecture video Flutter Web: la preview doit utiliser une URL reseau API signee, pas un `VideoPlayerController.file` ni une URL qui exige un bearer header.
+Dans `/reels`, ContentGlows affiche un parcours "Create from content" ou l'utilisateur choisit un contenu de son projet actif, lance une preview 60 secondes, voit le statut du job, lit la preview video dans l'app via une URL d'artefact signee valable 24h, puis lance l'export final seulement apres une preview terminee. Si le contenu manque, si l'utilisateur est hors ligne, si le rendu echoue, si l'API renvoie `429` avec `Retry-After`, ou si l'artefact video ne peut pas etre lu, l'ecran garde un etat recuperable avec une action de retry ou un message clair. Le cas facile a rater est la lecture video Flutter Web: la preview doit utiliser une URL reseau API signee, pas un `VideoPlayerController.file` ni une URL qui exige un bearer header.
 
 ## Success Behavior
 
@@ -87,11 +87,11 @@ Dans `/reels`, ContentGlowz affiche un parcours "Create from content" ou l'utili
 
 ## Problem
 
-`ReelsScreen` currently supports only Instagram reel download and audio extraction. It does not let ContentGlowz users turn their own articles, posts, scripts, or shorts into a video output. The app already has content lists, active project selection, and status/content APIs, so the first Remotion-powered user feature should extend `/reels` instead of introducing a separate tool surface.
+`ReelsScreen` currently supports only Instagram reel download and audio extraction. It does not let ContentGlows users turn their own articles, posts, scripts, or shorts into a video output. The app already has content lists, active project selection, and status/content APIs, so the first Remotion-powered user feature should extend `/reels` instead of introducing a separate tool surface.
 
 ## Solution
 
-Refactor `/reels` into a two-tab workspace: "Create from content" for ContentGlowz-generated reels and "Import Instagram" for the existing download flow. The new tab uses existing content providers, calls the render job API from `shipglows_data/workflow/specs/monorepo/remotion-render-service-integration.md`, polls job status, previews the returned MP4 through `video_player`, and exposes final export only after preview succeeds.
+Refactor `/reels` into a two-tab workspace: "Create from content" for ContentGlows-generated reels and "Import Instagram" for the existing download flow. The new tab uses existing content providers, calls the render job API from `shipglows_data/workflow/specs/monorepo/remotion-render-service-integration.md`, polls job status, previews the returned MP4 through `video_player`, and exposes final export only after preview succeeds.
 
 ## Scope In
 

@@ -27,7 +27,7 @@ Strict BYOK LLM For App-Visible AI Actions
 ## Status
 Superseded by `shipglows_data/workflow/specs/lab/SPEC-dual-mode-ai-runtime-all-providers.md`.
 
-The strict-BYOK direction was replaced by the dual-mode runtime contract so ContentGlowz can support both user-managed credentials and operator-paid platform mode behind entitlement gates.
+The strict-BYOK direction was replaced by the dual-mode runtime contract so ContentGlows can support both user-managed credentials and operator-paid platform mode behind entitlement gates.
 
 ## Problem
 The product decision is now locked: every LLM-backed action visible in `app` must run with the requesting user's OpenRouter key, not an operator-managed key from Doppler or process environment.
@@ -314,8 +314,8 @@ Keep non-LLM tools server-managed (`Exa`, `Firecrawl`, IMAP/Composio, SendGrid, 
   6. research route migration
   7. app UX polish and tests
 - Validation commands:
-  - `cd /home/claude/contentglowz/lab && pytest tests/test_psychology_auth_jobs.py tests/test_persona_draft_route.py tests/test_settings_integrations_router.py tests/test_newsletter_router.py tests/test_research_router.py`
-  - `cd /home/claude/contentglowz/app && flutter test test/core/byok_guard_test.dart`
+  - `cd /home/claude/contentglows/lab && pytest tests/test_psychology_auth_jobs.py tests/test_persona_draft_route.py tests/test_settings_integrations_router.py tests/test_newsletter_router.py tests/test_research_router.py`
+  - `cd /home/claude/contentglows/app && flutter test test/core/byok_guard_test.dart`
 - Stop conditions:
   - If explicit request-scoped `CrewAI` LLM injection still triggers env-based auth, stop and re-evaluate the agent integration pattern before touching more routes
   - If pipeline article generation still fails after the import fix, isolate article-pipeline repair as a prerequisite patch before completing the BYOK rollout

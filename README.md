@@ -1,6 +1,6 @@
-# ContentGlowz
+# ContentGlows
 
-Canonical monorepo for the full ContentGlowz platform.
+Canonical monorepo for the full ContentGlows platform.
 
 ## Repository Layout
 
@@ -15,11 +15,11 @@ Start with [shipglows_data/technical/SETUP.md](shipglows_data/technical/SETUP.md
 
 ## Deployment Model
 
-- GitHub source of truth: `diane-defores/contentglowz`
-- Vercel project `ContentGlowz` uses `site` as its Root Directory
-- Vercel project `ContentGlowz-App` uses `app` as its Root Directory
+- GitHub source of truth: `commandglows/contentglows`
+- Vercel project `ContentGlows` uses `site` as its Root Directory
+- Vercel project `ContentGlows-App` uses `app` as its Root Directory
 - `lab` is maintained in this monorepo but deployed outside Vercel
 
 ## Working Rule
 
-All ContentGlowz surfaces now live in this single repository. Do not use the archived legacy repositories as active sources of truth.
+All ContentGlows surfaces now live in this single repository. Do not use the archived legacy repositories as active sources of truth.

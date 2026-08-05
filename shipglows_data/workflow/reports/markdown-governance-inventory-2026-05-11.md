@@ -1,11 +1,11 @@
 # Markdown Governance Inventory Report
 
 Date: 2026-05-11
-Project: contentglowz
+Project: contentglows
 Scope command:
 
 ```bash
-find . \( -path './.git' -o -path './site/node_modules' -o -path './lab/.flox' -o -path './lab/.pytest_cache' -o -path './contentglowz' \) -prune -o -type f -name '*.md' -printf '%p\n' | sort
+find . \( -path './.git' -o -path './site/node_modules' -o -path './lab/.flox' -o -path './lab/.pytest_cache' -o -path './contentglows' \) -prune -o -type f -name '*.md' -printf '%p\n' | sort
 ```
 
 ## Summary
@@ -54,7 +54,7 @@ find . \( -path './.git' -o -path './site/node_modules' -o -path './lab/.flox' -
 | app/specs/SPEC-windows-privacy-capture-dynamic-redaction.md | shipglows_data/workflow/specs/app/SPEC-windows-privacy-capture-dynamic-redaction.md |
 | app/specs/architecture-cible-fastapi-clerk-flutter.md | shipglows_data/workflow/specs/app/architecture-cible-fastapi-clerk-flutter.md |
 | app/specs/conversation-local-capture-assets-linked-to-content-20260505.md | shipglows_data/workflow/specs/app/conversation-local-capture-assets-linked-to-content-20260505.md |
-| app/specs/feedback-admin-v1-contentglowz.md | shipglows_data/workflow/specs/app/feedback-admin-v1-contentglowz.md |
+| app/specs/feedback-admin-v1-contentglows.md | shipglows_data/workflow/specs/app/feedback-admin-v1-contentglows.md |
 | app/specs/feedback-backend-contract-fastapi.md | shipglows_data/workflow/specs/app/feedback-backend-contract-fastapi.md |
 | app/specs/foundation-scrollable-nav-affiliations.md | shipglows_data/workflow/specs/app/foundation-scrollable-nav-affiliations.md |
 | app/specs/late-integration-finalization.md | shipglows_data/workflow/specs/app/late-integration-finalization.md |
@@ -96,7 +96,7 @@ find . \( -path './.git' -o -path './site/node_modules' -o -path './lab/.flox' -
 | site/docs/copywriting/strategie.md | shipglows_data/workflow/research/site/strategie.md |
 | site/docs/spec-i18n-structure.md | shipglows_data/workflow/research/site/spec-i18n-structure.md |
 | site/specs/SPEC-migrate-astro-v6.md | shipglows_data/workflow/specs/site/SPEC-migrate-astro-v6.md |
-| docs/centraliser-design-tokens-contentglowz-app-site.md | shipglows_data/workflow/specs/monorepo/centraliser-design-tokens-contentglowz-app-site.md |
+| docs/centraliser-design-tokens-contentglows-app-site.md | shipglows_data/workflow/specs/monorepo/centraliser-design-tokens-contentglows-app-site.md |
 | docs/explorations/2026-05-06-screen-text-obfuscation.md | shipglows_data/workflow/explorations/2026-05-06-screen-text-obfuscation.md |
 | docs/explorations/2026-05-08-ios-privacy-capture-redaction.md | shipglows_data/workflow/explorations/2026-05-08-ios-privacy-capture-redaction.md |
 | docs/explorations/2026-05-08-linux-privacy-capture-redaction.md | shipglows_data/workflow/explorations/2026-05-08-linux-privacy-capture-redaction.md |

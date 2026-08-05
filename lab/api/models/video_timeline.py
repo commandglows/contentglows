@@ -1,4 +1,4 @@
-"""Canonical ContentGlowz video timeline API models."""
+"""Canonical ContentGlows video timeline API models."""
 
 from __future__ import annotations
 
@@ -432,10 +432,10 @@ class VideoTimelineSwipePublishResponse(BaseModel):
     blockers: list[str] = Field(default_factory=list)
 
 
-class ContentGlowzTimelineProps(BaseModel):
+class ContentGlowsTimelineProps(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    composition_id: Literal["ContentGlowzTimelineVideo"] = "ContentGlowzTimelineVideo"
+    composition_id: Literal["ContentGlowsTimelineVideo"] = "ContentGlowsTimelineVideo"
     timeline_id: str
     version_id: str
     format: dict[str, Any]

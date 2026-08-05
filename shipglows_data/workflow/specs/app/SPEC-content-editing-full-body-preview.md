@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: bug
 owner: "Diane"
 confidence: medium
-user_story: "En tant que créateur ContentGlowz, je veux éditer et publier le contenu complet proposé par l'IA, afin de ne jamais valider par erreur un simple aperçu tronqué."
+user_story: "En tant que créateur ContentGlows, je veux éditer et publier le contenu complet proposé par l'IA, afin de ne jamais valider par erreur un simple aperçu tronqué."
 risk_level: high
 security_impact: "yes"
 docs_impact: "yes"
@@ -66,7 +66,7 @@ Ready child spec, intended as Spec 1 under `SPEC-content-editing-infrastructure.
 
 ## User Story
 
-En tant que créateur ContentGlowz, je veux éditer et publier le contenu complet proposé par l'IA, afin de ne jamais valider par erreur un simple aperçu tronqué.
+En tant que créateur ContentGlows, je veux éditer et publier le contenu complet proposé par l'IA, afin de ne jamais valider par erreur un simple aperçu tronqué.
 
 ## Minimal Behavior Contract
 
@@ -91,7 +91,7 @@ When a creator opens or publishes a proposed content item, the app must resolve 
 
 ## Problem
 
-The current Flutter model conflates preview and body. `ContentItem.fromJson` fills `body` from `content_preview` when `body` is absent, and the editor treats a non-empty body as already loaded. Because feed list payloads are `ContentResponse` objects that include `content_preview` but not the latest full body, a creator can potentially edit or publish a truncated preview. This is a high-risk data/product bug because ContentGlowz's promise is human-controlled publication of complete content.
+The current Flutter model conflates preview and body. `ContentItem.fromJson` fills `body` from `content_preview` when `body` is absent, and the editor treats a non-empty body as already loaded. Because feed list payloads are `ContentResponse` objects that include `content_preview` but not the latest full body, a creator can potentially edit or publish a truncated preview. This is a high-risk data/product bug because ContentGlows's promise is human-controlled publication of complete content.
 
 ## Solution
 
@@ -276,7 +276,7 @@ Separate preview display data from authoritative body data, add a content detail
   - Action: Check target schema has `content_bodies`, `content_edits`, and `content_records.current_version`; document whether migration is required.
   - User story link: Ensures full-body versioning exists in the durable environment.
   - Depends on: Backend access/config availability.
-  - Validate with: `turso db shell contentglowz-prod2 ".schema content_bodies"` or equivalent targeted schema command.
+  - Validate with: `turso db shell contentglows-prod2 ".schema content_bodies"` or equivalent targeted schema command.
   - Notes: Expected conclusion is "no migration required"; if false, stop and create a migration spec before implementation proceeds.
 
 ## Acceptance Criteria

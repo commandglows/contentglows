@@ -2,7 +2,7 @@
 title: "Generate Wikipedia-Quality Articles with STORM AI in 2026"
 description: "Learn how STORM (Stanford AI) creates 7,500-word research-backed articles with automatic citations. Step-by-step guide to generate expert-level content."
 pubDate: 2026-01-15
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["storm ai", "content generation", "ai writing", "seo automation"]
 featured: true
 image: "/images/blog/storm-ai-wikipedia-articles.jpg"

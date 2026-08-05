@@ -4,8 +4,8 @@ import os
 from pathlib import Path
 from urllib.parse import urlparse
 
-os.environ.setdefault("IMAGE_ROBOT_DATA_DIR", "/tmp/contentglowz-test-images")
-os.environ.setdefault("IMAGE_ROBOT_TEMP_DIR", "/tmp/contentglowz-test-images-tmp")
+os.environ.setdefault("IMAGE_ROBOT_DATA_DIR", "/tmp/contentglows-test-images")
+os.environ.setdefault("IMAGE_ROBOT_TEMP_DIR", "/tmp/contentglows-test-images-tmp")
 
 _TOOLS_PATH = Path(__file__).resolve().parents[1] / "agents" / "images" / "tools" / "bunny_cdn_tools.py"
 _SPEC = importlib.util.spec_from_file_location("bunny_cdn_tools_under_test", _TOOLS_PATH)

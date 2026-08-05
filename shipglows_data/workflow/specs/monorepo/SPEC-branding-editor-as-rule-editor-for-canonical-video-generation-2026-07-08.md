@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-07-08"
 created_at: "2026-07-08 14:33:23 UTC"
 updated: "2026-07-08"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
 confidence: "high"
-user_story: "En tant que creatrice ContentGlowz authentifiee, je veux creer et modifier un profil de marque de projet depuis l'app, afin que les generations video utilisent automatiquement les bons defaults de branding sans creer un second moteur de rendu."
+user_story: "En tant que creatrice ContentGlows authentifiee, je veux creer et modifier un profil de marque de projet depuis l'app, afin que les generations video utilisent automatiquement les bons defaults de branding sans creer un second moteur de rendu."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -23,7 +23,7 @@ linked_systems:
   - "Settings"
   - "Brand Profiles"
   - "Canonical branded video generation"
-  - "Unified ContentGlowz Video Timeline"
+  - "Unified ContentGlows Video Timeline"
 depends_on:
   - artifact: "shipglows_data/business/business.md"
     artifact_version: "1.0.0"
@@ -53,7 +53,7 @@ Ready. This spec defines the missing app surface for project-scoped brand profil
 
 ## User Story
 
-En tant que creatrice ContentGlowz authentifiee, je veux creer et modifier un profil de marque de projet depuis l'app, afin que les generations video utilisent automatiquement les bons defaults de branding sans creer un second moteur de rendu.
+En tant que creatrice ContentGlows authentifiee, je veux creer et modifier un profil de marque de projet depuis l'app, afin que les generations video utilisent automatiquement les bons defaults de branding sans creer un second moteur de rendu.
 
 ## Minimal Behavior Contract
 

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ContentGlowz OAuth Callback</title>
+    <title>ContentGlows OAuth Callback</title>
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="stylesheet" href="/clerk-auth.css" />
     <script src="/clerk-runtime.js"></script>
@@ -15,7 +15,7 @@
         <h1>Finalizing sign-in</h1>
         <p>
           Clerk is completing the Google OAuth callback and will return you to
-          ContentGlowz as soon as the session is ready.
+          ContentGlows as soon as the session is ready.
         </p>
         <div class="stack">
           <div class="row">
@@ -35,7 +35,7 @@
 
     <script>
       (function () {
-        const bridge = window.contentglowzClerkBridge;
+        const bridge = window.contentglowsClerkBridge;
         const copyButton = document.getElementById('copy-button');
         const statusEl = document.getElementById('status');
         const retryButton = document.getElementById('retry-button');
@@ -56,7 +56,7 @@
             `commit/build: ${diagnostics.buildId || diagnostics.buildCommitSha}`,
             `build_at_paris: ${diagnostics.buildAtParis}`,
             `build_at_utc: ${diagnostics.buildAtUtc}`,
-            'ContentGlowz OAuth callback diagnostics',
+            'ContentGlows OAuth callback diagnostics',
             `Build commit: ${diagnostics.buildCommitSha}`,
             `Build id: ${diagnostics.buildId}`,
             `Build environment: ${diagnostics.buildEnvironment}`,
@@ -119,7 +119,7 @@
             setStatus('Callback completed. Redirecting…');
             window.location.replace('/#/entry');
           } catch (error) {
-            console.error('[ContentGlowz] Clerk callback failed.', error);
+            console.error('[ContentGlows] Clerk callback failed.', error);
             setStatus(String(error), true);
           }
         }

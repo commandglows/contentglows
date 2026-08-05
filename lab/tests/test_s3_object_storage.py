@@ -134,7 +134,7 @@ def _provider(client: RecordingS3Client) -> S3ObjectStorageProvider:
     return S3ObjectStorageProvider(
         client=client,
         bucket="canonical-private-bucket",
-        key_prefix="contentglowz",
+        key_prefix="contentglows",
         id_factory=lambda: next(ids),
         clock=lambda: datetime(2026, 7, 13, tzinfo=timezone.utc),
         min_part_bytes=1,
@@ -163,7 +163,7 @@ def test_s3_proxy_upload_is_injectable_versioned_and_checksummed() -> None:
     assert stat.checksum_sha256 == _sha256(payload)
     put = next(call for call in client.calls if call[0] == "put_object")[1]
     assert put["Bucket"] == "canonical-private-bucket"
-    assert put["Key"].startswith("contentglowz/quarantine/")
+    assert put["Key"].startswith("contentglows/quarantine/")
     assert put["ChecksumSHA256"] == b64encode(hashlib.sha256(payload).digest()).decode("ascii")
     assert "ACL" not in put
     assert "canonical-private-bucket" not in repr(storage)
@@ -228,7 +228,7 @@ def test_s3_multipart_session_restores_in_new_adapter_instance() -> None:
     )
     private_state = first_instance.export_session_state(session)
 
-    assert private_state["object_key"].startswith("contentglowz/quarantine/")
+    assert private_state["object_key"].startswith("contentglows/quarantine/")
     assert private_state["upload_id"].startswith("upload-")
     assert session.session_id.removeprefix("session-") not in private_state["object_key"]
     assert private_state["object_key"] not in repr(private_state)
@@ -312,7 +312,7 @@ def test_s3_checksum_failure_is_compensated_and_error_is_redacted() -> None:
 
     assert exc_info.value.code == "checksum_mismatch"
     assert "canonical-private-bucket" not in str(exc_info.value)
-    assert "contentglowz/" not in str(exc_info.value)
+    assert "contentglows/" not in str(exc_info.value)
     assert "expected-private-payload" not in str(exc_info.value)
 
 

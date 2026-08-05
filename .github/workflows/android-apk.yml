@@ -1,4 +1,4 @@
-name: ContentGlowz Android Checks
+name: ContentGlows Android Checks
 
 on:
   push:
@@ -20,9 +20,9 @@ permissions:
 env:
   FLUTTER_VERSION_FILE: app/.fvmrc
   APP_DIR: app
-  API_BASE_URL: ${{ vars.API_BASE_URL || 'https://api.contentglowz.com' }}
-  APP_SITE_URL: ${{ vars.APP_SITE_URL || 'https://contentglowz.com' }}
-  APP_WEB_URL: ${{ vars.APP_WEB_URL || 'https://app.contentglowz.com' }}
+  API_BASE_URL: ${{ vars.API_BASE_URL || 'https://api.contentglows.com' }}
+  APP_SITE_URL: ${{ vars.APP_SITE_URL || 'https://contentglows.com' }}
+  APP_WEB_URL: ${{ vars.APP_WEB_URL || 'https://app.contentglows.com' }}
   CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY }}
   SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
   SENTRY_ENVIRONMENT: ${{ vars.SENTRY_ENVIRONMENT || 'github-actions' }}

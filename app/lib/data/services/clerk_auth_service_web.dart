@@ -118,7 +118,7 @@ class ClerkAuthService {
   Future<JSObject> _loadBridge() async {
     final bridge = JSObject.fromInteropObject(
       web.window,
-    )['contentglowzClerkBridge'];
+    )['contentglowsClerkBridge'];
     if (bridge == null) {
       throw StateError(
         'ClerkJS bridge is missing from the web runtime. '

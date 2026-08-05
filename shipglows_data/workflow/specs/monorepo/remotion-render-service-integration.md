@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 09:15:20 UTC"
 updated: "2026-05-11"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
 confidence: "medium"
-user_story: "En tant que createur ContentGlowz authentifie, je veux lancer un rendu Remotion depuis un contenu existant, afin d'obtenir une preview puis un MP4 local depuis l'app."
+user_story: "En tant que createur ContentGlows authentifie, je veux lancer un rendu Remotion depuis un contenu existant, afin d'obtenir une preview puis un MP4 local depuis l'app."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -21,7 +21,7 @@ linked_systems:
   - app
   - lab
   - worker
-  - contentglowz/remotion-template
+  - contentglows/remotion-template
   - Turso jobs
   - Clerk auth
 depends_on:
@@ -31,10 +31,10 @@ depends_on:
   - artifact: "lab/CLAUDE.md"
     artifact_version: "1.0.0"
     required_status: "reviewed"
-  - artifact: "contentglowz/GUIDELINES.md"
+  - artifact: "contentglows/GUIDELINES.md"
     artifact_version: "unknown"
     required_status: "active"
-  - artifact: "contentglowz/remotion-template/README.md"
+  - artifact: "contentglows/remotion-template/README.md"
     artifact_version: "unknown"
     required_status: "unknown"
   - artifact: "Remotion renderMedia docs"
@@ -45,9 +45,9 @@ depends_on:
     required_status: "official"
 supersedes: []
 evidence:
-  - "contentglowz/remotion-template/server/index.ts"
-  - "contentglowz/remotion-template/server/render-queue.ts"
-  - "contentglowz/remotion-template/remotion/QuizVideo.tsx"
+  - "contentglows/remotion-template/server/index.ts"
+  - "contentglows/remotion-template/server/render-queue.ts"
+  - "contentglows/remotion-template/remotion/QuizVideo.tsx"
   - "lab/api/routers/reels.py"
   - "lab/api/services/job_store.py"
   - "lab/api/dependencies/auth.py"
@@ -69,11 +69,11 @@ Ready after `sf-ready` rerun. This spec defines the technical integration layer 
 
 ## User Story
 
-En tant que createur ContentGlowz authentifie, je veux lancer un rendu Remotion depuis un contenu existant, afin d'obtenir une preview puis un MP4 local depuis l'app.
+En tant que createur ContentGlows authentifie, je veux lancer un rendu Remotion depuis un contenu existant, afin d'obtenir une preview puis un MP4 local depuis l'app.
 
 ## Minimal Behavior Contract
 
-ContentGlowz accepte une demande de rendu 60 secondes pour un contenu existant appartenant a l'utilisateur courant, cree un job persistant, transforme ce contenu en props de composition Remotion, delegue le rendu a un worker Remotion local et expose un statut ainsi qu'une URL d'artefact local signee valable 24h quand le rendu est termine. Si le contenu est absent, n'appartient pas a l'utilisateur, n'a pas de corps exploitable, depasse les limites de rendu, ou si le worker echoue, le job devient observable en erreur sans produire d'artefact annonce comme pret. Le cas facile a rater est la separation entre `preview` et `final`: un rendu final ne peut etre cree que depuis un `preview_job_id` termine et ne doit jamais reutiliser un ancien artefact preview ou un job d'un autre utilisateur.
+ContentGlows accepte une demande de rendu 60 secondes pour un contenu existant appartenant a l'utilisateur courant, cree un job persistant, transforme ce contenu en props de composition Remotion, delegue le rendu a un worker Remotion local et expose un statut ainsi qu'une URL d'artefact local signee valable 24h quand le rendu est termine. Si le contenu est absent, n'appartient pas a l'utilisateur, n'a pas de corps exploitable, depasse les limites de rendu, ou si le worker echoue, le job devient observable en erreur sans produire d'artefact annonce comme pret. Le cas facile a rater est la separation entre `preview` et `final`: un rendu final ne peut etre cree que depuis un `preview_job_id` termine et ne doit jamais reutiliser un ancien artefact preview ou un job d'un autre utilisateur.
 
 ## Success Behavior
 
@@ -100,7 +100,7 @@ ContentGlowz accepte une demande de rendu 60 secondes pour un contenu existant a
 
 ## Problem
 
-The `contentglowz/remotion-template` prototype proves that Remotion can render a vertical MP4, but it is a standalone Node/Express server with an in-memory queue, Telegram side effects, and a quiz-specific schema. ContentGlowz's production backend is FastAPI with Clerk auth, Turso-backed job persistence, project ownership checks, and Flutter clients. Copying the prototype directly would bypass existing security, persistence, and app patterns.
+The `contentglows/remotion-template` prototype proves that Remotion can render a vertical MP4, but it is a standalone Node/Express server with an in-memory queue, Telegram side effects, and a quiz-specific schema. ContentGlows's production backend is FastAPI with Clerk auth, Turso-backed job persistence, project ownership checks, and Flutter clients. Copying the prototype directly would bypass existing security, persistence, and app patterns.
 
 ## Solution
 
@@ -237,16 +237,16 @@ Introduce a small isolated Remotion worker as a companion service and make `lab`
 
 - [ ] Tache 1: Scaffold the isolated Remotion worker package.
   - Fichier: `worker/package.json`
-  - Action: Create a Node/TypeScript package based on `contentglowz/remotion-template/package.json`, keeping Remotion dependencies and removing Telegram-specific dependencies unless used nowhere else.
+  - Action: Create a Node/TypeScript package based on `contentglows/remotion-template/package.json`, keeping Remotion dependencies and removing Telegram-specific dependencies unless used nowhere else.
   - User story link: Provides the render engine without replacing the FastAPI stack.
   - Depends on: None.
   - Validate with: `npm install` and `npm run lint` from `worker`.
-  - Notes: Keep this out of `contentglowz/`; that directory remains inspiration/prototype material.
+  - Notes: Keep this out of `contentglows/`; that directory remains inspiration/prototype material.
 
 - [ ] Tache 2: Port the Remotion root and add a content-based composition.
   - Fichier: `worker/remotion/Root.tsx`
   - Action: Register `ReelFromContent` with 1080x1920, 30fps, and zod-validated props.
-  - User story link: Produces vertical reels from ContentGlowz content.
+  - User story link: Produces vertical reels from ContentGlows content.
   - Depends on: Tache 1.
   - Validate with: `npm run remotion:studio` and a sample props JSON.
   - Notes: Do not keep quiz-only assumptions as the primary composition.
@@ -386,8 +386,8 @@ Introduce a small isolated Remotion worker as a companion service and make `lab`
 ## Execution Notes
 
 - Read first:
-  - `contentglowz/remotion-template/server/index.ts`
-  - `contentglowz/remotion-template/server/render-queue.ts`
+  - `contentglows/remotion-template/server/index.ts`
+  - `contentglows/remotion-template/server/render-queue.ts`
   - `lab/api/services/job_store.py`
   - `lab/api/dependencies/ownership.py`
   - `lab/api/routers/reels.py`
@@ -408,12 +408,12 @@ None blocking for MVP. Deferred decisions are CDN storage, cloud rendering, voic
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
-| 2026-05-11 09:15:20 | sf-spec | GPT-5 Codex | Created spec from `contentglowz/remotion-template` and user decisions. | Draft saved. | /sf-ready remotion-render-service-integration |
+| 2026-05-11 09:15:20 | sf-spec | GPT-5 Codex | Created spec from `contentglows/remotion-template` and user decisions. | Draft saved. | /sf-ready remotion-render-service-integration |
 | 2026-05-11 09:43:54 | sf-ready | GPT-5 Codex | Evaluated readiness gate for Remotion worker, FastAPI render jobs, signed local artifacts, and local storage. | Not ready: security/availability limits, artifact token contract, final render relationship, and retention policy need concrete decisions. | /sf-spec Remotion render service integration |
 | 2026-05-11 12:41:59 | sf-spec | GPT-5 Codex | Revised spec with user decisions on signed URL TTL, 60-second MVP, 429/backpressure, 30-day local retention, preview-to-final contract, and media scope. | Draft revised for readiness rerun. | /sf-ready remotion-render-service-integration |
 | 2026-05-11 12:48:38 | sf-ready | GPT-5 Codex | Re-evaluated readiness after revised render limits, signed artifact, retention, preview/final, and media scope decisions. | Ready. | /sf-start Remotion render service integration |
 | 2026-05-14 16:10:00 | sf-start | GPT-5 Codex | Implemented Batch 0 foundation: `worker/`, lab render-job API routes/models/services, signed artifact token checks, and focused fake-worker tests. | Partial chantier delivery complete for prerequisite scope; focused backend tests passing. | /sf-verify Remotion render service integration |
-| 2026-05-14 16:45:00 | sf-start | GPT-5 Codex | Lifted worker duration validation for `ContentGlowzTimelineVideo` to support timeline renders up to 180 seconds while preserving the 60-second `ReelFromContent` contract. | Timeline worker integration aligned with unified video timeline Batch 3. | /sf-verify Remotion render service integration |
+| 2026-05-14 16:45:00 | sf-start | GPT-5 Codex | Lifted worker duration validation for `ContentGlowsTimelineVideo` to support timeline renders up to 180 seconds while preserving the 60-second `ReelFromContent` contract. | Timeline worker integration aligned with unified video timeline Batch 3. | /sf-verify Remotion render service integration |
 
 ## Current Chantier Flow
 

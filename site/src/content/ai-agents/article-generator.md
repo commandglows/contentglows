@@ -2,7 +2,7 @@
 title: "Article Generator: Competitive Analysis to Original Content"
 description: "Analyze competitor content, identify gaps in your coverage, and generate original SEO-optimized articles to fill them—automatically."
 pubDate: 2026-01-15
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["article generation", "competitor analysis", "content gaps", "seo", "ai agents"]
 featured: true
 image: "/images/blog/article-generator.jpg"

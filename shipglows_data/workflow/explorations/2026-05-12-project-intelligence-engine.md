@@ -2,7 +2,7 @@
 artifact: exploration_report
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: contentglowz
+project: contentglows
 created: "2026-05-12"
 updated: "2026-05-12"
 status: draft
@@ -38,7 +38,7 @@ next_step: "/sf-spec project intelligence engine data layer"
 
 ## Starting Question
 
-Clarify what intelligence engine ContentGlowz currently has for each project profile, and what is missing to support an ideal flow: upload data, clean/format/deduplicate it, then route training or deployment to OpenAI, Gemini, or open-source providers for informed decisions.
+Clarify what intelligence engine ContentGlows currently has for each project profile, and what is missing to support an ideal flow: upload data, clean/format/deduplicate it, then route training or deployment to OpenAI, Gemini, or open-source providers for informed decisions.
 
 ## Context Read
 
@@ -56,7 +56,7 @@ Clarify what intelligence engine ContentGlowz currently has for each project pro
 
 ## Problem Framing
 
-ContentGlowz already has several intelligence pieces, but not yet one explicit "project brain". The current system can resolve AI credentials, understand a repository or site enough to draft a persona, ingest market/SEO/social/newsletter signals, and turn some signals into ideas. The missing layer is a canonical project intelligence data layer that normalizes all uploaded and connected data into durable, deduplicated, scored, explainable project facts before any model/provider action.
+ContentGlows already has several intelligence pieces, but not yet one explicit "project brain". The current system can resolve AI credentials, understand a repository or site enough to draft a persona, ingest market/SEO/social/newsletter signals, and turn some signals into ideas. The missing layer is a canonical project intelligence data layer that normalizes all uploaded and connected data into durable, deduplicated, scored, explainable project facts before any model/provider action.
 
 ## Option Space
 
@@ -103,7 +103,7 @@ Create a "Project Intelligence Engine" V1:
 ## Rejected Paths
 
 - "Train everything immediately" - rejected because most current product decisions need retrieval and evidence-backed scoring first.
-- "Provider-specific uploads as the source of truth" - rejected because ContentGlowz needs consistent project memory, provenance, and privacy controls across providers.
+- "Provider-specific uploads as the source of truth" - rejected because ContentGlows needs consistent project memory, provenance, and privacy controls across providers.
 
 ## Risks And Unknowns
 
@@ -121,7 +121,7 @@ Create a "Project Intelligence Engine" V1:
 
 ## Decision Inputs For Spec
 
-- User story seed: As a project owner, I want to upload or connect project data and have ContentGlowz clean, deduplicate, understand, and score it so I can make evidence-backed content and growth decisions.
+- User story seed: As a project owner, I want to upload or connect project data and have ContentGlows clean, deduplicate, understand, and score it so I can make evidence-backed content and growth decisions.
 - Scope in seed: project-scoped ingestion jobs, raw/clean document storage, dedupe, fact extraction, embeddings/indexing, confidence/provenance, recommendations, provider runtime routing.
 - Scope out seed: automatic provider fine-tuning for all uploads, unsupported claims of training every model in minutes, public sharing of private project intelligence.
 - Invariants/constraints seed: every item scoped by `user_id + project_id`; raw secrets never exposed; provider calls use `ai_runtime_service`; recommendations must cite source evidence.

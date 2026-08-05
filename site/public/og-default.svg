@@ -6,6 +6,6 @@
     </linearGradient>
   </defs>
   <rect width="1200" height="630" fill="url(#bg)"/>
-  <text x="600" y="280" font-family="sans-serif" font-size="72" font-weight="bold" fill="white" text-anchor="middle">ContentGlowz</text>
+  <text x="600" y="280" font-family="sans-serif" font-size="72" font-weight="bold" fill="white" text-anchor="middle">ContentGlows</text>
   <text x="600" y="360" font-family="sans-serif" font-size="32" fill="rgba(255,255,255,0.85)" text-anchor="middle">AI Content Pipeline. Swipe to Publish.</text>
 </svg>

@@ -3,7 +3,7 @@ title: "Quel prompt utiliser pour transformer une liste de concurrents en insigh
 description: "Vous avez quelques concurrents en tête ? Voici le prompt simple à donner aux skills pour obtenir feedback utilisateur, signaux produit et idées roadmap exploitables."
 locale: "fr"
 pubDate: "2026-07-07"
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["veille concurrentielle", "product research", "prompt", "roadmap", "app"]
 featured: false
 ---

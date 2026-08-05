@@ -248,7 +248,7 @@ async def test_exa_tool_requires_request_scoped_key(monkeypatch):
     monkeypatch.setenv("EXA_API_KEY", "process-exa-key")
 
     exa_tools = _load_module(
-        "contentglowz_test_exa_tools",
+        "contentglows_test_exa_tools",
         "agents/shared/tools/exa_tools.py",
     )
 
@@ -285,7 +285,7 @@ async def test_firecrawl_tool_requires_request_scoped_key(monkeypatch):
     monkeypatch.setenv("FIRECRAWL_API_KEY", "process-firecrawl-key")
 
     firecrawl_tools = _load_module(
-        "contentglowz_test_firecrawl_tools",
+        "contentglows_test_firecrawl_tools",
         "agents/shared/tools/firecrawl_tools.py",
     )
 
@@ -322,7 +322,7 @@ async def test_newsletter_content_collector_requires_request_scoped_exa_key(monk
     monkeypatch.setenv("EXA_API_KEY", "process-exa-key")
 
     content_tools = _load_module(
-        "contentglowz_test_newsletter_content_tools",
+        "contentglows_test_newsletter_content_tools",
         "agents/newsletter/tools/content_tools.py",
     )
 

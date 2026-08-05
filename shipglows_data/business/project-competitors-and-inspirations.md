@@ -2,7 +2,7 @@
 artifact: competitive_intelligence
 metadata_schema_version: "1.0"
 artifact_version: "1.1.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-05-11"
 updated: "2026-07-08"
 status: reviewed
@@ -15,7 +15,7 @@ security_impact: none
 docs_impact: yes
 evidence:
   - "Initial competitor and inspiration triage captured in legacy root concurrent.md."
-  - "ContentGlowz scope covers content generation, recycling, enrichment, reporting, and distribution workflows."
+  - "ContentGlows scope covers content generation, recycling, enrichment, reporting, and distribution workflows."
   - "User-pasted Savvio description on 2026-05-24."
   - "User-pasted competitor URLs on 2026-06-26: https://pixizen.io/fr, https://geniusquiz.co/, https://lifestylo.eu/."
   - "Fresh public-source review on 2026-07-06 for https://vento.so/ and the Chrome Web Store listing."
@@ -27,9 +27,9 @@ depends_on:
 supersedes:
   - "concurrent.md"
 next_review: "2026-06-11"
-next_step: "/sf-market-study contentglowz"
+next_step: "/sf-market-study contentglows"
 target_projects:
-  - contentglowz
+  - contentglows
   - app
   - lab
   - site
@@ -44,16 +44,16 @@ aliases:
   - lab
   - site
 ignored_aliases:
-  - contentglowz
+  - contentglows
 ---
 
-# Concurrents et inspirations — ContentGlowz
+# Concurrents et inspirations — ContentGlows
 
 ## Lecture projet
 
-ContentGlowz est le projet canonique. `app`, `lab`, `site` et `worker` sont traités comme surfaces ou sous-parties de ContentGlowz. `contentglowz` est à ignorer comme alias de surface.
+ContentGlows est le projet canonique. `app`, `lab`, `site` et `worker` sont traités comme surfaces ou sous-parties de ContentGlows. `contentglows` est à ignorer comme alias de surface.
 
-ContentGlowz est le projet le plus concerné par cette veille: génération, recyclage, pilotage, enrichissement et distribution de contenu. Les liens ci-dessous sont principalement des concurrents indirects, des briques produit ou des inspirations de workflow.
+ContentGlows est le projet le plus concerné par cette veille: génération, recyclage, pilotage, enrichissement et distribution de contenu. Les liens ci-dessous sont principalement des concurrents indirects, des briques produit ou des inspirations de workflow.
 
 ## À suivre en priorité
 
@@ -71,15 +71,15 @@ ContentGlowz est le projet le plus concerné par cette veille: génération, rec
 | [Igloo](https://betalist.com/startups/igloo-2) | Concurrent indirect / inspiration contenu | 8/10 | Pattern "faceless reels" très pertinent pour transformer un article, script ou note en short vidéo. À benchmarker comme concurrent sur les workflows de reels automatisés. |
 | [FlowSpeech](https://betalist.com/startups/flowspeech) | Inspiration produit | 8/10 | Voix émotionnelle/multilingue: bonne brique pour transformer des contenus en audio ou narration vidéo. |
 | [Browser7](https://betalist.com/startups/browser7) | Inspiration architecture | 8/10 | Scraping JS, proxy, captcha: utile pour enrichissement de sources, audits concurrents ou collecte contrôlée. À traiter avec prudence légale. |
-| [Spec27](https://betalist.com/startups/spec27) | Inspiration validation agent | 8/10 | Très bon modèle pour tester les pipelines IA ContentGlowz avec specs, fixtures et critères de non-régression. |
+| [Spec27](https://betalist.com/startups/spec27) | Inspiration validation agent | 8/10 | Très bon modèle pour tester les pipelines IA ContentGlows avec specs, fixtures et critères de non-régression. |
 | [Web-Analytics.ai](https://web-analytics.ai/) | Inspiration reporting | 8/10 | Résumés hebdomadaires en langage clair + alertes: très bon format pour rapports clients ou pilotage interne. |
 | Savvio (URL non fournie) | Inspiration produit | 8/10 | Transforme vidéo, article ou document en notes claires, carte visuelle d'idées et plan d'action étape par étape: très pertinent pour la boîte à idées, l'ingestion de sources longues et le suivi d'exécution. |
 | [Firecrawl Fire PDF](https://www.firecrawl.dev/blog/fire-pdf-launch) + [`/parse` endpoint](https://docs.firecrawl.dev/api-reference/endpoint/parse) | Inspiration outillage sources de contenu | 8/10 | Brique potentielle pour ingérer des PDFs, documents locaux ou sources non publiques dans la boîte à idées et les pipelines contenu, avec extraction Markdown/JSON et options de rétention à cadrer. |
-| [BundleUp](https://betalist.com/startups/bundleup) | Inspiration architecture | 7/10 | API unifiée pour intégrations: intéressant si ContentGlowz agrège CMS, réseaux sociaux, analytics et outils de publication. |
+| [BundleUp](https://betalist.com/startups/bundleup) | Inspiration architecture | 7/10 | API unifiée pour intégrations: intéressant si ContentGlows agrège CMS, réseaux sociaux, analytics et outils de publication. |
 | [Clamp](https://betalist.com/startups/clamp) | Inspiration analytics | 7/10 | Analytics privacy-first + MCP: bon modèle pour faire remonter des signaux d'usage aux agents sans dashboard lourd. |
 | [GeniusQuiz](https://geniusquiz.co/) | Concurrent indirect / inspiration contenu | 6/10 | Génération de quiz et évaluations à partir de contenu source: utile comme inspiration pour la réutilisation de contenus, les formats éducatifs et les parcours interactifs. |
 | [Lifestylo](https://lifestylo.eu/) | Concurrent indirect / inspiration compagnon IA | 6/10 | Companion/journal IA qui transforme notes, émotions et activités en récit structuré: intéressant pour les workflows de synthèse longue et de narration personnelle. |
-| [DataForSEO LLM Mentions API](https://dataforseo.com/apis/ai-optimization-api/llm-mentions-api) | Inspiration veille marketing externalisée | 7/10 | Mesure les mentions de marque, domaine, concurrents et mots-clés dans les réponses LLM/AI search: utile pour cadrer une offre de veille marketing externalisée, GEO et visibilité IA dans ContentGlowz. |
+| [DataForSEO LLM Mentions API](https://dataforseo.com/apis/ai-optimization-api/llm-mentions-api) | Inspiration veille marketing externalisée | 7/10 | Mesure les mentions de marque, domaine, concurrents et mots-clés dans les réponses LLM/AI search: utile pour cadrer une offre de veille marketing externalisée, GEO et visibilité IA dans ContentGlows. |
 | [DataForSEO Live vs Standard](https://dataforseo.com/help-center/live-vs-standard-method/amp) | Inspiration API | 6/10 | Utile pour cadrer coûts/latence entre requêtes live et batch, mais article ancien: vérifier docs actuelles avant décision. |
 
 ## À garder en second rang
@@ -90,7 +90,7 @@ ContentGlowz est le projet le plus concerné par cette veille: génération, rec
 | [IntelCue](https://betalist.com/startups/intelcue-2) | Inspiration recherche | 6/10 | Market intelligence branchée à Claude/ChatGPT: utile pour briefs concurrentiels automatisés. |
 | [Airbin](https://betalist.com/startups/airbin) | Inspiration workspace | 6/10 | Workspace privé de fichiers + recherche contexte: utile pour bibliothèque de sources clients. |
 | [Kurate](https://betalist.com/startups/kurate) | Inspiration curation | 5/10 | Classement d'articles scientifiques: pattern utile pour scoring de sources et sélection documentaire. |
-| [Impulse AI](https://betalist.com/startups/impulse-ai) | Inspiration déploiement IA | 5/10 | À surveiller si ContentGlowz veut packager/déployer des modèles ou pipelines IA. |
+| [Impulse AI](https://betalist.com/startups/impulse-ai) | Inspiration déploiement IA | 5/10 | À surveiller si ContentGlows veut packager/déployer des modèles ou pipelines IA. |
 
 ## Notes de dispatch
 
@@ -104,7 +104,7 @@ Ce qui ressort de Vento n'est pas un éditeur timeline riche type Filmora, mais 
 - la transcription audio aide à se repérer dans la prise;
 - le produit reste simple: navigateur, webcam, audio et partage.
 
-Pour ContentGlowz, l'idée la plus différenciante n'est pas "un autre screen recorder", mais un mode de capture assistée qui réduit le coût mental de l'enregistrement avant même de passer dans l'éditeur complet.
+Pour ContentGlows, l'idée la plus différenciante n'est pas "un autre screen recorder", mais un mode de capture assistée qui réduit le coût mental de l'enregistrement avant même de passer dans l'éditeur complet.
 
 ## Note ciblée — AppSumo comme source de retour client
 
@@ -113,7 +113,7 @@ Quand une reference produit passe par AppSumo, la page marketplace n'est pas seu
 - les reviews montrent les cas d'usage qui reviennent vraiment en pratique;
 - les questions mettent en evidence les objections, attentes, comparaisons et angles de confusion;
 - les reponses fondateur clarifient souvent le vrai scope du produit, ses limites et sa priorite roadmap;
-- pour ContentGlowz, c'est une bonne source de "voix du client" a confronter a la page officielle du produit.
+- pour ContentGlows, c'est une bonne source de "voix du client" a confronter a la page officielle du produit.
 
 Subscribr est un bon exemple: la page site vend le workflow "idea -> script -> publish", tandis que la page AppSumo confirme ce que les utilisateurs valorisent concretement (gain de temps, hooks, repurposing blog, workflow YouTube focalise) et ce que le produit ne fait pas encore bien (ameliorer retroactivement les anciennes videos).
 
@@ -121,7 +121,7 @@ Subscribr est un bon exemple: la page site vend le workflow "idea -> script -> p
 - `lab`: backend, pipelines, données, agents, sources et expérimentation.
 - `site`: site marketing et preuve produit.
 - `worker`: service d’exécution spécialisé pour les rendus et exports.
-- `contentglowz`: à ignorer pour les prochains dispatchs, sauf demande explicite.
+- `contentglows`: à ignorer pour les prochains dispatchs, sauf demande explicite.
 
 
 TeachTools offers an AI toolkit for K-12 teachers to quickly generate worksheets, quizzes, lesson plans, and more. It includes 23 focused generators with simple forms and built-in grade levels and standards, producing print-ready PDFs with answer keys and Google Docs exports. The platform is FERPA-compliant by design, collects no student data, and encrypts all content with AES-256, so you can use it without district approval. Start free with 3 generations per month, or upgrade for unlimited use or a school plan.

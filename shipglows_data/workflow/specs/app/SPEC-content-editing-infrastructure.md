@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: feature
 owner: "Diane"
 confidence: medium
-user_story: "En tant que créateur ContentGlowz, je veux pouvoir relire, personnaliser, versionner et publier les contenus proposés par l'IA, afin de garder ma voix et mon contrôle avant toute publication."
+user_story: "En tant que créateur ContentGlows, je veux pouvoir relire, personnaliser, versionner et publier les contenus proposés par l'IA, afin de garder ma voix et mon contrôle avant toute publication."
 risk_level: high
 security_impact: "yes"
 docs_impact: "yes"
@@ -66,11 +66,11 @@ Draft umbrella chantier. This parent spec defines the product and technical dire
 
 ## User Story
 
-En tant que créateur ContentGlowz, je veux pouvoir relire, personnaliser, versionner et publier les contenus proposés par l'IA, afin de garder ma voix et mon contrôle avant toute publication.
+En tant que créateur ContentGlows, je veux pouvoir relire, personnaliser, versionner et publier les contenus proposés par l'IA, afin de garder ma voix et mon contrôle avant toute publication.
 
 ## Minimal Behavior Contract
 
-When ContentGlowz proposes a generated content item, the creator can skip it, open it for editing, save their changes, review the latest full version, and publish only that latest full version; if any load, save, authorization, sync, or publish step fails, the app must show a recoverable state and must never publish a preview, stale version, partial body, or content owned by another user.
+When ContentGlows proposes a generated content item, the creator can skip it, open it for editing, save their changes, review the latest full version, and publish only that latest full version; if any load, save, authorization, sync, or publish step fails, the app must show a recoverable state and must never publish a preview, stale version, partial body, or content owned by another user.
 
 ## Success Behavior
 
@@ -90,7 +90,7 @@ When ContentGlowz proposes a generated content item, the creator can skip it, op
 
 ## Problem
 
-ContentGlowz already has the high-level review loop: feed proposals, skip, edit, approve/publish, content body versioning, audit history, and generation agents. The fragile point is that the current client model can treat `content_preview` as `body`. That makes the whole creator-control promise unsafe: direct feed publish or editor save can potentially use a preview instead of the latest full content.
+ContentGlows already has the high-level review loop: feed proposals, skip, edit, approve/publish, content body versioning, audit history, and generation agents. The fragile point is that the current client model can treat `content_preview` as `body`. That makes the whole creator-control promise unsafe: direct feed publish or editor save can potentially use a preview instead of the latest full content.
 
 ## Solution
 
@@ -276,7 +276,7 @@ None for the umbrella. The chosen direction is to use a parent-plus-child-spec s
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
-| 2026-05-02 06:03:02 UTC | sf-spec | GPT-5 Codex | Created umbrella chantier spec for ContentGlowz editing infrastructure | Draft saved | /sf-ready content editing infrastructure |
+| 2026-05-02 06:03:02 UTC | sf-spec | GPT-5 Codex | Created umbrella chantier spec for ContentGlows editing infrastructure | Draft saved | /sf-ready content editing infrastructure |
 
 ## Current Chantier Flow
 

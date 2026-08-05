@@ -110,7 +110,7 @@ def test_create_and_poll_completed_job_with_signed_artifact(monkeypatch, tmp_pat
     monkeypatch.setattr(router, "get_status_service", lambda: _FakeStatusService(body="A" * 400))
     monkeypatch.setattr(router, "require_owned_content_record", AsyncMock(return_value=_owned_content()))
     monkeypatch.setenv("RENDER_ARTIFACT_SIGNING_KEY", "test-signing-key")
-    monkeypatch.setenv("CONTENTGLOWZ_RENDER_DIR", str(tmp_path))
+    monkeypatch.setenv("CONTENTGLOWS_RENDER_DIR", str(tmp_path))
 
     create_response = client.post(
         "/api/reels/render-jobs",
@@ -362,7 +362,7 @@ def test_artifact_endpoint_rejects_invalid_token(monkeypatch, tmp_path: Path):
     }
     monkeypatch.setattr(router, "job_store", fake_store)
     monkeypatch.setenv("RENDER_ARTIFACT_SIGNING_KEY", "test-signing-key")
-    monkeypatch.setenv("CONTENTGLOWZ_RENDER_DIR", str(tmp_path))
+    monkeypatch.setenv("CONTENTGLOWS_RENDER_DIR", str(tmp_path))
 
     response = client.get("/api/reels/render-jobs/job-1/artifact?token=bad-token")
     assert response.status_code == 403
@@ -389,7 +389,7 @@ def test_artifact_endpoint_path_safety(monkeypatch, tmp_path: Path):
     }
     monkeypatch.setattr(router, "job_store", fake_store)
     monkeypatch.setenv("RENDER_ARTIFACT_SIGNING_KEY", "test-signing-key")
-    monkeypatch.setenv("CONTENTGLOWZ_RENDER_DIR", str(tmp_path))
+    monkeypatch.setenv("CONTENTGLOWS_RENDER_DIR", str(tmp_path))
     token, _ = issue_artifact_token(
         job_id="job-1",
         render_mode="preview",

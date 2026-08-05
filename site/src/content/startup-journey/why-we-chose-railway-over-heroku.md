@@ -2,7 +2,7 @@
 title: "Why We Chose Railway Over Heroku (And Why We Might Switch to Render)"
 description: "Our deployment platform journey: from Heroku's pricing changes to Railway's simplicity, and why Render's free tier might be our next move. Real trade-offs from building AI automation SaaS."
 pubDate: 2026-01-15
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["deployment", "railway", "render", "heroku", "infrastructure", "build in public"]
 featured: true
 image: "/images/blog/deployment-platforms.jpg"
@@ -62,7 +62,7 @@ railway init
 railway up
 
 # 2 minutes later...
-✅ API live at: https://contentglowz-production.up.railway.app
+✅ API live at: https://contentglows-production.up.railway.app
 ```
 
 **What We Loved:**
@@ -171,7 +171,7 @@ requirements.txt    # Shared dependencies
 ```yaml
 services:
   - type: web
-    name: contentglowz-api
+    name: contentglows-api
     env: python
     region: frankfurt  # EU region for GDPR
     plan: free
@@ -190,10 +190,10 @@ services:
         sync: false
 
 databases:
-  - name: contentglowz-db
+  - name: contentglows-db
     plan: free
-    databaseName: contentglowz
-    user: contentglowz
+    databaseName: contentglows
+    user: contentglows
 ```
 
 **Deployment Options:**
@@ -453,7 +453,7 @@ AND revenue > $50/month
 # Via Dashboard (5 minutes)
 1. https://render.com/ → Sign up
 2. New → Blueprint
-3. Connect GitHub: github.com/user/contentglowz
+3. Connect GitHub: github.com/user/contentglows
 4. Detect render.yaml ✅
 5. Add environment variables:
    - OPENROUTER_API_KEY
@@ -462,17 +462,17 @@ AND revenue > $50/month
 6. Create Blueprint → Deploy
 
 # Build time: ~6-8 minutes
-# URL: https://contentglowz-api.onrender.com
+# URL: https://contentglows-api.onrender.com
 ```
 
 **Step 3: Test**
 ```bash
 # Health check
-curl https://contentglowz-api.onrender.com/health
+curl https://contentglows-api.onrender.com/health
 # → {"status": "healthy"}
 
 # API docs
-open https://contentglowz-api.onrender.com/docs
+open https://contentglows-api.onrender.com/docs
 ```
 
 **Step 4: Monitor**
@@ -598,9 +598,9 @@ railway rollback  # Railway's rollback
 ## 📚 Resources
 
 **Deployment Configs (GitHub):**
-- [Our render.yaml](https://github.com/user/contentglowz/blob/master/render.yaml)
-- [Our railway.toml](https://github.com/user/contentglowz/blob/master/railway.toml)
-- [Deployment comparison doc](https://github.com/user/contentglowz/blob/master/DEPLOYMENT_PLATFORMS.md)
+- [Our render.yaml](https://github.com/user/contentglows/blob/master/render.yaml)
+- [Our railway.toml](https://github.com/user/contentglows/blob/master/railway.toml)
+- [Deployment comparison doc](https://github.com/user/contentglows/blob/master/DEPLOYMENT_PLATFORMS.md)
 
 **Platform Links:**
 - [Railway.app](https://railway.app/) - $5/month, no cold starts
@@ -613,6 +613,6 @@ railway rollback  # Railway's rollback
 
 ---
 
-**Questions about our deployment journey?** Comment below or reach out: contact@contentglowz.com
+**Questions about our deployment journey?** Comment below or reach out: contact@contentglows.com
 
 *Last updated: January 15, 2026*

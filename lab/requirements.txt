@@ -34,7 +34,7 @@ python-louvain>=0.16,<1.0  # Community detection for topical mesh analysis
 # Project Intelligence generation context is relational and Turso/libSQL-backed.
 # No project-memory package is installed here. `chromadb` may still land
 # transitively via `crewai`; treat it as a monitored CrewAI residual, not as
-# ContentGlowz project-memory storage.
+# ContentGlows project-memory storage.
 
 # Email & Templates
 jinja2>=3.1.6,<4.0

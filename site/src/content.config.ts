@@ -23,7 +23,7 @@ const baseSchema = z.object({
   ...data,
   date: data.pubDate ?? data.publishDate ?? data.date ?? new Date(0),
   cover: data.heroImage ?? data.image ?? null,
-  byline: data.author ?? data.authors?.join(', ') ?? 'ContentGlowz Team',
+  byline: data.author ?? data.authors?.join(', ') ?? 'ContentGlows Team',
 }));
 
 function contentCollection(base: string) {

@@ -32,7 +32,7 @@ supersedes: []
 next_review: "2026-07-26"
 next_step: "/sf-docs audit shipglows_data/gtm/site/gtm.md"
 target_segment: "créateurs, founders et petites équipes marketing qui veulent une exécution de contenu rapide sans perdre le contrôle humain"
-offer: "site d’acquisition + conversion qui valorise ContentGlowz comme couche d’exécution guidée, avec continuité même en cas de service API instable"
+offer: "site d’acquisition + conversion qui valorise ContentGlows comme couche d’exécution guidée, avec continuité même en cas de service API instable"
 channels: "SEO (blog, guides), landing page, pages de pricing/FAQ, sign-up/sign-in, et redirection explicite vers l’app"
 proof_points: "stack Astro SEO-first, handoff app via `/launch`, documentation dégradée explicite, promesse publicisée autour du contrôle humain"
 ---

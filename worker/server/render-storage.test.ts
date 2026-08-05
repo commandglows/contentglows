@@ -54,25 +54,25 @@ describe("render storage", () => {
 
   it("builds safe GCS object names", () => {
     assert.equal(
-      buildGcsObjectName("job_1", "preview", "contentglowz/renders"),
-      "contentglowz/renders/previews/job_1.mp4",
+      buildGcsObjectName("job_1", "preview", "contentglows/renders"),
+      "contentglows/renders/previews/job_1.mp4",
     );
     assert.throws(() => buildGcsObjectName("../bad", "final", "renders"), /Invalid job id/);
     assert.throws(() => buildGcsObjectName("job_1", "final", "../renders"), /Unsafe GCS render prefix/);
   });
 
   it("fails closed when GCS storage mode has no bucket", () => {
-    const previousMode = process.env.CONTENTGLOWZ_RENDER_STORAGE;
+    const previousMode = process.env.CONTENTGLOWS_RENDER_STORAGE;
     const previousBucket = process.env.GCS_RENDER_BUCKET;
-    process.env.CONTENTGLOWZ_RENDER_STORAGE = "gcs";
+    process.env.CONTENTGLOWS_RENDER_STORAGE = "gcs";
     delete process.env.GCS_RENDER_BUCKET;
     try {
       assert.throws(() => readRenderStorageConfig(), /GCS_RENDER_BUCKET is required/);
     } finally {
       if (previousMode === undefined) {
-        delete process.env.CONTENTGLOWZ_RENDER_STORAGE;
+        delete process.env.CONTENTGLOWS_RENDER_STORAGE;
       } else {
-        process.env.CONTENTGLOWZ_RENDER_STORAGE = previousMode;
+        process.env.CONTENTGLOWS_RENDER_STORAGE = previousMode;
       }
       if (previousBucket === undefined) {
         delete process.env.GCS_RENDER_BUCKET;

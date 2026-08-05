@@ -138,7 +138,7 @@ void main() {
       expect(find.text('Sélectionner des photos et vidéos'), findsNothing);
       expect(find.text('Supprimer de l’appareil'), findsNothing);
       expect(
-        find.text('Stocké en toute sécurité sur ContentGlowz'),
+        find.text('Stocké en toute sécurité sur ContentGlows'),
         findsNothing,
       );
     },
@@ -174,7 +174,7 @@ void main() {
         scrollable: find.byType(Scrollable).first,
       );
       expect(
-        find.text('Stocké en toute sécurité sur ContentGlowz'),
+        find.text('Stocké en toute sécurité sur ContentGlows'),
         findsOneWidget,
       );
 
@@ -183,7 +183,7 @@ void main() {
       expect(find.text('Supprimer de cet appareil ?'), findsOneWidget);
       expect(
         find.text(
-          'Cette copie est stockée en toute sécurité dans ContentGlowz. Android vous demandera une confirmation finale avant de la supprimer de cet appareil.',
+          'Cette copie est stockée en toute sécurité dans ContentGlows. Android vous demandera une confirmation finale avant de la supprimer de cet appareil.',
         ),
         findsOneWidget,
       );

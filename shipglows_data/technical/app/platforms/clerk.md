@@ -28,7 +28,7 @@ depends_on:
     required_status: "draft"
 supersedes: []
 evidence:
-  - "Contentglowz App uses a dedicated ClerkJS web runtime instead of the removed Flutter beta SDK path."
+  - "ContentGlows App uses a dedicated ClerkJS web runtime instead of the removed Flutter beta SDK path."
   - "Local auth routes and SPA rewrites are project-specific enough to justify a project usage note."
 next_review: "2026-06-24"
 next_step: "/sf-docs technical audit app"
@@ -38,7 +38,7 @@ next_step: "/sf-docs technical audit app"
 
 ## Purpose
 
-Document how Contentglowz App uses Clerk on web and Android. This is the
+Document how ContentGlows App uses Clerk on web and Android. This is the
 project-local auth contract. Use the global Clerk note for current Clerk source
 links and SDK behavior.
 
@@ -59,11 +59,11 @@ links and SDK behavior.
 | API base URL | `API_BASE_URL` | no | Flutter sends authenticated FastAPI requests to this origin. |
 | App web URL | `APP_WEB_URL` | no | Used by generated Clerk auth runtime pages. |
 | Auth routes | `/sign-in`, `/sign-up`, `/sso-callback` | no | Must be routed to dedicated HTML pages, not the Flutter SPA entry. |
-| Runtime bridge | `window.contentglowzClerkBridge` | no | Dart web auth service calls this bridge. |
+| Runtime bridge | `window.contentglowsClerkBridge` | no | Dart web auth service calls this bridge. |
 | Token path | `clerk.session.getToken()` -> FastAPI bearer token | sensitive runtime value | Never log or store raw tokens in docs. |
 | Android SDK | `com.clerk:clerk-android-api:1.0.36` | no | API-only; Flutter retains UI. |
 | Android key | `CLERK_PUBLISHABLE_KEY` | key only | Environment or ignored Gradle property; never commit its value. |
-| Android callback | `clerk://com.contentglowz.app.callback` | no | Clerk Android SDK's registered receiver handles this exact callback; allowlist it in Clerk and never retain its parameters. |
+| Android callback | `clerk://com.contentglows.app.callback` | no | Clerk Android SDK's registered receiver handles this exact callback; allowlist it in Clerk and never retain its parameters. |
 
 ## Runtime And Integration Notes
 
@@ -77,15 +77,15 @@ links and SDK behavior.
   `/sso-callback` before the catch-all SPA rewrite.
 - Password auth through the old Flutter beta SDK is intentionally disabled on
   web production; use the dedicated ClerkJS auth routes.
-- Android initializes Clerk once in `ContentGlowzApplication`. Its Kotlin
+- Android initializes Clerk once in `ContentGlowsApplication`. Its Kotlin
   MethodChannel owns Clerk's native OAuth launch in the system browser, session
   restore, fresh token retrieval, and sign-out. Clerk Android's own registered
-  `SSOReceiverActivity` owns the `clerk://com.contentglowz.app.callback`
+  `SSOReceiverActivity` owns the `clerk://com.contentglows.app.callback`
   callback handling;
   `clerk_auth_service_android.dart`
   only transports the active token in memory to Flutter.
 - Google OAuth configuration is external: enable Clerk Native API, register
-  the Android package in Clerk, allowlist `clerk://com.contentglowz.app.callback`,
+  the Android package in Clerk, allowlist `clerk://com.contentglows.app.callback`,
   and enable the Google connection for sign-up and sign-in. Record neither
   keys nor fingerprints in this repository.
 
@@ -99,7 +99,7 @@ links and SDK behavior.
   not by reintroducing the removed Clerk Flutter beta web path. Android instead
   obtains its token from Clerk Android and never shares a web session.
 - Android OAuth callbacks are handled by Clerk's manifest-registered receiver
-  for the exact `clerk://com.contentglowz.app.callback` scheme/host; Flutter
+  for the exact `clerk://com.contentglows.app.callback` scheme/host; Flutter
   never receives callback parameters.
 - FastAPI remains the data authority; Clerk is only the session identity layer.
 
@@ -138,7 +138,7 @@ For hosted validation, use the Vercel preview/production URL and verify:
 - `/api/bootstrap` loads with the Clerk bearer token and does not bounce back to
   the entry/auth screen.
 
-For Android, build with `-PcontentglowzAuthEnabled=true` and the key supplied
+For Android, build with `-PcontentglowsAuthEnabled=true` and the key supplied
 through CI/environment, then prove Google sign-in, cancellation, restart,
 sign-out and FastAPI bootstrap on a configured physical device. Roll back by
 shipping a build with the Android action disabled; never fall back to a token

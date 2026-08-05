@@ -3,63 +3,63 @@ import type { Locale } from './siteShell';
 export const handoffPageCopy = {
   launch: {
     en: {
-      title: 'Opening ContentGlowz App',
-      description: 'Redirecting to the ContentGlowz app.',
+      title: 'Opening ContentGlows App',
+      description: 'Redirecting to the ContentGlows app.',
       eyebrow: 'Open app',
       heading: 'Opening the app entry...',
       body:
-        'The old website handoff has been retired. ContentGlowz now opens the app directly on the app domain, where sign-in and session restore both happen.',
+        'The old website handoff has been retired. ContentGlows now opens the app directly on the app domain, where sign-in and session restore both happen.',
       primaryCta: 'Open app entry',
       secondaryCta: 'Go to sign-in',
     },
     fr: {
-      title: "Ouverture de l'application ContentGlowz",
-      description: "Redirection vers l'application ContentGlowz.",
+      title: "Ouverture de l'application ContentGlows",
+      description: "Redirection vers l'application ContentGlows.",
       eyebrow: "Ouvrir l'app",
       heading: "Ouverture de l'entrée de l'app...",
       body:
-        "L'ancien handoff du site a été retiré. ContentGlowz ouvre maintenant l'app directement sur le domaine de l'app, où la connexion et la restauration de session se font.",
+        "L'ancien handoff du site a été retiré. ContentGlows ouvre maintenant l'app directement sur le domaine de l'app, où la connexion et la restauration de session se font.",
       primaryCta: "Ouvrir l'entrée de l'app",
       secondaryCta: 'Aller à la connexion',
     },
   },
   signIn: {
     en: {
-      title: 'Redirecting to App Sign-In - ContentGlowz',
-      description: 'Redirecting to the official ContentGlowz app sign-in flow.',
+      title: 'Redirecting to App Sign-In - ContentGlows',
+      description: 'Redirecting to the official ContentGlows app sign-in flow.',
       eyebrow: 'App auth',
       heading: 'Redirecting to the app sign-in...',
       body:
-        'ContentGlowz authentication now runs directly on app.contentglowz.com with the official Clerk web flow.',
+        'ContentGlows authentication now runs directly on app.contentglows.com with the official Clerk web flow.',
       primaryCta: 'Continue with Google',
     },
     fr: {
-      title: "Redirection vers la connexion de l'app - ContentGlowz",
-      description: "Redirection vers le flux officiel de connexion de l'app ContentGlowz.",
+      title: "Redirection vers la connexion de l'app - ContentGlows",
+      description: "Redirection vers le flux officiel de connexion de l'app ContentGlows.",
       eyebrow: "Connexion à l'app",
       heading: "Redirection vers la connexion de l'app...",
       body:
-        "L'authentification ContentGlowz se fait maintenant directement sur app.contentglowz.com avec le flux web officiel de Clerk.",
+        "L'authentification ContentGlows se fait maintenant directement sur app.contentglows.com avec le flux web officiel de Clerk.",
       primaryCta: 'Continuer avec Google',
     },
   },
   signUp: {
     en: {
-      title: 'Redirecting to App Sign-In - ContentGlowz',
-      description: 'Redirecting to the official ContentGlowz app sign-in flow.',
+      title: 'Redirecting to App Sign-In - ContentGlows',
+      description: 'Redirecting to the official ContentGlows app sign-in flow.',
       eyebrow: 'Account access',
       heading: 'Account creation moved to the app domain.',
       body:
-        'ContentGlowz no longer creates accounts on the marketing site. The official Clerk Google flow now lives directly on the app.',
+        'ContentGlows no longer creates accounts on the marketing site. The official Clerk Google flow now lives directly on the app.',
       primaryCta: 'Continue with Google',
     },
     fr: {
-      title: "Redirection vers la connexion de l'app - ContentGlowz",
-      description: "Redirection vers le flux officiel de connexion de l'app ContentGlowz.",
+      title: "Redirection vers la connexion de l'app - ContentGlows",
+      description: "Redirection vers le flux officiel de connexion de l'app ContentGlows.",
       eyebrow: 'Accès au compte',
       heading: "La création de compte a été déplacée vers le domaine de l'app.",
       body:
-        "ContentGlowz ne crée plus de comptes sur le site marketing. Le flux officiel Google de Clerk vit maintenant directement dans l'app.",
+        "ContentGlows ne crée plus de comptes sur le site marketing. Le flux officiel Google de Clerk vit maintenant directement dans l'app.",
       primaryCta: 'Continuer avec Google',
     },
   },
@@ -67,16 +67,16 @@ export const handoffPageCopy = {
 
 export const privacyPageCopy = {
   en: {
-    title: 'Privacy Policy | ContentGlowz',
+    title: 'Privacy Policy | ContentGlows',
     description:
-      'How ContentGlowz uses your data and how to manage your analytics preferences.',
+      'How ContentGlows uses your data and how to manage your analytics preferences.',
     heading: 'Privacy Policy',
     lastUpdated: 'Last updated: March 2026',
     sections: [
       {
         heading: 'Data Collected',
         paragraphs: [
-          'ContentGlowz uses its own lightweight, cookie-free analytics to understand how your sites are used: pages visited, referral source, UTM campaign parameters, and device type. No personally identifiable information is collected: no IP addresses are stored, no browser fingerprinting is used, and no third-party tracking scripts are loaded.',
+          'ContentGlows uses its own lightweight, cookie-free analytics to understand how your sites are used: pages visited, referral source, UTM campaign parameters, and device type. No personally identifiable information is collected: no IP addresses are stored, no browser fingerprinting is used, and no third-party tracking scripts are loaded.',
         ],
       },
       {
@@ -120,16 +120,16 @@ export const privacyPageCopy = {
     ],
   },
   fr: {
-    title: 'Politique de confidentialité | ContentGlowz',
+    title: 'Politique de confidentialité | ContentGlows',
     description:
-      'Comment ContentGlowz utilise tes données et comment gérer tes préférences liées aux analytics.',
+      'Comment ContentGlows utilise tes données et comment gérer tes préférences liées aux analytics.',
     heading: 'Politique de confidentialité',
     lastUpdated: 'Dernière mise à jour : mars 2026',
     sections: [
       {
         heading: 'Données collectées',
         paragraphs: [
-          "ContentGlowz utilise ses propres analytics légers et sans cookies pour comprendre comment tes sites sont utilisés : pages visitées, source de référence, paramètres de campagne UTM et type d'appareil. Aucune information personnellement identifiable n'est collectée : aucune adresse IP n'est stockée, aucun fingerprint navigateur n'est utilisé et aucun script de suivi tiers n'est chargé.",
+          "ContentGlows utilise ses propres analytics légers et sans cookies pour comprendre comment tes sites sont utilisés : pages visitées, source de référence, paramètres de campagne UTM et type d'appareil. Aucune information personnellement identifiable n'est collectée : aucune adresse IP n'est stockée, aucun fingerprint navigateur n'est utilisé et aucun script de suivi tiers n'est chargé.",
         ],
       },
       {

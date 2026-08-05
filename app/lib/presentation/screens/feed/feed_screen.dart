@@ -666,7 +666,7 @@ class _FeedEmptyDashboardState extends ConsumerState<_FeedEmptyDashboard> {
             icon: Icons.hub_outlined,
             title: context.tr('Connected context'),
             body: context.tr(
-              'Make sure ContentGlowz knows what product to use.',
+              'Make sure ContentGlows knows what product to use.',
             ),
           ),
           _DashboardActionDetail(

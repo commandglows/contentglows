@@ -37,16 +37,16 @@ sf-spec ✅ -> sf-ready ✅ -> sf-build 🔄 -> sf-verify ⏳ -> sf-end ⏳ -> s
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
 | 2026-05-30 21:31 UTC | sf-build | unknown | Resumed dual-mode AI runtime chantier, added platform resolver and dispatch matrix regression coverage, ran focused backend and Flutter tests, updated spec progress. | partial | Run manual smoke with real provider credentials, then sf-verify/sf-end/sf-ship. |
-| 2026-07-12 15:30 UTC | 706-continue | GPT-5 | Preflighted the real-provider smoke against production health, local auth context, and Doppler `contentglowz_app/prd` secret names without reading secret values. | blocked | Configure platform-mode entitlement and operator provider secrets or supply an authenticated BYOK test session with OpenRouter, Exa, and Firecrawl credentials; then run the manual smoke. |
+| 2026-07-12 15:30 UTC | 706-continue | GPT-5 | Preflighted the real-provider smoke against production health, local auth context, and Doppler `contentglows_app/prd` secret names without reading secret values. | blocked | Configure platform-mode entitlement and operator provider secrets or supply an authenticated BYOK test session with OpenRouter, Exa, and Firecrawl credentials; then run the manual smoke. |
 | 2026-07-12 15:36 UTC | 109-sg-auth-debug | GPT-5 | Ran the no-credential runtime and protected-route regression matrix locally; 67 targeted backend tests passed. Authenticated browser OTP smoke remains unexecuted because the configured Playwright Chromium executable is absent in this shell. | partial | Provide a valid Chromium runtime or reload the browser MCP with one, then start the assisted Clerk sign-in for `gocharbon@gmail.com`. |
-| 2026-07-12 16:52 UTC | 109-sg-auth-debug | GPT-5 | Replayed production entry -> Clerk sign-in -> Google OAuth with `gocharbon@gmail.com`; origin and callback diagnostics matched `app.contentglowz.com`, but Google rejected the automated browser before credential verification with its “browser or app may not be secure” gate. | blocked | Complete Google sign-in in a normal user browser/session, or provide a dedicated Clerk test-auth path; then resume protected-route smoke. |
+| 2026-07-12 16:52 UTC | 109-sg-auth-debug | GPT-5 | Replayed production entry -> Clerk sign-in -> Google OAuth with `gocharbon@gmail.com`; origin and callback diagnostics matched `app.contentglows.com`, but Google rejected the automated browser before credential verification with its “browser or app may not be secure” gate. | blocked | Complete Google sign-in in a normal user browser/session, or provide a dedicated Clerk test-auth path; then resume protected-route smoke. |
 | 2026-07-12 19:07 UTC | 405-sg-prod | GPT-5 | Compared local/origin SHA `8bdf5fb`, Vercel deployment metadata, GitHub statuses, and live app/site URLs. Both Vercel deployments for the new SHA were canceled by the configured Ignored Build Step; live URLs remain healthy on the prior app deployment SHA `b8ad14f`. | partial | No deploy repair is needed for this docs/backend-only commit; use an app/site change or an explicit Vercel redeploy when a frontend deployment is intended. |
 
 ## Problem
-The product direction is no longer “strict OpenRouter BYOK only”. ContentGlowz now needs one coherent architecture that supports two commercial modes for user-triggered AI workflows:
+The product direction is no longer “strict OpenRouter BYOK only”. ContentGlows now needs one coherent architecture that supports two commercial modes for user-triggered AI workflows:
 
 - `byok`: the user pays providers directly with their own keys
-- `platform`: ContentGlowz pays providers and will monetize usage later through plans or credits
+- `platform`: ContentGlows pays providers and will monetize usage later through plans or credits
 
 The current codebase is not ready for that model:
 
@@ -56,7 +56,7 @@ The current codebase is not ready for that model:
 - newsletter memory is not consistently scoped by `user_id` and `project_id`
 - the app still interprets any `409` as “OpenRouter missing”, which is unsafe once runtime errors and normal business conflicts coexist
 
-Without one runtime policy and one resolver, ContentGlowz cannot safely support:
+Without one runtime policy and one resolver, ContentGlows cannot safely support:
 
 - BYOK pay-as-you-go
 - platform-paid usage
@@ -837,8 +837,8 @@ Flutter must not parse `kind == "dependency"` as an AI runtime setup error.
   10. Flutter error handling
   11. Regression tests
 - Validation commands:
-  - `cd /home/claude/contentglowz/lab && pytest tests/test_ai_runtime_models.py tests/test_user_data_store_ai_runtime.py tests/test_ai_entitlement_service.py tests/test_ai_runtime_service.py tests/test_settings_ai_runtime_router.py tests/test_persona_draft_route.py tests/test_psychology_auth_jobs.py tests/test_dispatch_pipeline_runtime.py tests/test_newsletter_router.py tests/test_newsletter_memory_scoping.py tests/test_research_router.py`
-  - `cd /home/claude/contentglowz/app && flutter test`
+  - `cd /home/claude/contentglows/lab && pytest tests/test_ai_runtime_models.py tests/test_user_data_store_ai_runtime.py tests/test_ai_entitlement_service.py tests/test_ai_runtime_service.py tests/test_settings_ai_runtime_router.py tests/test_persona_draft_route.py tests/test_psychology_auth_jobs.py tests/test_dispatch_pipeline_runtime.py tests/test_newsletter_router.py tests/test_newsletter_memory_scoping.py tests/test_research_router.py`
+  - `cd /home/claude/contentglows/app && flutter test`
 - Stop conditions:
   - stop if any covered route still reads provider env vars outside the centralized runtime resolver
   - stop if optional providers remain registered as broken tools instead of being removed from tool profiles

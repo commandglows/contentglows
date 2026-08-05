@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 13:44:58 UTC"
 updated: "2026-05-11"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
 confidence: "high"
-user_story: "En tant que créatrice ContentGlowz authentifiée, je veux générer, revoir et attacher des visuels IA depuis l'éditeur du contenu courant, afin d'alimenter mes articles, posts, thumbnails et futurs assets vidéo sans ouvrir un playground libre."
+user_story: "En tant que créatrice ContentGlows authentifiée, je veux générer, revoir et attacher des visuels IA depuis l'éditeur du contenu courant, afin d'alimenter mes articles, posts, thumbnails et futurs assets vidéo sans ouvrir un playground libre."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -48,7 +48,7 @@ depends_on:
   - artifact: "shipglows_data/technical/lab/guidelines.md"
     artifact_version: "1.0.0"
     required_status: "reviewed"
-  - artifact: "contentglowz/v0-flux-2-playground"
+  - artifact: "contentglows/v0-flux-2-playground"
     artifact_version: "unknown"
     required_status: "inspiration-only"
 supersedes: []
@@ -64,7 +64,7 @@ evidence:
   - "Code evidence: app/lib/router.dart currently sanitizes /editor/* before a visuals-specific branch; implementation must add /editor/:id/visuals before the generic editor sanitizer."
   - "Code evidence: app/lib/data/models/content_item.dart currently has imageUrl/copyWith imageUrl but lacks a typed projectId field."
   - "Code evidence: lab/api/routers/publish.py currently accepts raw media_urls; publish hardening is required before live Image Robot media publishing."
-  - "Prototype evidence: contentglowz/v0-flux-2-playground has useful concepts: reference images, profile-like ratios, history, gallery/single result, and use-as-input, but its Next/Supabase/Vercel stack is excluded."
+  - "Prototype evidence: contentglows/v0-flux-2-playground has useful concepts: reference images, profile-like ratios, history, gallery/single result, and use-as-input, but its Next/Supabase/Vercel stack is excluded."
 next_step: "/sf-start Editor-Linked AI Visuals UI"
 ---
 
@@ -78,11 +78,11 @@ Ready. This spec creates the Flutter UI/workflow for AI visual generation attach
 
 ## User Story
 
-En tant que créatrice ContentGlowz authentifiée, je veux générer, revoir et attacher des visuels IA depuis l'éditeur du contenu courant, afin d'alimenter mes articles, posts, thumbnails et futurs assets vidéo sans ouvrir un playground libre.
+En tant que créatrice ContentGlows authentifiée, je veux générer, revoir et attacher des visuels IA depuis l'éditeur du contenu courant, afin d'alimenter mes articles, posts, thumbnails et futurs assets vidéo sans ouvrir un playground libre.
 
 ## Minimal Behavior Contract
 
-Depuis l'éditeur d'un contenu appartenant au projet actif, ContentGlowz ouvre une surface visuelle liée à ce contenu, propose des placements guidés selon le format du contenu, affiche les références visuelles approuvées du projet, permet de lancer ou suivre une génération Image Robot asynchrone, puis permet de garder une image durable Bunny comme option candidate ou de l'utiliser comme visuel primaire pour un placement. Côté système, "attacher" signifie seulement lier l'image au contenu; côté interface, V1 doit exposer des actions compréhensibles comme "garder comme option" et "utiliser pour ce placement", pas un libellé technique "attacher". Si le projet, le contenu, les références, le job Image Robot, le CDN, l'attachement asset, la sélection primaire, ou la validation d'appartenance génération-contenu échoue, l'interface conserve l'état éditeur, montre une erreur récupérable, et ne prétend jamais qu'un visuel est prêt ou publié. Le cas facile à rater est de traiter cette surface comme un prompt playground: V1 doit partir du contenu courant, des profils, des références projet et des placements attendus, pas d'un champ libre modèle/ratio/provider.
+Depuis l'éditeur d'un contenu appartenant au projet actif, ContentGlows ouvre une surface visuelle liée à ce contenu, propose des placements guidés selon le format du contenu, affiche les références visuelles approuvées du projet, permet de lancer ou suivre une génération Image Robot asynchrone, puis permet de garder une image durable Bunny comme option candidate ou de l'utiliser comme visuel primaire pour un placement. Côté système, "attacher" signifie seulement lier l'image au contenu; côté interface, V1 doit exposer des actions compréhensibles comme "garder comme option" et "utiliser pour ce placement", pas un libellé technique "attacher". Si le projet, le contenu, les références, le job Image Robot, le CDN, l'attachement asset, la sélection primaire, ou la validation d'appartenance génération-contenu échoue, l'interface conserve l'état éditeur, montre une erreur récupérable, et ne prétend jamais qu'un visuel est prêt ou publié. Le cas facile à rater est de traiter cette surface comme un prompt playground: V1 doit partir du contenu courant, des profils, des références projet et des placements attendus, pas d'un champ libre modèle/ratio/provider.
 
 ## Success Behavior
 
@@ -116,7 +116,7 @@ Depuis l'éditeur d'un contenu appartenant au projet actif, ContentGlowz ouvre u
 
 ## Problem
 
-ContentGlowz already has a content editor and Image Robot backend foundations, but AI image generation would be easy to bolt on as a standalone Flux playground. That would conflict with the product direction: users should review and distribute guided content, not manually generate isolated images outside the flow. The app also already has `ContentItem.imageUrl`, content asset endpoints, content publish media parameters, and future Remotion specs, so the missing piece is an editor-linked visual workflow that connects generated images to a specific content item.
+ContentGlows already has a content editor and Image Robot backend foundations, but AI image generation would be easy to bolt on as a standalone Flux playground. That would conflict with the product direction: users should review and distribute guided content, not manually generate isolated images outside the flow. The app also already has `ContentItem.imageUrl`, content asset endpoints, content publish media parameters, and future Remotion specs, so the missing piece is an editor-linked visual workflow that connects generated images to a specific content item.
 
 ## Solution
 

@@ -7,7 +7,7 @@ Future<bool> showAppExitConfirmationDialog(BuildContext context) async {
   final confirmed = await showDialog<bool>(
     context: context,
     builder: (dialogContext) => AlertDialog(
-      title: Text(context.tr('Close ContentGlowz?')),
+      title: Text(context.tr('Close ContentGlows?')),
       content: Text(
         context.tr("Are you sure you want to close the application?"),
       ),

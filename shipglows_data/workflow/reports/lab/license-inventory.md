@@ -1,4 +1,4 @@
-# ContentGlowz Lab License Inventory
+# ContentGlows Lab License Inventory
 
 Date: 2026-05-03
 
@@ -17,7 +17,7 @@ uv run --no-project --python 3.12 --with-requirements requirements.lock python -
 - AGPL/SSPL packages found: 0.
 - GPL-only blockers found: 0.
 - Packages with empty PyPI license metadata reviewed from source: `crewai`, `libsql`, `mem0ai`, `mistralai`.
-- Packages requiring normal notice/review if ContentGlowz is redistributed as a packaged/on-prem product: `certifi`, `docutils`, `orjson`, `pyphen`, `tqdm`.
+- Packages requiring normal notice/review if ContentGlows is redistributed as a packaged/on-prem product: `certifi`, `docutils`, `orjson`, `pyphen`, `tqdm`.
 
 For the current hosted SaaS/backend use case, the production dependency graph is acceptable from a dependency-license risk perspective. This is not legal advice; run a legal review before redistributing a packaged backend, shipping an on-prem edition, or publishing a bundled third-party notices file.
 

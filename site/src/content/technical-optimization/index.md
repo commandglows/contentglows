@@ -2,7 +2,7 @@
 title: "Technical Optimization Guides"
 description: "Complete guides to optimize your development workflow, reduce dependencies, and improve build performance"
 pubDate: 2026-01-15
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["technical optimization", "dependency management", "build performance"]
 featured: true
 image: "/images/blog/technical-optimization-hub.jpg"

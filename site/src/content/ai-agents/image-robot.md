@@ -2,7 +2,7 @@
 title: "Image Robot: Professional Blog Images in Seconds, Not Hours"
 description: "Generate stunning hero images, social cards, and responsive variants automatically. Four AI agents work together to create, optimize, and deliver images via global CDN."
 pubDate: 2026-02-02
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["images", "automation", "cdn", "optimization", "ai agents", "performance"]
 featured: true
 image: "/images/blog/image-robot.jpg"

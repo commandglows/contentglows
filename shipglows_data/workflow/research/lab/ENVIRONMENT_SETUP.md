@@ -10,7 +10,7 @@ curl -Ls https://cli.doppler.com/install.sh | sh
 
 # 2. Login and setup
 doppler login
-doppler setup  # Select: contentglowz / dev
+doppler setup  # Select: contentglows / dev
 
 # 3. Run with secrets injected
 doppler run -- python main.py
@@ -168,21 +168,21 @@ If you get numpy/pandas library errors:
 
 ### Development
 ```bash
-doppler setup --project contentglowz --config dev
+doppler setup --project contentglows --config dev
 # Use FREE APIs (Groq, You.com free tier)
 # Lower rate limits acceptable
 ```
 
 ### Staging
 ```bash
-doppler setup --project contentglowz --config staging
+doppler setup --project contentglows --config staging
 # Paid APIs with higher limits
 # Test production volume
 ```
 
 ### Production
 ```bash
-doppler setup --project contentglowz --config prod
+doppler setup --project contentglows --config prod
 # Premium APIs (OpenAI, paid You.com)
 # Maximum rate limits
 # Monitoring enabled
@@ -227,9 +227,9 @@ doppler setup --config staging
 doppler configs tokens create pm2-token --config dev
 
 # Use in PM2
-pm2 start --name "contentglowz" \
+pm2 start --name "contentglows" \
   --interpreter bash -- -c \
-  "export DOPPLER_TOKEN='dp.st.xxx' && cd /root/contentglowz && doppler run -- python main.py"
+  "export DOPPLER_TOKEN='dp.st.xxx' && cd /root/contentglows && doppler run -- python main.py"
 ```
 
 ---
@@ -266,11 +266,11 @@ doppler secrets get KEY_NAME
 ### "Wrong project/config"
 ```bash
 # Verify configuration
-doppler configure get project.name  # Should be: contentglowz
+doppler configure get project.name  # Should be: contentglows
 doppler configure get config.name   # Should be: dev
 
 # Reconfigure if wrong
-doppler setup --project contentglowz --config dev
+doppler setup --project contentglows --config dev
 ```
 
 ### Doppler not installed

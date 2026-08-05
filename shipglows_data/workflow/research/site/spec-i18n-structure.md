@@ -10,7 +10,7 @@ source_skill: sf-spec
 scope: "feature"
 owner: "Diane"
 confidence: medium
-user_story: "En tant que mainteneuse du site marketing ContentGlowz, je veux préparer une structure i18n FR/EN dans le site Astro, afin de publier progressivement une version française sans casser les URLs anglaises, le SEO, ni les parcours de conversion vers l'application."
+user_story: "En tant que mainteneuse du site marketing ContentGlows, je veux préparer une structure i18n FR/EN dans le site Astro, afin de publier progressivement une version française sans casser les URLs anglaises, le SEO, ni les parcours de conversion vers l'application."
 risk_level: "medium"
 security_impact: "none"
 docs_impact: "yes"
@@ -19,7 +19,7 @@ linked_systems:
   - "Astro content collections"
   - "Astro i18n routing"
   - "Sitemap and SEO metadata"
-  - "ContentGlowz app handoff URLs"
+  - "ContentGlows app handoff URLs"
 depends_on:
   - artifact: "shipglows_data/business/business.md"
     artifact_version: "1.0.0"
@@ -51,28 +51,28 @@ next_step: "/sf-start Implement i18n structure spec"
 ---
 
 ## Title
-Prepare FR/EN i18n structure for ContentGlowz Site
+Prepare FR/EN i18n structure for ContentGlows Site
 
 ## Status
 Ready. Spec implementable without blocking gaps.
 
 Baseline observed on 2026-04-27:
 
-- Project path: `/home/claude/contentglowz/site`
+- Project path: `/home/claude/contentglows/site`
 - Framework: Astro `^5.17.1`
 - Sitemap integration: `@astrojs/sitemap@^3.7.2`
-- Current site URL: `https://contentglowz.winflowz.com`
+- Current site URL: `https://contentglows.winflowz.com`
 - Current app handoff URLs: derived from `APP_WEB_URL`, `appSignInUrl`, and `appEntryUrl` in `src/config/site.ts`
 - Current language state: site copy is mostly English, with a few French Markdown documents mixed into English content folders
 - Current routing state: no `i18n` config in `astro.config.mjs`, no locale folders under `src/pages`, no locale-aware content helper, and `<html lang="en">` is hardcoded in `src/layouts/Layout.astro`
 - Current repo state includes unrelated uncommitted changes in docs/package files. The i18n implementation must not revert or overwrite those changes.
 
 ## User Story
-En tant que mainteneuse du site marketing ContentGlowz, je veux préparer une structure i18n FR/EN dans le site Astro, afin de publier progressivement une version française sans casser les URLs anglaises, le SEO, ni les parcours de conversion vers l'application.
+En tant que mainteneuse du site marketing ContentGlows, je veux préparer une structure i18n FR/EN dans le site Astro, afin de publier progressivement une version française sans casser les URLs anglaises, le SEO, ni les parcours de conversion vers l'application.
 
-Actor: mainteneuse du site marketing ContentGlowz.
+Actor: mainteneuse du site marketing ContentGlows.
 
-Trigger: décision de rendre le site ContentGlowz publiable en anglais et en français.
+Trigger: décision de rendre le site ContentGlows publiable en anglais et en français.
 
 Observable result: les routes anglaises existantes continuent de fonctionner sans préfixe, les routes françaises existent sous `/fr`, le layout expose la bonne langue HTML, les URLs canoniques et alternatives sont cohérentes, et le contenu français peut être ajouté progressivement sans publier des pages à moitié traduites.
 

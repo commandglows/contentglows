@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-07-12"
 created_at: "2026-07-12 23:47:13 UTC"
 updated: "2026-07-13"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
 confidence: "high"
-user_story: "En tant que creatrice ContentGlowz authentifiee dans un projet qu'elle possede, je veux constituer un dossier persistant de videos, images, audios, liens publics et textes avant de creer une video, afin de pouvoir soit conserver ces sources comme pretes pour plus tard, soit demander immediatement la generation de la video sans passer par le montage."
+user_story: "En tant que creatrice ContentGlows authentifiee dans un projet qu'elle possede, je veux constituer un dossier persistant de videos, images, audios, liens publics et textes avant de creer une video, afin de pouvoir soit conserver ces sources comme pretes pour plus tard, soit demander immediatement la generation de la video sans passer par le montage."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -27,7 +27,7 @@ linked_systems:
   - "Unified Project Asset Library"
   - "Project Intelligence"
   - "AI-first branded video generation"
-  - "Unified ContentGlowz Video Timeline"
+  - "Unified ContentGlows Video Timeline"
   - "Sentry and safe diagnostics"
 depends_on:
   - artifact: "shipglows_data/workflow/specs/SPEC-unified-project-asset-library-2026-05-11.md"
@@ -39,7 +39,7 @@ depends_on:
   - artifact: "shipglows_data/workflow/specs/monorepo/SPEC-ai-first-branded-video-generation-and-swipe-publish-2026-07-04.md"
     artifact_version: "1.0.0"
     required_status: "reviewed"
-  - artifact: "shipglows_data/workflow/specs/monorepo/SPEC-unified-contentglowz-video-timeline-2026-05-14.md"
+  - artifact: "shipglows_data/workflow/specs/monorepo/SPEC-unified-contentglows-video-timeline-2026-05-14.md"
     artifact_version: "1.0.0"
     required_status: "ready"
   - artifact: "shipglows_data/technical/lab/ai-runtime-and-url-safety.md"
@@ -63,7 +63,7 @@ evidence:
   - "SPEC-ai-visual-reference-upload-advanced-2026-05-11.md fixes backend-proxied multipart upload, server-only Bunny credentials, image validation, metadata stripping, idempotence, compensation and 10 MiB image limits."
   - "Project Intelligence already provides project ownership checks, source records, text normalization, raw and normalized hashes, deduplication primitives, source removal and bounded ingestion patterns reusable for pasted text."
   - "SPEC-ai-first-branded-video-generation-and-swipe-publish-2026-07-04.md requires an explicit content-complete readiness signal before background video generation and one canonical video orchestrator."
-  - "SPEC-unified-contentglowz-video-timeline-2026-05-14.md fixes the canonical video model and a 180-second V1 maximum; this intake must not create a competing draft or timeline model."
+  - "SPEC-unified-contentglows-video-timeline-2026-05-14.md fixes the canonical video model and a 180-second V1 maximum; this intake must not create a competing draft or timeline model."
   - "Code evidence 2026-07-12: the legacy Reels request accepts client-supplied user_id, bunny_storage_key and bunny_cdn_hostname, while its Flutter diagnostics may include the entered URL; it is an explicit security anti-model for this chantier."
   - "shipglows_data/technical/lab/ai-runtime-and-url-safety.md requires rejection of malformed, non-public, localhost, link-local, private, metadata and mixed-resolution URLs before external fetches."
 next_step: "/102-sg-start Multimodal Video Source Intake"
@@ -79,11 +79,11 @@ Ready. This spec defines the guided, project-scoped collection phase that preced
 
 ## User Story
 
-En tant que creatrice ContentGlowz authentifiee dans un projet qu'elle possede, je veux creer ou ouvrir un dossier de sources et y ajouter des videos, images, audios, liens HTTP(S) publics et textes colles, afin de preparer les matieres d'une future video puis de choisir entre les conserver comme pretes pour plus tard ou demander immediatement la generation, sans devoir commencer le montage.
+En tant que creatrice ContentGlows authentifiee dans un projet qu'elle possede, je veux creer ou ouvrir un dossier de sources et y ajouter des videos, images, audios, liens HTTP(S) publics et textes colles, afin de preparer les matieres d'une future video puis de choisir entre les conserver comme pretes pour plus tard ou demander immediatement la generation, sans devoir commencer le montage.
 
 ## Minimal Behavior Contract
 
-Dans un projet et pour un contenu appartenant a la creatrice authentifiee, ContentGlowz permet de creer ou rouvrir un dossier persistant, d'y ajouter des fichiers video, image et audio, des liens web publics et du texte colle, puis d'afficher pour chaque source un type, un apercu ou des metadonnees sans danger et un etat recuperable. Les fichiers valides deviennent des project assets durables lies au dossier; les liens et textes restent des sources typees et ne deviennent jamais de faux assets. Quand la revision courante est valide, `Sources pretes` la conserve pour plus tard sans lancer de generation, tandis que `Generer la video` confirme cette meme revision si necessaire et remet exactement une demande idempotente a l'orchestrateur video canonique. Toute mutation ulterieure invalide le signal pour les demandes futures. En cas d'echec de source, les succes restent utilisables et l'erreur est recuperable sans fuite; en cas d'echec de remise a l'orchestrateur, le dossier reste pret et aucun job fantome ou doublon ne doit etre annonce. Le cas facile a oublier est un double clic, retry reseau ou remplacement concurrent: il doit conserver la provenance, cibler une revision exacte et ne jamais rattacher au dossier un asset d'un autre projet.
+Dans un projet et pour un contenu appartenant a la creatrice authentifiee, ContentGlows permet de creer ou rouvrir un dossier persistant, d'y ajouter des fichiers video, image et audio, des liens web publics et du texte colle, puis d'afficher pour chaque source un type, un apercu ou des metadonnees sans danger et un etat recuperable. Les fichiers valides deviennent des project assets durables lies au dossier; les liens et textes restent des sources typees et ne deviennent jamais de faux assets. Quand la revision courante est valide, `Sources pretes` la conserve pour plus tard sans lancer de generation, tandis que `Generer la video` confirme cette meme revision si necessaire et remet exactement une demande idempotente a l'orchestrateur video canonique. Toute mutation ulterieure invalide le signal pour les demandes futures. En cas d'echec de source, les succes restent utilisables et l'erreur est recuperable sans fuite; en cas d'echec de remise a l'orchestrateur, le dossier reste pret et aucun job fantome ou doublon ne doit etre annonce. Le cas facile a oublier est un double clic, retry reseau ou remplacement concurrent: il doit conserver la provenance, cibler une revision exacte et ne jamais rattacher au dossier un asset d'un autre projet.
 
 ## Success Behavior
 
@@ -119,7 +119,7 @@ Dans un projet et pour un contenu appartenant a la creatrice authentifiee, Conte
 
 ## Problem
 
-ContentGlowz dispose deja d'une bibliotheque d'assets, de primitives Project Intelligence, d'une timeline canonique et d'une direction AI-first pour la video, mais il manque un contrat unique pour la phase ou la creatrice rassemble ses matieres avant de declarer le contenu pret. Sans ce contrat, chaque entree pourrait inventer son propre upload, son propre modele de source ou sa propre notion de readiness, avec des risques de doublons, de fuite inter-projets, de credentials Bunny exposes, d'URL non sures et de divergence avec le futur orchestrateur video.
+ContentGlows dispose deja d'une bibliotheque d'assets, de primitives Project Intelligence, d'une timeline canonique et d'une direction AI-first pour la video, mais il manque un contrat unique pour la phase ou la creatrice rassemble ses matieres avant de declarer le contenu pret. Sans ce contrat, chaque entree pourrait inventer son propre upload, son propre modele de source ou sa propre notion de readiness, avec des risques de doublons, de fuite inter-projets, de credentials Bunny exposes, d'URL non sures et de divergence avec le futur orchestrateur video.
 
 Le flux Reels historique est voisin fonctionnellement mais dangereux comme fondation: il accepte `user_id`, `bunny_storage_key` et `bunny_cdn_hostname` depuis la requete et sa surface Flutter peut placer l'URL saisie dans les diagnostics. La nouvelle intake doit remplacer progressivement ce point d'entree utilisateur, mais ne doit reutiliser ni son contrat de confiance, ni sa gestion de secrets, ni sa journalisation.
 
@@ -183,7 +183,7 @@ Ajouter un domaine `video_source_folder` backend-owned, rattache a un projet et 
 - Les metadata fournies par le client sont des hints; MIME sniffing, hash, dimensions, duree, storage path, source type, statut et eligibility sont determines par le serveur.
 - Les originaux image durables sont nettoyes d'EXIF/GPS et metadata annexes. Pour video/audio, seules les metadata techniques allowlistees sont conservees; tags, commentaires et geolocalisation incorpores sont retires ou rejetes selon la capacite de sanitization confirmee a la readiness.
 - Les thumbnails, formes d'onde et URLs de playback sont des representations derivees; elles ne remplacent pas l'asset durable et leurs URLs signees ne sont jamais persistees comme source de verite.
-- L'UI respecte `tools/design-tokens/contentglowz_theme.json`, `AppThemeTokens`, `AppSpacing`, `AppRadii`, `AppText` et `Theme.of(context)`; aucun literal visuel ad hoc ni surface generique de gestion d'assets.
+- L'UI respecte `tools/design-tokens/contentglows_theme.json`, `AppThemeTokens`, `AppSpacing`, `AppRadii`, `AppText` et `Theme.of(context)`; aucun literal visuel ad hoc ni surface generique de gestion d'assets.
 - Les diagnostics reutilisent la surface Sentry/Copy diagnostics existante avec commit/build et temps Paris/UTC, mais excluent texte utilisateur, URL complete, signed URL, storage path, nom sensible, cookies, headers et secrets.
 - `Sources pretes` et `Generer la video` utilisent deux commandes explicites et auditables. La premiere ne peut jamais appeler l'orchestrateur; la seconde cible une `ready_revision` exacte et exige une idempotency key pour absorber double clic, retry et relecture reseau.
 - L'intake persiste seulement l'etat de remise et l'identifiant retourne par l'orchestrateur; le statut detaille du job, sa timeline et ses artefacts restent sous l'autorite du domaine video canonique.
@@ -212,7 +212,7 @@ Ajouter un domaine `video_source_folder` backend-owned, rattache a un projet et 
 - Advanced visual reference upload supplies the hardened upload-validation baseline, image caps, metadata stripping, idempotence and compensation semantics; its Bunny-specific transport is not reused as the canonical provider.
 - Project Intelligence supplies reusable text normalization, raw/normalized SHA-256 hashes, source-style persistence and deduplication primitives; its facts/recommendations/jobs are not imported into this workflow.
 - AI-first branded video generation owns the canonical enqueue contract and all execution after acceptance; this intake may call only that entrypoint with `folder_id`, `sources_ready_revision`, owned content context and an idempotency key.
-- Unified ContentGlowz Video Timeline remains the only video draft/timeline authority and supplies the 180-second V1 duration ceiling.
+- Unified ContentGlows Video Timeline remains the only video draft/timeline authority and supplies the 180-second V1 duration ceiling.
 - Clerk/FastAPI ownership patterns: `lab/api/dependencies/auth.py`, `lab/api/dependencies/ownership.py` and existing `require_owned_project`/owned-content helpers.
 - URL safety: `lab/api/services/url_safety.py` and `shipglows_data/technical/lab/ai-runtime-and-url-safety.md`.
 - Design authority: `shipglows_data/technical/design-system-authority.md` and the canonical token generation path.
@@ -486,8 +486,8 @@ None.
 | 2026-07-13 08:38:00 UTC | 101-sg-ready | GPT-5 Codex | Completed structural, adversarial, security, documentation and fresh-docs review; hardened upload-session ownership/CORS and confirmed S3/boto3, FastAPI and file_picker contracts | Ready v1.0.0 | /102-sg-start Multimodal Video Source Intake |
 | 2026-07-13 09:27:36 UTC | 102-sg-start | GPT-5 Codex | Implemented the provider-neutral intake domain, S3 reference adapter, durable asset locators, secure multipart validation, text/link sources, revisioned readiness and generation handoff, Flutter UX, tests and docs | Implemented locally; automated proof complete | /103-sg-verify Multimodal Video Source Intake |
 | 2026-07-13 09:27:36 UTC | 103-sg-verify | GPT-5 Codex | Ran full backend and Flutter suites, static analysis, checklist parser, diff hygiene and design-token drift review; classified inherited editor drift separately | Partial: 429 backend and 165 Flutter tests pass; 4 hosted/provider/device scenarios remain | /005-sg-ship Multimodal Video Source Intake |
-| 2026-07-13 09:29:27 UTC | 005-sg-ship | GPT-5 Codex | Published the complete local implementation and its partial verification record to create the hosted validation target | Shipped for hosted proof; formal closure remains deferred | /405-sg-prod ContentGlowz |
-| 2026-07-13 09:34:41 UTC | 405-sg-prod | GPT-5 Codex | Correlated commit 9b62d80 with GitHub/Vercel/Blacksmith and live health evidence; collected the complete Android CI log and checked the API/app endpoints | Partial: Blacksmith checks pass, Vercel skipped both builds, and the live API still serves d5fb4d0 | Identify and trigger the matching API deployment, then rerun /405-sg-prod ContentGlowz |
+| 2026-07-13 09:29:27 UTC | 005-sg-ship | GPT-5 Codex | Published the complete local implementation and its partial verification record to create the hosted validation target | Shipped for hosted proof; formal closure remains deferred | /405-sg-prod ContentGlows |
+| 2026-07-13 09:34:41 UTC | 405-sg-prod | GPT-5 Codex | Correlated commit 9b62d80 with GitHub/Vercel/Blacksmith and live health evidence; collected the complete Android CI log and checked the API/app endpoints | Partial: Blacksmith checks pass, Vercel skipped both builds, and the live API still serves d5fb4d0 | Identify and trigger the matching API deployment, then rerun /405-sg-prod ContentGlows |
 | 2026-07-13 09:41:19 UTC | 002-sg-maintain | GPT-5 Codex | Removed the stale deployment-provider blueprint, active CORS allowance and related technical documentation after the operator clarified that the provider is not used | Verified locally; historical public articles intentionally left for an editorial decision | /005-sg-ship Remove stale provider references |
 | 2026-07-13 09:41:19 UTC | 005-sg-ship | GPT-5 Codex | Published the verified operational cleanup and corrected deployment trace wording | Shipped; no hosted behavior claim | Choose whether to remove or rewrite historical public provider references |
 
@@ -499,7 +499,7 @@ None.
 - `103-sg-verify`: partial; automated checks pass, while real S3, deployed web CORS, authenticated device and hosted mixed-flow proof remain intentionally `NOT_RUN`.
 - `104-sg-end`: deferred; formal closure requires the hosted/provider/device proof.
 - `005-sg-ship`: shipped for hosted proof; this does not close the four external verification gaps.
-- `405-sg-prod`: partial; Android CI is green for `9b62d80`, Vercel skipped the app/site builds, and `api.contentglowz.com` still reports `d5fb4d0`; the API deployment provider is not documented.
+- `405-sg-prod`: partial; Android CI is green for `9b62d80`, Vercel skipped the app/site builds, and `api.contentglows.com` still reports `d5fb4d0`; the API deployment provider is not documented.
 - `002-sg-maintain`: done; obsolete operational provider configuration and terminology removed.
 - `005-sg-ship`: shipped the maintenance cleanup; public historical provider references remain outside this bounded change.
-- Prochaine commande: choose whether to remove or rewrite the historical public provider references; independently, identify and trigger matching app/API deployments before rerunning `/405-sg-prod ContentGlowz`.
+- Prochaine commande: choose whether to remove or rewrite the historical public provider references; independently, identify and trigger matching app/API deployments before rerunning `/405-sg-prod ContentGlows`.

@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from api.models.video_timeline import FORMAT_DIMENSIONS, MAX_DURATION_FRAMES, ContentGlowzTimelineProps
+from api.models.video_timeline import FORMAT_DIMENSIONS, MAX_DURATION_FRAMES, ContentGlowsTimelineProps
 
 MAX_RENDER_PROPS_BYTES = 64 * 1024
 
@@ -31,7 +31,7 @@ def build_remotion_timeline_props(
 
     _reject_client_media_urls(timeline)
 
-    payload = ContentGlowzTimelineProps(
+    payload = ContentGlowsTimelineProps(
         timeline_id=timeline_id,
         version_id=version_id,
         format={

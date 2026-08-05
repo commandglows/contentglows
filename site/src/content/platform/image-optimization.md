@@ -2,7 +2,7 @@
 title: "Image Optimization"
 description: "Generate stunning blog images in seconds. Create hero images, social cards, and responsive variants—automatically optimized and delivered via global CDN."
 pubDate: 2026-02-02
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["images", "optimization", "cdn", "performance", "seo"]
 featured: true
 image: "/images/blog/image-optimization.jpg"
@@ -446,4 +446,4 @@ Ready to transform your content with professional images?
 
 ---
 
-**Questions?** Contact support@contentglowz.com or [join our community](#discord).
+**Questions?** Contact support@contentglows.com or [join our community](#discord).

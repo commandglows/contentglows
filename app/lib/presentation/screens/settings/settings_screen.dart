@@ -117,7 +117,7 @@ class SettingsScreen extends ConsumerWidget {
           SettingsGroup(
             title: 'Content rules',
             caption:
-                'Decide whether ContentGlowz generates automatically or pauses for your review.',
+                'Decide whether ContentGlows generates automatically or pauses for your review.',
             gap: 16,
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
             children: [
@@ -1058,7 +1058,7 @@ class _AboutRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'ContentGlowz',
+                  'ContentGlows',
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,

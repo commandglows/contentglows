@@ -36,13 +36,13 @@ next_step: /sf-docs update shipglows_data/technical/site/context.md
 # shipglows_data/technical/site/context.md — site
 
 ## Contexte produit
-`site` est la surface web publique de ContentGlowz : landing page, pages éditoriales (`blog`, `seo-strategy`, `technical-optimization`, etc.), privacy page et pages de point d’entrée vers l’app officielle.
+`site` est la surface web publique de ContentGlows : landing page, pages éditoriales (`blog`, `seo-strategy`, `technical-optimization`, etc.), privacy page et pages de point d’entrée vers l’app officielle.
 
 Le site assure:
 - la découverte produit,
 - la variante localisée du coeur de tunnel public (`/fr`, `/fr/sign-in`, `/fr/sign-up`, `/fr/launch`, `/fr/privacy`),
 - la communication des limites (notamment dégradation backend),
-- la redirection fluide vers le tunnel d’auth et d’ouverture de l’app (`app.contentglowz.com`).
+- la redirection fluide vers le tunnel d’auth et d’ouverture de l’app (`app.contentglows.com`).
 
 ## Empilement technique
 - **Framework**: Astro.

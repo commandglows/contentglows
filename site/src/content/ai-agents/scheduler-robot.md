@@ -2,7 +2,7 @@
 title: "Scheduler Robot: Automate Publishing, Indexing & Site Monitoring"
 description: "Let AI handle your content publishing schedule, Google indexing, site health monitoring, and technical infrastructure. Four specialized agents working 24/7."
 pubDate: 2026-01-17
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["scheduler", "automation", "publishing", "google indexing", "site monitoring", "ai agents"]
 featured: true
 image: "/images/blog/scheduler-robot.jpg"

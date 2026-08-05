@@ -36,7 +36,7 @@ next_step: /sf-docs audit CLAUDE.md
 
 ## Project Overview
 
-`lab` is the production-oriented backend platform for the ContentGlowz ecosystem.
+`lab` is the production-oriented backend platform for the ContentGlows ecosystem.
 
 ## Canonical References
 
@@ -62,5 +62,5 @@ curl http://localhost:8000/health
 
 ## Forbidden Paths
 
-- `/home/claude/contentglowz/lab_deploy`
+- `/home/claude/contentglows/lab_deploy`
 - PM2 or other live process control from this repo context

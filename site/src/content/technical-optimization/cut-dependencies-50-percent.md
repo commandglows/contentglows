@@ -2,7 +2,7 @@
 title: "How We Cut Dependencies by 50% (and Build Time by 40%)"
 description: "From LangChain's 40+ packages to a simple 15-package stack. Our journey optimizing Python dependencies for faster builds, smaller Docker images, and cleaner code."
 pubDate: 2026-01-15
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["python", "dependencies", "optimization", "build time", "docker", "technical debt"]
 featured: true
 image: "/images/blog/dependency-optimization.jpg"
@@ -458,7 +458,7 @@ git push origin main
 # Build time: 5m 23s (was 8m 48s) ✅
 
 # 3. Test health endpoint
-curl https://contentglowz-api.onrender.com/health
+curl https://contentglows-api.onrender.com/health
 # {"status": "healthy"} ✅
 
 # 4. Test new LLM wrapper
@@ -785,14 +785,14 @@ grep -r "import pandas" agents/
 ## 📚 Resources
 
 **Code:**
-- [utils/llm_simple.py](https://github.com/user/contentglowz/blob/master/utils/llm_simple.py) - Our simplified LLM wrapper
-- [requirements.txt (before)](https://github.com/user/contentglowz/blob/a04c687a/requirements.txt) - Original dependencies
-- [requirements.txt (after)](https://github.com/user/contentglowz/blob/master/requirements.txt) - Optimized dependencies
+- [utils/llm_simple.py](https://github.com/user/contentglows/blob/master/utils/llm_simple.py) - Our simplified LLM wrapper
+- [requirements.txt (before)](https://github.com/user/contentglows/blob/a04c687a/requirements.txt) - Original dependencies
+- [requirements.txt (after)](https://github.com/user/contentglows/blob/master/requirements.txt) - Optimized dependencies
 
 **Documentation:**
 - [OpenRouter Docs](https://openrouter.ai/docs)
-- [Migration Example](https://github.com/user/contentglowz/blob/master/examples/MIGRATION_EXAMPLE.md)
-- [Deployment Status](https://github.com/user/contentglowz/blob/master/DEPLOYMENT_STATUS.md)
+- [Migration Example](https://github.com/user/contentglows/blob/master/examples/MIGRATION_EXAMPLE.md)
+- [Deployment Status](https://github.com/user/contentglows/blob/master/DEPLOYMENT_STATUS.md)
 
 **Related Articles:**
 - [Why We Chose Railway Over Heroku](#) (Platform selection)
@@ -801,7 +801,7 @@ grep -r "import pandas" agents/
 
 ---
 
-**Questions about dependency optimization?** Comment below or reach out: contact@contentglowz.com
+**Questions about dependency optimization?** Comment below or reach out: contact@contentglows.com
 
 *Last updated: January 15, 2026*  
 *Dependencies reduced: 52 → 25 (48% reduction)*  

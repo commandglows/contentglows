@@ -395,7 +395,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           title: Text(context.tr('Connexion GitHub')),
           content: Text(
             context.tr(
-              'Une fenêtre navigateur s’est ouverte pour autoriser ContentGlowz.'
+              'Une fenêtre navigateur s’est ouverte pour autoriser ContentGlows.'
               ' Revenez ici puis appuyez sur Actualiser pour mettre à jour l’état.',
             ),
             style: TextStyle(
@@ -841,7 +841,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     copyDiagnosticsToClipboard(
       context,
       ref,
-      title: 'ContentGlowz onboarding diagnostics',
+      title: 'ContentGlows onboarding diagnostics',
       scope: 'onboarding.copy_diagnostics',
       currentError: accessState?.message,
       contextData: {

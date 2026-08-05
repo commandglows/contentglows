@@ -43,7 +43,7 @@ external_dependencies:
   - "GoRouter"
   - "flutter_riverpod"
   - "Dio"
-  - "contentglowz FastAPI backend"
+  - "contentglows FastAPI backend"
 invariants:
   - "App shell remains available in degraded mode when API is unavailable."
   - "Auth/session stage in providers remains authoritative for route decisions."
@@ -156,9 +156,9 @@ The app is structured as a **single Flutter client boundary** with backend data 
 Notes:
 - Native password auth methods are present in type definitions but are intentionally not production enabled (web path is canonical).
 - `CLERK_PUBLISHABLE_KEY` must be present for normal auth-enabled builds.
-- Android Clerk initializes in `ContentGlowzApplication`; Clerk Android's
+- Android Clerk initializes in `ContentGlowsApplication`; Clerk Android's
   manifest-registered `SSOReceiverActivity` handles its exact
-  `clerk://com.contentglowz.app.callback` OAuth callback, while the
+  `clerk://com.contentglows.app.callback` OAuth callback, while the
   MethodChannel exposes session operations to Flutter. JWTs stay in memory and
   FastAPI remains the authorization authority.
 - Settings > Integrations lets an authenticated user connect an IMAP email source by choosing the mailbox folder and processed folder. The app saves the active project with the integration; backend scheduling then checks the folder every 6 hours, so the app does not expose a manual "send emails to Idea Pool" action.

@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
 confidence: "high"
-user_story: "En tant qu'utilisateur Android de ContentGlowz, je veux que le bouton système Back remonte l'historique de navigation interne avant de proposer de fermer l'app, afin d'éviter des sorties prématurées quand j'explore des actions hors onboarding."
+user_story: "En tant qu'utilisateur Android de ContentGlows, je veux que le bouton système Back remonte l'historique de navigation interne avant de proposer de fermer l'app, afin d'éviter des sorties prématurées quand j'explore des actions hors onboarding."
 risk_level: "medium"
 security_impact: "none"
 docs_impact: "yes"
@@ -48,11 +48,11 @@ Android back history outside onboarding
 
 Spec prête pour implémentation, créée le 2026-05-16 pour clarifier le comportement Android Back hors onboarding.
 
-Cette spec ne réouvre pas `BUG-2026-05-05-002`. Ce bug est clôturable sur son contrat initial: Back dans le wizard onboarding revient à l'étape précédente puis demande confirmation avant fermeture. Le besoin ici est plus large: définir quand Back doit remonter une pile de navigation interne dans le shell ContentGlowz, et quand il doit proposer de fermer l'app.
+Cette spec ne réouvre pas `BUG-2026-05-05-002`. Ce bug est clôturable sur son contrat initial: Back dans le wizard onboarding revient à l'étape précédente puis demande confirmation avant fermeture. Le besoin ici est plus large: définir quand Back doit remonter une pile de navigation interne dans le shell ContentGlows, et quand il doit proposer de fermer l'app.
 
 ## User Story
 
-En tant qu'utilisateur Android de ContentGlowz, je veux que le bouton système Back remonte l'historique de navigation interne avant de proposer de fermer l'app, afin d'éviter des sorties prématurées quand j'explore des actions hors onboarding.
+En tant qu'utilisateur Android de ContentGlows, je veux que le bouton système Back remonte l'historique de navigation interne avant de proposer de fermer l'app, afin d'éviter des sorties prématurées quand j'explore des actions hors onboarding.
 
 Acteur principal: utilisateur Android signed-in ou demo.
 
@@ -62,11 +62,11 @@ Résultat observable: si une destination interne précédente existe, l'app y re
 
 ## Minimal Behavior Contract
 
-Quand l'utilisateur appuie sur Back hors onboarding, ContentGlowz doit d'abord respecter la pile de navigation interne réellement disponible. Si l'écran courant a été ouvert par un `push` depuis un écran parent, Back revient au parent. Si l'utilisateur est sur une route racine du shell, ou si la navigation précédente a été remplacée volontairement par `go`, Back affiche la confirmation de fermeture. Si une sheet, un dialogue ou un sous-flow modal est ouvert, Back ferme ce niveau transitoire avant de quitter l'app. L'edge case facile à rater est de confondre historique de tabs et historique d'actions: changer de tab via la navigation principale ne doit pas nécessairement créer une pile infinie de retours, mais ouvrir une action/detail depuis une tab doit pouvoir revenir à son écran source.
+Quand l'utilisateur appuie sur Back hors onboarding, ContentGlows doit d'abord respecter la pile de navigation interne réellement disponible. Si l'écran courant a été ouvert par un `push` depuis un écran parent, Back revient au parent. Si l'utilisateur est sur une route racine du shell, ou si la navigation précédente a été remplacée volontairement par `go`, Back affiche la confirmation de fermeture. Si une sheet, un dialogue ou un sous-flow modal est ouvert, Back ferme ce niveau transitoire avant de quitter l'app. L'edge case facile à rater est de confondre historique de tabs et historique d'actions: changer de tab via la navigation principale ne doit pas nécessairement créer une pile infinie de retours, mais ouvrir une action/detail depuis une tab doit pouvoir revenir à son écran source.
 
 ## Success Behavior
 
-- Depuis une route racine du shell (`/feed`, `/calendar`, `/settings`, etc.), Back affiche `Close ContentGlowz?` / `Fermer ContentGlowz ?` au lieu de fermer directement.
+- Depuis une route racine du shell (`/feed`, `/calendar`, `/settings`, etc.), Back affiche `Close ContentGlows?` / `Fermer ContentGlows ?` au lieu de fermer directement.
 - Depuis une route ouverte par action interne (`/editor/:id`, `/personas/:id`, `/settings/integrations`, `/angles`, `/ritual`, etc.), Back revient à l'écran source quand un parent existe dans la pile.
 - Depuis une navigation principale par bottom nav ou side rail, les changements de tab restent des remplacements de destination (`go`) et ne créent pas d'historique artificiel de tab à tab, sauf décision contraire explicite dans une spec future.
 - Les dialogs, sheets et sous-flows modaux se ferment avant toute confirmation de sortie.
@@ -188,8 +188,8 @@ Définir puis implémenter une règle claire pour le shell Flutter: Back remonte
 
 ## Acceptance Criteria
 
-- [ ] CA 1 : Given l'utilisateur est sur une route racine du shell, when il appuie sur Back, then ContentGlowz affiche la confirmation de fermeture.
-- [ ] CA 2 : Given l'utilisateur a ouvert une route action/detail avec `push`, when il appuie sur Back, then ContentGlowz revient à l'écran parent au lieu de proposer la sortie.
+- [ ] CA 1 : Given l'utilisateur est sur une route racine du shell, when il appuie sur Back, then ContentGlows affiche la confirmation de fermeture.
+- [ ] CA 2 : Given l'utilisateur a ouvert une route action/detail avec `push`, when il appuie sur Back, then ContentGlows revient à l'écran parent au lieu de proposer la sortie.
 - [ ] CA 3 : Given l'utilisateur navigue entre tabs principales, when il appuie sur Back sur une tab racine, then l'app ne reconstruit pas un historique artificiel de tabs sauf si une route a été poussée.
 - [ ] CA 4 : Given l'utilisateur est dans le wizard onboarding, when il appuie sur Back à partir de la page 2, then le comportement existant page 2 -> page 1 -> confirmation reste inchangé.
 - [ ] CA 5 : Given une route protégée devient inaccessible après Back, when le guard s'applique, then la redirection reste stable et sans boucle.

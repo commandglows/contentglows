@@ -66,7 +66,7 @@ Keep one short local operating contract for tools that still resolve `lab/AGENT.
 
 ## Operator boundary
 
-- `/home/claude/contentglowz/lab_deploy` is operator-controlled and out of scope unless explicitly requested.
+- `/home/claude/contentglows/lab_deploy` is operator-controlled and out of scope unless explicitly requested.
 - PM2 and live service control are operator-only.
 - Production diagnosis is allowed; production mutation from this repo context is not.
 

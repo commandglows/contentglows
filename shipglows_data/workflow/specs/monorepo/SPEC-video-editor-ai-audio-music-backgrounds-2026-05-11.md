@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 16:55:05 UTC"
 updated: "2026-05-11"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
 confidence: "medium"
-user_story: "En tant que creatrice ContentGlowz authentifiee, je veux ajouter narration multi-speaker, musique et fonds animes guides dans l'editeur video Remotion du contenu courant, afin de produire des videos plus riches sans quitter le workflow editor."
+user_story: "En tant que creatrice ContentGlows authentifiee, je veux ajouter narration multi-speaker, musique et fonds animes guides dans l'editeur video Remotion du contenu courant, afin de produire des videos plus riches sans quitter le workflow editor."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -21,8 +21,8 @@ linked_systems:
   - "app"
   - "lab"
   - "worker"
-  - "contentglowz/v0-eleven-labs-v3-podcast-generator"
-  - "contentglowz/v0-eleven-labs-music-starter"
+  - "contentglows/v0-eleven-labs-v3-podcast-generator"
+  - "contentglows/v0-eleven-labs-music-starter"
   - "Remotion video editor workflow"
   - "OpenRouter BYOK"
   - "ElevenLabs"
@@ -81,8 +81,8 @@ evidence:
   - "Code evidence: lab/api/routers/status.py and status/service.py already support content asset metadata with kind, mime_type, duration_ms, storage_uri and metadata."
   - "Code evidence: lab/api/services/job_store.py stores async job state, but current jobs table is not the scene/audio source of truth."
   - "Code evidence: lab/api/services/feedback_storage.py already uploads and plays audio via Bunny Storage with signed tokens, but is feedback-specific and not content-asset-safe."
-  - "Prototype evidence: contentglowz/v0-eleven-labs-v3-podcast-generator shows script generation and ElevenLabs text-to-dialogue ideas, but the implementation is Next/Supabase and logs unsafe diagnostics."
-  - "Prototype evidence: contentglowz/v0-eleven-labs-music-starter shows ElevenLabs music plan/compose ideas, but the implementation is Next route code and not production stack compatible."
+  - "Prototype evidence: contentglows/v0-eleven-labs-v3-podcast-generator shows script generation and ElevenLabs text-to-dialogue ideas, but the implementation is Next/Supabase and logs unsafe diagnostics."
+  - "Prototype evidence: contentglows/v0-eleven-labs-music-starter shows ElevenLabs music plan/compose ideas, but the implementation is Next route code and not production stack compatible."
   - "Fresh docs checked 2026-05-11: OpenRouter supports audio input/output and a dedicated TTS endpoint, but current docs do not show music composition or text-to-dialogue endpoints equivalent to ElevenLabs Music and Text to Dialogue."
   - "Fresh docs checked 2026-05-11: ElevenLabs Text to Dialogue accepts speaker text/voice-id pairs and recommends keeping total input text at or below 2000 characters for reliable generation."
   - "Fresh docs checked 2026-05-11: ElevenLabs Music supports composition plans and text-to-music composition, with Music Terms prohibiting artist names, song titles, label names and substantial lyric references."
@@ -95,15 +95,15 @@ Video Editor AI Audio, Music, And Animated Backgrounds
 
 ## Status
 
-Ready. This spec extends the ready Remotion video editor workflow with guided AI audio, multi-speaker narration, music and animated scene backgrounds. It is not a standalone podcast studio and does not change the app stack. It reuses the current ContentGlowz platform: Flutter app, FastAPI backend, Clerk auth, Turso/libSQL persistence, Bunny storage/CDN, OpenRouter BYOK for script/planning where applicable, and a single managed audio provider for features OpenRouter does not cover completely.
+Ready. This spec extends the ready Remotion video editor workflow with guided AI audio, multi-speaker narration, music and animated scene backgrounds. It is not a standalone podcast studio and does not change the app stack. It reuses the current ContentGlows platform: Flutter app, FastAPI backend, Clerk auth, Turso/libSQL persistence, Bunny storage/CDN, OpenRouter BYOK for script/planning where applicable, and a single managed audio provider for features OpenRouter does not cover completely.
 
 ## User Story
 
-En tant que creatrice ContentGlowz authentifiee, je veux ajouter narration multi-speaker, musique et fonds animes guides dans l'editeur video Remotion du contenu courant, afin de produire des videos plus riches sans quitter le workflow editor.
+En tant que creatrice ContentGlows authentifiee, je veux ajouter narration multi-speaker, musique et fonds animes guides dans l'editeur video Remotion du contenu courant, afin de produire des videos plus riches sans quitter le workflow editor.
 
 ## Minimal Behavior Contract
 
-Depuis `/editor/:id/video`, ContentGlowz permet a une creatrice authentifiee de generer ou modifier des pistes audio guidees pour la version video courante: narration solo ou multi-speaker, musique de fond courte, et fonds animes de scene. Le systeme part du contenu, du storyboard, des scenes et des formats choisis; il planifie les scripts via le runtime LLM utilisateur quand du texte structure est necessaire, rend l'audio avec un provider audio gere cote backend, stocke les fichiers durables dans Bunny, attache les assets au projet video et a la version concernee, puis passe uniquement des references serveur validees au worker Remotion. En cas d'echec de provider, quota, stockage, validation, version stale ou rendu Remotion, la derniere version coherente reste intacte et l'utilisateur voit une erreur recuperable. Le cas facile a rater est de transformer ce chantier en studio audio libre: V1 doit rester guide par les formats video, les scenes et les presets, pas par un playground de voix/musique.
+Depuis `/editor/:id/video`, ContentGlows permet a une creatrice authentifiee de generer ou modifier des pistes audio guidees pour la version video courante: narration solo ou multi-speaker, musique de fond courte, et fonds animes de scene. Le systeme part du contenu, du storyboard, des scenes et des formats choisis; il planifie les scripts via le runtime LLM utilisateur quand du texte structure est necessaire, rend l'audio avec un provider audio gere cote backend, stocke les fichiers durables dans Bunny, attache les assets au projet video et a la version concernee, puis passe uniquement des references serveur validees au worker Remotion. En cas d'echec de provider, quota, stockage, validation, version stale ou rendu Remotion, la derniere version coherente reste intacte et l'utilisateur voit une erreur recuperable. Le cas facile a rater est de transformer ce chantier en studio audio libre: V1 doit rester guide par les formats video, les scenes et les presets, pas par un playground de voix/musique.
 
 ## Success Behavior
 
@@ -135,7 +135,7 @@ Depuis `/editor/:id/video`, ContentGlowz permet a une creatrice authentifiee de 
 
 ## Problem
 
-The ready Remotion video editor spec intentionally left audio, voiceover, music and subtitles out of scope. The `contentglowz` podcast and music prototypes show useful ideas, but they are separate Next/Supabase demos and would create the wrong product surface if copied directly. The product direction is now clearer: the audio ideas should enrich the existing editor-linked video workflow, not become a new podcast generator or global studio.
+The ready Remotion video editor spec intentionally left audio, voiceover, music and subtitles out of scope. The `contentglows` podcast and music prototypes show useful ideas, but they are separate Next/Supabase demos and would create the wrong product surface if copied directly. The product direction is now clearer: the audio ideas should enrich the existing editor-linked video workflow, not become a new podcast generator or global studio.
 
 ## Solution
 
@@ -162,7 +162,7 @@ Extend the Remotion video editor with a guided media layer for AI audio and anim
 ## Scope Out
 
 - A standalone global podcast studio, audio studio, or free-form playground.
-- Porting Next.js, Supabase, Vercel or React code from `contentglowz`.
+- Porting Next.js, Supabase, Vercel or React code from `contentglows`.
 - Replacing Flutter, FastAPI, Clerk, Turso, Bunny or Remotion.
 - User voice cloning, voice upload, professional voice clone management or voice consent workflows.
 - Dubbing uploaded videos, speech-to-speech voice conversion, voice isolation or speech-to-text editing.
@@ -215,10 +215,10 @@ Extend the Remotion video editor with a guided media layer for AI audio and anim
   - `lab/api/main.py`
   - `lab/api/routers/__init__.py`
 - Inspiration-only prototype files:
-  - `contentglowz/v0-eleven-labs-v3-podcast-generator/app/api/generate-script/route.ts`
-  - `contentglowz/v0-eleven-labs-v3-podcast-generator/app/api/generate-podcast/route.ts`
-  - `contentglowz/v0-eleven-labs-music-starter/app/api/music/plan/route.ts`
-  - `contentglowz/v0-eleven-labs-music-starter/app/api/music/compose/route.ts`
+  - `contentglows/v0-eleven-labs-v3-podcast-generator/app/api/generate-script/route.ts`
+  - `contentglows/v0-eleven-labs-v3-podcast-generator/app/api/generate-podcast/route.ts`
+  - `contentglows/v0-eleven-labs-music-starter/app/api/music/plan/route.ts`
+  - `contentglows/v0-eleven-labs-music-starter/app/api/music/compose/route.ts`
 - Fresh external docs checked:
   - `fresh-docs checked`: OpenRouter Audio docs at `https://openrouter.ai/docs/guides/overview/multimodal/audio`.
   - `fresh-docs checked`: OpenRouter Multimodal overview at `https://openrouter.ai/docs/guides/overview/multimodal/overview`.
@@ -366,7 +366,7 @@ Extend the Remotion video editor with a guided media layer for AI audio and anim
   - Notes : If the worker path differs at implementation time, apply this to the actual schema module created by the Remotion specs.
 
 - [ ] Task 11: Implement Remotion audio mixing and animated backgrounds
-  - Fichier : `worker/src/compositions/ContentGlowzSceneVideo.tsx`
+  - Fichier : `worker/src/compositions/ContentGlowsSceneVideo.tsx`
   - Action : Render narration, music bed, fades, loop/trim behavior and allowlisted animated background presets from props.
   - User story link : Makes preview/final videos audibly and visually reflect selected audio/background choices.
   - Depends on : Task 10.
@@ -485,7 +485,7 @@ None. Product assumptions locked for this draft: this is an editor-video extensi
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
-| 2026-05-11 16:55:05 UTC | sf-spec | GPT-5 Codex | Created draft spec from user clarification, local Remotion/video/audio code scan, contentglowz podcast/music prototypes, and fresh OpenRouter/ElevenLabs docs. | Draft saved. | /sf-ready Video editor AI audio, music, and animated backgrounds |
+| 2026-05-11 16:55:05 UTC | sf-spec | GPT-5 Codex | Created draft spec from user clarification, local Remotion/video/audio code scan, contentglows podcast/music prototypes, and fresh OpenRouter/ElevenLabs docs. | Draft saved. | /sf-ready Video editor AI audio, music, and animated backgrounds |
 | 2026-05-11 17:09:43 UTC | sf-ready | GPT-5 Codex | Checked structure, metadata, user-story traceability, execution tasks, acceptance criteria, external docs freshness, adversarial workflow gaps, and security controls. | ready | /sf-start Video editor AI audio, music, and animated backgrounds |
 
 ## Current Chantier Flow

@@ -17,7 +17,7 @@ def _locator() -> StorageLocator:
     return StorageLocator(
         provider="s3",
         namespace="assets",
-        object_key="contentglowz/assets/private-object",
+        object_key="contentglows/assets/private-object",
         version="version-secret",
         checksum_sha256="c" * 64,
     )

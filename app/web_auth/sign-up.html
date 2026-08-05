@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ContentGlowz Sign Up</title>
+    <title>ContentGlows Sign Up</title>
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="stylesheet" href="/clerk-auth.css" />
     <script src="/clerk-runtime.js"></script>
@@ -12,9 +12,9 @@
     <main class="shell">
       <section class="panel">
         <div class="eyebrow">ClerkJS Sign-Up</div>
-        <h1>Create your ContentGlowz account</h1>
+        <h1>Create your ContentGlows account</h1>
         <p>
-          Create an account with email or Google, then return to the ContentGlowz app
+          Create an account with email or Google, then return to the ContentGlows app
           when Clerk finishes the session.
         </p>
         <div class="stack">
@@ -33,7 +33,7 @@
 
     <script>
       (function () {
-        const bridge = window.contentglowzClerkBridge;
+        const bridge = window.contentglowsClerkBridge;
         const signUpNode = document.getElementById('clerk-sign-up');
         const copyButton = document.getElementById('copy-button');
         const entryButton = document.getElementById('entry-button');
@@ -55,7 +55,7 @@
             `commit/build: ${diagnostics.buildId || diagnostics.buildCommitSha}`,
             `build_at_paris: ${diagnostics.buildAtParis}`,
             `build_at_utc: ${diagnostics.buildAtUtc}`,
-            'ContentGlowz sign-up diagnostics',
+            'ContentGlows sign-up diagnostics',
             `Build commit: ${diagnostics.buildCommitSha}`,
             `Build id: ${diagnostics.buildId}`,
             `Build environment: ${diagnostics.buildEnvironment}`,
@@ -125,7 +125,7 @@
             await bridge.mountSignUp(signUpNode);
             setStatus('Ready.');
           } catch (error) {
-            console.error('[ContentGlowz] Clerk sign-up bootstrap failed.', error);
+            console.error('[ContentGlows] Clerk sign-up bootstrap failed.', error);
             setStatus(String(error), true);
           }
         }

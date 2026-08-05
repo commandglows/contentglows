@@ -18,7 +18,7 @@ class OGPreview(BaseModel):
 
 
 _HEADERS = {
-    "User-Agent": "ContentGlowz-Preview/1.0 (bot; +https://contentglowz.com)",
+    "User-Agent": "ContentGlows-Preview/1.0 (bot; +https://contentglows.com)",
     "Accept": "text/html",
 }
 _TIMEOUT = 8.0

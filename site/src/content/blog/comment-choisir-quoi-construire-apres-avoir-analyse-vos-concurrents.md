@@ -3,7 +3,7 @@ title: "Comment choisir quoi construire après avoir analysé vos concurrents"
 description: "Analyser ses concurrents ne suffit pas. Voici comment transformer les retours utilisateurs, frictions et points forts repérés en choix produit plus clairs."
 locale: "fr"
 pubDate: "2026-07-07"
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["product research", "veille concurrentielle", "roadmap", "ux", "app"]
 featured: false
 ---

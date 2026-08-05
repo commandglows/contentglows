@@ -810,7 +810,7 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
 
   Future<void> _copyAuditTrail(ContentAuditTrail trail) async {
     final lines = <String>[
-      'ContentGlowz audit trail',
+      'ContentGlows audit trail',
       if (_item != null) 'content_id: ${_item!.id}',
       if (_item != null) 'title: ${_item!.title}',
       'transitions: ${trail.transitions.length}',

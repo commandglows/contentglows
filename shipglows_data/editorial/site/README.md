@@ -42,7 +42,7 @@ next_step: "/sf-docs editorial audit site"
 
 # Editorial Governance
 
-This directory governs public ContentGlowz site surfaces, claims, page intent, runtime content schema boundaries, and editorial update gates.
+This directory governs public ContentGlows site surfaces, claims, page intent, runtime content schema boundaries, and editorial update gates.
 
 Load order:
 

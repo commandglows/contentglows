@@ -2,7 +2,7 @@
 artifact: brand_context
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: contentglowz
+project: contentglows
 created: "2026-04-25"
 updated: "2026-06-28"
 status: reviewed
@@ -31,14 +31,14 @@ next_step: /sf-docs audit shipglows_data/branding/branding.md
 
 ## Brand
 
-- **Brand name**: ContentGlowz
+- **Brand name**: ContentGlows
 - **Category**: AI-first content operations product
 - **Primary message**: "Ready-made content, optional edits, fast publish"
 - **Primary promise**: Deliver ready-made branded content that teams can publish fast or adjust when needed.
 
 ## Brand Positioning
 
-ContentGlowz is positioned as an AI-first execution system that combines:
+ContentGlows is positioned as an AI-first execution system that combines:
 
 - idea intake,
 - source asset intake,

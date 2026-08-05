@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-05-13"
 created_at: "2026-05-13 03:28:27 UTC"
 updated: "2026-05-13"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
 confidence: "high"
-user_story: "En tant que creatrice ContentGlowz authentifiee dans l'editeur video d'un contenu, je veux generer des clips video IA courts et du b-roll guide pour une scene ou un placement, afin d'enrichir mes videos sociales sans quitter le workflow Remotion/editor ni ouvrir un studio libre."
+user_story: "En tant que creatrice ContentGlows authentifiee dans l'editeur video d'un contenu, je veux generer des clips video IA courts et du b-roll guide pour une scene ou un placement, afin d'enrichir mes videos sociales sans quitter le workflow Remotion/editor ni ouvrir un studio libre."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -21,7 +21,7 @@ linked_systems:
   - "app"
   - "lab"
   - "worker"
-  - "contentglowz"
+  - "contentglows"
   - "Runway API"
   - "Luma Dream Machine API"
   - "Google Veo/Gemini API"
@@ -58,10 +58,10 @@ depends_on:
   - artifact: "shipglows_data/workflow/specs/monorepo/SPEC-remotion-scene-motion-assistant-2026-05-12.md"
     artifact_version: "0.1.0"
     required_status: "draft"
-  - artifact: "contentglowz/INSPIRATION.md"
+  - artifact: "contentglows/INSPIRATION.md"
     artifact_version: "unknown"
     required_status: "inspiration-only"
-  - artifact: "contentglowz/GUIDELINES.md"
+  - artifact: "contentglows/GUIDELINES.md"
     artifact_version: "unknown"
     required_status: "inspiration-only"
   - artifact: "Runway API docs"
@@ -75,11 +75,11 @@ depends_on:
     required_status: "official"
 supersedes: []
 evidence:
-  - "User confirmation 2026-05-13: create the remaining spec from contentglowz inspiration, identified as AI video provider clips / b-roll generation."
-  - "User direction across conversation: keep existing Flutter + FastAPI + Clerk + Turso + Bunny + Remotion stack; contentglowz is inspiration only."
+  - "User confirmation 2026-05-13: create the remaining spec from contentglows inspiration, identified as AI video provider clips / b-roll generation."
+  - "User direction across conversation: keep existing Flutter + FastAPI + Clerk + Turso + Bunny + Remotion stack; contentglows is inspiration only."
   - "User direction across conversation: guide users toward effective social content, not artistic playgrounds."
-  - "contentglowz/INSPIRATION.md lists Runway, Pika, Synthesia, HeyGen and Luma as AI video inspirations."
-  - "contentglowz/GUIDELINES.md requires standard generated output formats such as MP4, GIF/MP4 animation, preview when possible, and workflow between tools."
+  - "contentglows/INSPIRATION.md lists Runway, Pika, Synthesia, HeyGen and Luma as AI video inspirations."
+  - "contentglows/GUIDELINES.md requires standard generated output formats such as MP4, GIF/MP4 animation, preview when possible, and workflow between tools."
   - "Existing spec evidence: Remotion video editor is content-scoped at /editor/:id/video, guided storyboard, preview gate before final render/publication."
   - "Existing spec evidence: Unified Project Asset Library defines project assets across video, video_cover, render_output, background_config and governed reuse."
   - "Existing spec evidence: Social Placement Format Registry defines vertical_short_video, landscape_video, reel_cover and video_thumbnail placements but explicitly leaves generation of video assets to future workflows."
@@ -100,15 +100,15 @@ AI Video B-roll Generation Workflow
 
 ## Status
 
-Draft. This spec defines the missing AI video generation layer inspired by Runway, Pika, Luma, Synthesia and HeyGen, but scoped to ContentGlowz's guided editor. V1 generates short b-roll/scene clips as project assets for the existing/future Remotion video editor and social placement registry. It is not a standalone AI video playground, avatar studio, prompt lab, or direct social publishing feature.
+Draft. This spec defines the missing AI video generation layer inspired by Runway, Pika, Luma, Synthesia and HeyGen, but scoped to ContentGlows's guided editor. V1 generates short b-roll/scene clips as project assets for the existing/future Remotion video editor and social placement registry. It is not a standalone AI video playground, avatar studio, prompt lab, or direct social publishing feature.
 
 ## User Story
 
-En tant que creatrice ContentGlowz authentifiee dans l'editeur video d'un contenu, je veux generer des clips video IA courts et du b-roll guide pour une scene ou un placement, afin d'enrichir mes videos sociales sans quitter le workflow Remotion/editor ni ouvrir un studio libre.
+En tant que creatrice ContentGlows authentifiee dans l'editeur video d'un contenu, je veux generer des clips video IA courts et du b-roll guide pour une scene ou un placement, afin d'enrichir mes videos sociales sans quitter le workflow Remotion/editor ni ouvrir un studio libre.
 
 ## Minimal Behavior Contract
 
-From an owned content/video scene or a known social placement, ContentGlowz lets an authenticated creator request a short AI-generated video clip using a guided preset such as b-roll, scene background, product/action cutaway, hook visual, transition clip or loopable ambiance. The backend validates project/content/video ownership, allowed placement, prompt policy, provider availability, quota/cost gate, reference assets and output format, then creates an async generation job. On success it downloads the provider result, stores it durably on Bunny, registers a `video` project asset, links it to the content/scene/placement as a candidate or primary asset, and exposes it to Remotion preview/render flows. If provider generation, moderation, quota, storage, ownership, reference validation or asset registration fails, the job ends in a recoverable failed state without using a provider-temporary URL as durable output. The easy edge case to miss is letting video generation become an unconstrained text-to-video toy: V1 accepts guided scene/placement intents and approved references, not arbitrary public URLs, avatar likeness promises, direct provider playground controls or final publishing bypasses.
+From an owned content/video scene or a known social placement, ContentGlows lets an authenticated creator request a short AI-generated video clip using a guided preset such as b-roll, scene background, product/action cutaway, hook visual, transition clip or loopable ambiance. The backend validates project/content/video ownership, allowed placement, prompt policy, provider availability, quota/cost gate, reference assets and output format, then creates an async generation job. On success it downloads the provider result, stores it durably on Bunny, registers a `video` project asset, links it to the content/scene/placement as a candidate or primary asset, and exposes it to Remotion preview/render flows. If provider generation, moderation, quota, storage, ownership, reference validation or asset registration fails, the job ends in a recoverable failed state without using a provider-temporary URL as durable output. The easy edge case to miss is letting video generation become an unconstrained text-to-video toy: V1 accepts guided scene/placement intents and approved references, not arbitrary public URLs, avatar likeness promises, direct provider playground controls or final publishing bypasses.
 
 ## Success Behavior
 
@@ -116,7 +116,7 @@ From an owned content/video scene or a known social placement, ContentGlowz lets
 - Given a scene has text, visual notes, format preset and optional project visual references, when the creator starts a b-roll generation, then the backend creates a `video_generation` record and a pollable job with project id, user id, content id, optional video project/version/scene id, placement id, provider, model, prompt hash, duration, aspect ratio and status `queued`.
 - Given the selected provider is configured and quota policy allows the action, when the job runs, then the backend submits either text-to-video or image-to-video using only backend-approved prompt/reference inputs.
 - Given an image reference is used for image-to-video, when the provider request is built, then the reference must be an active same-project asset or visual reference with a backend-resolved durable URL.
-- Given generation succeeds, when the provider returns an output URL or file object, then ContentGlowz downloads it server-side, verifies it is a supported video MIME/container, uploads it to Bunny, marks the generation `completed`, and stores only the durable Bunny URI as the project asset storage URI.
+- Given generation succeeds, when the provider returns an output URL or file object, then ContentGlows downloads it server-side, verifies it is a supported video MIME/container, uploads it to Bunny, marks the generation `completed`, and stores only the durable Bunny URI as the project asset storage URI.
 - Given Bunny upload and project asset registration succeed, when the editor refreshes, then the generated clip appears as a `ProjectAsset` with media kind `video`, source `ai_video_generation`, metadata for provider/model/duration/aspect ratio/placement/generation id, and safe preview/playback descriptors.
 - Given the clip was generated for a scene, when the user applies it, then the video project version references the project asset id and invalidates stale Remotion previews.
 - Given the clip was generated for a social placement, when publish preflight later runs, then the social placement registry can validate the asset against `vertical_short_video`, `landscape_video` or `reel_cover` rules.
@@ -141,7 +141,7 @@ From an owned content/video scene or a known social placement, ContentGlowz lets
 
 ## Problem
 
-ContentGlowz now has specs for images via Flux, the Remotion video editor, audio/music/backgrounds, motion presets, text-based media editing, social placements and provider telemetry. The remaining AI video inspiration from contentglowz is the frontier-provider layer: Runway/Pika/Luma/Synthesia/HeyGen-style generated clips. If copied naively, it would create an expensive and risky prompt playground detached from the current product. What ContentGlowz actually needs is narrower: generate short clips that help social videos perform, attach them to scenes/placements as governed project assets, and let Remotion compose the final video.
+ContentGlows now has specs for images via Flux, the Remotion video editor, audio/music/backgrounds, motion presets, text-based media editing, social placements and provider telemetry. The remaining AI video inspiration from contentglows is the frontier-provider layer: Runway/Pika/Luma/Synthesia/HeyGen-style generated clips. If copied naively, it would create an expensive and risky prompt playground detached from the current product. What ContentGlows actually needs is narrower: generate short clips that help social videos perform, attach them to scenes/placements as governed project assets, and let Remotion compose the final video.
 
 The existing codebase also has partial video concepts: Instagram reel import uploads video/audio to Bunny, project assets already support `video`, storage descriptors distinguish Bunny from provider-temporary URLs, and Flux image generation already shows a durable async provider/store pattern. But there is no AI video provider adapter, no generated video history store, no Bunny registration path for provider video outputs, no editor-linked b-roll action, and no contract tying generated clips to Remotion scenes or social placements.
 
@@ -182,7 +182,7 @@ Create a backend-owned AI video generation subsystem with a provider adapter con
 ## Scope Out
 
 - Standalone AI video playground, public prompt lab, global studio route, or arbitrary model picker.
-- Direct port of any contentglowz prototype stack, Next.js route, Supabase, Vercel Blob, Vercel OAuth or client-side provider call.
+- Direct port of any contentglows prototype stack, Next.js route, Supabase, Vercel Blob, Vercel OAuth or client-side provider call.
 - Full text-to-movie, multi-scene AI video planning, automatic final video generation, automatic edit assembly or one-click publish.
 - Avatar/presenter generation, likeness cloning, talking-head workflows, Synthesia/HeyGen production integration or consent workflows. These require a separate avatar/likeness spec.
 - Video-to-video editing, inpainting, upscale, extend/interpolate, camera-control expert mode, or professional VFX controls.
@@ -551,7 +551,7 @@ None blocking for the draft. Assumption locked for V1: generated AI video clips 
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
-| 2026-05-13 03:28:27 UTC | sf-spec | GPT-5 Codex | Created AI video b-roll generation workflow spec from contentglowz AI video inspirations, existing Remotion/asset/social specs, local code scan and fresh provider docs. | Draft spec saved. | /sf-ready AI video b-roll generation workflow |
+| 2026-05-13 03:28:27 UTC | sf-spec | GPT-5 Codex | Created AI video b-roll generation workflow spec from contentglows AI video inspirations, existing Remotion/asset/social specs, local code scan and fresh provider docs. | Draft spec saved. | /sf-ready AI video b-roll generation workflow |
 
 ## Current Chantier Flow
 

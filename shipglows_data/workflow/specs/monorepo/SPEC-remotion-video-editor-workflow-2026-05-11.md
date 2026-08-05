@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 15:03:03 UTC"
 updated: "2026-05-11"
@@ -13,7 +13,7 @@ source_model: "gpt-5.5"
 scope: "feature"
 owner: "Diane"
 confidence: "high"
-user_story: "En tant que creatrice ContentGlowz authentifiee, je veux construire un vrai workflow video Remotion avec scenes, assets, preview editable et rendu final, afin de transformer un contenu existant en video exploitable sans sortir du workflow editor/reels."
+user_story: "En tant que creatrice ContentGlows authentifiee, je veux construire un vrai workflow video Remotion avec scenes, assets, preview editable et rendu final, afin de transformer un contenu existant en video exploitable sans sortir du workflow editor/reels."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -21,7 +21,7 @@ linked_systems:
   - app
   - lab
   - worker
-  - contentglowz/remotion-template
+  - contentglows/remotion-template
   - editor workflow
   - reels workflow
   - content assets
@@ -38,7 +38,7 @@ depends_on:
   - artifact: "shipglows_data/workflow/specs/app/SPEC-editor-linked-ai-visuals-ui-2026-05-11.md"
     artifact_version: "1.0.0"
     required_status: "ready"
-  - artifact: "contentglowz/remotion-template/README.md"
+  - artifact: "contentglows/remotion-template/README.md"
     artifact_version: "1.0.0 local package; Remotion dependencies ^4.0.0"
     required_status: "inspiration-only"
   - artifact: "Remotion renderMedia docs"
@@ -55,9 +55,9 @@ evidence:
   - "Existing ready spec remotion-render-service-integration.md covers the worker/API render foundation and must not be duplicated."
   - "Existing ready spec reels-from-content-preview-workflow.md covers the MVP /reels preview/export flow and must remain the first user-facing render path."
   - "Existing editor-linked AI visuals spec only prepares image assets such as video_cover; it explicitly scopes out timeline and Remotion rendering."
-  - "contentglowz/remotion-template/server/index.ts exposes a quiz-specific Express render API using /renders and an in-memory queue."
-  - "contentglowz/remotion-template/server/render-queue.ts uses selectComposition() and renderMedia(), but currently targets QuizVideo, buffers output, and includes Telegram side effects."
-  - "contentglowz/remotion-template/remotion/Root.tsx registers HelloWorld and QuizVideo, not a scene-based ContentGlowz video composition."
+  - "contentglows/remotion-template/server/index.ts exposes a quiz-specific Express render API using /renders and an in-memory queue."
+  - "contentglows/remotion-template/server/render-queue.ts uses selectComposition() and renderMedia(), but currently targets QuizVideo, buffers output, and includes Telegram side effects."
+  - "contentglows/remotion-template/remotion/Root.tsx registers HelloWorld and QuizVideo, not a scene-based ContentGlows video composition."
   - "app/lib/presentation/screens/reels/reels_screen.dart currently contains the Instagram import UI; the ready reels spec introduces create-from-content preview/export."
   - "app/lib/router.dart has /reels and /editor/:id; future editor video routes must be added deliberately and sanitized before broad /editor/* matching."
   - "lab/api/routers/reels.py currently handles Instagram download/cookies; render endpoints are specified as separate additions by the ready Remotion integration spec."
@@ -81,19 +81,19 @@ Remotion Video Editor Workflow
 
 ## Status
 
-Ready after `sf-ready` rerun. This is the real ContentGlowz video editor workflow for V1: guided storyboard from the content editor, preview validation required before final render/publication, text/scenes/images/durations/layouts only, and vertical-first multi-format support with `vertical_9_16` plus `landscape_16_9`. It depends on the ready Remotion render service integration and the ready reels preview/export MVP. It must be implemented after those foundations are live and verified, because this spec adds scene/editor state and orchestration on top of their API and worker contracts.
+Ready after `sf-ready` rerun. This is the real ContentGlows video editor workflow for V1: guided storyboard from the content editor, preview validation required before final render/publication, text/scenes/images/durations/layouts only, and vertical-first multi-format support with `vertical_9_16` plus `landscape_16_9`. It depends on the ready Remotion render service integration and the ready reels preview/export MVP. It must be implemented after those foundations are live and verified, because this spec adds scene/editor state and orchestration on top of their API and worker contracts.
 
 ## User Story
 
-En tant que creatrice ContentGlowz authentifiee, je veux construire un vrai workflow video Remotion avec scenes, assets, preview editable et rendu final, afin de transformer un contenu existant en video exploitable sans sortir du workflow editor/reels.
+En tant que creatrice ContentGlows authentifiee, je veux construire un vrai workflow video Remotion avec scenes, assets, preview editable et rendu final, afin de transformer un contenu existant en video exploitable sans sortir du workflow editor/reels.
 
 ## Minimal Behavior Contract
 
-Depuis un contenu appartenant au projet actif, ContentGlowz cree ou ouvre un projet video storyboard compose de scenes ordonnees, de textes, de timings, de visuels et de layouts, puis permet de previsualiser, modifier, sauvegarder, relancer une preview et demander un rendu final via le worker Remotion existant. La preview de la version courante est obligatoire avant final render/publication. Si le contenu, les assets, le worker, la sauvegarde, les droits, la preview ou le rendu final echouent, l'utilisateur voit un etat recuperable et le systeme conserve la derniere version coherente du projet video sans annoncer de MP4 pret. Le cas facile a rater est la separation entre montage et rendu: l'editeur manipule un modele de scenes versionne et valide, tandis que Remotion reste le moteur de composition/rendu, sans importer un editeur professionnel arbitraire ni reutiliser silencieusement un ancien artefact d'une autre version.
+Depuis un contenu appartenant au projet actif, ContentGlows cree ou ouvre un projet video storyboard compose de scenes ordonnees, de textes, de timings, de visuels et de layouts, puis permet de previsualiser, modifier, sauvegarder, relancer une preview et demander un rendu final via le worker Remotion existant. La preview de la version courante est obligatoire avant final render/publication. Si le contenu, les assets, le worker, la sauvegarde, les droits, la preview ou le rendu final echouent, l'utilisateur voit un etat recuperable et le systeme conserve la derniere version coherente du projet video sans annoncer de MP4 pret. Le cas facile a rater est la separation entre montage et rendu: l'editeur manipule un modele de scenes versionne et valide, tandis que Remotion reste le moteur de composition/rendu, sans importer un editeur professionnel arbitraire ni reutiliser silencieusement un ancien artefact d'une autre version.
 
 ## Success Behavior
 
-- Given un utilisateur Clerk authentifie avec un projet actif et un contenu owned, when il choisit de creer une video depuis l'editeur de contenu, then ContentGlowz cree un `video_project` lie a `content_id`, `project_id`, `user_id`, `source_content_version`, et une premiere version de scenes storyboard.
+- Given un utilisateur Clerk authentifie avec un projet actif et un contenu owned, when il choisit de creer une video depuis l'editeur de contenu, then ContentGlows cree un `video_project` lie a `content_id`, `project_id`, `user_id`, `source_content_version`, et une premiere version de scenes storyboard.
 - Given un `video_project` existant, when l'utilisateur ouvre l'editeur video, then l'app affiche les scenes, leurs textes, durees, assets, statut de validation, preview courante, statut de rendu et derniere date de sauvegarde.
 - Given l'utilisateur modifie une scene, remplace un asset ou reordonne une sequence autorisee, when il sauvegarde, then le backend persiste une nouvelle version coherente du projet et invalide toute preview/final render derivee d'une version plus ancienne.
 - Given une version valide du projet video, when l'utilisateur demande une preview, then le backend transforme le modele de scenes en props Remotion validees, lance ou reutilise un job preview pour cette version exacte, et expose un statut pollable.
@@ -119,11 +119,11 @@ Depuis un contenu appartenant au projet actif, ContentGlowz cree ou ouvre un pro
 
 ## Problem
 
-ContentGlowz has two ready specs for a pragmatic Remotion MVP: one for the render worker/API foundation and one for a `/reels` create-from-content preview/export flow. The current AI visuals UI spec only prepares image assets such as `video_cover`; it intentionally does not provide timeline, scenes or Remotion editing. The missing future layer is the real video workflow: a persistent scene model, per-scene assets, editable preview loop, final render orchestration, and integration points from the existing editor and reels surfaces.
+ContentGlows has two ready specs for a pragmatic Remotion MVP: one for the render worker/API foundation and one for a `/reels` create-from-content preview/export flow. The current AI visuals UI spec only prepares image assets such as `video_cover`; it intentionally does not provide timeline, scenes or Remotion editing. The missing future layer is the real video workflow: a persistent scene model, per-scene assets, editable preview loop, final render orchestration, and integration points from the existing editor and reels surfaces.
 
 ## Solution
 
-Introduce a ContentGlowz video project model and content-editor-linked storyboard workflow that stores scene-level state in the backend, maps validated scene versions to Remotion props, and uses the already-specified Remotion worker for preview and final renders. Remotion remains the render/composition engine; the product surface is a guided storyboard, not an arbitrary professional timeline editor.
+Introduce a ContentGlows video project model and content-editor-linked storyboard workflow that stores scene-level state in the backend, maps validated scene versions to Remotion props, and uses the already-specified Remotion worker for preview and final renders. Remotion remains the render/composition engine; the product surface is a guided storyboard, not an arbitrary professional timeline editor.
 
 ## Scope In
 
@@ -156,10 +156,10 @@ Introduce a ContentGlowz video project model and content-editor-linked storyboar
 - Social publishing of final videos.
 - CDN/object-storage migration beyond what existing render specs require.
 - Generic asset library management outside the current project/content/video workflow.
-- Arbitrary user media upload or binary upload flows; scene images must come from already trusted ContentGlowz assets in V1.
+- Arbitrary user media upload or binary upload flows; scene images must come from already trusted ContentGlows assets in V1.
 - Visible version-history browsing; V1 keeps immutable versions for consistency, stale prevention and support diagnostics, while the UI focuses on the current editable draft and current/stale render status.
 - AI storyboard planning; V1's initial storyboard builder is deterministic from saved content and trusted assets.
-- Importing the `contentglowz/remotion-template` quiz/Telegram behavior as production product behavior.
+- Importing the `contentglows/remotion-template` quiz/Telegram behavior as production product behavior.
 
 ## Constraints
 
@@ -167,7 +167,7 @@ Introduce a ContentGlowz video project model and content-editor-linked storyboar
 - This spec depends on `reels-from-content-preview-workflow.md`; the simple `/reels` preview/export MVP must remain available and should become one entry point into this richer editor, not be deleted.
 - This spec depends on `SPEC-editor-linked-ai-visuals-ui-2026-05-11.md`; AI visuals provide candidate assets such as `video_cover`, but they do not define video scenes.
 - `lab` remains the authenticated public API boundary. Flutter does not call the Remotion worker directly.
-- Remotion remains responsible for rendering from validated props; ContentGlowz remains responsible for auth, ownership, scene persistence, asset validation and job orchestration.
+- Remotion remains responsible for rendering from validated props; ContentGlows remains responsible for auth, ownership, scene persistence, asset validation and job orchestration.
 - All scene and asset references must be server-side identifiers, not arbitrary client-supplied URLs or local paths.
 - Every preview/final job must be tied to a specific immutable video project version.
 - Project version writes must use optimistic concurrency or equivalent stale-write protection.
@@ -196,9 +196,9 @@ Introduce a ContentGlowz video project model and content-editor-linked storyboar
   - `lab/api/dependencies/ownership.py`
   - status/content asset APIs used by the AI visuals spec.
 - Existing Remotion prototype files as inspiration only:
-  - `contentglowz/remotion-template/server/index.ts`
-  - `contentglowz/remotion-template/server/render-queue.ts`
-  - `contentglowz/remotion-template/remotion/Root.tsx`
+  - `contentglows/remotion-template/server/index.ts`
+  - `contentglows/remotion-template/server/render-queue.ts`
+  - `contentglows/remotion-template/remotion/Root.tsx`
 - Expected new backend API family:
   - `POST /api/videos/projects/from-content`
   - `GET /api/videos/projects/{video_project_id}`
@@ -210,7 +210,7 @@ Introduce a ContentGlowz video project model and content-editor-linked storyboar
   - `/editor/:id/video` as the primary editor-linked video workspace, sanitized as `/editor/:id/video` before the generic `/editor/*` sanitizer.
   - `/reels` may link to `/editor/:id/video` for eligible content, but it does not own a separate full storyboard editor in V1.
 - Expected worker capability:
-  - A scene-based composition, for example `ContentGlowzSceneVideo`, accepting validated scene props and rendering MP4 for `vertical_9_16` and `landscape_16_9`.
+  - A scene-based composition, for example `ContentGlowsSceneVideo`, accepting validated scene props and rendering MP4 for `vertical_9_16` and `landscape_16_9`.
 - Fresh external docs checked:
   - `fresh-docs checked`: Remotion `renderMedia()` official docs at `https://www.remotion.dev/docs/renderer/render-media`.
   - `fresh-docs checked`: Remotion SSR Node official docs at `https://www.remotion.dev/docs/ssr-node`.
@@ -298,7 +298,7 @@ Introduce a ContentGlowz video project model and content-editor-linked storyboar
   - User story link: Lets creators save and return to editable video drafts.
   - Depends on: Tache 2.
   - Validate with: Service tests for create, load, save new version, stale write conflict, project ownership filter and version immutability.
-  - Notes: Route table creation/migration through the ContentGlowz Turso migration guardrails before coding.
+  - Notes: Route table creation/migration through the ContentGlows Turso migration guardrails before coding.
 
 - [ ] Tache 4: Add backend video project routes.
   - Fichier: `lab/api/routers/video_projects.py`
@@ -327,7 +327,7 @@ Introduce a ContentGlowz video project model and content-editor-linked storyboar
 - [ ] Tache 7: Extend the Remotion worker with a scene composition.
   - Fichier: `worker/remotion/Root.tsx`
   - Action: Register a scene-based composition using typed props and schema validation for `vertical_9_16` and `landscape_16_9`.
-  - User story link: Lets the worker render the saved ContentGlowz scene timeline.
+  - User story link: Lets the worker render the saved ContentGlows scene timeline.
   - Depends on: Ready `worker` package from the render integration spec.
   - Validate with: Worker tests or local sample render using a checked-in sample scene props JSON.
   - Notes: Preserve the existing MVP composition required by the ready reels spec.
@@ -407,13 +407,13 @@ Introduce a ContentGlowz video project model and content-editor-linked storyboar
 
 ## Risks
 
-- Product risk: building a free timeline too early could create a large professional editor project instead of a guided ContentGlowz workflow.
+- Product risk: building a free timeline too early could create a large professional editor project instead of a guided ContentGlows workflow.
 - Architecture risk: storing scene state inside generic job metadata would make drafts, concurrency and history brittle.
 - Security risk: accepting client-provided media URLs or paths could create cross-project data leaks or arbitrary file render access.
 - Render risk: scene props may grow too large or include media that Remotion cannot fetch reliably in local/dev environments.
 - UX risk: stale preview/final states can confuse users unless the current-version relationship is explicit.
 - Performance risk: repeated preview renders can saturate the local worker; explicit preview actions and existing render capacity limits must apply.
-- Migration risk: if Turso schema changes are needed, they must follow ContentGlowz migration guardrails and cannot be hidden inside this spec's implementation.
+- Migration risk: if Turso schema changes are needed, they must follow ContentGlows migration guardrails and cannot be hidden inside this spec's implementation.
 - Dependency risk: this chantier is blocked if the two ready Remotion specs are not actually implemented and verified first.
 
 ## Execution Notes
@@ -441,7 +441,7 @@ Introduce a ContentGlowz video project model and content-editor-linked storyboar
 - V1 supports `vertical_9_16` and `landscape_16_9`; square and custom dimensions are future scope.
 - V1 stores one active video project per source content and format preset, with immutable internal versions and no visible version-history browser.
 - V1 initial storyboard generation is deterministic from saved content and trusted assets; AI storyboard planning is future scope.
-- V1 scene assets are trusted ContentGlowz content assets, durable Image Robot outputs, or `video_cover` records; arbitrary upload flows are future scope.
+- V1 scene assets are trusted ContentGlows content assets, durable Image Robot outputs, or `video_cover` records; arbitrary upload flows are future scope.
 - Render capacity inherits the ready Remotion render service integration limits unless a later capacity spec changes them.
 
 ## Open Questions

@@ -2,7 +2,7 @@
 artifact: exploration_report
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-05-17"
 updated: "2026-05-17"
 status: draft
@@ -22,7 +22,7 @@ linked_systems:
 evidence:
   - "HitKeep public pages describe RBAC, per-site permissions, API clients, read-only MCP access, shareable dashboards, email reports, cookie-free tracking, and open exports."
   - "Clamp public pages describe agent-native analytics via MCP, analyst-grade prompt workflows, funnels, cohorts, alerts, revenue, custom events, and project-scoped API keys."
-  - "ContentGlowz analytics router currently protects reads with Clerk JWT and user/project domain resolution."
+  - "ContentGlows analytics router currently protects reads with Clerk JWT and user/project domain resolution."
   - "Search Console summary already combines Google Search snapshots and private tracker traffic under owned project checks."
   - "App access state is workspace/bootstrap-oriented rather than analytics-capability-oriented."
 depends_on: []
@@ -56,7 +56,7 @@ Est-ce que HitKeep peut nous aider a ameliorer notre systeme d'acces a l'Analyti
 
 ## Problem Framing
 
-ContentGlowz already has basic analytics access: authenticated users query analytics for their project domains, and Search Console data is scoped by project ownership. The gap is not "can we read analytics"; the gap is governed, shareable, programmatic access for humans, reports, and assistants without giving everyone full app/session access.
+ContentGlows already has basic analytics access: authenticated users query analytics for their project domains, and Search Console data is scoped by project ownership. The gap is not "can we read analytics"; the gap is governed, shareable, programmatic access for humans, reports, and assistants without giving everyone full app/session access.
 
 ## Option Space
 
@@ -64,12 +64,12 @@ ContentGlowz already has basic analytics access: authenticated users query analy
 
 - Summary: Use HitKeep for web analytics storage, dashboards, reports, roles, exports, and optional assistant access.
 - Pros: Faster route to mature dashboard/reporting/RBAC features; self-host or managed; open exports; cookie-free orientation.
-- Cons: Migration and product fit risk; duplicate data model with ContentGlowz projects/domains; integration work for app identity, project ownership, and Search Console semantics.
+- Cons: Migration and product fit risk; duplicate data model with ContentGlows projects/domains; integration work for app identity, project ownership, and Search Console semantics.
 
 ### Option B: Copy the access model, keep our tracker
 
 - Summary: Keep current private tracker and Search Console store, but add HitKeep-inspired access primitives.
-- Pros: Fits existing ContentGlowz data model; lower migration risk; preserves current Search Console/editorial opportunity integration.
+- Pros: Fits existing ContentGlows data model; lower migration risk; preserves current Search Console/editorial opportunity integration.
 - Cons: We must build RBAC/API-client/share/report features ourselves; needs careful security design and audit logging.
 
 ### Option C: Do nothing beyond current owner-only access
@@ -81,7 +81,7 @@ ContentGlowz already has basic analytics access: authenticated users query analy
 ### Option D: Copy Clamp's agent-native analytics loop
 
 - Summary: Keep our own tracker, but expose a read-only analytics tool surface for agents with predefined analysis workflows.
-- Pros: Strong fit for ContentGlowz because agents already create content, landing pages, reels, newsletters, and project intelligence; closes the loop from shipped content to measured outcome.
+- Pros: Strong fit for ContentGlows because agents already create content, landing pages, reels, newsletters, and project intelligence; closes the loop from shipped content to measured outcome.
 - Cons: Higher prompt/tool safety burden; requires strict scoped credentials, query limits, and careful separation between read-only diagnosis and write actions.
 
 ## Comparison
@@ -97,13 +97,13 @@ HitKeep is most useful as a reference architecture for access governance:
 Clamp is more useful as a reference architecture for agent workflows:
 
 - MCP-first query model: analytics is available where the agent works, not only in dashboards.
-- Prompt workflows: weekly report, traffic diagnosis, conversion audit, channel breakdown, and page performance can become first-class ContentGlowz analysis actions.
+- Prompt workflows: weekly report, traffic diagnosis, conversion audit, channel breakdown, and page performance can become first-class ContentGlows analysis actions.
 - Event schema: product/content events need typed names and properties so agents can ask reliable questions.
 - Alerts: analytics should trigger follow-up work when traffic, conversion, or publishing outcomes move.
 
 ## Emerging Recommendation
 
-Do not replace the current system immediately. Use HitKeep as the design benchmark for a ContentGlowz-native analytics access layer, and Clamp as the benchmark for agent-native analysis workflows:
+Do not replace the current system immediately. Use HitKeep as the design benchmark for a ContentGlows-native analytics access layer, and Clamp as the benchmark for agent-native analysis workflows:
 
 1. Add an explicit analytics capability model: `analytics:view`, `analytics:export`, `analytics:share`, `analytics:connect`, `analytics:sync`, `analytics:admin`.
 2. Introduce project/domain-scoped read-only API clients for reports and agents.
@@ -117,13 +117,13 @@ Confidence: medium. HitKeep and Clamp's public claims are clear, but a productio
 ## Non-Decisions
 
 - No decision to migrate analytics storage to HitKeep.
-- No decision to expose MCP in ContentGlowz yet.
+- No decision to expose MCP in ContentGlows yet.
 - No decision on paid/managed HitKeep Cloud.
 - No decision on paid/managed Clamp.
 
 ## Rejected Paths
 
-- Immediate replacement of ContentGlowz analytics - rejected because our Search Console/editorial intelligence integration is already app-specific.
+- Immediate replacement of ContentGlows analytics - rejected because our Search Console/editorial intelligence integration is already app-specific.
 - Giving assistants normal user sessions - rejected because HitKeep's pattern points to scoped read-only API clients instead.
 - Letting agents create alerts/funnels or open PRs without human review - rejected for V1 because analytics tooling should start read-only and diagnostic.
 
@@ -132,7 +132,7 @@ Confidence: medium. HitKeep and Clamp's public claims are clear, but a productio
 - HitKeep maturity: product was featured recently, so reliability and long-term maintenance need validation.
 - Clamp maturity: product was featured recently, so reliability, auth design, MCP safety, and retention/export posture need validation.
 - Compliance: cookie-free does not automatically settle ePrivacy/PECR/GDPR questions, especially where sessionStorage or similar client storage is used.
-- Data model mismatch: ContentGlowz project/domain/user ownership may not map cleanly to HitKeep site/team permissions.
+- Data model mismatch: ContentGlows project/domain/user ownership may not map cleanly to HitKeep site/team permissions.
 - Security: scoped tokens and share links need revocation, expiry, audit logs, and rate limits from day one.
 
 ## Redaction Review
@@ -159,5 +159,5 @@ Confidence: medium. HitKeep and Clamp's public claims are clear, but a productio
 
 | Date UTC | Prompt/Focus | Action | Result | Next step |
 |----------|--------------|--------|--------|-----------|
-| 2026-05-17 15:28:55 UTC | Evaluate HitKeep for Analytics access | Read HitKeep sources and ContentGlowz analytics/access code | Recommend native access-governance layer inspired by HitKeep, not immediate migration | `/sf-spec Analytics access governance` |
+| 2026-05-17 15:28:55 UTC | Evaluate HitKeep for Analytics access | Read HitKeep sources and ContentGlows analytics/access code | Recommend native access-governance layer inspired by HitKeep, not immediate migration | `/sf-spec Analytics access governance` |
 | 2026-05-17 15:28:55 UTC | Evaluate Clamp for Analytics access | Read Clamp public pages and MCP server reference | Add Clamp as inspiration for agent-native analytics workflows on top of governed read-only access | `/sf-spec Analytics access governance` |

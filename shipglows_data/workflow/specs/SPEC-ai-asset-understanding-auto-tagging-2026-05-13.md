@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-05-13"
 created_at: "2026-05-13 08:15:03 UTC"
 updated: "2026-05-14"
@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
 confidence: "medium"
-user_story: "En tant que creatrice ContentGlowz, je veux que mes images et videos de projet soient comprises, taguees et recommandees automatiquement, afin de retrouver des illustrations et b-rolls pertinents pour mes futurs contenus sans trier toute ma mediatheque a la main."
+user_story: "En tant que creatrice ContentGlows, je veux que mes images et videos de projet soient comprises, taguees et recommandees automatiquement, afin de retrouver des illustrations et b-rolls pertinents pour mes futurs contenus sans trier toute ma mediatheque a la main."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -76,16 +76,16 @@ Closed after final verification. This spec defines the product and technical con
 
 ## User Story
 
-En tant que creatrice ContentGlowz, je veux que mes images et videos de projet soient comprises, taguees et recommandees automatiquement, afin de retrouver des illustrations et b-rolls pertinents pour mes futurs contenus sans trier toute ma mediatheque a la main.
+En tant que creatrice ContentGlows, je veux que mes images et videos de projet soient comprises, taguees et recommandees automatiquement, afin de retrouver des illustrations et b-rolls pertinents pour mes futurs contenus sans trier toute ma mediatheque a la main.
 
 ## Minimal Behavior Contract
 
-When an image or video asset is added, imported, captured, attached to a project, or explicitly re-analyzed, ContentGlowz stores or reuses a user/workspace-scoped canonical asset, links it to the current project when applicable, and creates an authenticated async understanding job subject to strict cost/privacy guardrails. The job extracts safe media signals, resolves a provider credential from user BYOK first and platform/global key second, asks a Gemini-compatible analyzer to summarize what the asset depicts, stores normalized tags, scene segments, b-roll or illustration placements, confidence scores and source-credit metadata, and makes those signals searchable from the global library and recommendable inside authorized project workflows. If analysis is unavailable, unsafe, too large, unsupported, quota-limited, or low-confidence, the asset remains usable but is marked with a recoverable understanding status instead of receiving misleading tags. The easy edge case to miss is social or third-party footage: recommendations may say a deer-jumping clip fits a kung-fu video as an eye-catching illustration, but they must preserve source attribution/credit warnings and must not invent legal permission.
+When an image or video asset is added, imported, captured, attached to a project, or explicitly re-analyzed, ContentGlows stores or reuses a user/workspace-scoped canonical asset, links it to the current project when applicable, and creates an authenticated async understanding job subject to strict cost/privacy guardrails. The job extracts safe media signals, resolves a provider credential from user BYOK first and platform/global key second, asks a Gemini-compatible analyzer to summarize what the asset depicts, stores normalized tags, scene segments, b-roll or illustration placements, confidence scores and source-credit metadata, and makes those signals searchable from the global library and recommendable inside authorized project workflows. If analysis is unavailable, unsafe, too large, unsupported, quota-limited, or low-confidence, the asset remains usable but is marked with a recoverable understanding status instead of receiving misleading tags. The easy edge case to miss is social or third-party footage: recommendations may say a deer-jumping clip fits a kung-fu video as an eye-catching illustration, but they must preserve source attribution/credit warnings and must not invent legal permission.
 
 ## Success Behavior
 
 - Given an owned project asset is an image, capture, thumbnail, video, video cover, render output, or imported social video, when analysis is requested, then the backend creates an `asset_understanding` job scoped to the project/user and records status `queued`.
-- Given an asset already exists in the user's global library, when it is attached to a new project, then ContentGlowz reuses the canonical asset understanding result and records a project-level attachment/usage rather than duplicating the media or re-running analysis by default.
+- Given an asset already exists in the user's global library, when it is attached to a new project, then ContentGlows reuses the canonical asset understanding result and records a project-level attachment/usage rather than duplicating the media or re-running analysis by default.
 - Given the job runs on an image, when the analyzer succeeds, then the asset receives normalized visual tags, detected objects/scene concepts, suggested placements such as `illustration`, `thumbnail_candidate`, `visual_reference_candidate`, and confidence metadata.
 - Given the job runs on a video, when the analyzer succeeds, then the asset receives video-level tags plus timestamped scene segments with start/end seconds, short labels, b-roll or illustration suitability, and confidence metadata.
 - Given a video has audio or visible UI text, when the analyzer supports audio/vision/OCR, then the stored result may include safe high-level cues such as "signup flow", "dashboard", "waterfall", "animal movement", "martial arts motion", or "software demo", but not full sensitive OCR dumps by default.
@@ -110,7 +110,7 @@ When an image or video asset is added, imported, captured, attached to a project
 
 ## Problem
 
-ContentGlowz now has a unified project asset layer, but assets are still mostly passive files. The system does not know whether a video shows a SaaS signup, a waterfall, a person demonstrating a product, a deer jumping, an abstract background, or a useful b-roll segment. This blocks future workflows from automatically choosing relevant visuals for articles, social posts, reels, thumbnails, or video scenes.
+ContentGlows now has a unified project asset layer, but assets are still mostly passive files. The system does not know whether a video shows a SaaS signup, a waterfall, a person demonstrating a product, a deer jumping, an abstract background, or a useful b-roll segment. This blocks future workflows from automatically choosing relevant visuals for articles, social posts, reels, thumbnails, or video scenes.
 
 ## Solution
 

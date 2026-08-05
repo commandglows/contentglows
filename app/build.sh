@@ -1,5 +1,5 @@
 #!/bin/bash
-# Build & serve ContentGlowz Flutter app
+# Build & serve ContentGlows Flutter app
 # Usage: ./build.sh [--serve]
 
 set -euo pipefail
@@ -14,10 +14,10 @@ if [[ -n "${EXPECTED_FLUTTER_VERSION}" && -n "${INSTALLED_FLUTTER_VERSION}" && "
     echo "WARNING: .flutter-version expects ${EXPECTED_FLUTTER_VERSION}, but local flutter is ${INSTALLED_FLUTTER_VERSION}." >&2
 fi
 
-API_BASE_URL_VALUE="${API_BASE_URL:-https://api.contentglowz.com}"
+API_BASE_URL_VALUE="${API_BASE_URL:-https://api.contentglows.com}"
 CLERK_PUBLISHABLE_KEY_VALUE="${CLERK_PUBLISHABLE_KEY:-}"
-APP_SITE_URL_VALUE="${APP_SITE_URL:-https://contentglowz.com}"
-APP_WEB_URL_VALUE="${APP_WEB_URL:-https://app.contentglowz.com}"
+APP_SITE_URL_VALUE="${APP_SITE_URL:-https://contentglows.com}"
+APP_WEB_URL_VALUE="${APP_WEB_URL:-https://app.contentglows.com}"
 BUILD_COMMIT_SHA_VALUE="${BUILD_COMMIT_SHA:-${VERCEL_GIT_COMMIT_SHA:-$(git rev-parse --short HEAD 2>/dev/null || echo unknown)}}"
 BUILD_ID_VALUE="${BUILD_ID:-${GITHUB_RUN_ID:-${VERCEL_GIT_COMMIT_SHA:-$BUILD_COMMIT_SHA_VALUE}}}"
 BUILD_ENVIRONMENT_VALUE="${BUILD_ENVIRONMENT:-${VERCEL_ENV:-local}}"

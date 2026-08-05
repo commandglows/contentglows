@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "migration"
 owner: "Diane"
 confidence: "high"
-user_story: "En tant que mainteneur ContentGlowz, je veux faire évoluer la dépendance audio `record` de l’application Flutter sans changer le comportement fonctionnel, afin de réduire le risque de sécurité, les écarts de compatibilité et les futures dépendances non maintenables."
+user_story: "En tant que mainteneur ContentGlows, je veux faire évoluer la dépendance audio `record` de l’application Flutter sans changer le comportement fonctionnel, afin de réduire le risque de sécurité, les écarts de compatibilité et les futures dépendances non maintenables."
 risk_level: "medium"
 security_impact: "yes"
 docs_impact: "yes"
@@ -32,11 +32,11 @@ depends_on:
     required_status: "reviewed"
 supersedes: []
 evidence:
-  - "Flutter project baseline dans /home/claude/contentglowz: Flutter 3.41.7, Dart 3.11.5."
+  - "Flutter project baseline dans /home/claude/contentglows: Flutter 3.41.7, Dart 3.11.5."
   - "record actuellement en `^6.2.0` (`pubspec.yaml`) avec lockfile en `6.2.0` (`pubspec.lock`)."
   - "Les flux audio existants sont implémentés via `device_capture_service.dart`, `feedback_service.dart`, et exposés depuis `feedback_screen.dart`."
   - "No dedicated test file for feedback audio flow was identified in the current working tree."
-next_step: "/101-sf-ready Migrate Flutter `record` package in contentglowz app"
+next_step: "/101-sf-ready Migrate Flutter `record` package in contentglows app"
 ---
 
 # Migrate Flutter audio capture dependency (`record`) in `app`
@@ -44,12 +44,12 @@ next_step: "/101-sf-ready Migrate Flutter `record` package in contentglowz app"
 ## Status
 
 - draft
-- owner: maintainers ContentGlowz app
+- owner: maintainers ContentGlows app
 - target SDK context: Flutter `3.41.7`, Dart `3.11.5`
 
 ## User Story
 
-En tant que mainteneur ContentGlowz, je veux passer la dépendance `record` vers une version maintenue et cohérente avec la version Flutter actuelle, afin de sécuriser les dépendances et de garantir que l’enregistrement audio continue de fonctionner dans l’écran de feedback.
+En tant que mainteneur ContentGlows, je veux passer la dépendance `record` vers une version maintenue et cohérente avec la version Flutter actuelle, afin de sécuriser les dépendances et de garantir que l’enregistrement audio continue de fonctionner dans l’écran de feedback.
 
 ## Minimal Behavior Contract
 
@@ -242,7 +242,7 @@ Stop conditions:
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
-| 2026-06-12 04:10:19 UTC | 100-sf-spec | GPT-5 Codex | Création du spec de migration `record` pour `app` après revue de la surface feedback/record et contraintes Flutter/Dart. | draft saved | `/101-sf-ready Migrate Flutter 'record' package in contentglowz app` |
+| 2026-06-12 04:10:19 UTC | 100-sf-spec | GPT-5 Codex | Création du spec de migration `record` pour `app` après revue de la surface feedback/record et contraintes Flutter/Dart. | draft saved | `/101-sf-ready Migrate Flutter 'record' package in contentglows app` |
 
 ## Current Chantier Flow
 

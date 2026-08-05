@@ -44,7 +44,7 @@ next_step: "/sf-docs technical audit lab"
 
 ## Purpose
 
-This subsystem introduces PydanticAI through a single adapter while preserving ContentGlowz's request-scoped AI credential model. It also centralizes URL validation for LLM-callable tools that can trigger external fetches through Exa or Firecrawl.
+This subsystem introduces PydanticAI through a single adapter while preserving ContentGlows's request-scoped AI credential model. It also centralizes URL validation for LLM-callable tools that can trigger external fetches through Exa or Firecrawl.
 
 The main risk is accidentally broadening credential scope or SSRF surface while modernizing dependencies.
 
@@ -133,7 +133,7 @@ uv run --no-project --python 3.12 --with-requirements requirements-dev.lock pyth
 ```
 
 The full local suite is expected to skip live API tests unless
-`CONTENTGLOWZ_LIVE_TEST_BASE_URL` or `http://localhost:8000` is reachable during
+`CONTENTGLOWS_LIVE_TEST_BASE_URL` or `http://localhost:8000` is reachable during
 pytest collection. Those tests remain executable through their standalone
 `--base-url` runners or by starting the API before pytest.
 

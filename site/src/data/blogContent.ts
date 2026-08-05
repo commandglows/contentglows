@@ -26,9 +26,9 @@ const labels = {
     tagTitle: 'Tag',
     articleCount: (count: number) => `${count} article${count !== 1 ? 's' : ''}`,
     backToBlog: 'Back to Blog',
-    tagDescription: (label: string) => `Articles tagged "${label}" on the ContentGlowz blog.`,
+    tagDescription: (label: string) => `Articles tagged "${label}" on the ContentGlows blog.`,
     ctaText:
-      'Stop losing ideas in scattered tools. ContentGlowz turns them into reviewed articles, social posts, and newsletters with you in control.',
+      'Stop losing ideas in scattered tools. ContentGlows turns them into reviewed articles, social posts, and newsletters with you in control.',
     ctaStrong: 'Stop losing ideas in scattered tools.',
     ctaButton: 'Start Free',
   },
@@ -49,9 +49,9 @@ const labels = {
     tagTitle: 'Tag',
     articleCount: (count: number) => `${count} article${count > 1 ? 's' : ''}`,
     backToBlog: 'Retour au blog',
-    tagDescription: (label: string) => `Articles du blog ContentGlowz tagués "${label}".`,
+    tagDescription: (label: string) => `Articles du blog ContentGlows tagués "${label}".`,
     ctaText:
-      "Arrête de perdre tes idées dans des outils dispersés. ContentGlowz les transforme en articles relus, posts sociaux et newsletters avec toi aux commandes.",
+      "Arrête de perdre tes idées dans des outils dispersés. ContentGlows les transforme en articles relus, posts sociaux et newsletters avec toi aux commandes.",
     ctaStrong: 'Arrête de perdre tes idées dans des outils dispersés.',
     ctaButton: 'Commencer gratuitement',
   },

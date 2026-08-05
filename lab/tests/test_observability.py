@@ -70,7 +70,7 @@ def test_sentry_status_is_redacted(monkeypatch):
     monkeypatch.setattr(observability, "_INITIALIZED", True)
     monkeypatch.setenv("SENTRY_DSN", "https://public@example.ingest.sentry.io/1")
     monkeypatch.setenv("SENTRY_ENVIRONMENT", "production")
-    monkeypatch.setenv("SENTRY_RELEASE", "contentglowz-api@abc123")
+    monkeypatch.setenv("SENTRY_RELEASE", "contentglows-api@abc123")
     monkeypatch.setenv("SENTRY_DIST", "run-42")
     monkeypatch.setenv("SENTRY_SEND_DEFAULT_PII", "false")
     monkeypatch.delenv("SENTRY_TRACES_SAMPLE_RATE", raising=False)
@@ -79,7 +79,7 @@ def test_sentry_status_is_redacted(monkeypatch):
         "configured": True,
         "initialized": True,
         "environment": "production",
-        "release": "contentglowz-api@abc123",
+        "release": "contentglows-api@abc123",
         "dist": "run-42",
         "send_default_pii": False,
         "traces_sample_rate": "0.0",

@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 15:03:26 UTC"
 updated: "2026-05-11"
@@ -13,7 +13,7 @@ source_model: "gpt-5.5"
 scope: "feature"
 owner: "Diane"
 confidence: "high"
-user_story: "En tant que créatrice ContentGlowz authentifiée travaillant dans un projet, je veux retrouver, filtrer, sélectionner et gouverner les visuels générés, importés ou capturés de ce projet, afin de réutiliser les bons assets dans mes contenus sans ouvrir un navigateur média public ni un playground libre."
+user_story: "En tant que créatrice ContentGlows authentifiée travaillant dans un projet, je veux retrouver, filtrer, sélectionner et gouverner les visuels générés, importés ou capturés de ce projet, afin de réutiliser les bons assets dans mes contenus sans ouvrir un navigateur média public ni un playground libre."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -70,11 +70,11 @@ Ready. This spec defines a project-scoped visual asset picker/library owned by t
 
 ## User Story
 
-En tant que créatrice ContentGlowz authentifiée travaillant dans un projet, je veux retrouver, filtrer, sélectionner et gouverner les visuels générés, importés ou capturés de ce projet, afin de réutiliser les bons assets dans mes contenus sans ouvrir un navigateur média public ni un playground libre.
+En tant que créatrice ContentGlows authentifiée travaillant dans un projet, je veux retrouver, filtrer, sélectionner et gouverner les visuels générés, importés ou capturés de ce projet, afin de réutiliser les bons assets dans mes contenus sans ouvrir un navigateur média public ni un playground libre.
 
 ## Minimal Behavior Contract
 
-For an authenticated user inside an owned project and editor workflow, ContentGlowz provides a project visual asset picker that lists visual assets already owned by that project, supports search and filters by source, kind, status, placement, reference state, generation metadata, and usage, shows which contents use each asset when relevant, lets the user select an eligible asset for a content placement, directly promote an eligible durable asset as a project visual reference, or tombstone an asset from future use. The backend validates project ownership, content ownership, generation ownership, storage durability, and placement rules before returning or mutating anything. If an asset is deleted, foreign, local-only, missing durable storage, or already tombstoned, the UI shows a recoverable state and does not offer unsafe publish/reference actions; local-only captures may still be visible as non-publishable/non-reference items. The easy edge case to miss is confusing this with a generic media browser: V1 only manages project-owned ContentGlowz visual assets through editor-linked picking and never browses arbitrary public URLs or provider playground outputs.
+For an authenticated user inside an owned project and editor workflow, ContentGlows provides a project visual asset picker that lists visual assets already owned by that project, supports search and filters by source, kind, status, placement, reference state, generation metadata, and usage, shows which contents use each asset when relevant, lets the user select an eligible asset for a content placement, directly promote an eligible durable asset as a project visual reference, or tombstone an asset from future use. The backend validates project ownership, content ownership, generation ownership, storage durability, and placement rules before returning or mutating anything. If an asset is deleted, foreign, local-only, missing durable storage, or already tombstoned, the UI shows a recoverable state and does not offer unsafe publish/reference actions; local-only captures may still be visible as non-publishable/non-reference items. The easy edge case to miss is confusing this with a generic media browser: V1 only manages project-owned ContentGlows visual assets through editor-linked picking and never browses arbitrary public URLs or provider playground outputs.
 
 ## Success Behavior
 
@@ -103,7 +103,7 @@ For an authenticated user inside an owned project and editor workflow, ContentGl
 
 ## Problem
 
-ContentGlowz has several partial asset concepts: local capture metadata in `content_assets`, future Flux/Image Robot generation history, project visual references, Bunny CDN storage, and content placement metadata. The editor-linked AI visuals UI intentionally excludes a global asset library V1, but the product still needs a durable project media library so users can find, understand, reuse, retire, and promote visuals across content workflows. Without a backend-owned library contract, each UI surface risks inventing its own asset rules and weakening ownership, deletion, reference, and publish safety.
+ContentGlows has several partial asset concepts: local capture metadata in `content_assets`, future Flux/Image Robot generation history, project visual references, Bunny CDN storage, and content placement metadata. The editor-linked AI visuals UI intentionally excludes a global asset library V1, but the product still needs a durable project media library so users can find, understand, reuse, retire, and promote visuals across content workflows. Without a backend-owned library contract, each UI surface risks inventing its own asset rules and weakening ownership, deletion, reference, and publish safety.
 
 ## Solution
 
@@ -137,7 +137,7 @@ Create a backend-owned project asset picker API and metadata model that normaliz
 - Physical deletion of Bunny objects as the default V1 behavior.
 - Full DAM features such as folders, roles beyond existing project ownership, comments, approvals workflow, licensing registry, or bulk transformations.
 - Remotion timeline editing or video rendering.
-- Supabase, Vercel Blob, Vercel OAuth, or contentglowz stack migration.
+- Supabase, Vercel Blob, Vercel OAuth, or contentglows stack migration.
 - Automatic insertion into article markdown bodies.
 
 ## Constraints

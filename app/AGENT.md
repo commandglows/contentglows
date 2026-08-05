@@ -40,7 +40,7 @@ Canonical technical truth for `app` lives under `shipglows_data/technical/app/`.
 
 ## Mission
 
-Keep `app` as the Flutter product application for ContentGlowz while preserving the app, backend, and auth contracts documented in `shipglows_data`.
+Keep `app` as the Flutter product application for ContentGlows while preserving the app, backend, and auth contracts documented in `shipglows_data`.
 
 ## Canonical sources
 

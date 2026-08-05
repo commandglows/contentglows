@@ -1,4 +1,4 @@
-"""Authenticated API for canonical ContentGlowz video timelines."""
+"""Authenticated API for canonical ContentGlows video timelines."""
 
 from __future__ import annotations
 
@@ -84,7 +84,7 @@ CLIP_ASSET_MEDIA_KINDS: dict[str, set[str]] = {
 def _render_root_dir() -> Path:
     import os
 
-    configured = os.getenv("CONTENTGLOWZ_RENDER_DIR")
+    configured = os.getenv("CONTENTGLOWS_RENDER_DIR")
     if configured:
         return Path(configured).resolve()
     return (Path.cwd() / "renders").resolve()

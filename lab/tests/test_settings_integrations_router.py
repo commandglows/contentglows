@@ -162,7 +162,7 @@ async def test_put_email_source_stores_metadata_without_returning_password(monke
             "email": "user@gmail.com",
             "host": "imap.gmail.com",
             "sourceFolder": "Newsletters",
-            "archiveFolder": "CONTENTGLOWZ_DONE",
+            "archiveFolder": "CONTENTGLOWS_DONE",
             "projectId": "project-1",
             "validationStatus": "unknown",
             "lastValidatedAt": None,
@@ -178,7 +178,7 @@ async def test_put_email_source_stores_metadata_without_returning_password(monke
             email="user@gmail.com",
             appPassword="gmail-app-password",
             sourceFolder="Newsletters",
-            archiveFolder="CONTENTGLOWZ_DONE",
+            archiveFolder="CONTENTGLOWS_DONE",
             projectId="project-1",
         ),
         current_user=SimpleNamespace(user_id="user-1"),
@@ -196,7 +196,7 @@ async def test_put_email_source_stores_metadata_without_returning_password(monke
         app_password="gmail-app-password",
         host="imap.gmail.com",
         source_folder="Newsletters",
-        archive_folder="CONTENTGLOWZ_DONE",
+        archive_folder="CONTENTGLOWS_DONE",
         project_id="project-1",
     )
 

@@ -80,10 +80,10 @@ class DeviceCaptureService implements DeviceCaptureClient {
     TargetPlatform? platformOverride,
     bool? isWebOverride,
   }) : _methodChannel =
-           methodChannel ?? const MethodChannel('contentglowz/device_capture'),
+           methodChannel ?? const MethodChannel('contentglows/device_capture'),
        _eventChannel =
            eventChannel ??
-           const EventChannel('contentglowz/device_capture_events'),
+           const EventChannel('contentglows/device_capture_events'),
        _platformOverride = platformOverride,
        _isWebOverride = isWebOverride;
 

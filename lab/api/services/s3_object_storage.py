@@ -58,7 +58,7 @@ class S3ObjectStorageProvider:
         client: Any | None = None,
         region_name: str | None = None,
         endpoint_url: str | None = None,
-        key_prefix: str = "contentglowz",
+        key_prefix: str = "contentglows",
         server_side_encryption: str = "AES256",
         kms_key_id: str | None = None,
         max_proxy_bytes: int = 10 * 1024 * 1024,

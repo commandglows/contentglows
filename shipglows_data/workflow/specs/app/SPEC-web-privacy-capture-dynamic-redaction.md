@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: feature
 owner: "Diane"
 confidence: medium
-user_story: "As a ContentGlowz creator using the web app in a browser to capture a screen or tab for public sharing, I want a privacy mode that dynamically obscures readable text and sensitive imagery before export, so I can reduce accidental leaks while keeping the workflow video understandable."
+user_story: "As a ContentGlows creator using the web app in a browser to capture a screen or tab for public sharing, I want a privacy mode that dynamically obscures readable text and sensitive imagery before export, so I can reduce accidental leaks while keeping the workflow video understandable."
 risk_level: high
 security_impact: "yes"
 docs_impact: "yes"
@@ -70,26 +70,26 @@ This spec explicitly excludes Windows desktop APIs, iOS ReplayKit, Linux desktop
 
 ## User Story
 
-As a ContentGlowz creator using the web app in a browser to capture a screen or tab for public sharing, I want a privacy mode that dynamically obscures readable text and sensitive imagery before export, so I can reduce accidental leaks while keeping the workflow video understandable.
+As a ContentGlows creator using the web app in a browser to capture a screen or tab for public sharing, I want a privacy mode that dynamically obscures readable text and sensitive imagery before export, so I can reduce accidental leaks while keeping the workflow video understandable.
 
 ## Minimal Behavior Contract
 
-When a browser user enables privacy mode and starts a capture, ContentGlowz must show a best-effort disclosure, ask the browser for screen or tab capture through the standard chooser, process captured frames locally before normal preview/share/export, save or expose only a flattened redacted media asset marked as needing review, and block share/export until the user acknowledges reviewing the result; if the browser denies capture, required APIs are unavailable, OCR fails, frame processing falls behind, or export cannot be finalized, the app must stop cleanly, avoid registering a misleading privacy asset, discard or quarantine temporary clear data, and explain that privacy capture was not safely completed. The easy edge case is fast scrolling or transitions: detected boxes must persist and expand across nearby frames so readable text does not flash clear between OCR runs.
+When a browser user enables privacy mode and starts a capture, ContentGlows must show a best-effort disclosure, ask the browser for screen or tab capture through the standard chooser, process captured frames locally before normal preview/share/export, save or expose only a flattened redacted media asset marked as needing review, and block share/export until the user acknowledges reviewing the result; if the browser denies capture, required APIs are unavailable, OCR fails, frame processing falls behind, or export cannot be finalized, the app must stop cleanly, avoid registering a misleading privacy asset, discard or quarantine temporary clear data, and explain that privacy capture was not safely completed. The easy edge case is fast scrolling or transitions: detected boxes must persist and expand across nearby frames so readable text does not flash clear between OCR runs.
 
 ## Success Behavior
 
 - Given a user opens Capture in a supported browser, when they enable privacy mode, then the UI shows privacy controls and a disclosure that redaction is best-effort, non exhaustive, and requires manual review before sharing.
-- Given privacy mode is enabled, when the user starts capture, then the browser `getDisplayMedia()` chooser opens and ContentGlowz does not attempt to preselect or silently capture a screen.
+- Given privacy mode is enabled, when the user starts capture, then the browser `getDisplayMedia()` chooser opens and ContentGlows does not attempt to preselect or silently capture a screen.
 - Given the browser returns a display media stream, when frame processing starts, then frames are analyzed locally and redaction is applied before preview/export paths treat the result as shareable media.
-- Given text detection is available through `TextDetector`, when text regions are detected, then ContentGlowz uses only region geometry for redaction and discards recognized text content immediately.
-- Given `TextDetector` is unavailable or unreliable in the browser, when OCR fallback is enabled, then ContentGlowz uses a local WASM OCR path with lower cadence and clear performance messaging.
-- Given OCR is unavailable and text redaction is required, when privacy capture is requested, then ContentGlowz blocks privacy capture instead of silently recording clear output.
+- Given text detection is available through `TextDetector`, when text regions are detected, then ContentGlows uses only region geometry for redaction and discards recognized text content immediately.
+- Given `TextDetector` is unavailable or unreliable in the browser, when OCR fallback is enabled, then ContentGlows uses a local WASM OCR path with lower cadence and clear performance messaging.
+- Given OCR is unavailable and text redaction is required, when privacy capture is requested, then ContentGlows blocks privacy capture instead of silently recording clear output.
 - Given the selected text style is `scramble`, when text boxes are detected, then real pixels are covered and fake glyphs or line fragments preserve layout without storing or reusing recognized text.
 - Given the selected style is `blur` or `pixelate`, when text or photo regions are detected, then expanded boxes are rendered unreadable while preserving enough surrounding UI to understand the workflow.
 - Given recording is active, when frames are processed, then the output stream or encoded chunks contain redacted frames only, and the normal asset list receives the asset only after export finalizes.
 - Given WebCodecs is available and suitable, when the implementation chooses that path, then encoded output is produced from redacted frames and muxed/exported without exposing a clear track.
 - Given WebCodecs is unavailable or too costly, when the fallback path is used, then a redacted Canvas/OffscreenCanvas stream is recorded with MediaRecorder and the resulting asset is still flattened and privacy-marked.
-- Given a privacy-marked asset has `reviewState=needsReview`, when the user taps share/export, then ContentGlowz requires a review acknowledgement before sharing.
+- Given a privacy-marked asset has `reviewState=needsReview`, when the user taps share/export, then ContentGlows requires a review acknowledgement before sharing.
 - Given the user acknowledges review, when share/export continues, then only the flattened redacted asset is passed to browser download/share mechanisms.
 - Given privacy mode is disabled, when the user uses existing capture flows, then normal Android capture behavior and unsupported-web messaging are not regressed except where web support is explicitly added.
 
@@ -149,7 +149,7 @@ Add a browser-specific privacy capture client and UI path that uses `navigator.m
 
 ## Constraints
 
-- `getDisplayMedia()` must be invoked from a user gesture and must rely on the browser chooser; ContentGlowz cannot silently capture or force a source before the chooser.
+- `getDisplayMedia()` must be invoked from a user gesture and must rely on the browser chooser; ContentGlows cannot silently capture or force a source before the chooser.
 - Browser permission cannot be persisted between capture sessions.
 - Browser support is uneven; all major APIs must be feature-detected and failures must be user-visible.
 - The final shareable/exportable asset must be flattened redacted media, not a clear source plus overlay instructions.
@@ -204,7 +204,7 @@ Fresh external docs verdict: `fresh-docs checked via exploration` on 2026-05-08.
 - Recognized text content must never be persisted, logged, sent to backend, or included in asset metadata.
 - Backend metadata may contain redaction settings, review state, engine names, and aggregate stats only.
 - Browser capture and redaction remain local-first in V1.
-- Protected-content black frames, browser capture restrictions, and chooser limitations are platform behavior, not ContentGlowz bugs.
+- Protected-content black frames, browser capture restrictions, and chooser limitations are platform behavior, not ContentGlows bugs.
 
 ## Links & Consequences
 
@@ -228,7 +228,7 @@ Fresh external docs verdict: `fresh-docs checked via exploration` on 2026-05-08.
 ## Edge Cases
 
 - User selects the wrong tab/window/screen in the browser chooser.
-- User captures ContentGlowz itself and creates mirror/recursive capture effects.
+- User captures ContentGlows itself and creates mirror/recursive capture effects.
 - Fast vertical scrolling in a chat, email inbox, CRM table, or browser page.
 - Horizontal carousels, modals, route transitions, and animated overlays moving text between OCR samples.
 - Small text in address bars, sidebars, developer tools, code blocks, tables, or status areas.
@@ -236,7 +236,7 @@ Fresh external docs verdict: `fresh-docs checked via exploration` on 2026-05-08.
 - Non-Latin scripts, emojis, mixed scripts, all-caps UI, and text rendered as images.
 - Text embedded inside photos, videos, screenshots, canvas content, or remote desktop streams.
 - Browser throttles background tab, worker, or capture processing.
-- User stops sharing from browser chrome instead of ContentGlowz controls.
+- User stops sharing from browser chrome instead of ContentGlows controls.
 - MediaRecorder produces WebM while the UI expected MP4.
 - WebCodecs is present but missing a required encoder, hardware path, or muxing support.
 - OCR WASM download/load is slow, blocked, or too memory-heavy.
@@ -361,8 +361,8 @@ Fresh external docs verdict: `fresh-docs checked via exploration` on 2026-05-08.
 
 - [ ] CA 1: Given a user opens Capture in a browser with `getDisplayMedia` support, when privacy mode is enabled, then privacy controls and a best-effort disclosure appear before capture starts.
 - [ ] CA 2: Given a browser lacks `getDisplayMedia`, when the user opens Capture, then browser privacy capture is shown as unsupported and no misleading start action is enabled.
-- [ ] CA 3: Given privacy mode is enabled, when the user starts capture, then ContentGlowz invokes the browser chooser through `getDisplayMedia()` from the user action.
-- [ ] CA 4: Given the user cancels the browser chooser, when control returns to ContentGlowz, then no asset is created and the UI shows a recoverable canceled state.
+- [ ] CA 3: Given privacy mode is enabled, when the user starts capture, then ContentGlows invokes the browser chooser through `getDisplayMedia()` from the user action.
+- [ ] CA 4: Given the user cancels the browser chooser, when control returns to ContentGlows, then no asset is created and the UI shows a recoverable canceled state.
 - [ ] CA 5: Given `TextDetector` is available, when text is detected in captured frames, then only geometry is used for redaction and recognized text is not persisted.
 - [ ] CA 6: Given `TextDetector` is unavailable and OCR WASM fallback loads successfully, when privacy capture runs, then text redaction uses the fallback with throttled analysis and performance-safe status messaging.
 - [ ] CA 7: Given no viable text detection path exists, when privacy capture is requested, then capture is blocked instead of recording clear output.
@@ -372,7 +372,7 @@ Fresh external docs verdict: `fresh-docs checked via exploration` on 2026-05-08.
 - [ ] CA 11: Given WebCodecs export succeeds, when recording completes, then the registered asset is flattened, redacted, privacy-marked, and uses accurate MIME/extension metadata.
 - [ ] CA 12: Given WebCodecs is unavailable and MediaRecorder fallback succeeds, when recording completes, then the registered asset is still flattened, redacted, privacy-marked, and honestly labeled with the actual browser output format.
 - [ ] CA 13: Given export or encoding fails, when the flow returns to idle, then no misleading privacy asset is listed and temporary clear resources are revoked/deleted where possible.
-- [ ] CA 14: Given a privacy asset has `reviewState=needsReview`, when the user attempts share/export/content attachment, then ContentGlowz blocks the action until review acknowledgement.
+- [ ] CA 14: Given a privacy asset has `reviewState=needsReview`, when the user attempts share/export/content attachment, then ContentGlows blocks the action until review acknowledgement.
 - [ ] CA 15: Given the user acknowledges review, when share/export/content attachment continues, then only the flattened redacted asset and privacy metadata are used, with no OCR text or clear frame data.
 - [ ] CA 16: Given privacy mode is disabled, when existing Android capture flows are used, then existing Android support and behavior remain unchanged.
 

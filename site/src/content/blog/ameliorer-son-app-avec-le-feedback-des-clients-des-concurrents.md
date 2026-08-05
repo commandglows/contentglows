@@ -3,7 +3,7 @@ title: "Améliorer son app grâce au feedback des clients de ses concurrents"
 description: "La suite logique après votre liste de concurrents : utiliser les skills ShipGlowz pour extraire des idées produit à partir des avis clients sur AppSumo, Play Store, Trustpilot, G2 ou Capterra."
 locale: "fr"
 pubDate: "2026-07-07"
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["product research", "feedback client", "veille concurrentielle", "app", "ux"]
 featured: false
 ---

@@ -1,4 +1,4 @@
-# ContentGlowz Remotion Worker
+# ContentGlows Remotion Worker
 
 Internal render worker used by `lab`.
 

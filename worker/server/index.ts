@@ -330,10 +330,10 @@ async function startServer(): Promise<void> {
       return;
     }
     if (
-      compositionId === "ContentGlowzTimelineVideo" &&
+      compositionId === "ContentGlowsTimelineVideo" &&
       payload.durationSeconds > MAX_TIMELINE_DURATION_SECONDS
     ) {
-      res.status(400).json({ detail: "durationSeconds must be <= 180 for ContentGlowzTimelineVideo" });
+      res.status(400).json({ detail: "durationSeconds must be <= 180 for ContentGlowsTimelineVideo" });
       return;
     }
 

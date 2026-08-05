@@ -28,7 +28,7 @@ depends_on:
     required_status: "draft"
 supersedes: []
 evidence:
-  - "Contentglowz App uses a custom Flutter web build on Vercel with explicit install/build scripts."
+  - "ContentGlows App uses a custom Flutter web build on Vercel with explicit install/build scripts."
   - "Vercel rewrites are coupled to ClerkJS auth routes and SPA fallback behavior."
 next_review: "2026-06-24"
 next_step: "/sf-docs technical audit app"
@@ -38,7 +38,7 @@ next_step: "/sf-docs technical audit app"
 
 ## Purpose
 
-Document how Contentglowz App deploys the Flutter web app on Vercel. This is
+Document how ContentGlows App deploys the Flutter web app on Vercel. This is
 the project-local deployment contract. Use the global Vercel note for current
 Vercel source links, CLI behavior, and platform semantics.
 

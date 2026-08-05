@@ -16,7 +16,7 @@ confidence: high
 risk_level: high
 security_impact: yes
 docs_impact: yes
-user_story: "En tant qu'utilisateur ContentGlowz, je veux connecter et choisir les comptes sociaux autorises pour chaque projet, afin de publier un contenu approuve via Zernio sans exposer ni utiliser les comptes d'un autre projet."
+user_story: "En tant qu'utilisateur ContentGlows, je veux connecter et choisir les comptes sociaux autorises pour chaque projet, afin de publier un contenu approuve via Zernio sans exposer ni utiliser les comptes d'un autre projet."
 linked_systems:
   - lab/api/routers/publish.py
   - lab/api/services/user_data_store.py
@@ -73,11 +73,11 @@ ready
 
 ## User Story
 
-En tant qu'utilisateur ContentGlowz, je veux connecter et choisir les comptes sociaux autorises pour chaque projet, afin de publier un contenu approuve via Zernio sans exposer ni utiliser les comptes d'un autre projet.
+En tant qu'utilisateur ContentGlows, je veux connecter et choisir les comptes sociaux autorises pour chaque projet, afin de publier un contenu approuve via Zernio sans exposer ni utiliser les comptes d'un autre projet.
 
 ## Minimal Behavior Contract
 
-Quand un utilisateur authentifie configure les integrations d'un projet ou approuve un contenu publiable, ContentGlowz accepte seulement les comptes sociaux Zernio explicitement lies a cet utilisateur et a ce projet, affiche les comptes disponibles dans l'UI du projet actif, publie ou programme le contenu avec les vrais `accountId` autorises, puis rend observable le resultat par statut, URL, erreur ou action de reprise. Si aucun compte autorise n'existe, si un `accountId` est forge, si Zernio echoue, ou si plusieurs comptes rendent la cible ambigue, le systeme n'appelle pas Zernio a l'aveugle, n'expose pas les comptes provider-wide, conserve un etat recuperable, et explique l'action possible; l'edge case principal est le succes partiel multi-plateforme, qui doit rester distinct d'un succes complet.
+Quand un utilisateur authentifie configure les integrations d'un projet ou approuve un contenu publiable, ContentGlows accepte seulement les comptes sociaux Zernio explicitement lies a cet utilisateur et a ce projet, affiche les comptes disponibles dans l'UI du projet actif, publie ou programme le contenu avec les vrais `accountId` autorises, puis rend observable le resultat par statut, URL, erreur ou action de reprise. Si aucun compte autorise n'existe, si un `accountId` est forge, si Zernio echoue, ou si plusieurs comptes rendent la cible ambigue, le systeme n'appelle pas Zernio a l'aveugle, n'expose pas les comptes provider-wide, conserve un etat recuperable, et explique l'action possible; l'edge case principal est le succes partiel multi-plateforme, qui doit rester distinct d'un succes complet.
 
 ## Success Behavior
 
@@ -100,7 +100,7 @@ Resultat utilisateur/operateur:
 
 Effet systeme attendu:
 - `POST /api/publish` conserve `require_owned_content_record()` et verifie chaque cible via le mapping local avant tout appel Zernio.
-- Chaque projet ContentGlowz possede ou reference un `zernioProfileId` persiste cote serveur; ce `profileId` n'est jamais global par defaut ni fourni par Flutter.
+- Chaque projet ContentGlows possede ou reference un `zernioProfileId` persiste cote serveur; ce `profileId` n'est jamais global par defaut ni fourni par Flutter.
 - Les sessions OAuth sont serveur-side, a usage unique, expirees en 15 minutes maximum, et rejettent replay, mauvais user, mauvais projet, mauvaise plateforme ou state inconnu.
 - Les metadonnees persistantes du `ContentRecord` incluent au minimum `provider`, `providerPostId`, statut global, statuts par plateforme, erreurs stables Zernio (`type`, `code`, `param` si present), URLs publiees, `scheduledFor`, `syncedAt`, et information de retry si disponible.
 - Les appels accounts/connect/disconnect/status sont scopes par user/projet et ne renvoient jamais de liste brute provider-wide.
@@ -146,9 +146,9 @@ L'integration LATE/Zernio existe partiellement: le backend expose des endpoints 
 
 ## Solution
 
-Creer un contrat serveur `ProjectPublishAccount` qui lie les comptes Zernio a `user_id + project_id`, puis convertir tous les endpoints publish en contrats scopes au projet avant de cabler l'UI Flutter. La cle Zernio reste une configuration serveur partagee, mais l'autorisation produit est decidee par ContentGlowz: seuls les comptes actifs lies au projet courant peuvent etre listes, connectes, deconnectes, status-checkes, publies ou retries.
+Creer un contrat serveur `ProjectPublishAccount` qui lie les comptes Zernio a `user_id + project_id`, puis convertir tous les endpoints publish en contrats scopes au projet avant de cabler l'UI Flutter. La cle Zernio reste une configuration serveur partagee, mais l'autorisation produit est decidee par ContentGlows: seuls les comptes actifs lies au projet courant peuvent etre listes, connectes, deconnectes, status-checkes, publies ou retries.
 
-Le flow de connexion utilise un profil Zernio par projet ContentGlowz. Le backend cree ou recupere ce `zernioProfileId`, cree une session `PublishConnectSession` serveur-side avec `state` opaque a usage unique, appelle Zernio `GET /v1/connect/{platform}` avec ce `profileId` et un `redirect_url` ContentGlowz, puis le callback ContentGlowz valide le `state` avant de reconciler `GET /v1/accounts` et de creer les `ProjectPublishAccount` correspondant au profil/projet. Flutter ne fournit jamais de `profileId` et ne peut pas decider le projet d'un callback.
+Le flow de connexion utilise un profil Zernio par projet ContentGlows. Le backend cree ou recupere ce `zernioProfileId`, cree une session `PublishConnectSession` serveur-side avec `state` opaque a usage unique, appelle Zernio `GET /v1/connect/{platform}` avec ce `profileId` et un `redirect_url` ContentGlows, puis le callback ContentGlows valide le `state` avant de reconciler `GET /v1/accounts` et de creer les `ProjectPublishAccount` correspondant au profil/projet. Flutter ne fournit jamais de `profileId` et ne peut pas decider le projet d'un callback.
 
 ## Scope In
 
@@ -171,7 +171,7 @@ Le flow de connexion utilise un profil Zernio par projet ContentGlowz. Le backen
 - Preview avancee par plateforme.
 - Upload media Zernio et transformations media.
 - Webhooks Zernio en production; seulement documenter la contrainte future.
-- Suppression provider-wide d'un compte Zernio depuis ContentGlowz; ce chantier fait un unlink local sauf preuve explicite de propriete exclusive.
+- Suppression provider-wide d'un compte Zernio depuis ContentGlows; ce chantier fait un unlink local sauf preuve explicite de propriete exclusive.
 - Support WordPress et Ghost via Zernio. Pour ce chantier, WordPress/Ghost restent exclus du publish auto et doivent afficher "non supporte par cette integration".
 
 ## Constraints
@@ -208,7 +208,7 @@ External docs freshness:
 - Un `project_id` utilise par publish doit appartenir au user courant.
 - Un `content_record_id` utilise par publish doit appartenir au user courant via son projet.
 - Un `providerAccountId` Zernio n'est utilisable que s'il existe dans `ProjectPublishAccount` avec `user_id`, `project_id`, `provider = zernio`, `platform`, `status = active`.
-- Un `zernioProfileId` est un attribut serveur du projet ContentGlowz; il ne peut pas etre choisi par le client et ne doit pas etre reutilise entre projets sauf decision explicite future hors scope.
+- Un `zernioProfileId` est un attribut serveur du projet ContentGlows; il ne peut pas etre choisi par le client et ne doit pas etre reutilise entre projets sauf decision explicite future hors scope.
 - Une session connect est valide uniquement pour le tuple `state + user_id + project_id + provider + platform + zernioProfileId`, expire en 15 minutes maximum, et devient inutilisable apres consommation.
 - `GET /api/publish/accounts` retourne seulement les mappings locaux autorises du projet demande; il peut enrichir par Zernio cote serveur, mais ne renvoie jamais la liste brute provider-wide.
 - Une cible de publication non autorisee produit `403` avant tout appel Zernio.
@@ -423,14 +423,14 @@ Endpoint contract:
 
 - [ ] CA1 : Given Project A et Project B ont des comptes Zernio differents, when l'utilisateur ouvre Settings sur Project A, then `/api/publish/accounts?project_id=A` retourne et affiche uniquement les comptes autorises de Project A.
 - [ ] CA2 : Given un utilisateur forge un `accountId` Zernio non mappe au projet du contenu, when `POST /api/publish` est appele, then le backend retourne `403` avant tout appel Zernio.
-- [ ] CA3 : Given un contenu Twitter approuve et un compte Twitter default actif pour le projet, when l'utilisateur approuve, then ContentGlowz appelle Zernio avec `platforms: [{ platform: "twitter", accountId }]` et persiste `providerPostId`, statut, URL ou erreur.
-- [ ] CA3b : Given l'utilisateur lance Connect depuis Project A, when Zernio redirige vers le callback ContentGlowz, then le backend valide un `state` serveur non expire lie a `userId + Project A + platform + zernioProfileId`, consomme ce `state`, et cree seulement des mappings Project A.
+- [ ] CA3 : Given un contenu Twitter approuve et un compte Twitter default actif pour le projet, when l'utilisateur approuve, then ContentGlows appelle Zernio avec `platforms: [{ platform: "twitter", accountId }]` et persiste `providerPostId`, statut, URL ou erreur.
+- [ ] CA3b : Given l'utilisateur lance Connect depuis Project A, when Zernio redirige vers le callback ContentGlows, then le backend valide un `state` serveur non expire lie a `userId + Project A + platform + zernioProfileId`, consomme ce `state`, et cree seulement des mappings Project A.
 - [ ] CA3c : Given un callback Connect rejoue le meme `state`, utilise un `state` expire, ou tente de lier Project B, when le callback est appele, then le backend refuse sans creer ni modifier de mapping.
 - [ ] CA4 : Given plusieurs comptes Twitter actifs sans default ni selection explicite, when l'auto-publish tente de resoudre la cible, then aucun appel Zernio n'est fait et l'utilisateur voit `ambiguous_account`.
 - [ ] CA5 : Given aucun compte autorise pour un channel requis, when l'utilisateur approuve, then l'approbation reste recuperable et le feedback propose de connecter un compte sans publication aveugle.
 - [ ] CA6 : Given Zernio retourne `partial`, when le backend persiste le resultat, then l'UI affiche un succes partiel avec details par plateforme et ne marque pas le contenu comme succes complet.
 - [ ] CA7 : Given Zernio retourne `failed`, `platform_error`, `rate_limit_error`, ou timeout, when le flow publish se termine, then l'erreur est mappee par `type/code`, sans secret, avec etat recuperable.
-- [ ] CA8 : Given un post Zernio existe pour un autre projet, when un utilisateur appelle status/retry avec ce `post_id`, then ContentGlowz refuse sans exposer le statut provider.
+- [ ] CA8 : Given un post Zernio existe pour un autre projet, when un utilisateur appelle status/retry avec ce `post_id`, then ContentGlows refuse sans exposer le statut provider.
 - [ ] CA9 : Given une publication programmee, when le backend appelle Zernio, then `scheduledFor` et `providerPostId` sont persistants et le statut reste verifiable.
 - [ ] CA10 : Given l'utilisateur clique deux fois sur publish, when le premier appel est en cours ou deja finalise, then le second appel est idempotent ou retourne `409` sans doublon provider.
 - [ ] CA11 : Given WordPress ou Ghost est selectionne, when le flow auto-publish s'execute, then ces channels sont exclus avec message explicite "non supporte par Zernio dans ce chantier".

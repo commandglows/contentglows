@@ -5,7 +5,7 @@ import { getHandoffCopy } from '../../data/corePageCopy';
 import { getCoreAlternates } from '../../data/siteShell';
 
 const copy = getHandoffCopy('signIn', 'fr');
-const [beforeDomain, afterDomain = ''] = copy.body.split('app.contentglowz.com');
+const [beforeDomain, afterDomain = ''] = copy.body.split('app.contentglows.com');
 ---
 
 <Layout
@@ -22,7 +22,7 @@ const [beforeDomain, afterDomain = ''] = copy.body.split('app.contentglowz.com')
       <h1>{copy.heading}</h1>
       <p>
         {beforeDomain}
-        <strong>app.contentglowz.com</strong>
+        <strong>app.contentglows.com</strong>
         {afterDomain}
       </p>
       <a class="btn-primary" href={appSignInUrl}>{copy.primaryCta}</a>

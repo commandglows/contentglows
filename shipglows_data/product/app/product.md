@@ -46,7 +46,7 @@ next_step: "/sf-docs audit shipglows_data/product/app/product.md"
 # Product Context — app
 
 ## Position
-`app` is the authenticated Flutter execution layer of the ContentGlowz ecosystem. It is the operator-facing app that turns source inputs (ideas, project context, personas, rituals, media assets) into ready-made publishable output with optional edits while tolerating API instability.
+`app` is the authenticated Flutter execution layer of the ContentGlows ecosystem. It is the operator-facing app that turns source inputs (ideas, project context, personas, rituals, media assets) into ready-made publishable output with optional edits while tolerating API instability.
 
 ## What this product does now
 - provides authenticated onboarding and workspace bootstrap via Clerk + FastAPI session flow;

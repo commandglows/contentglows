@@ -81,7 +81,7 @@ void showDiagnosticSnackBar(
             copyDiagnosticsToClipboard(
               context,
               ref,
-              title: 'ContentGlowz error diagnostics',
+              title: 'ContentGlows error diagnostics',
               scope: scope,
               currentError: message,
               error: error,
@@ -238,7 +238,7 @@ class AppErrorView extends ConsumerWidget {
                       copyDiagnosticsToClipboard(
                         context,
                         ref,
-                        title: 'ContentGlowz error diagnostics',
+                        title: 'ContentGlows error diagnostics',
                         scope: scope,
                         currentError: resolvedMessage,
                         error: error,

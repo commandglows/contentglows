@@ -22,7 +22,7 @@ const localeSwitch = getLocaleSwitchTarget(Astro.url.pathname);
       <div class="footer-brand">
         <a href={content.brandHref} class="logo">
           <span class="logo-icon">🤖</span>
-          <span class="logo-text">ContentGlowz</span>
+          <span class="logo-text">ContentGlows</span>
         </a>
         <p class="tagline">{content.tagline}</p>
         {localeSwitch && (
@@ -48,7 +48,7 @@ const localeSwitch = getLocaleSwitchTarget(Astro.url.pathname);
     </div>
 
     <div class="footer-bottom">
-      <p>&copy; 2026 ContentGlowz. {content.rightsReserved}</p>
+      <p>&copy; 2026 ContentGlows. {content.rightsReserved}</p>
       <div class="footer-bottom-links">
         {content.bottomLinks.map((link) => (
           <a href={link.href}>{link.label}</a>

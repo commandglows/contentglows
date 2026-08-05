@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: feature
 owner: "Diane"
 confidence: medium
-user_story: "En tant que createur ContentGlowz, je veux un editeur riche universel pour modifier les articles, newsletters et scripts video avec les memes gestes de base, afin de garder le controle editorial sans apprendre un outil different par format."
+user_story: "En tant que createur ContentGlows, je veux un editeur riche universel pour modifier les articles, newsletters et scripts video avec les memes gestes de base, afin de garder le controle editorial sans apprendre un outil different par format."
 risk_level: medium
 security_impact: "yes"
 docs_impact: "yes"
@@ -59,7 +59,7 @@ Ready child spec. Product decision: V1 is a universal Markdown-backed rich text 
 
 ## User Story
 
-En tant que createur ContentGlowz, je veux un editeur riche universel pour modifier les articles, newsletters et scripts video avec les memes gestes de base, afin de garder le controle editorial sans apprendre un outil different par format.
+En tant que createur ContentGlows, je veux un editeur riche universel pour modifier les articles, newsletters et scripts video avec les memes gestes de base, afin de garder le controle editorial sans apprendre un outil different par format.
 
 ## Minimal Behavior Contract
 

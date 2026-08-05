@@ -29,7 +29,7 @@ next_step: /sf-docs audit shipglows_data/technical/app/guidelines.md
 
 ## Scope
 
-This document describes conventions for working in `app`, the Flutter user-facing application in the ContentGlowz ecosystem.
+This document describes conventions for working in `app`, the Flutter user-facing application in the ContentGlows ecosystem.
 
 ## Tech Stack
 

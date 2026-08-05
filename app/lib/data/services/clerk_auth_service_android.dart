@@ -33,7 +33,7 @@ class ClerkAuthService {
        _isAndroid =
            isAndroid ?? defaultTargetPlatform == TargetPlatform.android;
 
-  static const _channelName = 'com.contentglowz.app/clerk_auth';
+  static const _channelName = 'com.contentglows.app/clerk_auth';
   final String publishableKey;
   final SharedPreferences sharedPreferences;
   final MethodChannel _channel;

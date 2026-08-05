@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.1"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 13:15:23 UTC"
 updated: "2026-05-24"
@@ -13,14 +13,14 @@ source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
 confidence: "high"
-user_story: "En tant que creatrice connectee a un projet ContentGlowz, je veux generer des images IA coherentes avec les formats, personnages et caracteristiques de mon projet, afin d'alimenter mes articles, thumbnails et posts sans sortir du workflow existant."
+user_story: "En tant que creatrice connectee a un projet ContentGlows, je veux generer des images IA coherentes avec les formats, personnages et caracteristiques de mon projet, afin d'alimenter mes articles, thumbnails et posts sans sortir du workflow existant."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
 linked_systems:
   - "lab"
   - "app"
-  - "contentglowz/v0-flux-2-playground"
+  - "contentglows/v0-flux-2-playground"
   - "api/images"
   - "agents/images"
   - "Bunny CDN"
@@ -33,20 +33,20 @@ depends_on:
   - artifact: "shipglows_data/technical/app/guidelines.md"
     artifact_version: "1.1.0"
     required_status: "reviewed"
-  - artifact: "contentglowz/INSPIRATION.md"
+  - artifact: "contentglows/INSPIRATION.md"
     artifact_version: "unknown"
     required_status: "unknown"
-  - artifact: "contentglowz/GUIDELINES.md"
+  - artifact: "contentglows/GUIDELINES.md"
     artifact_version: "unknown"
     required_status: "unknown"
 supersedes: []
 evidence:
-  - "User decision 2026-05-11: keep existing Flutter + FastAPI + Clerk + Turso/Bunny stack; use contentglowz as inspiration, not as a stack migration."
+  - "User decision 2026-05-11: keep existing Flutter + FastAPI + Clerk + Turso/Bunny stack; use contentglows as inspiration, not as a stack migration."
   - "User decision 2026-05-11: choose spec 1, Provider Flux pour Image Robot."
   - "User decision 2026-05-11: no free playground and no anonymous generation for now."
   - "User decision 2026-05-11: image AI should serve blog images, thumbnails, and post visuals inside existing guided workflows; video images may come later."
   - "Audit evidence: lab already exposes Image Robot endpoints in api/routers/images.py and agents/images with Robolly/OpenAI/Bunny patterns."
-  - "Audit evidence: contentglowz/v0-flux-2-playground uses FLUX.2 Pro prompt, aspect ratio, reference images, generated history, and image reuse concepts, but depends on Next/Supabase/Vercel Blob/Vercel OAuth."
+  - "Audit evidence: contentglows/v0-flux-2-playground uses FLUX.2 Pro prompt, aspect ratio, reference images, generated history, and image reuse concepts, but depends on Next/Supabase/Vercel Blob/Vercel OAuth."
   - "External docs checked 2026-05-11: Black Forest Labs FLUX.2 Pro API supports generation/editing task submission, input_image through input_image_8, width/height, seed, safety_tolerance and output_format."
   - "User decision 2026-05-11: validate stable flux-2-pro default, guided visual memory if aligned with Flux multi-reference docs, async content-queue execution, no V1 quotas, UI spec later, and product promise 'coherence visuelle guidee'."
 next_step: "none"
@@ -58,19 +58,19 @@ Flux AI Provider For Image Robot
 
 ## Status
 
-Closed after verification. This spec defines the backend foundation for AI-generated project images inside the existing ContentGlowz Image Robot. It intentionally avoids adding a free-form playground, Supabase, Vercel Blob, Vercel OAuth, or anonymous generation.
+Closed after verification. This spec defines the backend foundation for AI-generated project images inside the existing ContentGlows Image Robot. It intentionally avoids adding a free-form playground, Supabase, Vercel Blob, Vercel OAuth, or anonymous generation.
 
 ## User Story
 
-En tant que creatrice connectee a un projet ContentGlowz, je veux generer des images IA coherentes avec les formats, personnages et caracteristiques de mon projet, afin d'alimenter mes articles, thumbnails et posts sans sortir du workflow existant.
+En tant que creatrice connectee a un projet ContentGlows, je veux generer des images IA coherentes avec les formats, personnages et caracteristiques de mon projet, afin d'alimenter mes articles, thumbnails et posts sans sortir du workflow existant.
 
 ## Minimal Behavior Contract
 
-When an authenticated user or ContentGlowz automation schedules an image for a project using an Image Robot profile whose provider is `flux`, the backend validates project ownership, resolves the profile's guided format and project visual references, builds a structured prompt, optionally attaches up to eight approved project reference images as supported by Flux multi-reference generation/editing, enqueues an image generation job, and returns a durable job/generation record. The worker submits the request to Flux, uploads successful output to Bunny CDN, stores generation metadata, and makes the durable asset available to existing content publication workflows. If Flux is not configured, the provider rejects the job with a clear non-secret error and does not fall back silently to template generation. The easy edge case to miss is treating reference images as a playground upload instead of controlled project visual references, which would break consistency, privacy, and product guidance.
+When an authenticated user or ContentGlows automation schedules an image for a project using an Image Robot profile whose provider is `flux`, the backend validates project ownership, resolves the profile's guided format and project visual references, builds a structured prompt, optionally attaches up to eight approved project reference images as supported by Flux multi-reference generation/editing, enqueues an image generation job, and returns a durable job/generation record. The worker submits the request to Flux, uploads successful output to Bunny CDN, stores generation metadata, and makes the durable asset available to existing content publication workflows. If Flux is not configured, the provider rejects the job with a clear non-secret error and does not fall back silently to template generation. The easy edge case to miss is treating reference images as a playground upload instead of controlled project visual references, which would break consistency, privacy, and product guidance.
 
 ## Success Behavior
 
-- Given an authenticated user owns a project or an authorized ContentGlowz automation is acting for that project, when generation is requested from a `flux` image profile for blog hero, OG card, thumbnail, or social visual, then the API creates a queued generation record with profile, provider, model, dimensions, seed if present, reference image IDs, and status metadata.
+- Given an authenticated user owns a project or an authorized ContentGlows automation is acting for that project, when generation is requested from a `flux` image profile for blog hero, OG card, thumbnail, or social visual, then the API creates a queued generation record with profile, provider, model, dimensions, seed if present, reference image IDs, and status metadata.
 - Given a queued Flux generation succeeds, when the worker completes, then the generation record contains a Bunny CDN image URL, responsive/optimizer URLs where available, timing metadata, and status `completed`.
 - Given a project has visual memory references, when the user generates an image with consistency enabled, then the backend passes only approved project reference images to Flux and records which references were used.
 - Given the profile defines a target format, when generation runs, then the backend maps the format to explicit dimensions rather than exposing arbitrary free-form size controls.
@@ -93,7 +93,7 @@ When an authenticated user or ContentGlowz automation schedules an image for a p
 
 ## Problem
 
-ContentGlowz already has Image Robot infrastructure, but it is centered on template-driven generation such as Robolly and profile-driven OpenAI image generation. The `contentglowz/v0-flux-2-playground` prototype shows a useful AI image workflow with prompt, ratio, reference images, history, and result reuse, but its implementation is not compatible with the production stack. Users need AI-generated visuals that match their project formats and recurring visual identity, without being pushed into an unguided playground.
+ContentGlows already has Image Robot infrastructure, but it is centered on template-driven generation such as Robolly and profile-driven OpenAI image generation. The `contentglows/v0-flux-2-playground` prototype shows a useful AI image workflow with prompt, ratio, reference images, history, and result reuse, but its implementation is not compatible with the production stack. Users need AI-generated visuals that match their project formats and recurring visual identity, without being pushed into an unguided playground.
 
 ## Solution
 
@@ -331,13 +331,13 @@ Extend `lab` Image Robot with a first-class `flux` provider that fits the existi
 
 ## Open Questions
 
-None. V1 decisions: stable `flux-2-pro` by default with server-side env override only; visual consistency is presented as "coherence visuelle guidee" using Flux-supported multi-reference inputs rather than fine-tuning; visual references use new minimal Image Robot endpoints backed by Bunny + Turso ownership metadata; generation uses asynchronous backend jobs because ContentGlowz's primary workflow distributes queued content instead of making users wait; no per-plan quotas in V1 beyond authenticated-only access, queue/input limits, timeout, and normalized provider rate-limit handling.
+None. V1 decisions: stable `flux-2-pro` by default with server-side env override only; visual consistency is presented as "coherence visuelle guidee" using Flux-supported multi-reference inputs rather than fine-tuning; visual references use new minimal Image Robot endpoints backed by Bunny + Turso ownership metadata; generation uses asynchronous backend jobs because ContentGlows's primary workflow distributes queued content instead of making users wait; no per-plan quotas in V1 beyond authenticated-only access, queue/input limits, timeout, and normalized provider rate-limit handling.
 
 ## Skill Run History
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
-| 2026-05-11 13:15:23 UTC | sf-spec | GPT-5 Codex | Created draft spec from contentglowz Flux audit and user decisions. | Draft spec created. | /sf-ready shipglows_data/workflow/specs/SPEC-flux-ai-provider-image-robot-2026-05-11.md |
+| 2026-05-11 13:15:23 UTC | sf-spec | GPT-5 Codex | Created draft spec from contentglows Flux audit and user decisions. | Draft spec created. | /sf-ready shipglows_data/workflow/specs/SPEC-flux-ai-provider-image-robot-2026-05-11.md |
 | 2026-05-11 13:24:28 UTC | sf-ready | GPT-5 Codex + subagents | Ran readiness review, resolved blocking open decisions, added required sections, and tightened security/persistence contracts. | Ready after spec update. | /sf-start shipglows_data/workflow/specs/SPEC-flux-ai-provider-image-robot-2026-05-11.md |
 | 2026-05-11 13:31:15 UTC | sf-ready | GPT-5 Codex | Applied product decisions from user: async queued generation, Flux multi-reference visual guidance, no V1 quotas, UI spec later, and "coherence visuelle guidee" promise. | Ready after product-decision update. | /sf-start shipglows_data/workflow/specs/SPEC-flux-ai-provider-image-robot-2026-05-11.md |
 | 2026-05-12 18:53:40 UTC | sf-start | GPT-5 Codex | Implemented Flux Image Robot backend foundation, visual references, Bunny hardening, project asset registration, Flutter API contract, docs, and tests. | Implementation complete pending verification. | /sf-verify shipglows_data/workflow/specs/SPEC-flux-ai-provider-image-robot-2026-05-11.md |

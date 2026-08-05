@@ -10,7 +10,7 @@ source_skill: sf-spec
 scope: migration
 owner: "Diane"
 confidence: high
-user_story: "En tant que mainteneuse du backend ContentGlowz, je veux introduire PydanticAI via un adapter unique sur des flux JSON structurés, afin que les sorties IA soient typées, testables et compatibles avec les credentials BYOK/platform existants."
+user_story: "En tant que mainteneuse du backend ContentGlows, je veux introduire PydanticAI via un adapter unique sur des flux JSON structurés, afin que les sorties IA soient typées, testables et compatibles avec les credentials BYOK/platform existants."
 risk_level: medium
 security_impact: yes
 docs_impact: yes
@@ -88,7 +88,7 @@ Implemented and verified locally. The product/technical direction is confirmed: 
 - Register or clean existing pytest warnings separately if warning-free CI output becomes a release requirement.
 
 # User Story
-En tant que mainteneuse du backend ContentGlowz, je veux introduire `pydantic-ai` via un adapter unique sur des flux IA structurés, afin que les réponses JSON fragiles deviennent typées, testables, et compatibles avec les règles BYOK/platform existantes.
+En tant que mainteneuse du backend ContentGlows, je veux introduire `pydantic-ai` via un adapter unique sur des flux IA structurés, afin que les réponses JSON fragiles deviennent typées, testables, et compatibles avec les règles BYOK/platform existantes.
 
 Acteur principal: mainteneuse backend / agent d'implémentation.
 
@@ -102,7 +102,7 @@ Assumptions:
 - Existing `Agent(...)` constructors in `agents/` are CrewAI agents, not PydanticAI agents.
 - `pydantic-ai` is currently a declared dependency and product/architecture intention, not an active runtime implementation.
 - PydanticAI should be introduced incrementally where it fits better than CrewAI: typed JSON output, typed dependencies, and request-scoped provider handling.
-- All PydanticAI usage must route through the existing ContentGlowz AI runtime resolver, not through global provider environment variables.
+- All PydanticAI usage must route through the existing ContentGlows AI runtime resolver, not through global provider environment variables.
 
 # Minimal Behavior Contract
 The implementation must keep `pydantic-ai` as an intentional dependency, update it to a supported major line, and introduce a single compatibility/runtime adapter. Existing FastAPI endpoints and CrewAI agent flows must keep their request/response contracts, BYOK/platform credential semantics, lazy imports, and failure envelopes. PydanticAI must use explicit request-scoped provider credentials and typed dependencies, never ambient `OPENROUTER_API_KEY` fallback for app-visible actions. On install, import, model-construction, credential, provider, validation, or external-tool failure, the system must fail closed with the existing structured runtime errors or route-specific 4xx/5xx behavior, not leak secrets and not broaden SSRF-capable URL access. The easy-to-miss edge case is that LLM-guided tools such as Firecrawl/Exa can fetch arbitrary URLs; introducing PydanticAI must not bypass or weaken URL validation, provider scoping, or optional-provider gating.
@@ -128,11 +128,11 @@ The implementation must keep `pydantic-ai` as an intentional dependency, update 
 - No exception response may include provider API keys, decrypted credentials, environment variable values, raw auth headers, or full prompt payloads containing secrets.
 
 # Problem
-`requirements.txt` currently declares `pydantic-ai>=0.1.0,<1.0`, which leaves ContentGlowz below the V1 API-stability line documented by PydanticAI and keeps a dependency audit risk open. Official PydanticAI docs show V1 reached stability in September 2025, while pre-V1 minor releases included breaking changes such as `result_type` removal in favor of `output_type`, `AgentRunResult.data` removal in favor of `output`, tool definition argument ordering changes, stream/model request changes, and retry config changes.
+`requirements.txt` currently declares `pydantic-ai>=0.1.0,<1.0`, which leaves ContentGlows below the V1 API-stability line documented by PydanticAI and keeps a dependency audit risk open. Official PydanticAI docs show V1 reached stability in September 2025, while pre-V1 minor releases included breaking changes such as `result_type` removal in favor of `output_type`, `AgentRunResult.data` removal in favor of `output`, tool definition argument ordering changes, stream/model request changes, and retry config changes.
 
 The repository scan complicates this: current backend agent code does not directly import `pydantic_ai`. The active agent implementation uses CrewAI (`from crewai import Agent, Task, Crew`) and request-scoped `CrewAI LLM` creation through `user_llm_service.get_crewai_llm`.
 
-The exploration result changes the decision: this is not a removal task. PydanticAI is not active today, but it is useful for ContentGlowz's fragile structured-output paths:
+The exploration result changes the decision: this is not a removal task. PydanticAI is not active today, but it is useful for ContentGlows's fragile structured-output paths:
 
 - `api/services/repo_understanding_service.py` currently depends on JSON generation and manual parsing.
 - `agents/psychology/*` agents use CrewAI and then parse raw JSON with fallbacks.
@@ -147,7 +147,7 @@ The real risk is therefore twofold:
 # Solution
 Use an incremental introduction with a dependency inventory gate first.
 
-Preferred path: keep `pydantic-ai`, update it to the supported major line selected from official docs/package metadata, and introduce `api/services/pydantic_ai_runtime.py` as the only approved adapter. The adapter must map ContentGlowz runtime resolution to PydanticAI's current API: `Agent(..., output_type=...)`, `result.output`, typed `deps_type`, `RunContext`, explicit `OpenRouterModel`/`OpenRouterProvider(api_key=...)`, and current tool decorators. No router should instantiate PydanticAI provider clients directly.
+Preferred path: keep `pydantic-ai`, update it to the supported major line selected from official docs/package metadata, and introduce `api/services/pydantic_ai_runtime.py` as the only approved adapter. The adapter must map ContentGlows runtime resolution to PydanticAI's current API: `Agent(..., output_type=...)`, `result.output`, typed `deps_type`, `RunContext`, explicit `OpenRouterModel`/`OpenRouterProvider(api_key=...)`, and current tool decorators. No router should instantiate PydanticAI provider clients directly.
 
 Pilot path: migrate one low-risk structured-output flow first. Preferred pilots are `repo_understanding_service.py` or one psychology JSON flow. Do not rewrite SEO CrewAI orchestration wholesale; `agents/seo/seo_crew.py` already uses CrewAI `output_pydantic`, so it is not the first target.
 
@@ -175,12 +175,12 @@ Rollback solution: because no DB schema change is needed, rollback is dependency
 - Changing provider mode semantics, entitlement policy, user key encryption, or Turso schemas.
 - Removing CrewAI, LiteLLM, OpenAI SDK, Exa, Firecrawl, or provider integrations unrelated to the dependency risk.
 - Adding new AI features, new routes, new UI, or new provider support.
-- Touching `/home/claude/contentglowz/lab_deploy`, PM2, or live services.
+- Touching `/home/claude/contentglows/lab_deploy`, PM2, or live services.
 - Applying production migrations or deployment commands.
 - Solving unrelated dependency changes already present in the workspace.
 
 # Constraints
-- Work only in `/home/claude/contentglowz/lab` and the requested spec file.
+- Work only in `/home/claude/contentglows/lab` and the requested spec file.
 - Do not revert or overwrite parallel-agent changes; current observed dirty files include `requirements.txt` and untracked `requirements-dev.txt`.
 - No destructive git commands.
 - Keep backend reliability compatible with authenticated flows consumed by `app`.
@@ -210,7 +210,7 @@ External dependencies and fresh-docs verdict:
 
 - PydanticAI Upgrade Guide, checked 2026-04-27, verdict `fresh-docs checked`: V1 reached API stability in September 2025; pre-V1 changes renamed `result`/`data` concepts to `output`, removed `result_type` in favor of `output_type`, changed tool definition ordering, and changed retry config requirements.
 - PydanticAI Version Policy, checked 2026-04-27, verdict `fresh-docs checked`: V1 avoids intentional breaking minor releases; V2 no earlier than April 2026 and V1 receives security fixes for at least six months after V2.
-- PydanticAI OpenRouter docs, checked 2026-04-27, verdict `fresh-docs checked`: OpenRouter can be used by name with `OPENROUTER_API_KEY` or explicit `OpenRouterProvider(api_key=...)`; ContentGlowz must choose explicit provider construction for app-visible BYOK/platform flows.
+- PydanticAI OpenRouter docs, checked 2026-04-27, verdict `fresh-docs checked`: OpenRouter can be used by name with `OPENROUTER_API_KEY` or explicit `OpenRouterProvider(api_key=...)`; ContentGlows must choose explicit provider construction for app-visible BYOK/platform flows.
 - PydanticAI Dependencies and Tools docs, checked 2026-04-27, verdict `fresh-docs checked`: dependencies use `RunContext`/`deps_type`; tools can be registered through decorators or `tools=`.
 
 # Invariants
@@ -280,7 +280,7 @@ Metadata debt:
 - PydanticAI V2 may be available as of April 2026: implementation must verify official docs/version before choosing `<2` or `<3` target. Prefer the supported stable major appropriate for a new adapter, not the stale `<1.0` range.
 - PydanticAI API migrations: `result_type`, `result_retries`, `result_validator`, `last_run_messages`, and `.data` usage must not be introduced; use `output_type`, `output_retries`, output validators, and `.output`.
 - Tool functions that perform IO may run in async contexts/thread pools; URL and credential validation must happen before tool execution, not inside LLM prompts.
-- OpenRouter docs allow env-based provider selection; ContentGlowz app-visible flows must instead use explicit provider construction or existing request-scoped CrewAI LLMs.
+- OpenRouter docs allow env-based provider selection; ContentGlows app-visible flows must instead use explicit provider construction or existing request-scoped CrewAI LLMs.
 - Optional Firecrawl: when unavailable, `ResearchAnalystAgent` must not include scrape/crawl tools for a route whose preflight did not resolve Firecrawl.
 - SSRF surface: model-suggested URLs, competitor URLs, target URLs, Firecrawl crawl roots, Exa similar-page URLs, redirects, DNS rebinding, IPv6, numeric IPv4, punycode/IDN, and localhost aliases must be treated as untrusted.
 - Error text from external providers can contain URLs or payload fragments; sanitize before returning to clients.
@@ -313,7 +313,7 @@ Metadata debt:
 
 - [x] Tâche 4 : Introduce PydanticAI adapter
   - Fichier : `api/services/pydantic_ai_runtime.py`
-  - Action : Create a narrow adapter that accepts an already-resolved ContentGlowz runtime secret and returns current PydanticAI model/agent primitives using explicit provider construction. Expose helper methods for result `.output` access and typed dependency injection.
+  - Action : Create a narrow adapter that accepts an already-resolved ContentGlows runtime secret and returns current PydanticAI model/agent primitives using explicit provider construction. Expose helper methods for result `.output` access and typed dependency injection.
   - User story link : Keeps compatibility and credential behavior centralized if migration is necessary.
   - Depends on : Tâche 2
   - Validate with : Unit tests using PydanticAI test/function model or monkeypatched adapter imports.
@@ -446,7 +446,7 @@ Install/check commands:
 Manual verification:
 
 - Review `git diff` to ensure unrelated dependency-file changes from other agents were not overwritten.
-- Confirm no changes under `/home/claude/contentglowz/lab_deploy`.
+- Confirm no changes under `/home/claude/contentglows/lab_deploy`.
 - Confirm no DB migration files were added.
 
 # Risks

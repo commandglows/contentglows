@@ -3,7 +3,7 @@ title: "Templates de prompts pour analyser le feedback des clients de vos concur
 description: "Des commandes prêtes à coller dans NoSkills pour transformer AppSumo, Play Store, Trustpilot et autres avis clients en insights produit et idées roadmap."
 locale: "fr"
 pubDate: "2026-07-07"
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["prompt", "feedback client", "veille concurrentielle", "roadmap", "app"]
 featured: false
 ---

@@ -38,7 +38,7 @@ next_review: "2026-07-26"
 target_user: "Fondateurs, équipes content ops, creators indépendants"
 user_problem: "Besoin de transformer une idée de contenu en trajectoire de publication claire sans confusion entre site marketing et app produit."
 desired_outcomes:
-  - "Comprendre rapidement la promesse ContentGlowz."
+  - "Comprendre rapidement la promesse ContentGlows."
   - "Valider les limites et le mode dégradé."
   - "Atteindre facilement l’entrée app via /launch ou auth."
   - "Aligner découverte, contenus éditoriaux et conversion."

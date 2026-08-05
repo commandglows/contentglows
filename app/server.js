@@ -115,6 +115,6 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`ContentGlowz app serving on http://localhost:${PORT}`);
+  console.log(`ContentGlows app serving on http://localhost:${PORT}`);
   console.log(`   Serving: ${BUILD_DIR}`);
 });

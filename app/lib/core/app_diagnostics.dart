@@ -329,7 +329,7 @@ class AppDiagnostics {
 
   String _formatConsoleEntry(AppDiagnosticEntry entry) {
     final buffer = StringBuffer(
-      '[ContentGlowz][${entry.level.name.toUpperCase()}][${entry.scope}] ${entry.message}',
+      '[ContentGlows][${entry.level.name.toUpperCase()}][${entry.scope}] ${entry.message}',
     );
     if (entry.error != null && entry.error != entry.message) {
       buffer.write(' | error=${entry.error}');

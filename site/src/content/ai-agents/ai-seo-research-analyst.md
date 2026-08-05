@@ -2,7 +2,7 @@
 title: "AI-Powered SEO Research: How Multi-Agent Systems Automate Competitor Analysis"
 description: "Discover how AI research agents analyze SERPs, identify keyword gaps, and extract ranking patterns in minutes. Complete guide to automated SEO research with multi-agent systems."
 pubDate: 2026-01-15
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["ai seo research", "competitor analysis", "keyword research automation", "multi-agent systems"]
 featured: true
 image: "/images/blog/ai-seo-research-analyst.jpg"

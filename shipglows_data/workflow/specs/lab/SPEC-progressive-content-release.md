@@ -48,7 +48,7 @@ Un site de contenu construit avec un SSG (Astro, Next, Hugo...) accumule du cont
 
 ### Pourquoi c'est un probleme generique
 
-Tout utilisateur de ContentGlowz qui :
+Tout utilisateur de ContentGlows qui :
 1. Migre un blog existant vers un nouveau domaine
 2. Lance un nouveau site avec du contenu pre-genere par l'IA
 3. Fusionne plusieurs sites de contenu
@@ -56,7 +56,7 @@ Tout utilisateur de ContentGlowz qui :
 
 ...a le meme besoin : **drip-publier** le contenu existant pour que les moteurs de recherche percoivent une activite editoriale naturelle.
 
-### Ce qui existe deja dans ContentGlowz
+### Ce qui existe deja dans ContentGlows
 
 | Composant | Ce qu'il fait | Ce qui manque |
 |-----------|--------------|---------------|
@@ -115,7 +115,7 @@ Le plan de publication. Un par batch.
 ```python
 class DripPlan(BaseModel):
     id: str                          # UUID
-    project_id: str                  # Projet ContentGlowz
+    project_id: str                  # Projet ContentGlows
     user_id: str
     name: str                        # "GoCharbon Launch"
     status: DripPlanStatus           # draft | active | paused | completed | cancelled
@@ -330,7 +330,7 @@ SIGNAL                FIABILITE    METHODE
 4. Similarite         ★★★☆☆       Embedding cosine similarity des titres/contenus
    semantique                     Utile quand les autres signaux manquent
 
-5. Topical Mesh       ★★★★★       Agent existant dans ContentGlowz
+5. Topical Mesh       ★★★★★       Agent existant dans ContentGlows
    Architect                      Deja capable de detecter piliers + spokes
 ```
 
@@ -876,7 +876,7 @@ Semaine 4+ (5/jour) — Fiches outils par categorie
 
 ## Questions ouvertes
 
-1. **Acces aux fichiers source** — ContentGlowz Lab tourne sur un serveur. Comment accede-t-il aux fichiers Markdown du repo GoCharbon ? Options : git clone du repo, API GitHub pour modifier les fichiers, ou agent local sur la machine de build.
+1. **Acces aux fichiers source** — ContentGlows Lab tourne sur un serveur. Comment accede-t-il aux fichiers Markdown du repo GoCharbon ? Options : git clone du repo, API GitHub pour modifier les fichiers, ou agent local sur la machine de build.
 
 2. **Multi-repo** — Si l'utilisateur a plusieurs sites (GoCharbon, blog perso, site client), chaque plan pointe vers un repo different. Faut-il un systeme de "connected repos" ?
 
@@ -892,7 +892,7 @@ Semaine 4+ (5/jour) — Fiches outils par categorie
 
 | Date | Decision | Raison |
 |------|----------|--------|
-| 2026-04-06 | Le Content Drip est un module ContentGlowz, pas un outil standalone | Reutilisable pour tous les projets, s'integre au scheduler et au mesh existants |
+| 2026-04-06 | Le Content Drip est un module ContentGlows, pas un outil standalone | Reutilisable pour tous les projets, s'integre au scheduler et au mesh existants |
 | 2026-04-06 | Clustering par DIRECTORY comme MVP, AUTO en Phase 3 | GoCharbon a deja une arborescence bien structuree, pas besoin d'IA pour le premier usage |
 | 2026-04-06 | pubDate future comme methode de gating par defaut | GoCharbon a deja `filterBuildVisiblePosts()` — zero code a ecrire cote SSG |
 | 2026-04-06 | Cron horaire (pas quotidien) | Permet de publier a une heure precise, pas juste "dans la journee" |

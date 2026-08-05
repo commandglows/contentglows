@@ -1,6 +1,6 @@
-# ContentGlowz Lab
+# ContentGlows Lab
 
-Backend platform for ContentGlowz.
+Backend platform for ContentGlows.
 
 This root README is now an entrypoint, not the canonical technical source of truth.
 
@@ -28,7 +28,7 @@ plus generation context logs and generation signals.
 
 There is no optional project-memory install path. `chromadb` may still appear in
 `requirements.lock` as a CrewAI transitive residual; it is not used by
-ContentGlowz project memory.
+ContentGlows project memory.
 
 Useful local checks:
 

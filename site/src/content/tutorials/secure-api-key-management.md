@@ -2,7 +2,7 @@
 title: "How to Securely Manage API Keys: Doppler vs .env Files vs AWS Secrets Manager"
 description: "Complete guide to API key security in 2026. Compare Doppler, .env files, and AWS Secrets Manager. Learn secret rotation, team access control, and CI/CD integration."
 pubDate: 2026-01-15
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["api key security", "doppler", "secrets management", "environment variables", "devops"]
 featured: false
 image: "/images/blog/api-key-security-doppler.jpg"

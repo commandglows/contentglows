@@ -2,7 +2,7 @@
 artifact: exploration_report
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-06-12"
 updated: "2026-06-12"
 status: draft
@@ -33,14 +33,14 @@ next_step: "/100-sf-spec Android custom recorder and live composition"
 
 ## Starting Question
 
-Can ContentGlowz rely on Android's native screen recording experience for stability and add differentiated features on top, or does the product need its own recorder pipeline?
+Can ContentGlows rely on Android's native screen recording experience for stability and add differentiated features on top, or does the product need its own recorder pipeline?
 
 ## Context Read
 
 - `shipglows_data/workflow/research/shared/android-privacy-screen-redaction-technologies.md` - prior Android capture research and pipeline recommendation.
 - `shipglows_data/workflow/specs/app/SPEC-android-device-screen-capture.md` - current product contract for Android capture.
-- `app/android/app/src/main/kotlin/com/contentglowz/app/capture/ScreenRecordService.kt` - current native recording implementation.
-- `app/android/app/src/main/kotlin/com/contentglowz/app/capture/ScreenCaptureChannel.kt` - Flutter/native boundary and permission flow.
+- `app/android/app/src/main/kotlin/com/contentglows/app/capture/ScreenRecordService.kt` - current native recording implementation.
+- `app/android/app/src/main/kotlin/com/contentglows/app/capture/ScreenCaptureChannel.kt` - Flutter/native boundary and permission flow.
 - `app/lib/data/services/device_capture_service.dart` - Flutter service contract already assumes a custom native layer.
 - `shipglows_data/workflow/qa/lab/privacy-capture-platform-matrix.md` - risk framing for privacy capture quality and stop conditions.
 
@@ -89,7 +89,7 @@ The product asks whether it can inherit the stability of item 2 while customizin
   Gives product control over live composition: camera bubble size, shape, placement, overlays, guides, review gates, privacy redaction, branded UI.
   Lets you choose output architecture by mode:
   `MediaRecorder` for simple V1 recording, `MediaCodec` + compositor for advanced/lived-edited recording.
-  Fits the current codebase direction because ContentGlowz already owns a custom Flutter/native bridge.
+  Fits the current codebase direction because ContentGlows already owns a custom Flutter/native bridge.
   Keeps future room for post-processing with Media3 Transformer.
 - Cons:
   More engineering complexity, especially for live camera + screen + audio + editing interactions.

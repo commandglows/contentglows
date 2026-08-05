@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-PRIMARY_DOMAIN="${PRIMARY_DOMAIN:-${DOMAIN:-api.contentglowz.com}}"
+PRIMARY_DOMAIN="${PRIMARY_DOMAIN:-${DOMAIN:-api.contentglows.com}}"
 ALIAS_DOMAINS="${ALIAS_DOMAINS:-api.winflowz.com}"
 UPSTREAM="${UPSTREAM:-localhost:3002}"
 CADDYFILE="${CADDYFILE:-/etc/caddy/Caddyfile}"
-LOG_DIR="${LOG_DIR:-/var/log/contentglowz}"
+LOG_DIR="${LOG_DIR:-/var/log/contentglows}"
 TIMESTAMP="$(date '+%Y%m%d-%H%M%S')"
 LOG_FILE="$LOG_DIR/caddy-setup-$TIMESTAMP.log"
 TMP_CADDYFILE="/tmp/Caddyfile.${PRIMARY_DOMAIN}.${TIMESTAMP}"

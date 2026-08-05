@@ -127,15 +127,15 @@ class AppLocalizations {
     'Check your project, content types, and generation frequency before the first run.':
         'Vérifiez votre projet, les types de contenu et la fréquence de génération avant le premier lancement.',
     'Close app': 'Fermer l’application',
-    'Close ContentGlowz?': 'Fermer ContentGlowz ?',
+    'Close ContentGlows?': 'Fermer ContentGlows ?',
     'Changes are queued for sync. Publishing is blocked until the full body is saved online.':
         'Les changements sont en attente de synchronisation. La publication est bloquée tant que le contenu complet n’est pas enregistré en ligne.',
     'Are you sure you want to close the application?':
         'Est-ce que vous êtes sûr de vouloir fermer l’application ?',
-    'Choose how ContentGlowz chooses its interface language.':
-        'Choisissez comment ContentGlowz sélectionne la langue de son interface.',
-    'Choose whether ContentGlowz stays bright, stays dark, or follows your device appearance automatically.':
-        'Choisissez si ContentGlowz reste clair, reste sombre ou suit automatiquement l’apparence de votre appareil.',
+    'Choose how ContentGlows chooses its interface language.':
+        'Choisissez comment ContentGlows sélectionne la langue de son interface.',
+    'Choose whether ContentGlows stays bright, stays dark, or follows your device appearance automatically.':
+        'Choisissez si ContentGlows reste clair, reste sombre ou suit automatiquement l’apparence de votre appareil.',
     'Choose the types of content the AI should generate for you, and how often.':
         'Choisissez les types de contenu que l’IA doit générer pour vous, ainsi que leur fréquence.',
     'Clear Local Clerk Session': 'Effacer la session Clerk locale',
@@ -164,8 +164,8 @@ class AppLocalizations {
         'Les réglages de fréquence du contenu sont temporairement indisponibles',
     'Content is generated automatically':
         'Le contenu est généré automatiquement',
-    'ContentGlowz': 'ContentGlowz',
-    'ContentGlowz app': 'App ContentGlowz',
+    'ContentGlows': 'ContentGlows',
+    'ContentGlows app': 'App ContentGlows',
     'Continue': 'Continuer',
     'Continue with Google': 'Continuer avec Google',
     'Create': 'Créer',
@@ -239,8 +239,8 @@ class AppLocalizations {
     'Failed to send audio: {error}': 'Échec de l’envoi audio : {error}',
     'Failed to send: {error}': 'Échec de l’envoi : {error}',
     'Failed to update: {error}': 'Échec de mise à jour : {error}',
-    'FastAPI is unavailable. ContentGlowz is running in degraded mode until the backend responds again.':
-        'FastAPI est indisponible. ContentGlowz fonctionne en mode dégradé jusqu’à ce que le backend réponde à nouveau.',
+    'FastAPI is unavailable. ContentGlows is running in degraded mode until the backend responds again.':
+        'FastAPI est indisponible. ContentGlows fonctionne en mode dégradé jusqu’à ce que le backend réponde à nouveau.',
     'Feed': 'Flux',
     'Feed your creator voice & narrative':
         'Alimenter votre voix de créateur et votre narration',
@@ -549,8 +549,8 @@ class AppLocalizations {
     'What content do you want?': 'Quel contenu voulez-vous ?',
     'What is blocking you, missing, or could be improved?':
         'Qu’est-ce qui vous bloque, manque, ou pourrait être amélioré ?',
-    'With ContentGlowz': 'Avec ContentGlowz',
-    'Without ContentGlowz': 'Sans ContentGlowz',
+    'With ContentGlows': 'Avec ContentGlows',
+    'Without ContentGlows': 'Sans ContentGlows',
     'Workspace': 'Workspace',
     'Workspace continuation': 'Reprise du workspace',
     '1. Restore or sign in': '1. Restaurer ou se connecter',
@@ -558,8 +558,8 @@ class AppLocalizations {
     '3. Continue work': '3. Continuer le travail',
     'API and bootstrap failures expose retry, status, reconnect, and diagnostics actions without hiding them lower on the page.':
         'Les erreurs API et bootstrap exposent les actions de relance, statut, reconnexion et diagnostic sans les enfouir plus bas dans la page.',
-    'ContentGlowz checks Clerk first, then opens the right account path without burying auth below marketing content.':
-        'ContentGlowz vérifie Clerk en premier, puis ouvre le bon parcours de compte sans enterrer l’authentification sous du contenu marketing.',
+    'ContentGlows checks Clerk first, then opens the right account path without burying auth below marketing content.':
+        'ContentGlows vérifie Clerk en premier, puis ouvre le bon parcours de compte sans enterrer l’authentification sous du contenu marketing.',
     'Dashboard access': 'Accès au dashboard',
     'Google sign-in': 'Connexion Google',
     'Onboarding recovery': 'Reprise de l’onboarding',
@@ -656,8 +656,8 @@ class AppLocalizations {
     'Content directory': 'Dossier de contenu',
     'Content Drip': 'Publication progressive',
     'Content not found': 'Contenu introuvable',
-    'ContentGlowz system status diagnostics':
-        'Diagnostic de l etat systeme de ContentGlowz',
+    'ContentGlows system status diagnostics':
+        'Diagnostic de l etat systeme de ContentGlows',
     'Could not load full content: {error}':
         'Impossible de charger le contenu complet : {error}',
     'Could not open the editor': 'Impossible d ouvrir l editeur',
@@ -984,7 +984,7 @@ class AppLocalizations {
     'Video': 'Video',
     'We will take a quick tour of the app, screen by screen. The goal is to show you the best order to use each page, what the main controls do, and how to get the most out of the platform. You can pause at any time and resume later from Settings.':
         'On va faire un tour rapide de l’app, écran par écran. L’objectif est de vous montrer dans quel ordre utiliser les pages, à quoi servent les contrôles principaux et comment tirer le meilleur de la plateforme. Vous pouvez mettre en pause à tout moment et reprendre plus tard depuis Réglages.',
-    'Welcome to ContentGlowz': 'Bienvenue dans ContentGlowz',
+    'Welcome to ContentGlows': 'Bienvenue dans ContentGlows',
     'Work domains': 'Domaines de travail',
     'Workspace status': 'État du workspace',
     'Published content': 'Contenu publié',
@@ -1046,8 +1046,8 @@ class AppLocalizations {
     'Aspirations and desired outcomes': 'Aspirations et resultats souhaites',
     'Brief description of the program...': 'Breve description du programme...',
     'Category': 'Categorie',
-    'Clerk is connected, but workspace bootstrap failed. ContentGlowz stays in degraded mode until FastAPI returns a usable bootstrap.':
-        'Clerk est connecte, mais l initialisation du workspace a echoue. ContentGlowz reste en mode degrade jusqu a ce que FastAPI retourne un bootstrap exploitable.',
+    'Clerk is connected, but workspace bootstrap failed. ContentGlows stays in degraded mode until FastAPI returns a usable bootstrap.':
+        'Clerk est connecte, mais l initialisation du workspace a echoue. ContentGlows reste en mode degrade jusqu a ce que FastAPI retourne un bootstrap exploitable.',
     'Commission': 'Commission',
     'Common pushbacks or doubts this persona has':
         'Objections ou doutes frequents de ce persona',
@@ -1057,12 +1057,12 @@ class AppLocalizations {
     'Content created: "{contentType}"': 'Contenu cree : « {contentType} »',
     'Content generation in progress: "{contentType}"':
         'Generation de contenu en cours : « {contentType} »',
-    'ContentGlowz analyzes your product, generates angles and drafts, then lets you approve, edit, schedule, and publish from one workflow instead of juggling prompts, docs, and social tools.':
-        'ContentGlowz analyse votre produit, genere des angles et des brouillons, puis vous permet d approuver, editer, planifier et publier depuis un seul workflow au lieu de jongler avec prompts, docs et outils sociaux.',
-    'ContentGlowz is running in degraded mode while backend access is limited.':
-        'ContentGlowz fonctionne en mode degrade tant que l acces au backend est limite.',
-    'ContentGlowz web authentication now uses the official Clerk JavaScript SDK directly on the app domain. The old site handoff and the Flutter beta SDK are no longer the primary path.':
-        'L authentification web de ContentGlowz utilise maintenant le SDK JavaScript officiel de Clerk directement sur le domaine de l app. L ancien handoff via le site et le SDK Flutter beta ne sont plus le chemin principal.',
+    'ContentGlows analyzes your product, generates angles and drafts, then lets you approve, edit, schedule, and publish from one workflow instead of juggling prompts, docs, and social tools.':
+        'ContentGlows analyse votre produit, genere des angles et des brouillons, puis vous permet d approuver, editer, planifier et publier depuis un seul workflow au lieu de jongler avec prompts, docs et outils sociaux.',
+    'ContentGlows is running in degraded mode while backend access is limited.':
+        'ContentGlows fonctionne en mode degrade tant que l acces au backend est limite.',
+    'ContentGlows web authentication now uses the official Clerk JavaScript SDK directly on the app domain. The old site handoff and the Flutter beta SDK are no longer the primary path.':
+        'L authentification web de ContentGlows utilise maintenant le SDK JavaScript officiel de Clerk directement sur le domaine de l app. L ancien handoff via le site et le SDK Flutter beta ne sont plus le chemin principal.',
     'Create Persona': 'Creer un persona',
     'Create a customer persona to help\nthe AI generate targeted content':
         'Creez un persona client pour aider\nl IA a generer un contenu cible',
@@ -1498,8 +1498,8 @@ class AppLocalizations {
         'Impossible de charger l’état des identifiants OpenRouter.',
     'Une connexion GitHub est requise pour charger la liste des dépôts.':
         'Une connexion GitHub est requise pour charger la liste des dépôts.',
-    'Une fenêtre navigateur s’est ouverte pour autoriser ContentGlowz.':
-        'Une fenêtre navigateur s’est ouverte pour autoriser ContentGlowz.',
+    'Une fenêtre navigateur s’est ouverte pour autoriser ContentGlows.':
+        'Une fenêtre navigateur s’est ouverte pour autoriser ContentGlows.',
     'Updated: {date}': 'Mis à jour : {date}',
     'Validate': 'Valider',
     'Validated: {date}': 'Validé : {date}',
@@ -1551,8 +1551,8 @@ class AppLocalizations {
     'Lock the formats, cadence, and review gates.':
         'Verrouille les formats, la cadence et les étapes de validation.',
     'Long form': 'Format long',
-    'Make sure ContentGlowz knows what product to use.':
-        'Assure-toi que ContentGlowz sait quel produit utiliser.',
+    'Make sure ContentGlows knows what product to use.':
+        'Assure-toi que ContentGlows sait quel produit utiliser.',
     'Newsletter review template': 'Template de validation newsletter',
     'Next swipe': 'Prochain swipe',
     'No dashboard action is waiting in this session.':
@@ -1734,8 +1734,8 @@ class AppLocalizations {
     '{clicks} clicks · {impressions} impressions':
         '{clicks} clics · {impressions} impressions',
     '{count} views': '{count} vues',
-    'Connect a mailbox folder once. ContentGlowz checks it every 6 hours, turns useful emails into ideas, then moves processed emails to the archive folder.':
-        'Connecte un dossier de boîte mail une seule fois. ContentGlowz le vérifie toutes les 6 heures, transforme les emails utiles en idées, puis déplace les emails traités vers le dossier d’archive.',
+    'Connect a mailbox folder once. ContentGlows checks it every 6 hours, turns useful emails into ideas, then moves processed emails to the archive folder.':
+        'Connecte un dossier de boîte mail une seule fois. ContentGlows le vérifie toutes les 6 heures, transforme les emails utiles en idées, puis déplace les emails traités vers le dossier d’archive.',
     'Delete email source?': 'Supprimer la source email ?',
     'Email address': 'Adresse email',
     'Email source deleted.': 'Source email supprimée.',
@@ -1903,10 +1903,10 @@ class AppLocalizations {
         'La source quitte ce dossier. Un asset de projet réutilisable n’est pas supprimé des autres contenus.',
     'Sources ready': 'Sources prêtes',
     'Select photos and videos': 'Sélectionner des photos et vidéos',
-    'Stored safely on ContentGlowz':
-        'Stocké en toute sécurité sur ContentGlowz',
-    'This copy is stored safely in ContentGlowz. Android will ask you for final confirmation before it is deleted from this device.':
-        'Cette copie est stockée en toute sécurité dans ContentGlowz. Android vous demandera une confirmation finale avant de la supprimer de cet appareil.',
+    'Stored safely on ContentGlows':
+        'Stocké en toute sécurité sur ContentGlows',
+    'This copy is stored safely in ContentGlows. Android will ask you for final confirmation before it is deleted from this device.':
+        'Cette copie est stockée en toute sécurité dans ContentGlows. Android vous demandera une confirmation finale avant de la supprimer de cet appareil.',
     'You can delete this phone copy. Android will ask for final confirmation.':
         'Vous pouvez supprimer cette copie du téléphone. Android demandera une confirmation finale.',
     'Generate video': 'Générer la vidéo',

@@ -31,7 +31,7 @@ next_step: /sf-docs audit CLAUDE.md
 
 ## Project Overview
 
-`app` is the Flutter product application for ContentGlowz.
+`app` is the Flutter product application for ContentGlows.
 
 ## Canonical References
 

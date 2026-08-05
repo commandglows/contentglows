@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: contentglowz
+project: contentglows
 created: "2026-05-10"
 updated: "2026-05-10"
 status: ready

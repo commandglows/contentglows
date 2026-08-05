@@ -286,13 +286,13 @@ class _ShellContent extends StatelessWidget {
       if (degradedMode)
         switch (appAccess?.stage) {
           AppAccessStage.apiUnavailable => context.tr(
-            'FastAPI is unavailable. ContentGlowz is running in degraded mode until the backend responds again.',
+            'FastAPI is unavailable. ContentGlows is running in degraded mode until the backend responds again.',
           ),
           AppAccessStage.bootstrapFailed => context.tr(
-            'Clerk is connected, but workspace bootstrap failed. ContentGlowz stays in degraded mode until FastAPI returns a usable bootstrap.',
+            'Clerk is connected, but workspace bootstrap failed. ContentGlows stays in degraded mode until FastAPI returns a usable bootstrap.',
           ),
           _ => context.tr(
-            'ContentGlowz is running in degraded mode while backend access is limited.',
+            'ContentGlows is running in degraded mode while backend access is limited.',
           ),
         },
       if (offlineSync.hasStaleData)
@@ -364,8 +364,8 @@ class _ShellContent extends StatelessWidget {
                           context,
                           ref,
                           title: isAccessDegraded
-                              ? 'ContentGlowz degraded mode diagnostics'
-                              : 'ContentGlowz sync diagnostics',
+                              ? 'ContentGlows degraded mode diagnostics'
+                              : 'ContentGlows sync diagnostics',
                           scope: isAccessDegraded
                               ? 'app_shell.degraded_mode'
                               : 'app_shell.sync_warning',
@@ -441,7 +441,7 @@ class _SideRail extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    context.tr('ContentGlowz'),
+                    context.tr('ContentGlows'),
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w800,

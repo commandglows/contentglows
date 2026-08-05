@@ -327,7 +327,7 @@ class _UptimeScreenState extends ConsumerState<UptimeScreen> {
                   copyDiagnosticsToClipboard(
                     context,
                     ref,
-                    title: context.tr('ContentGlowz system status diagnostics'),
+                    title: context.tr('ContentGlows system status diagnostics'),
                     scope: 'uptime.copy_diagnostics',
                     currentError: accessState?.message,
                     contextData: {

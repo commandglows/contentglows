@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: feature
 owner: "Diane"
 confidence: medium
-user_story: "En tant que createur ContentGlowz sur Android, je veux un recorder d'ecran professionnel avec overlay de controle, pause/reprise, camera avant, camera arriere, et double camera quand l'appareil le supporte, afin de produire des videos natives, stables et polyvalentes sans quitter mon flux de creation."
+user_story: "En tant que createur ContentGlows sur Android, je veux un recorder d'ecran professionnel avec overlay de controle, pause/reprise, camera avant, camera arriere, et double camera quand l'appareil le supporte, afin de produire des videos natives, stables et polyvalentes sans quitter mon flux de creation."
 risk_level: high
 security_impact: "yes"
 docs_impact: "yes"
@@ -82,16 +82,16 @@ Active chantier for replacing the current Android screen recorder V1 with a prof
 
 ## User Story
 
-En tant que createur ContentGlowz sur Android, je veux un recorder d'ecran professionnel avec overlay de controle, pause/reprise, camera avant, camera arriere, et double camera quand l'appareil le supporte, afin de produire des videos natives, stables et polyvalentes sans quitter mon flux de creation.
+En tant que createur ContentGlows sur Android, je veux un recorder d'ecran professionnel avec overlay de controle, pause/reprise, camera avant, camera arriere, et double camera quand l'appareil le supporte, afin de produire des videos natives, stables et polyvalentes sans quitter mon flux de creation.
 
 ## Minimal Behavior Contract
 
-When an Android creator starts a recording session from Capture, ContentGlowz must request fresh MediaProjection consent, start a visible foreground recording session, open a movable overlay control surface with pause/resume/stop and camera controls, capture the screen through a composed native pipeline, and save a local MP4 whose metadata records the selected composition/audio/camera mode and any degraded capability decisions. If the device lacks a requested capability, the camera becomes unavailable, a projection/camera/audio path fails, the OS stops projection, the app overheats, or encoder pressure makes the session unsafe, the recorder must degrade or stop predictably, preserve only a valid finalized local file when safe, surface a typed recoverable or terminal error, and leave no phantom active session. The easy edge case is dual camera: some devices can switch front/rear but cannot open both simultaneously, so the recorder must advertise and enforce per-device capability truth instead of pretending all Android phones support the same mode.
+When an Android creator starts a recording session from Capture, ContentGlows must request fresh MediaProjection consent, start a visible foreground recording session, open a movable overlay control surface with pause/resume/stop and camera controls, capture the screen through a composed native pipeline, and save a local MP4 whose metadata records the selected composition/audio/camera mode and any degraded capability decisions. If the device lacks a requested capability, the camera becomes unavailable, a projection/camera/audio path fails, the OS stops projection, the app overheats, or encoder pressure makes the session unsafe, the recorder must degrade or stop predictably, preserve only a valid finalized local file when safe, surface a typed recoverable or terminal error, and leave no phantom active session. The easy edge case is dual camera: some devices can switch front/rear but cannot open both simultaneously, so the recorder must advertise and enforce per-device capability truth instead of pretending all Android phones support the same mode.
 
 ## Success Behavior
 
 - Given an Android user opens Capture, when recorder support is available, then the screen shows a recorder configuration surface that can choose audio mode, camera mode, and overlay behavior before recording starts.
-- Given the user taps Record, when Android grants MediaProjection consent, then ContentGlowz starts a foreground recording service and shows a persistent in-app/system overlay with at least pause, resume, stop, camera toggle, and collapse controls.
+- Given the user taps Record, when Android grants MediaProjection consent, then ContentGlows starts a foreground recording service and shows a persistent in-app/system overlay with at least pause, resume, stop, camera toggle, and collapse controls.
 - Given recording is active, when the user taps pause from the overlay or main app, then screen video capture pauses without crashing the session, the UI reflects paused state, and resume continues inside the same recording output if the platform path supports true pause; otherwise the app must implement a safe segmented pause model transparently and merge segments before final asset registration.
 - Given recording is active, when the user chooses front camera mode, then the exported MP4 includes a live front-camera picture-in-picture overlay using the configured shape/size/position.
 - Given recording is active, when the user chooses rear camera mode, then the exported MP4 includes a live rear-camera picture-in-picture overlay using the configured shape/size/position.
@@ -127,7 +127,7 @@ Replace the current screen-recording path with a layered native Android recorder
 - `MediaProjection` remains the official screen-capture foundation.
 - Camera feeds move to CameraX with explicit capability detection for single-camera and concurrent dual-camera modes.
 - The recorder composes screen frames, camera feed(s), and overlay state into a controlled output pipeline rather than writing raw screen pixels directly through `MediaRecorder`.
-- Overlay controls are owned by ContentGlowz, tokenized through the app design system, and synchronized between Flutter state and native recorder state.
+- Overlay controls are owned by ContentGlows, tokenized through the app design system, and synchronized between Flutter state and native recorder state.
 - Typed diagnostics, Sentry-safe observability, and cleanup policies become first-class contract requirements rather than afterthoughts.
 
 This is not a greenfield feature. It is a bounded architectural upgrade of the current capture stack into a professional recorder surface.
@@ -214,9 +214,9 @@ Local code and docs to update:
 - `app/lib/presentation/theme/app_theme_tokens.dart` and/or `app_theme.dart` if new shared recorder tokens are required
 - `app/android/app/src/main/AndroidManifest.xml`
 - `app/android/app/build.gradle.kts`
-- `app/android/app/src/main/kotlin/com/contentglowz/app/capture/ScreenCaptureChannel.kt`
-- `app/android/app/src/main/kotlin/com/contentglowz/app/capture/ScreenRecordService.kt`
-- new native recorder classes under `app/android/app/src/main/kotlin/com/contentglowz/app/capture/pro/`
+- `app/android/app/src/main/kotlin/com/contentglows/app/capture/ScreenCaptureChannel.kt`
+- `app/android/app/src/main/kotlin/com/contentglows/app/capture/ScreenRecordService.kt`
+- new native recorder classes under `app/android/app/src/main/kotlin/com/contentglows/app/capture/pro/`
 - `app/lib/main.dart` and diagnostics surfaces if recorder-specific copy-diagnostics needs extension
 - `app/README.md`
 - `shipglows_data/technical/app/guidelines.md`
@@ -304,7 +304,7 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-06-12.
   - Notes: Preserve backwards compatibility for screenshot calls where possible.
 
 - [ ] Task 3: Define recorder capability discovery in native and Flutter layers.
-  - File: `app/android/app/src/main/kotlin/com/contentglowz/app/capture/ScreenCaptureChannel.kt`
+  - File: `app/android/app/src/main/kotlin/com/contentglows/app/capture/ScreenCaptureChannel.kt`
   - Action: Add methods to report capture/camera/audio capability availability, including dual-camera support truth and playback-capture eligibility signals when discoverable.
   - User story link: Prevents unsupported pro modes from appearing as if they work everywhere.
   - Depends on: Task 2.
@@ -344,7 +344,7 @@ Fresh external docs verdict: `fresh-docs checked` on 2026-06-12.
   - Notes: Record exact versions chosen during implementation because concurrent-camera support evolves over time.
 
 - [ ] Task 8: Create native recorder config/capability classes.
-  - File: new files under `app/android/app/src/main/kotlin/com/contentglowz/app/capture/pro/`
+  - File: new files under `app/android/app/src/main/kotlin/com/contentglows/app/capture/pro/`
   - Action: Define typed Kotlin models for recorder config, capability report, degraded state, overlay commands, and terminal failure taxonomy.
   - User story link: Keeps state transitions explicit and testable.
   - Depends on: Tasks 2, 3, and 7.
@@ -488,8 +488,8 @@ Read first:
 
 - `app/lib/presentation/screens/capture/capture_screen.dart`
 - `app/lib/data/services/device_capture_service.dart`
-- `app/android/app/src/main/kotlin/com/contentglowz/app/capture/ScreenCaptureChannel.kt`
-- `app/android/app/src/main/kotlin/com/contentglowz/app/capture/ScreenRecordService.kt`
+- `app/android/app/src/main/kotlin/com/contentglows/app/capture/ScreenCaptureChannel.kt`
+- `app/android/app/src/main/kotlin/com/contentglows/app/capture/ScreenRecordService.kt`
 - `shipglows_data/technical/app/flutter-app-shell-and-capture.md`
 - `shipglows_data/technical/design-system-authority.md`
 - `shipglows_data/workflow/explorations/2026-06-12-android-native-vs-custom-screen-recorder.md`

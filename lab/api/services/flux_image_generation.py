@@ -291,7 +291,7 @@ class FluxImageGenerator:
 
 
 def image_type_dimensions(image_type: str) -> tuple[int, int]:
-    """Return FLUX-safe dimensions aligned to common ContentGlowz placements."""
+    """Return FLUX-safe dimensions aligned to common ContentGlows placements."""
     mapping = {
         "hero_image": (1536, 864),
         "section_image": (1280, 720),

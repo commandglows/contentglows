@@ -1,18 +1,18 @@
 import { Composition, type CalculateMetadataFunction } from "remotion";
 
 import {
-  ContentGlowzTimelineVideo,
-  type ContentGlowzTimelineProps,
-  contentGlowzTimelinePropsSchema,
+  ContentGlowsTimelineVideo,
+  type ContentGlowsTimelineProps,
+  contentGlowsTimelinePropsSchema,
   deriveTimelineMetadata,
-} from "./ContentGlowzTimelineVideo";
+} from "./ContentGlowsTimelineVideo";
 import { ReelFromContent, reelFromContentSchema } from "./ReelFromContent";
 import { verticalTimelineFixture } from "./timeline-fixtures";
 
 const FPS = 30;
 const DURATION_SECONDS = 60;
 
-const calculateContentGlowzTimelineMetadata: CalculateMetadataFunction<ContentGlowzTimelineProps> = ({
+const calculateContentGlowsTimelineMetadata: CalculateMetadataFunction<ContentGlowsTimelineProps> = ({
   props,
 }) => deriveTimelineMetadata(props);
 
@@ -39,15 +39,15 @@ export const RemotionRoot = () => {
         }}
       />
       <Composition
-        id="ContentGlowzTimelineVideo"
-        component={ContentGlowzTimelineVideo}
+        id="ContentGlowsTimelineVideo"
+        component={ContentGlowsTimelineVideo}
         durationInFrames={verticalTimelineFixture.format.duration_in_frames}
         fps={verticalTimelineFixture.format.fps}
         width={verticalTimelineFixture.format.width}
         height={verticalTimelineFixture.format.height}
-        schema={contentGlowzTimelinePropsSchema}
+        schema={contentGlowsTimelinePropsSchema}
         defaultProps={verticalTimelineFixture}
-        calculateMetadata={calculateContentGlowzTimelineMetadata}
+        calculateMetadata={calculateContentGlowsTimelineMetadata}
       />
     </>
   );

@@ -1,6 +1,6 @@
 class AppConfig {
-  static const canonicalSiteUrl = 'https://contentglowz.com';
-  static const _defaultApiBaseUrl = 'https://api.contentglowz.com';
+  static const canonicalSiteUrl = 'https://contentglows.com';
+  static const _defaultApiBaseUrl = 'https://api.contentglows.com';
 
   static const _apiBaseUrlRaw = String.fromEnvironment(
     'API_BASE_URL',
@@ -17,7 +17,7 @@ class AppConfig {
   );
 
   static const devAuthBypass = bool.fromEnvironment(
-    'CONTENTGLOWZ_DEV_AUTH_BYPASS',
+    'CONTENTGLOWS_DEV_AUTH_BYPASS',
     defaultValue: false,
   );
 
@@ -28,7 +28,7 @@ class AppConfig {
 
   static const appWebUrl = String.fromEnvironment(
     'APP_WEB_URL',
-    defaultValue: 'https://app.contentglowz.com',
+    defaultValue: 'https://app.contentglows.com',
   );
 
   static const buildCommitSha = String.fromEnvironment(
@@ -112,7 +112,7 @@ class AppConfig {
       return '';
     }
 
-    return 'contentglowz_app@$commit';
+    return 'contentglows_app@$commit';
   }
 
   static String get effectiveSentryDist {

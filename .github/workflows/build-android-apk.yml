@@ -1,4 +1,4 @@
-name: Build ContentGlowz Android APK
+name: Build ContentGlows Android APK
 
 on:
   workflow_dispatch:
@@ -15,9 +15,9 @@ permissions:
 env:
   APP_DIR: app
   FLUTTER_VERSION_FILE: app/.fvmrc
-  API_BASE_URL: ${{ vars.API_BASE_URL || 'https://api.contentglowz.com' }}
-  APP_SITE_URL: ${{ vars.APP_SITE_URL || 'https://contentglowz.com' }}
-  APP_WEB_URL: ${{ vars.APP_WEB_URL || 'https://app.contentglowz.com' }}
+  API_BASE_URL: ${{ vars.API_BASE_URL || 'https://api.contentglows.com' }}
+  APP_SITE_URL: ${{ vars.APP_SITE_URL || 'https://contentglows.com' }}
+  APP_WEB_URL: ${{ vars.APP_WEB_URL || 'https://app.contentglows.com' }}
   CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY }}
   SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
   SENTRY_ENVIRONMENT: ${{ vars.SENTRY_ENVIRONMENT || 'github-actions' }}
@@ -57,8 +57,8 @@ jobs:
           test -n "$ANDROID_KEYSTORE_PASSWORD" || { echo "ANDROID_KEYSTORE_PASSWORD is missing"; exit 1; }
           test -n "$ANDROID_KEY_ALIAS" || { echo "ANDROID_KEY_ALIAS is missing"; exit 1; }
           test -n "$ANDROID_KEY_PASSWORD" || { echo "ANDROID_KEY_PASSWORD is missing"; exit 1; }
-          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > contentglowz-release.keystore
-          echo "ANDROID_KEYSTORE_PATH=$PWD/contentglowz-release.keystore" >> "$GITHUB_ENV"
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > contentglows-release.keystore
+          echo "ANDROID_KEYSTORE_PATH=$PWD/contentglows-release.keystore" >> "$GITHUB_ENV"
       - name: Build APK
         working-directory: ${{ env.APP_DIR }}
         run: >-
@@ -84,7 +84,7 @@ jobs:
           "$apksigner_path" verify --verbose --print-certs build/app/outputs/flutter-apk/app-release.apk
       - uses: actions/upload-artifact@v7
         with:
-          name: contentglowz-android-apk
+          name: contentglows-android-apk
           path: app/build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
           retention-days: 7

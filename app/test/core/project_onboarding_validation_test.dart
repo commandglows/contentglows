@@ -68,14 +68,14 @@ void main() {
 
     test('removes a git suffix', () {
       expect(
-        extractGithubRepositoryName('https://github.com/acme/contentglowz.git'),
-        'contentglowz',
+        extractGithubRepositoryName('https://github.com/acme/contentglows.git'),
+        'contentglows',
       );
     });
 
     test('ignores non-github URLs', () {
       expect(
-        extractGithubRepositoryName('https://gitlab.com/acme/contentglowz'),
+        extractGithubRepositoryName('https://gitlab.com/acme/contentglows'),
         isNull,
       );
     });

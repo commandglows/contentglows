@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: feature
 owner: "Diane"
 confidence: medium
-user_story: "As a ContentGlowz creator reviewing a privacy capture before publishing or sharing it, I want to inspect the redacted output, add extra redaction where needed, and acknowledge the remaining risk, so that only a reviewed flattened privacy asset can leave the app."
+user_story: "As a ContentGlows creator reviewing a privacy capture before publishing or sharing it, I want to inspect the redacted output, add extra redaction where needed, and acknowledge the remaining risk, so that only a reviewed flattened privacy asset can leave the app."
 risk_level: high
 security_impact: "yes"
 docs_impact: "yes"
@@ -83,11 +83,11 @@ This spec is not a native implementation spec. It does not choose OCR, capture, 
 
 ## User Story
 
-As a ContentGlowz creator reviewing a privacy capture before publishing or sharing it, I want to inspect the redacted output, add extra redaction where needed, and acknowledge the remaining risk, so that only a reviewed flattened privacy asset can leave the app.
+As a ContentGlows creator reviewing a privacy capture before publishing or sharing it, I want to inspect the redacted output, add extra redaction where needed, and acknowledge the remaining risk, so that only a reviewed flattened privacy asset can leave the app.
 
 ## Minimal Behavior Contract
 
-When ContentGlowz has a privacy-marked capture asset, the app must route share, export, download, and content-attachment attempts through a post-production review flow that shows only the redacted output, supports zooming and video frame sampling, lets the user add manual redaction overlays, flattens any corrections into a new redacted output, and requires an explicit best-effort acknowledgement before the asset can leave the app; if preview, sampling, correction, flattening, cleanup, or metadata persistence fails, the app must keep the asset blocked from share/export, explain the recoverable state, and never expose a clear original or clear comparison view. The easy edge case is a tempting before/after compare: review may compare redacted draft versus corrected redacted output, but must never show a clear source frame, thumbnail, or replay as the baseline.
+When ContentGlows has a privacy-marked capture asset, the app must route share, export, download, and content-attachment attempts through a post-production review flow that shows only the redacted output, supports zooming and video frame sampling, lets the user add manual redaction overlays, flattens any corrections into a new redacted output, and requires an explicit best-effort acknowledgement before the asset can leave the app; if preview, sampling, correction, flattening, cleanup, or metadata persistence fails, the app must keep the asset blocked from share/export, explain the recoverable state, and never expose a clear original or clear comparison view. The easy edge case is a tempting before/after compare: review may compare redacted draft versus corrected redacted output, but must never show a clear source frame, thumbnail, or replay as the baseline.
 
 ## Success Behavior
 

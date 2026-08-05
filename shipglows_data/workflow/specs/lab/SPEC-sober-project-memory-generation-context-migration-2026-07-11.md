@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: contentglowz
+project: contentglows
 created: "2026-07-11"
 created_at: "2026-07-11 12:30:00 UTC"
 updated: "2026-07-11"
@@ -13,7 +13,7 @@ source_model: "gpt-5.5"
 scope: migration
 owner: Diane
 confidence: high
-user_story: "En tant que proprietaire authentifie d'un projet ContentGlowz, je veux que les generations newsletter et psychologie utilisent un contexte projet fiable, borne, attribue et supprimable depuis Project Intelligence au lieu de Mem0/Chroma, afin que mes contenus restent coherents avec mon projet sans fuite tenant, dependance memoire fragile, ni apprentissage silencieux."
+user_story: "En tant que proprietaire authentifie d'un projet ContentGlows, je veux que les generations newsletter et psychologie utilisent un contexte projet fiable, borne, attribue et supprimable depuis Project Intelligence au lieu de Mem0/Chroma, afin que mes contenus restent coherents avec mon projet sans fuite tenant, dependance memoire fragile, ni apprentissage silencieux."
 risk_level: high
 security_impact: yes
 docs_impact: yes
@@ -37,7 +37,7 @@ linked_systems:
   - lab/tests/test_project_intelligence_router.py
   - lab/tests/test_dependency_policy.py
 depends_on:
-  - artifact: "shipglows_data/workflow/repurpose-packs/2026-07-11-contentglowz-project-memory-repurpose-pack.md"
+  - artifact: "shipglows_data/workflow/repurpose-packs/2026-07-11-contentglows-project-memory-repurpose-pack.md"
     artifact_version: "1.0.0"
     required_status: "draft"
   - artifact: "shipglows_data/workflow/specs/lab/SPEC-project-intelligence-engine-data-layer-2026-05-13.md"
@@ -46,7 +46,7 @@ depends_on:
   - artifact: "shipglows_data/technical/platforms/crewai.md"
     artifact_version: "0.1.0"
     required_status: "draft"
-  - artifact: "skills/contentglowz-turso-migrations/SKILL.md"
+  - artifact: "skills/contentglows-turso-migrations/SKILL.md"
     artifact_version: "unknown"
     required_status: "active"
 supersedes:
@@ -54,7 +54,7 @@ supersedes:
     artifact_version: "unknown"
     required_status: "legacy"
 evidence:
-  - "The repurpose pack states relational ContentGlowz project data is canonical, vector search is only a rebuildable retrieval index, and customers must not administer technical memory."
+  - "The repurpose pack states relational ContentGlows project data is canonical, vector search is only a rebuildable retrieval index, and customers must not administer technical memory."
   - "lab/memory/memory_config.py configures Mem0 local mode with a Chroma vector_store provider under lab/data/mem0."
   - "lab/memory/memory_service.py wraps mem0 Memory/MemoryClient and exposes load_project_context, store_generation_scoped, and delete_all through a user_id:project_id scoped user string."
   - "lab/agents/newsletter/newsletter_crew.py loads brand voice, past newsletter, and content inventory memory before CrewAI tasks and stores generation records after completion."
@@ -79,9 +79,9 @@ This chantier is high risk because it touches private project data, tenant isola
 
 ## User Story
 
-En tant que proprietaire authentifie d'un projet ContentGlowz, je veux que les generations newsletter et psychologie utilisent un contexte projet fiable, borne, attribue et supprimable depuis Project Intelligence au lieu de Mem0/Chroma, afin que mes contenus restent coherents avec mon projet sans fuite tenant, dependance memoire fragile, ni apprentissage silencieux.
+En tant que proprietaire authentifie d'un projet ContentGlows, je veux que les generations newsletter et psychologie utilisent un contexte projet fiable, borne, attribue et supprimable depuis Project Intelligence au lieu de Mem0/Chroma, afin que mes contenus restent coherents avec mon projet sans fuite tenant, dependance memoire fragile, ni apprentissage silencieux.
 
-Primary actor: authenticated ContentGlowz user who owns the active project.
+Primary actor: authenticated ContentGlows user who owns the active project.
 
 Trigger: the user launches newsletter generation or psychology dispatch-pipeline generation for an article, newsletter, short, or social post.
 
@@ -89,7 +89,7 @@ Observable result: generation receives a deterministic, bounded, project-scoped 
 
 ## Minimal Behavior Contract
 
-When a project-owned generation route starts, ContentGlowz builds a project-scoped generation context from canonical Project Intelligence relational data using `user_id + project_id` in every query, orders required facts and retrieved excerpts deterministically within a fixed context budget, injects that context into the newsletter or psychology generation prompt, and records redacted provenance for the run. If context data is sparse, the route still runs with an explicit empty-context provenance record; if the context builder, database, ownership, or invalidation checks fail, the route returns or records an observable error instead of silently falling back to Mem0, global memory, or no context. The easy edge case is deletion: any source-derived fact, chunk, duplicate, recommendation, or generation-context log link that traces to a removed source must be excluded from later contexts even when it appears indirectly through canonical duplicate evidence.
+When a project-owned generation route starts, ContentGlows builds a project-scoped generation context from canonical Project Intelligence relational data using `user_id + project_id` in every query, orders required facts and retrieved excerpts deterministically within a fixed context budget, injects that context into the newsletter or psychology generation prompt, and records redacted provenance for the run. If context data is sparse, the route still runs with an explicit empty-context provenance record; if the context builder, database, ownership, or invalidation checks fail, the route returns or records an observable error instead of silently falling back to Mem0, global memory, or no context. The easy edge case is deletion: any source-derived fact, chunk, duplicate, recommendation, or generation-context log link that traces to a removed source must be excluded from later contexts even when it appears indirectly through canonical duplicate evidence.
 
 ## Success Behavior
 
@@ -115,9 +115,9 @@ When a project-owned generation route starts, ContentGlowz builds a project-scop
 
 ## Problem
 
-ContentGlowz has two memory systems with conflicting responsibilities.
+ContentGlows has two memory systems with conflicting responsibilities.
 
-Project Intelligence is already a ContentGlowz-owned Turso/libSQL domain with source, document, chunk, fact, recommendation, duplicate, job, source-removal, connector, and provider-readiness concepts. It is tenant-scoped by `userId + projectId` and is the right canonical home for durable project knowledge.
+Project Intelligence is already a ContentGlows-owned Turso/libSQL domain with source, document, chunk, fact, recommendation, duplicate, job, source-removal, connector, and provider-readiness concepts. It is tenant-scoped by `userId + projectId` and is the right canonical home for durable project knowledge.
 
 The active generation consumers still use `lab/memory`, which wraps Mem0 and local Chroma-backed storage. Newsletter generation loads brand voice, past newsletter, and content inventory from Mem0 and stores generation records back to Mem0. Psychology dispatch-pipeline loads Mem0 context and stores generation records after creating article, newsletter, short, or social content. Both consumers treat memory as optional and swallow failures, which was acceptable for a transitional feature flag but is no longer acceptable for a canonical project memory path.
 
@@ -155,7 +155,7 @@ The implementation must preserve active functionality: brand voice/style, audien
 - Replacing CrewAI, removing CrewAI, or removing `chromadb` when it is installed only as a transitive dependency of CrewAI.
 - Adding an external vector provider, local Chroma replacement, provider-managed file-search dependency, or embeddings dependency in this implementation.
 - Migrating historical Mem0/Chroma data into Project Intelligence. Existing canonical Project Intelligence rows, connector sync, status/content records, brand profiles, and user/project data are the sources for context.
-- Public marketing claims that ContentGlowz "learns automatically", improves quality, guarantees factual accuracy, or provides autonomous long-term memory.
+- Public marketing claims that ContentGlows "learns automatically", improves quality, guarantees factual accuracy, or provides autonomous long-term memory.
 - Customer-facing memory administration UI for embeddings, vector stores, collections, or retrieval providers.
 - Changing the user OpenRouter/BYOK model for CrewAI routes.
 - Rewriting non-newsletter/non-psychology agents that merely import CrewAI but do not currently use Mem0 project memory.
@@ -171,7 +171,7 @@ The implementation must preserve active functionality: brand voice/style, audien
 - No raw secret/private body logs. Context logs may store ids, categories, hashes, lengths, token estimates, selected reasons, exclusion reasons, and bounded snippets only when snippets already come from Project Intelligence evidence snippets. They must not store full source text or full generated output.
 - No silent model writes. Generated output can create a generation signal and optional candidate learnings, but cannot directly create canonical facts, brand rules, audience truth, or source documents without explicit product policy.
 - Source deletion/invalidation must exclude source-derived evidence from future contexts, including facts/chunks/documents, duplicate links where removed documents are either duplicate or canonical, recommendations/evidence JSON, and generation signals whose provenance references removed evidence.
-- Additive/idempotent Turso schema must ship in the same implementation change, following ContentGlowz Turso/libSQL guardrails: `CREATE TABLE IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS`, and startup ensure before route use.
+- Additive/idempotent Turso schema must ship in the same implementation change, following ContentGlows Turso/libSQL guardrails: `CREATE TABLE IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS`, and startup ensure before route use.
 - Existing active route functionality must not be weakened. Removing Mem0 is acceptable only after replacement context behavior and tests are present.
 - `chromadb` may remain installed transitively through CrewAI. The acceptance proof must say whether it remains in the lock and confirm it is not imported or used by project memory.
 - Fresh external docs verdict: `fresh-docs not needed` for the implementation architecture because this chantier deliberately avoids new external vector/provider APIs and relies on local FastAPI/Turso/libSQL patterns already present in the repository. CrewAI replacement would require a separate documentation freshness gate.
@@ -226,7 +226,7 @@ Documentation freshness:
 
 - `fresh-docs not needed` for the new retrieval implementation because it is deterministic and relational.
 - CrewAI docs freshness is not required unless implementation changes CrewAI API usage beyond passing prompt/context strings.
-- Turso/libSQL behavior is governed by local project patterns and the `contentglowz-turso-migrations` guardrail.
+- Turso/libSQL behavior is governed by local project patterns and the `contentglows-turso-migrations` guardrail.
 
 ## Invariants
 

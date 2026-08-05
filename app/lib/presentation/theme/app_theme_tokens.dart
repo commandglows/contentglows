@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-// Generated from ../../../../tools/design-tokens/contentglowz_theme.json.
+// Generated from ../../../../tools/design-tokens/contentglows_theme.json.
 // Keep project-wide visual changes in that shared token file.
 class AppThemeTokens {
   const AppThemeTokens._();

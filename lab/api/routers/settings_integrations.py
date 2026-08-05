@@ -50,7 +50,7 @@ class EmailSourceStatus(BaseModel):
         serialization_alias="sourceFolder",
     )
     archive_folder: str = Field(
-        default="CONTENTGLOWZ_DONE",
+        default="CONTENTGLOWS_DONE",
         validation_alias=AliasChoices("archiveFolder", "archive_folder"),
         serialization_alias="archiveFolder",
     )
@@ -93,7 +93,7 @@ class EmailSourceUpsertRequest(BaseModel):
         serialization_alias="sourceFolder",
     )
     archive_folder: str = Field(
-        default="CONTENTGLOWZ_DONE",
+        default="CONTENTGLOWS_DONE",
         validation_alias=AliasChoices("archiveFolder", "archive_folder"),
         serialization_alias="archiveFolder",
     )

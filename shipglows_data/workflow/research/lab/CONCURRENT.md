@@ -10,7 +10,7 @@ https://octopus.do/
 **Pertinence :** lab (8/10)
 
 **Pourquoi c'est un concurrent indirect :**
-- Même zone fonctionnelle que les agents ContentGlowz de recherche, veille, SEO et extraction structurée.
+- Même zone fonctionnelle que les agents ContentGlows de recherche, veille, SEO et extraction structurée.
 - Le repo montre un pattern open-source moderne : skills `SKILL.md`, subagents parallèles, streaming et sorties JSON structurées.
 - Firecrawl apporte l'infra web Search/Scrape/Interact, mais ne couvre pas notre promesse backend complète de workflows contenu, statut, planification et observabilité.
 

@@ -100,7 +100,7 @@ ROBOLLY_CONFIG = {
 BUNNY_CONFIG = {
     "storage": {
         "api_key": os.getenv("BUNNY_STORAGE_API_KEY"),
-        "storage_zone": os.getenv("BUNNY_STORAGE_ZONE", "contentglowz-images"),
+        "storage_zone": os.getenv("BUNNY_STORAGE_ZONE", "contentglows-images"),
         "base_url": "https://storage.bunnycdn.com",
         "region": os.getenv("BUNNY_STORAGE_REGION", "de"),  # de, ny, la, sg, syd
         "hostname": os.getenv("BUNNY_CDN_HOSTNAME", ""),

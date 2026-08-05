@@ -11,7 +11,7 @@ val clerkPublishableKey = providers.environmentVariable("CLERK_PUBLISHABLE_KEY")
     .orElse(providers.gradleProperty("CLERK_PUBLISHABLE_KEY"))
     .orElse("")
     .get()
-val contentGlowzAuthEnabled = providers.gradleProperty("contentglowzAuthEnabled")
+val contentGlowsAuthEnabled = providers.gradleProperty("contentglowsAuthEnabled")
     .map { it.toBoolean() }
     .orElse(true)
     .get()
@@ -20,7 +20,7 @@ val releaseKeystorePassword = providers.environmentVariable("ANDROID_KEYSTORE_PA
 val releaseKeyAlias = providers.environmentVariable("ANDROID_KEY_ALIAS").orElse("").get()
 val releaseKeyPassword = providers.environmentVariable("ANDROID_KEY_PASSWORD").orElse("").get()
 
-if (contentGlowzAuthEnabled && clerkPublishableKey.isBlank()) {
+if (contentGlowsAuthEnabled && clerkPublishableKey.isBlank()) {
     throw GradleException(
         "CLERK_PUBLISHABLE_KEY is required for auth-enabled Android builds. " +
             "Provide it through the environment or an ignored Gradle property.",
@@ -28,7 +28,7 @@ if (contentGlowzAuthEnabled && clerkPublishableKey.isBlank()) {
 }
 
 android {
-    namespace = "com.contentglowz.app"
+    namespace = "com.contentglows.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -39,7 +39,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.contentglowz.app"
+        applicationId = "com.contentglows.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         // Clerk Android requires API 24. Keep Flutter's higher value when it changes.

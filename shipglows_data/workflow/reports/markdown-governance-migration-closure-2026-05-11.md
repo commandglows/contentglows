@@ -1,7 +1,7 @@
 # Markdown Governance Migration Closure Report
 
 Date: 2026-05-11
-Project: contentglowz
+Project: contentglows
 Chantier spec: `shipglows_data/workflow/specs/SPEC-global-markdown-governance-migration-2026-05-11.md`
 
 ## Scope Executed
@@ -29,7 +29,7 @@ Chantier spec: `shipglows_data/workflow/specs/SPEC-global-markdown-governance-mi
   - `shipglows_data/workflow/qa`: **1**
   - `shipglows_data/workflow/reports`: **3** (plus newly added security + closure reports = 5 total now)
 - Legacy tracking files and trackers kept as trackers where required.
-- `contentglowz/**` was intentionally excluded from scope and left unchanged.
+- `contentglows/**` was intentionally excluded from scope and left unchanged.
 
 ## Validation Evidence
 
@@ -37,7 +37,7 @@ Chantier spec: `shipglows_data/workflow/specs/SPEC-global-markdown-governance-mi
 
 - `find specs app/specs lab/specs lab/docs docs/explorations docs/qa research app/bugs lab/bugs site/docs -maxdepth 2 -type f -name '*.md'` (with missing directories ignored) returned no remaining in-scope legacy markdown files in those paths.
 
-- `git diff -- contentglowz` returned empty output (no changes in `contentglowz/**`).
+- `git diff -- contentglows` returned empty output (no changes in `contentglows/**`).
 
 ### Metadata lints
 
@@ -69,7 +69,7 @@ Chantier spec: `shipglows_data/workflow/specs/SPEC-global-markdown-governance-mi
 
 ## Exclusions and preserved legacy surfaces
 
-- `contentglowz/**`: fully excluded and unchanged.
+- `contentglows/**`: fully excluded and unchanged.
 - `site/src/content/**`: kept as runtime content and not converted to ShipGlowz frontmatter.
 - Trackers (`CHANGELOG.md`, `TASKS.md`, `AUDIT_LOG.md`, `shipglows_data/workflow/qa/TEST_LOG.md`, repo `README` files) preserved as trackers; references updated where they pointed to old governance paths.
 

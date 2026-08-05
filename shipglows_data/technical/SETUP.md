@@ -2,7 +2,7 @@
 artifact: documentation
 metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
-project: contentglowz
+project: contentglows
 created: "2026-05-04"
 updated: "2026-05-04"
 status: draft
@@ -39,7 +39,7 @@ evidence:
 next_step: "Review after the next clean clone"
 ---
 
-# Setup After Cloning ContentGlowz
+# Setup After Cloning ContentGlows
 
 This repository is a monorepo with three active surfaces:
 
@@ -50,8 +50,8 @@ This repository is a monorepo with three active surfaces:
 ## 1. Clone
 
 ```bash
-git clone git@github.com:diane-defores/contentglowz.git
-cd contentglowz
+git clone git@github.com:commandglows/contentglows.git
+cd contentglows
 ```
 
 ## 2. Install System Prerequisites
@@ -96,11 +96,11 @@ flox activate --command 'flutter test'
 For local web builds, pass the frontend runtime values as Dart defines through the existing scripts:
 
 ```bash
-API_BASE_URL=https://api.contentglowz.com \
+API_BASE_URL=https://api.contentglows.com \
 CLERK_PUBLISHABLE_KEY=pk_test_xxx \
-APP_SITE_URL=https://contentglowz.com \
-APP_WEB_URL=https://app.contentglowz.com \
-FEEDBACK_ADMIN_EMAILS=admin@contentglowz.com \
+APP_SITE_URL=https://contentglows.com \
+APP_WEB_URL=https://app.contentglows.com \
+FEEDBACK_ADMIN_EMAILS=admin@contentglows.com \
 ./build.sh --serve
 ```
 
@@ -190,7 +190,7 @@ Blacksmith runner label `blacksmith-4vcpu-ubuntu-2404`:
 
 - on `push` and `pull_request`: Flutter checks only (`flutter analyze` and `flutter test`)
 - on `workflow_dispatch`: the release APK build, then upload of the
-  `contentglowz-android-apk` artifact
+  `contentglows-android-apk` artifact
 
 Treat GitHub Actions as the only approved place for Android release APK output.
 
@@ -208,7 +208,7 @@ Useful CLI commands:
 ```bash
 gh run list --workflow android-apk.yml --limit 5
 gh run view <run-id> --log
-gh run download <run-id> -n contentglowz-android-apk -D ./artifacts/android
+gh run download <run-id> -n contentglows-android-apk -D ./artifacts/android
 adb install -r ./artifacts/android/app-release.apk
 ```
 

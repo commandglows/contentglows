@@ -50,7 +50,7 @@ function toModeFolder(renderMode: RenderMode): string {
 }
 
 export function resolveRenderRootDir(): string {
-  const configured = process.env.CONTENTGLOWZ_RENDER_DIR?.trim();
+  const configured = process.env.CONTENTGLOWS_RENDER_DIR?.trim();
   if (configured) {
     return path.resolve(configured);
   }
@@ -65,7 +65,7 @@ function normalizeStorageProvider(value: string | undefined): RenderStorageProvi
   if (normalized === "gcs") {
     return "gcs";
   }
-  throw new Error("CONTENTGLOWZ_RENDER_STORAGE must be local or gcs");
+  throw new Error("CONTENTGLOWS_RENDER_STORAGE must be local or gcs");
 }
 
 export function normalizeGcsPrefix(prefix: string | undefined): string {
@@ -80,7 +80,7 @@ export function normalizeGcsPrefix(prefix: string | undefined): string {
 }
 
 export function readRenderStorageConfig(): RenderStorageConfig {
-  const provider = normalizeStorageProvider(process.env.CONTENTGLOWZ_RENDER_STORAGE);
+  const provider = normalizeStorageProvider(process.env.CONTENTGLOWS_RENDER_STORAGE);
   const renderRootDir = resolveRenderRootDir();
   if (provider === "local") {
     return {
@@ -92,7 +92,7 @@ export function readRenderStorageConfig(): RenderStorageConfig {
 
   const gcsBucket = process.env.GCS_RENDER_BUCKET?.trim();
   if (!gcsBucket) {
-    throw new Error("GCS_RENDER_BUCKET is required when CONTENTGLOWZ_RENDER_STORAGE=gcs");
+    throw new Error("GCS_RENDER_BUCKET is required when CONTENTGLOWS_RENDER_STORAGE=gcs");
   }
 
   return {

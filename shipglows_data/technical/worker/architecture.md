@@ -22,7 +22,7 @@ evidence:
   - worker/server/index.ts
   - worker/server/render-storage.ts
   - worker/remotion/index.ts
-  - worker/remotion/ContentGlowzTimelineVideo.tsx
+  - worker/remotion/ContentGlowsTimelineVideo.tsx
 linked_systems:
   - Remotion
   - Express

@@ -1,12 +1,12 @@
 # Markdown Governance Security Review
 
 Date: 2026-05-11
-Project: contentglowz
+Project: contentglows
 
 Command run:
 
 ```bash
-rg -n -i "api[_-]?key|token|secret|password|bearer|authorization|cookie|private|localhost|supabase|service[_-]?role|webhook|client_secret" . -g '*.md' -g '!contentglowz/**' -g '!node_modules/**' -g '!site/node_modules/**'
+rg -n -i "api[_-]?key|token|secret|password|bearer|authorization|cookie|private|localhost|supabase|service[_-]?role|webhook|client_secret" . -g '*.md' -g '!contentglows/**' -g '!node_modules/**' -g '!site/node_modules/**'
 ```
 
 ## Scope Reviewed

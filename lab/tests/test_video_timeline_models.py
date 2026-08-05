@@ -117,7 +117,7 @@ def test_remotion_props_are_deterministic_and_reject_client_urls():
         timeline=timeline,
     )
 
-    assert props["composition_id"] == "ContentGlowzTimelineVideo"
+    assert props["composition_id"] == "ContentGlowsTimelineVideo"
     assert props["format"]["width"] == 1080
     assert props["format"]["duration_in_frames"] == 90
 

@@ -30,7 +30,7 @@ next_step: /sf-docs audit CLAUDE.md
 
 ## Project Overview
 
-`site` is the public Astro surface for ContentGlowz.
+`site` is the public Astro surface for ContentGlows.
 
 ## Canonical References
 

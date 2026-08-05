@@ -3,7 +3,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
-const themePath = resolve(root, 'tools/design-tokens/contentglowz_theme.json');
+const themePath = resolve(root, 'tools/design-tokens/contentglows_theme.json');
 const outputPath = resolve(
   root,
   'app/lib/presentation/theme/app_theme_tokens.dart',
@@ -152,7 +152,7 @@ const compactRadius = toNumber(radius.lg) - 4;
 
 const source = `import 'package:flutter/material.dart';
 
-// Generated from ../../../../tools/design-tokens/contentglowz_theme.json.
+// Generated from ../../../../tools/design-tokens/contentglows_theme.json.
 // Keep project-wide visual changes in that shared token file.
 class AppThemeTokens {
   const AppThemeTokens._();

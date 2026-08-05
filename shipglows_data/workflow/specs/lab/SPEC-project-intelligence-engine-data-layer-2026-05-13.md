@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: feature
 owner: Diane
 confidence: high
-user_story: "En tant que propriétaire d'un projet ContentGlowz, je veux importer ou connecter mes données projet et obtenir une mémoire projet nettoyée, dédupliquée et exploitable, afin de prendre des décisions de contenu, SEO et croissance avec des preuves et un niveau de confiance."
+user_story: "En tant que propriétaire d'un projet ContentGlows, je veux importer ou connecter mes données projet et obtenir une mémoire projet nettoyée, dédupliquée et exploitable, afin de prendre des décisions de contenu, SEO et croissance avec des preuves et un niveau de confiance."
 risk_level: high
 security_impact: yes
 docs_impact: yes
@@ -43,7 +43,7 @@ depends_on:
     required_status: "ready"
 supersedes: []
 evidence:
-  - "shipglows_data/workflow/explorations/2026-05-12-project-intelligence-engine.md concludes that ContentGlowz has feature-specific intelligence bricks but no canonical project brain."
+  - "shipglows_data/workflow/explorations/2026-05-12-project-intelligence-engine.md concludes that ContentGlows has feature-specific intelligence bricks but no canonical project brain."
   - "lab/api/services/ai_runtime_service.py centralizes BYOK/platform provider resolution for openrouter, exa, and firecrawl."
   - "lab/api/services/repo_understanding_service.py already collects repo/site evidence and synthesizes persona-ready understanding."
   - "lab/api/routers/search_console.py and api/services/search_console_store.py already store project-scoped SEO snapshots and opportunities."
@@ -61,33 +61,33 @@ Project Intelligence Engine Data Layer
 
 ## Status
 
-Ready. This spec formalizes the product idea into an implementation-ready V1 chantier. It intentionally separates the reliable V1 promise from the aspirational provider claim: ContentGlowz should first build a project-owned intelligence layer that cleans, formats, deduplicates, scores, and cites evidence. Direct fine-tuning or deployment to OpenAI, Gemini, or open-source runtimes is a later provider-adapter layer and must not be marketed as universally possible "in minutes" until each provider path has a tested contract.
+Ready. This spec formalizes the product idea into an implementation-ready V1 chantier. It intentionally separates the reliable V1 promise from the aspirational provider claim: ContentGlows should first build a project-owned intelligence layer that cleans, formats, deduplicates, scores, and cites evidence. Direct fine-tuning or deployment to OpenAI, Gemini, or open-source runtimes is a later provider-adapter layer and must not be marketed as universally possible "in minutes" until each provider path has a tested contract.
 
 Revision 0.1.1 is a post-verify hardening pass. The first implementation delivered the main backend and Flutter surface with green checks, but the next `sf-start` must close the verification gaps before ship: atomic active-job enforcement, removed duplicate evidence exclusion, bounded upload reads, global connector caps, and explicit Flutter proof for jobs/documents/deduplication/file import behavior.
 
 ## User Story
 
-En tant que propriétaire d'un projet ContentGlowz, je veux importer ou connecter mes données projet et obtenir une mémoire projet nettoyée, dédupliquée et exploitable, afin de prendre des décisions de contenu, SEO et croissance avec des preuves et un niveau de confiance.
+En tant que propriétaire d'un projet ContentGlows, je veux importer ou connecter mes données projet et obtenir une mémoire projet nettoyée, dédupliquée et exploitable, afin de prendre des décisions de contenu, SEO et croissance avec des preuves et un niveau de confiance.
 
-Primary actor: authenticated ContentGlowz user with access to an active project.
+Primary actor: authenticated ContentGlows user with access to an active project.
 
-Trigger: the user uploads project files, starts a project intelligence sync from existing project sources, opens the Project Intelligence screen, or asks ContentGlowz to generate recommendations from the current project memory.
+Trigger: the user uploads project files, starts a project intelligence sync from existing project sources, opens the Project Intelligence screen, or asks ContentGlows to generate recommendations from the current project memory.
 
 Observable result: the user sees a project-scoped intelligence dashboard with source inventory, cleaning/deduplication status, extracted facts, confidence/provenance, recommendations, and actions such as "add to Idea Pool".
 
 ## Minimal Behavior Contract
 
-The system accepts project-scoped uploads and selected existing ContentGlowz sources, creates an ingestion job, extracts readable text, normalizes and chunks that text, detects exact and near duplicates, stores source documents, facts, provenance, confidence, and recommendations under the requesting `user_id + project_id`, and shows the user what was accepted, skipped, duplicated, failed, and recommended. If a file, connector, provider, project, or permission check fails, the job records a recoverable error without exposing another tenant's data or sending private content to providers unexpectedly. The easy edge case is treating duplicated or stale source material as new truth: duplicated evidence must reinforce provenance when useful, but it must not inflate recommendation confidence or create duplicate ideas.
+The system accepts project-scoped uploads and selected existing ContentGlows sources, creates an ingestion job, extracts readable text, normalizes and chunks that text, detects exact and near duplicates, stores source documents, facts, provenance, confidence, and recommendations under the requesting `user_id + project_id`, and shows the user what was accepted, skipped, duplicated, failed, and recommended. If a file, connector, provider, project, or permission check fails, the job records a recoverable error without exposing another tenant's data or sending private content to providers unexpectedly. The easy edge case is treating duplicated or stale source material as new truth: duplicated evidence must reinforce provenance when useful, but it must not inflate recommendation confidence or create duplicate ideas.
 
 For the verification-gap repair, "implemented" means the invariants are enforced by code paths that cannot be bypassed by common races or derived reads: active jobs are claimed atomically at the store/database boundary, source removal excludes duplicate rows and recommendations derived from duplicate/canonical document relationships, upload size checks do not require reading an unbounded file into memory, connector caps apply globally per sync run, and Flutter exposes enough job/document/dedupe state to prove the user can understand what happened.
 
 ## Success Behavior
 
-- Given an authenticated user with an owned active project, when they upload supported text-like files, then ContentGlowz creates a `project_intelligence.ingest` job and persists source records, cleaned documents, chunks, dedupe decisions, and a job summary.
+- Given an authenticated user with an owned active project, when they upload supported text-like files, then ContentGlows creates a `project_intelligence.ingest` job and persists source records, cleaned documents, chunks, dedupe decisions, and a job summary.
 - Given existing project sources such as project profile, repo understanding, Search Console snapshots, Idea Pool items, creator profile, personas, work domains, and project assets metadata, when the user runs "sync project intelligence", then those sources are imported into the same memory model with explicit source type and provenance.
 - Given duplicated content from two uploads or one upload plus one connector, when ingestion runs, then exact duplicates are skipped by hash and near duplicates are linked to the canonical document with a visible duplicate count and reason.
 - Given enough clean evidence, when recommendations are generated, then the response includes recommendation type, priority, confidence, evidence references, affected entities, and a safe next action.
-- Given a recommendation that can become an idea, when the user selects "add to Idea Pool", then ContentGlowz creates or reuses a deduplicated idea scoped to the same user/project and stores the originating evidence IDs.
+- Given a recommendation that can become an idea, when the user selects "add to Idea Pool", then ContentGlows creates or reuses a deduplicated idea scoped to the same user/project and stores the originating evidence IDs.
 - Given BYOK or platform mode is required for LLM summarization, when runtime credentials are available, then provider calls go through `ai_runtime_service` and never read raw provider env vars directly inside the new route/service.
 - Given AI runtime is unavailable, when ingestion itself can run deterministically, then cleaning, chunking, dedupe, source inventory, and deterministic recommendations still complete; LLM-only synthesis is marked degraded.
 - Proof of success includes backend tests for ownership, file validation, ingestion idempotency, dedupe, fact/recommendation provenance, AI runtime preflight, and Idea Pool handoff, plus Flutter tests for dashboard states.
@@ -108,7 +108,7 @@ For the verification-gap repair, "implemented" means the invariants are enforced
 
 ## Problem
 
-ContentGlowz already has intelligence in several places, but each feature owns its own local interpretation:
+ContentGlows already has intelligence in several places, but each feature owns its own local interpretation:
 
 - project onboarding knows project profile, source URL, local repo path, tech stack, and content directories;
 - persona draft can inspect repo/site evidence and produce persona candidates;
@@ -116,11 +116,11 @@ ContentGlowz already has intelligence in several places, but each feature owns i
 - Idea Pool ingests newsletter, SEO, competitor, social, weekly ritual, and Search Console ideas;
 - the AI runtime resolver controls BYOK/platform provider usage.
 
-The missing product layer is a durable "project brain" that every decision flow can query. Without that layer, uploaded files, crawled content, SEO signals, personas, assets, ideas, and repo evidence remain fragmented. Decisions may duplicate work, miss provenance, over-trust stale data, or silently depend on a provider-specific upload/fine-tuning path that does not preserve ContentGlowz's tenant boundaries and evidence model.
+The missing product layer is a durable "project brain" that every decision flow can query. Without that layer, uploaded files, crawled content, SEO signals, personas, assets, ideas, and repo evidence remain fragmented. Decisions may duplicate work, miss provenance, over-trust stale data, or silently depend on a provider-specific upload/fine-tuning path that does not preserve ContentGlows's tenant boundaries and evidence model.
 
 ## Solution
 
-Build `Project Intelligence Engine` V1 as a backend-owned, project-scoped data layer plus a compact Flutter decision surface. V1 ingests uploads and existing ContentGlowz sources, normalizes them into sources/documents/chunks/facts/recommendations with dedupe and provenance, and exposes reviewable recommendations that can feed the Idea Pool. Provider-specific file search, fine-tuning, Gemini, OpenAI, and open-source deployments are represented as export/readiness metadata in V1, not executed automatically.
+Build `Project Intelligence Engine` V1 as a backend-owned, project-scoped data layer plus a compact Flutter decision surface. V1 ingests uploads and existing ContentGlows sources, normalizes them into sources/documents/chunks/facts/recommendations with dedupe and provenance, and exposes reviewable recommendations that can feed the Idea Pool. Provider-specific file search, fine-tuning, Gemini, OpenAI, and open-source deployments are represented as export/readiness metadata in V1, not executed automatically.
 
 ## Scope In
 
@@ -197,7 +197,7 @@ Build `Project Intelligence Engine` V1 as a backend-owned, project-scoped data l
 - Dedupe must be deterministic and testable.
 - Recommendation confidence must be explainable from evidence quality, recency, source diversity, and duplicate handling.
 - Flutter UI must remain project-scoped and degrade gracefully when backend data is unavailable.
-- Avoid provider lock-in: ContentGlowz's own normalized memory remains the source of truth.
+- Avoid provider lock-in: ContentGlows's own normalized memory remains the source of truth.
 
 ## Dependencies
 
@@ -226,7 +226,7 @@ Build `Project Intelligence Engine` V1 as a backend-owned, project-scoped data l
   - Gemini Files API guide: https://ai.google.dev/gemini-api/docs/files
   - Gemini embeddings guide: https://ai.google.dev/gemini-api/docs/embeddings
   - Gemini fine-tuning notice: https://ai.google.dev/gemini-api/docs/model-tuning
-- External docs verdict: `fresh-docs checked`. Current provider docs support a V1 direction where ContentGlowz keeps its own memory and later exports to provider-specific retrieval/fine-tuning paths only after a dedicated adapter decision. OpenAI vector stores/file search are provider-managed retrieval tools, not the ContentGlowz source of truth. OpenAI model optimization requires evals and task-specific datasets, and the current docs state the fine-tuning platform is winding down for new users, so it is not the right default for arbitrary uploads. Gemini Files API uploads are temporary media/file inputs, Gemini embeddings can support RAG-like retrieval, and Gemini API fine-tuning is not currently available for a supported Gemini API model after Gemini 1.5 Flash-001 deprecation; Vertex AI or Gemini Enterprise Agent Platform is the separate tuning path.
+- External docs verdict: `fresh-docs checked`. Current provider docs support a V1 direction where ContentGlows keeps its own memory and later exports to provider-specific retrieval/fine-tuning paths only after a dedicated adapter decision. OpenAI vector stores/file search are provider-managed retrieval tools, not the ContentGlows source of truth. OpenAI model optimization requires evals and task-specific datasets, and the current docs state the fine-tuning platform is winding down for new users, so it is not the right default for arbitrary uploads. Gemini Files API uploads are temporary media/file inputs, Gemini embeddings can support RAG-like retrieval, and Gemini API fine-tuning is not currently available for a supported Gemini API model after Gemini 1.5 Flash-001 deprecation; Vertex AI or Gemini Enterprise Agent Platform is the separate tuning path.
 
 ## Invariants
 
@@ -237,7 +237,7 @@ Build `Project Intelligence Engine` V1 as a backend-owned, project-scoped data l
 - Recommendations must cite evidence IDs and must not rely on uncited LLM claims.
 - Deduped documents must keep provenance without double-counting confidence.
 - Provider calls must use the current AI runtime resolver and fail with structured runtime errors.
-- Source memory remains ContentGlowz-owned even if a future provider export is created.
+- Source memory remains ContentGlows-owned even if a future provider export is created.
 - No recommendation can create content directly; it can only create/reuse Idea Pool entries or guide the user.
 - Removed sources and their derived evidence must not appear in source inventory, facts, recommendations, provider readiness, or Idea Pool actions.
 - Removed-source exclusion includes second-order duplicate evidence: if a removed document participated in `ProjectIntelligenceDuplicate` as either duplicate or canonical document, that duplicate link cannot appear in status, recommendations, provider readiness, or evidence details.
@@ -566,7 +566,7 @@ Build `Project Intelligence Engine` V1 as a backend-owned, project-scoped data l
   5. Add or clarify Flutter import behavior and expose job/document/dedupe evidence in the screen, with analyzer and any available widget/model tests.
   6. Update README notes to match the repaired behavior.
 - Provider approach:
-  - V1 uses ContentGlowz-owned memory as source of truth.
+  - V1 uses ContentGlows-owned memory as source of truth.
   - V1 may generate a provider readiness report.
   - V1 must not launch provider fine-tuning jobs or upload files to OpenAI/Gemini automatically.
   - Later OpenAI adapter can map reviewed documents to vector stores/file search or JSONL fine-tuning datasets after eval requirements exist.
@@ -590,7 +590,7 @@ Build `Project Intelligence Engine` V1 as a backend-owned, project-scoped data l
 None blocking for V1. The following decisions are intentionally locked by this spec:
 
 - V1 is project-owned memory and recommendations, not automatic provider fine-tuning.
-- V1 accepts only text-like files and existing ContentGlowz connector data.
+- V1 accepts only text-like files and existing ContentGlows connector data.
 - V1 keeps deterministic ingestion usable without AI runtime credentials.
 - V1 provider readiness reports capability and next steps but does not deploy.
 

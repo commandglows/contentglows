@@ -40,7 +40,7 @@ next_step: "/sf-docs technical audit site"
 
 ## Purpose
 
-This module covers the ContentGlowz Astro site routing, layouts, shared components, runtime content schema, SEO metadata, sitemap behavior, and build validation. Agents should load it before changing public routes, page copy structure, content collection schemas, canonical URLs, language routing, or Vercel-facing build behavior.
+This module covers the ContentGlows Astro site routing, layouts, shared components, runtime content schema, SEO metadata, sitemap behavior, and build validation. Agents should load it before changing public routes, page copy structure, content collection schemas, canonical URLs, language routing, or Vercel-facing build behavior.
 
 ## Owned Files
 

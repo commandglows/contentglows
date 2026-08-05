@@ -2,12 +2,12 @@
 artifact: exploration_report
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-05-24"
 updated: "2026-05-24"
 status: draft
 source_skill: sf-explore
-scope: "PDF comme source pour la boîte à idées ContentGlowz"
+scope: "PDF comme source pour la boîte à idées ContentGlows"
 owner: "Diane"
 confidence: medium
 risk_level: high
@@ -27,7 +27,7 @@ depends_on:
   - "app idea-pool workflow"
   - "lab research/content ingestion APIs"
 supersedes: []
-next_step: "/sf-spec ContentGlowz PDF source to idea box"
+next_step: "/sf-spec ContentGlows PDF source to idea box"
 ---
 
 # Exploration Report: PDF comme source pour la boîte à idées
@@ -49,7 +49,7 @@ Et si les utilisateurs voulaient déposer un PDF comme source dans la boîte à 
 
 ## Problem Framing
 
-Le cas d'usage est fort pour ContentGlowz : beaucoup de sources utilisateur vivent déjà dans des PDFs, par exemple briefs clients, rapports, transcriptions exportées, livres blancs, cours, notes de formation, documents de marque ou études concurrentielles.
+Le cas d'usage est fort pour ContentGlows : beaucoup de sources utilisateur vivent déjà dans des PDFs, par exemple briefs clients, rapports, transcriptions exportées, livres blancs, cours, notes de formation, documents de marque ou études concurrentielles.
 
 Le produit ne devrait pas traiter le PDF comme un simple fichier joint. La vraie valeur est :
 
@@ -64,7 +64,7 @@ Le produit ne devrait pas traiter le PDF comme un simple fichier joint. La vraie
 ### Option A: URL PDF via Firecrawl
 
 - Summary: l'utilisateur colle une URL vers un PDF public ; `lab` appelle Firecrawl et récupère du markdown structuré.
-- Pros: rapide à tester, peu de stockage fichier côté ContentGlowz, bonne compatibilité avec les sources publiques.
+- Pros: rapide à tester, peu de stockage fichier côté ContentGlows, bonne compatibilité avec les sources publiques.
 - Cons: ne couvre pas les PDFs privés, dépendance fournisseur, exposition potentielle de documents à un tiers, coûts à surveiller.
 
 ### Option B: Upload PDF privé puis extraction backend
@@ -99,7 +99,7 @@ La meilleure direction est un **MVP hybride limité** :
 - Pipeline : `PDF -> markdown structuré -> chunks/citations -> idées -> angles -> contenus`.
 - Garde-fou : pas d'upload privé au premier lot tant que les règles sécurité, rétention, quotas et redaction ne sont pas spécifiées.
 
-Fire-PDF est intéressant comme brique, mais il ne doit pas devenir le contrat produit. Le contrat ContentGlowz doit rester : source fiable, idées traçables, contenu relisable, contrôle humain.
+Fire-PDF est intéressant comme brique, mais il ne doit pas devenir le contrat produit. Le contrat ContentGlows doit rester : source fiable, idées traçables, contenu relisable, contrôle humain.
 
 ## Non-Decisions
 
@@ -141,11 +141,11 @@ Fire-PDF est intéressant comme brique, mais il ne doit pas devenir le contrat p
 
 ## Handoff
 
-- Recommended next command: `/sf-spec ContentGlowz PDF source to idea box`
+- Recommended next command: `/sf-spec ContentGlows PDF source to idea box`
 - Why this next step: le sujet touche produit, backend, app, sécurité, coûts et expérience utilisateur ; une spec est nécessaire avant build.
 
 ## Exploration Run History
 
 | Date UTC | Prompt/Focus | Action | Result | Next step |
 |----------|--------------|--------|--------|-----------|
-| 2026-05-24 00:00:00 UTC | PDF comme source pour boîte à idées | Analyse produit + source Fire-PDF | MVP hybride limité recommandé | `/sf-spec ContentGlowz PDF source to idea box` |
+| 2026-05-24 00:00:00 UTC | PDF comme source pour boîte à idées | Analyse produit + source Fire-PDF | MVP hybride limité recommandé | `/sf-spec ContentGlows PDF source to idea box` |

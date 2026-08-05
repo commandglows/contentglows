@@ -3,7 +3,7 @@ title: "Building a $10K MRR AI SEO Platform: Our Journey from $0 to Revenue (Liv
 description: "Follow our real journey building an AI-powered SEO platform from scratch. Monthly revenue updates, traffic metrics, and lessons learned. Updated live as we grow."
 pubDate: 2026-01-15
 lastUpdated: 2026-01-15
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["startup journey", "mrr growth", "seo saas", "transparency", "case study"]
 featured: true
 image: "/images/blog/journey-to-10k-mrr.jpg"
@@ -21,7 +21,7 @@ series: "startup-journey"
 
 ## 🎯 What We're Building
 
-**ContentGlowz** - An AI-powered multi-agent platform for SEO automation, content generation, and marketing workflows.
+**ContentGlows** - An AI-powered multi-agent platform for SEO automation, content generation, and marketing workflows.
 
 **Core Product:**
 - **SEO Robot:** 6-agent system for research, strategy, content creation, and optimization
@@ -399,7 +399,7 @@ series: "startup-journey"
 - Create valuable content for SEO
 
 **Follow Updates:**
-- [Twitter/X: @ContentGlowz](#)
+- [Twitter/X: @ContentGlows](#)
 - [Newsletter: Monthly Updates](#)
 - [RSS Feed](#)
 - [GitHub: Open Roadmap](#)
@@ -411,8 +411,8 @@ series: "startup-journey"
 **Questions? Feedback? Want to share your journey?**
 
 Comment below or reach out:
-- Email: contact@contentglowz.com
-- Twitter: @ContentGlowz
+- Email: contact@contentglows.com
+- Twitter: @ContentGlows
 - Discord: [Join our community](#)
 
 **Other founders building AI tools?** Let's connect and share insights!

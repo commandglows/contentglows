@@ -2,7 +2,7 @@
 title: "Building Our First AI Research Analyst: From Zero to 4/4 Tests Passing"
 description: "How we built the first agent in our SEO multi-agent system: technical challenges, API integrations, and lessons from implementing a production-grade AI analyst in 2 weeks."
 pubDate: 2026-01-15
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["ai agents", "crewai", "seo automation", "python", "build in public"]
 featured: true
 image: "/images/blog/research-analyst-agent.jpg"
@@ -1235,10 +1235,10 @@ clusters = content_strategist.build_topic_clusters(research_report)
 ## 📚 Resources
 
 ### Code Repository
-- [GitHub: contentglowz](https://github.com/user/contentglowz)
-- [agents/seo/research_analyst.py](https://github.com/user/contentglowz/blob/master/agents/seo/research_analyst.py)
-- [agents/seo/tools/research_tools.py](https://github.com/user/contentglowz/blob/master/agents/seo/tools/research_tools.py)
-- [test_research_simple.py](https://github.com/user/contentglowz/blob/master/test_research_simple.py)
+- [GitHub: contentglows](https://github.com/user/contentglows)
+- [agents/seo/research_analyst.py](https://github.com/user/contentglows/blob/master/agents/seo/research_analyst.py)
+- [agents/seo/tools/research_tools.py](https://github.com/user/contentglows/blob/master/agents/seo/tools/research_tools.py)
+- [test_research_simple.py](https://github.com/user/contentglows/blob/master/test_research_simple.py)
 
 ### Documentation
 - [CrewAI Docs](https://docs.crewai.com/)
@@ -1257,11 +1257,11 @@ clusters = content_strategist.build_topic_clusters(research_report)
 
 **Building in public:** We share code, metrics, and lessons weekly.
 
-- [GitHub](https://github.com/user/contentglowz) - Star the repo
-- [Twitter/X @ContentGlowz](https://twitter.com/contentglowz) - Follow for updates
-- [Blog](https://contentglowz.com/blog) - Deep dives like this one
+- [GitHub](https://github.com/user/contentglows) - Star the repo
+- [Twitter/X @ContentGlows](https://twitter.com/contentglows) - Follow for updates
+- [Blog](https://contentglows.com/blog) - Deep dives like this one
 
-**Questions about our agent implementation?** Comment below or reach out: contact@contentglowz.com
+**Questions about our agent implementation?** Comment below or reach out: contact@contentglows.com
 
 ---
 

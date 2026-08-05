@@ -30,12 +30,12 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Connectez la source de votre projet'), findsOneWidget);
-      expect(find.text('Fermer ContentGlowz ?'), findsNothing);
+      expect(find.text('Fermer ContentGlows ?'), findsNothing);
 
       await tester.binding.handlePopRoute();
       await tester.pumpAndSettle();
 
-      expect(find.text('Fermer ContentGlowz ?'), findsOneWidget);
+      expect(find.text('Fermer ContentGlows ?'), findsOneWidget);
       expect(
         find.text('Est-ce que vous êtes sûr de vouloir fermer l’application ?'),
         findsOneWidget,

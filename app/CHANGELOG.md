@@ -16,7 +16,7 @@ The format is based on Keep a Changelog.
 ### Fixed
 - Coalesced concurrent app access refreshes for the same Clerk session so resume and manual refresh flows share one backend health/bootstrap pass.
 - Fixed the Clerk email sign-up OTP flow by switching the embedded SignUp component to hash routing on the static auth page and skipping duplicate mounts on the same node.
-- Fixed production API availability detection when `API_BASE_URL` is injected as a bare host such as `api.contentglowz.com`; the app now normalizes it to an HTTPS origin before health checks.
+- Fixed production API availability detection when `API_BASE_URL` is injected as a bare host such as `api.contentglows.com`; the app now normalizes it to an HTTPS origin before health checks.
 - Fixed Android system Back in the app shell so pushed in-app routes pop to their parent before showing the app-exit confirmation dialog.
 
 ## [2026-06-12]
@@ -55,7 +55,7 @@ The format is based on Keep a Changelog.
 - Added backend regressions for project-scoped account listing, forged account refusal before provider calls, connect state handling, local unlink, scheduled/published results, and partial publish recovery.
 
 ### Changed
-- Scoped publish account listing, connect, disconnect, and approve-to-publish flows to the active ContentGlowz project instead of a provider-wide account list.
+- Scoped publish account listing, connect, disconnect, and approve-to-publish flows to the active ContentGlows project instead of a provider-wide account list.
 - Documented server-only `ZERNIO_API_KEY`, unsupported WordPress/Ghost auto-publish behavior, and manual Zernio smoke verification steps.
 
 ### Security
@@ -197,11 +197,11 @@ The format is based on Keep a Changelog.
 ## [2026-04-12]
 
 ### Changed
-- Rebranded the Flutter app from `ContentGlowzz` to `ContentGlowz` across the app shell, entry/auth/settings copy, web metadata, Android package identifiers, and project documentation.
-- Switched the default deployed API base URL from local development to `https://api.contentglowz.com` in runtime config, PM2/Vercel build scripts, and README examples.
+- Rebranded the Flutter app from `ContentGlowsz` to `ContentGlows` across the app shell, entry/auth/settings copy, web metadata, Android package identifiers, and project documentation.
+- Switched the default deployed API base URL from local development to `https://api.contentglows.com` in runtime config, PM2/Vercel build scripts, and README examples.
 
 ### Fixed
-- Corrected the generated Android entrypoint/package path to match the renamed `com.contentglowz.app` namespace.
+- Corrected the generated Android entrypoint/package path to match the renamed `com.contentglows.app` namespace.
 - Regenerated Flutter web output so the built assets, manifest, bootstrap metadata, and service worker version align with the current app identity.
 
 ## [0.7.0] - 2026-04-11 — Mobile UX Overhaul
@@ -259,7 +259,7 @@ The format is based on Keep a Changelog.
 - **Format-specific metadata** in Flutter: content cards and editor show SEO keyword, platform, duration, hashtags, narrative thread depending on content type.
 - **Settings: Content Frequency section** with sliders for each format.
 - Spec document: `shipglows_data/workflow/specs/app/SPEC-content-pipeline-unification.md`.
-- Flutter repo initialized and pushed to GitHub (`dianedef/ContentGlowz-app`).
+- Flutter repo initialized and pushed to GitHub (`dianedef/ContentGlows-app`).
 
 ### Changed
 - Angles screen now calls `POST /api/psychology/dispatch-pipeline` for real content generation (with fallback to old `createContentFromAngle`).

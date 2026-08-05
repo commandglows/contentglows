@@ -50,7 +50,7 @@ DART_DEFINE_ARGS=()
 if [[ -n "$API_BASE_URL_VALUE" ]]; then
   DART_DEFINE_ARGS+=("--dart-define=API_BASE_URL=$API_BASE_URL_VALUE")
 else
-  echo "WARNING: API_BASE_URL not set — using Dart default (https://api.contentglowz.com)" >&2
+  echo "WARNING: API_BASE_URL not set — using Dart default (https://api.contentglows.com)" >&2
 fi
 
 if [[ -n "$CLERK_PUBLISHABLE_KEY_VALUE" ]]; then

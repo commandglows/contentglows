@@ -2,7 +2,7 @@
 artifact: exploration_report
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-05-06"
 updated: "2026-05-06"
 status: draft
@@ -22,7 +22,7 @@ evidence:
   - "shipglows_data/workflow/specs/app/SPEC-android-device-screen-capture.md defines Android MediaProjection local-only PNG/MP4 capture."
   - "shipglows_data/workflow/specs/app/SPEC-local-capture-assets-linked-to-content.md keeps media local and stores only asset metadata server-side."
   - "app/lib/data/services/device_capture_service.dart exposes takeScreenshot/startRecording through platform channels."
-  - "app/android/app/src/main/kotlin/com/contentglowz/app/capture/* records actual screen pixels through MediaProjection surfaces."
+  - "app/android/app/src/main/kotlin/com/contentglows/app/capture/* records actual screen pixels through MediaProjection surfaces."
   - "Android documentation requires user consent per MediaProjection session and treats a session as one createVirtualDisplay call."
   - "shipglows_data/workflow/research/shared/android-privacy-screen-redaction-technologies.md validates Android-native ML Kit/MediaCodec/MediaMuxer/Media3 technology choices for privacy redaction."
 depends_on:
@@ -36,7 +36,7 @@ next_step: "/sf-spec privacy mode for screen capture text obfuscation"
 
 ## Starting Question
 
-For confidentiality, all text visible in whole-device screen recordings should become unreadable across arbitrary apps: messaging, browser, third-party apps, system screens, and ContentGlowz. Should ContentGlowz transform text before recording, during recording, or after recording, and should the app add a character-scrambling feature?
+For confidentiality, all text visible in whole-device screen recordings should become unreadable across arbitrary apps: messaging, browser, third-party apps, system screens, and ContentGlows. Should ContentGlows transform text before recording, during recording, or after recording, and should the app add a character-scrambling feature?
 
 ## Context Read
 
@@ -44,23 +44,23 @@ For confidentiality, all text visible in whole-device screen recordings should b
 - `shipglows_data/workflow/specs/app/SPEC-local-capture-assets-linked-to-content.md` - Confirms captures may be linked to content but raw files remain local in V1.
 - `app/lib/data/services/device_capture_service.dart` - Shows Flutter only starts/stops native capture and receives completed asset metadata.
 - `app/lib/presentation/screens/capture/capture_screen.dart` - Shows the current user workflow has capture controls, local history, share, discard, and content attachment.
-- `app/android/app/src/main/kotlin/com/contentglowz/app/capture/*` - Shows native code captures rendered pixels through MediaProjection, VirtualDisplay, ImageReader, and MediaRecorder.
+- `app/android/app/src/main/kotlin/com/contentglows/app/capture/*` - Shows native code captures rendered pixels through MediaProjection, VirtualDisplay, ImageReader, and MediaRecorder.
 
 ## Internet Research
 
 - [Android Media projection](https://developer.android.com/guide/topics/large-screens/media-projection) - Accessed 2026-05-06 - Used to confirm per-session consent, Android 14 token behavior, foreground service requirements, and whole-display/app-window capture behavior.
 - [Android MediaProjection API reference](https://developer.android.com/reference/android/media/projection/MediaProjection.html) - Accessed 2026-05-06 - Used to confirm callback/resource lifecycle expectations.
 - [Android capture video and audio playback](https://developer.android.com/media/platform/av-capture) - Accessed 2026-05-06 - Used to confirm platform-level capture restrictions and that device/admin/source apps can prevent capture.
-- [Android AccessibilityService API reference](https://developer.android.com/reference/android/accessibilityservice/AccessibilityService.html) - Accessed 2026-05-06 - Used to evaluate whether ContentGlowz could observe third-party app text nodes and draw accessibility overlays.
-- [Google Play AccessibilityService policy](https://support.google.com/googleplay/android-developer/answer/10964491) - Accessed 2026-05-06 - Used to evaluate consent, disclosure, declaration, and policy constraints if ContentGlowz uses accessibility APIs.
+- [Android AccessibilityService API reference](https://developer.android.com/reference/android/accessibilityservice/AccessibilityService.html) - Accessed 2026-05-06 - Used to evaluate whether ContentGlows could observe third-party app text nodes and draw accessibility overlays.
+- [Google Play AccessibilityService policy](https://support.google.com/googleplay/android-developer/answer/10964491) - Accessed 2026-05-06 - Used to evaluate consent, disclosure, declaration, and policy constraints if ContentGlows uses accessibility APIs.
 - [Google RCS for Business documentation](https://developers.google.com/business-communications/rcs-business-messaging) - Accessed 2026-05-06 - Used to check whether Google messaging APIs are about business agent messaging, not modifying the Google Messages client UI.
-- [Android privacy redaction technology research](../research/contentglowz_other/android-privacy-screen-redaction-technologies.md) - Created 2026-05-07 - Used to select ML Kit Text Recognition, MediaProjection, MediaCodec/MediaMuxer, Media3 Transformer, and optional AccessibilityService as the likely implementation stack.
+- [Android privacy redaction technology research](../research/contentglows_other/android-privacy-screen-redaction-technologies.md) - Created 2026-05-07 - Used to select ML Kit Text Recognition, MediaProjection, MediaCodec/MediaMuxer, Media3 Transformer, and optional AccessibilityService as the likely implementation stack.
 
 ## Problem Framing
 
-The sensitive object is not only the final exported video. It is every frame produced by MediaProjection, every local PNG/MP4 stored by the app, every preview rendered in ContentGlowz, every share/export action, and any future AI/upload pipeline. If clear text ever reaches the recorded MP4, post-processing can reduce exposure in the shared copy but does not erase the fact that a sensitive local original existed.
+The sensitive object is not only the final exported video. It is every frame produced by MediaProjection, every local PNG/MP4 stored by the app, every preview rendered in ContentGlows, every share/export action, and any future AI/upload pipeline. If clear text ever reaches the recorded MP4, post-processing can reduce exposure in the shared copy but does not erase the fact that a sensitive local original existed.
 
-The user clarified that the target is arbitrary whole-screen capture, not only recording ContentGlowz. That means ContentGlowz does not control the UI text source and cannot reliably "scramble characters" before display. MediaProjection receives rendered pixels, so the realistic problem is text-region detection and pixel masking/redaction across video frames.
+The user clarified that the target is arbitrary whole-screen capture, not only recording ContentGlows. That means ContentGlows does not control the UI text source and cannot reliably "scramble characters" before display. MediaProjection receives rendered pixels, so the realistic problem is text-region detection and pixel masking/redaction across video frames.
 
 The real requirement is therefore: prevent readable sensitive text from entering durable capture files whenever confidentiality mode is enabled, while being honest that arbitrary third-party screens cannot be perfectly sanitized without missed-detection risk.
 
@@ -68,10 +68,10 @@ The real requirement is therefore: prevent readable sensitive text from entering
 
 ### Option A: Pre-production Obfuscation Before Recording
 
-Summary: The user prepares the screen before recording: demo data, fake accounts, browser extension, OS/app privacy mode, or ContentGlowz-controlled presentation mode.
+Summary: The user prepares the screen before recording: demo data, fake accounts, browser extension, OS/app privacy mode, or ContentGlows-controlled presentation mode.
 
 Pros:
-- Best privacy posture when ContentGlowz controls the displayed UI or demo content.
+- Best privacy posture when ContentGlows controls the displayed UI or demo content.
 - No clear text enters the capture file.
 - Lower compute cost than video processing.
 - Easier to reason about for screenshots and recordings.
@@ -83,11 +83,11 @@ Cons:
 
 ### Option B: During-capture Obfuscation In The Capture Pipeline
 
-Summary: ContentGlowz captures pixels and applies live blur/redaction before writing PNG/MP4.
+Summary: ContentGlows captures pixels and applies live blur/redaction before writing PNG/MP4.
 
 Pros:
 - Better than after-the-fact export if the raw clear stream is not persisted.
-- Can produce only redacted files in ContentGlowz storage.
+- Can produce only redacted files in ContentGlows storage.
 - Could work for third-party screens if computer vision/text detection is accurate enough.
 
 Cons:
@@ -145,14 +145,14 @@ Cons:
 - Requires the user to explicitly enable an accessibility service in Android settings.
 - Requires prominent in-app disclosure, affirmative consent, and Google Play declaration/review if distributed through Play.
 - Some apps may hide, omit, stale-cache, or virtualize accessibility node data.
-- It can expose extremely sensitive data to ContentGlowz, so local-only handling and clear consent are mandatory.
+- It can expose extremely sensitive data to ContentGlows, so local-only handling and clear consent are mandatory.
 - It still needs OCR fallback or manual masks when accessibility nodes are unavailable.
 
 ## Comparison
 
-Pre-production is the only approach that cleanly prevents sensitive text from entering the recording. During-capture transformation is attractive but technically risky for ContentGlowz's current Android implementation because capture is native MediaProjection into recording surfaces. Post-production is useful as a safety net and export feature, but it is not the primary privacy boundary if original files persist.
+Pre-production is the only approach that cleanly prevents sensitive text from entering the recording. During-capture transformation is attractive but technically risky for ContentGlows's current Android implementation because capture is native MediaProjection into recording surfaces. Post-production is useful as a safety net and export feature, but it is not the primary privacy boundary if original files persist.
 
-Character scrambling is only appropriate as source-level rewriting for text that ContentGlowz itself renders or text in a controlled demo environment. For arbitrary captured screens, "scrambling" must be implemented as a visual substitution: cover the real text pixels and optionally draw fake random glyphs on top. For third-party apps, ContentGlowz cannot simply "replace characters"; it must mask pixels after detecting likely text regions, use accessibility-derived bounds, or rely on user-defined mask zones.
+Character scrambling is only appropriate as source-level rewriting for text that ContentGlows itself renders or text in a controlled demo environment. For arbitrary captured screens, "scrambling" must be implemented as a visual substitution: cover the real text pixels and optionally draw fake random glyphs on top. For third-party apps, ContentGlows cannot simply "replace characters"; it must mask pixels after detecting likely text regions, use accessibility-derived bounds, or rely on user-defined mask zones.
 
 ## Product Priority Update
 
@@ -199,7 +199,7 @@ For high-confidentiality recordings, do not rely on post-production alone.
 
 - No specific OCR library selected.
 - No decision yet on whether to use FFmpeg/MediaCodec/OpenGL for video redaction.
-- No decision yet on whether privacy mode applies only to ContentGlowz screens or arbitrary device screens.
+- No decision yet on whether privacy mode applies only to ContentGlows screens or arbitrary device screens.
 - No legal/compliance standard selected for retention, audit, or deletion requirements.
 
 ## Rejected Paths
@@ -216,7 +216,7 @@ For high-confidentiality recordings, do not rely on post-production alone.
 - Weak-redaction risk: light blur or pixelation may still allow humans or models to infer text when the font, app UI, language, or message context is predictable.
 - UX risk: too much obfuscation can make recordings useless for tutorials.
 - Platform risk: Android capture behavior changes across API versions and OEMs.
-- Scope risk: ContentGlowz-owned UI obfuscation is tractable; arbitrary third-party app obfuscation is substantially harder.
+- Scope risk: ContentGlows-owned UI obfuscation is tractable; arbitrary third-party app obfuscation is substantially harder.
 - Policy risk: AccessibilityService can be a useful technical route but requires prominent disclosure, affirmative consent, Play Console declaration/review, and strict data-minimization. Misuse can block distribution.
 - User trust risk: Showing a legal disclaimer is not enough. The UI must clearly show what is currently masked, what is not detected, and when post-production review is still required.
 

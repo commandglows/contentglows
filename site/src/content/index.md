@@ -2,7 +2,7 @@
 title: "Complete Content Library"
 description: "Comprehensive guides for developers, founders, and marketers. From technical optimization to startup journeys, master modern development and business strategies."
 pubDate: 2026-01-15
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["content library", "guides", "tutorials", "documentation"]
 featured: true
 image: "/images/blog/content-library.jpg"
@@ -25,7 +25,7 @@ Welcome to our comprehensive knowledge base. We're building in public and docume
 - [Technical Tutorials](/tutorials/) - FastAPI, deployment, security
 
 **🚀 Startup Founders & Entrepreneurs:**
-- [Platform Documentation](/platform/) - Get started with ContentGlowz
+- [Platform Documentation](/platform/) - Get started with ContentGlows
 - [Startup Journey Chronicles](/startup-journey/) - Revenue growth, strategic decisions
 - [Technical Optimization Hub](/technical-optimization/) - Cost optimization strategies
 
@@ -89,14 +89,14 @@ Welcome to our comprehensive knowledge base. We're building in public and docume
 
 ### 🚀 Platform Documentation
 
-*Focus: Get started with the ContentGlowz platform - connect your website, run analysis, automate SEO*
+*Focus: Get started with the ContentGlows platform - connect your website, run analysis, automate SEO*
 
 **Key Guides:**
 - [Connect Your Website](/platform/connect-your-website) - Link your GitHub repo in 5 minutes
 - [API Reference](/platform/api-reference) - Complete endpoint documentation
 - [Understanding Your Analysis](/platform/understanding-analysis) - What the scores mean
 
-**Perfect for:** Anyone using the ContentGlowz platform
+**Perfect for:** Anyone using the ContentGlows platform
 
 **Quick Start:**
 1. Add your GitHub URL
@@ -147,7 +147,7 @@ Welcome to our comprehensive knowledge base. We're building in public and docume
 **Key Guides:**
 - [Journey to 10K MRR](/startup-journey/journey-to-10k-mrr.md) - Complete revenue breakdown
 - [Why We Chose Railway Over Heroku](/startup-journey/why-we-chose-railway-over-heroku.md) - Infrastructure decisions
-- [Platform Architecture Evolution](/startup-journey/contentglowz-platform.md) - From monolith to microservices
+- [Platform Architecture Evolution](/startup-journey/contentglows-platform.md) - From monolith to microservices
 - [Pricing Strategy Evolution](/startup-journey/index.md) *(Coming Soon)*
 
 **Perfect for:** Startup founders, product managers, investors
@@ -418,7 +418,7 @@ Welcome to our comprehensive knowledge base. We're building in public and docume
 **For Startup Growth:**
 1. Read [Journey to 10K MRR](/startup-journey/journey-to-10k-mrr.md)
 2. Study [Infrastructure Decisions](/startup-journey/why-we-chose-railway-over-heroku.md)
-3. Review [Platform Architecture](/startup-journey/contentglowz-platform.md)
+3. Review [Platform Architecture](/startup-journey/contentglows-platform.md)
 
 ---
 
@@ -440,8 +440,8 @@ Welcome to our comprehensive knowledge base. We're building in public and docume
 
 **Never Miss an Update:**
 - [Newsletter Subscription](#newsletter)
-- [Twitter/X @ContentGlowz](https://twitter.com/contentglowz)
-- [GitHub Repository](https://github.com/user/contentglowz)
+- [Twitter/X @ContentGlows](https://twitter.com/contentglows)
+- [GitHub Repository](https://github.com/user/contentglows)
 - [RSS Feed](/rss.xml)
 
 ---

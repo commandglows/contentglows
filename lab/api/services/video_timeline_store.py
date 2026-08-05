@@ -1,4 +1,4 @@
-"""Persistent store for canonical ContentGlowz video timelines."""
+"""Persistent store for canonical ContentGlows video timelines."""
 
 from __future__ import annotations
 

@@ -47,7 +47,7 @@ async def test_ensure_email_source_schedule_job_creates_managed_six_hour_job(mon
         project_id="project-1",
         metadata={
             "sourceFolder": "Newsletters",
-            "archiveFolder": "CONTENTGLOWZ_DONE",
+            "archiveFolder": "CONTENTGLOWS_DONE",
         },
     )
 

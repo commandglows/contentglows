@@ -40,7 +40,7 @@ next_step: "/sf-docs technical audit app"
 
 ## Purpose
 
-This module covers the ContentGlowz Flutter app shell, guarded routing, shared provider state, API/offline service layer, and Android capture integration. Agents should load it before changing app startup, navigation, pending content, project state, offline queues, or MediaProjection-related native code.
+This module covers the ContentGlows Flutter app shell, guarded routing, shared provider state, API/offline service layer, and Android capture integration. Agents should load it before changing app startup, navigation, pending content, project state, offline queues, or MediaProjection-related native code.
 
 ## Owned Files
 

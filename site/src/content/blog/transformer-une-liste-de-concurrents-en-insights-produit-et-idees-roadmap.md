@@ -3,7 +3,7 @@ title: "Comment transformer une liste de concurrents en insights produit et idé
 description: "Vous avez déjà des concurrents en tête ? ShipGlowz aide à les enrichir avec signaux produit, feedback utilisateur et idées roadmap actionnables."
 locale: "fr"
 pubDate: "2026-07-07"
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["veille concurrentielle", "product research", "shipglowz", "app", "roadmap"]
 featured: false
 ---

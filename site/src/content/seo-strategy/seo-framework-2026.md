@@ -2,7 +2,7 @@
 title: "The Complete SEO Framework for 2026: AI, GEO & Topical Authority"
 description: "Master the 2026 SEO paradigm shift. Learn GEO optimization, AI Overview targeting, E-E-A-T signals, and Laurent Bourrelly's Topical Mesh strategy."
 pubDate: 2026-02-02
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["seo framework", "geo optimization", "ai overviews", "e-e-a-t", "topical mesh", "2026 seo"]
 featured: true
 image: "/images/blog/seo-framework-2026.jpg"

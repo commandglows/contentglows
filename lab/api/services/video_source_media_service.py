@@ -988,16 +988,16 @@ def get_video_source_media_service() -> VideoSourceMediaService:
     provider = os.getenv("OBJECT_STORAGE_PROVIDER", "s3").strip().lower()
     if provider != "s3":
         raise RuntimeError("Unsupported canonical object storage provider")
-    bucket = os.getenv("CONTENTGLOWZ_S3_BUCKET", "").strip()
+    bucket = os.getenv("CONTENTGLOWS_S3_BUCKET", "").strip()
     if not bucket:
-        raise RuntimeError("CONTENTGLOWZ_S3_BUCKET is required for binary source uploads")
+        raise RuntimeError("CONTENTGLOWS_S3_BUCKET is required for binary source uploads")
     storage = S3ObjectStorageProvider(
         bucket=bucket,
         region_name=os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION"),
-        endpoint_url=os.getenv("CONTENTGLOWZ_S3_ENDPOINT_URL") or None,
-        key_prefix=os.getenv("CONTENTGLOWZ_S3_KEY_PREFIX", "contentglowz"),
-        server_side_encryption=os.getenv("CONTENTGLOWZ_S3_SSE", "AES256"),
-        kms_key_id=os.getenv("CONTENTGLOWZ_S3_KMS_KEY_ID") or None,
+        endpoint_url=os.getenv("CONTENTGLOWS_S3_ENDPOINT_URL") or None,
+        key_prefix=os.getenv("CONTENTGLOWS_S3_KEY_PREFIX", "contentglows"),
+        server_side_encryption=os.getenv("CONTENTGLOWS_S3_SSE", "AES256"),
+        kms_key_id=os.getenv("CONTENTGLOWS_S3_KMS_KEY_ID") or None,
     )
     _media_service = VideoSourceMediaService(storage=storage)
     return _media_service

@@ -13,7 +13,7 @@ source_model: "GPT-5 Codex"
 scope: "Android native authentication migration"
 owner: "Diane"
 confidence: high
-user_story: "En tant qu’utilisateur Android de ContentGlowz, je veux me connecter avec Google puis revenir automatiquement dans l’application avec une session utilisable, afin d’accéder à mon workspace sans perdre le parcours dans le navigateur."
+user_story: "En tant qu’utilisateur Android de ContentGlows, je veux me connecter avec Google puis revenir automatiquement dans l’application avec une session utilisable, afin d’accéder à mon workspace sans perdre le parcours dans le navigateur."
 risk_level: high
 security_impact: yes
 docs_impact: yes
@@ -42,7 +42,7 @@ supersedes: []
 evidence:
   - "app/lib/data/services/clerk_auth_service_stub.dart returns no Android session and rejects the retired Flutter beta path."
   - "app/android/app/src/main/AndroidManifest.xml has no Clerk callback intent filter."
-  - "app/android/app/src/main/kotlin/com/contentglowz/app/MainActivity.kt does not pass incoming callback URIs to Clerk."
+  - "app/android/app/src/main/kotlin/com/contentglows/app/MainActivity.kt does not pass incoming callback URIs to Clerk."
   - "The existing web implementation uses a ClerkJS bridge and must remain the web-only implementation."
   - "FastAPI already accepts Clerk bearer JWTs through lab/api/auth/clerk.py and lab/api/dependencies/auth.py."
   - "Clerk Android docs checked 2026-07-18: Native API, API-only SDK, Application initialization, Activity deep-link handling, session getToken/signOut, and Google native sign-in."
@@ -59,7 +59,7 @@ Implementation complete locally; verification is partial pending Android Gradle/
 
 # User Story
 
-En tant qu’utilisateur Android de ContentGlowz, je veux me connecter avec Google puis revenir automatiquement dans l’application avec une session utilisable, afin d’accéder à mon workspace sans perdre le parcours dans le navigateur.
+En tant qu’utilisateur Android de ContentGlows, je veux me connecter avec Google puis revenir automatiquement dans l’application avec une session utilisable, afin d’accéder à mon workspace sans perdre le parcours dans le navigateur.
 
 # Minimal Behavior Contract
 
@@ -69,11 +69,11 @@ Depuis l’écran de connexion Android, l’utilisateur lance une connexion Goog
 
 - Android initialise une seule instance Clerk native avant l’usage du bridge Flutter et attend son état prêt avant toute opération d’authentification.
 - Le bouton Android « Sign In » lance le flux OAuth Google officiel de Clerk, sans WebView ni redirection via les routes ClerkJS web.
-- Pour les connexions OAuth nécessitant un navigateur, l’URI de retour Android est `clerk://com.contentglowz.app.callback`, soit le callback par défaut de Clerk Android 1.0.36. Il est allowlisté chez Clerk; l’`SSOReceiverActivity` déclarée par le SDK reçoit et traite le callback, sans exposer ses paramètres à Flutter.
+- Pour les connexions OAuth nécessitant un navigateur, l’URI de retour Android est `clerk://com.contentglows.app.callback`, soit le callback par défaut de Clerk Android 1.0.36. Il est allowlisté chez Clerk; l’`SSOReceiverActivity` déclarée par le SDK reçoit et traite le callback, sans exposer ses paramètres à Flutter.
 - Après une authentification confirmée, le bridge retourne à Dart l’identifiant utilisateur minimal, l’e-mail seulement si fourni par Clerk, et un JWT court-vivant obtenu via `Clerk.auth.getToken()`; Flutter ne persiste pas ce JWT dans SharedPreferences, fichiers, diagnostics ou URL.
 - La restauration au redémarrage récupère l’état Clerk natif, obtient un jeton frais et réutilise le bootstrap FastAPI, les routes et les invalidations Riverpod existants.
 - La déconnexion Android appelle `Clerk.auth.signOut()`, efface l’état Dart/cache auth existant et interdit les nouveaux appels authentifiés.
-- Le web continue d’utiliser exclusivement `clerk_auth_service_web.dart` et `window.contentglowzClerkBridge`; ses routes `/sign-in`, `/sign-up` et `/sso-callback`, ses rewrites et son build ne changent pas de comportement.
+- Le web continue d’utiliser exclusivement `clerk_auth_service_web.dart` et `window.contentglowsClerkBridge`; ses routes `/sign-in`, `/sign-up` et `/sso-callback`, ses rewrites et son build ne changent pas de comportement.
 
 # Error Behavior
 
@@ -95,7 +95,7 @@ Intégrer l’API officielle Clerk Android dans l’hôte Kotlin, sans adopter l
 - Dépendance Kotlin `com.clerk:clerk-android-api` épinglée à une version officiellement compatible au moment de l’implémentation, plus ses exigences Android documentées (minSdk >= 24 et Java 17).
 - Initialisation native Clerk dans une classe `Application` dédiée avec `CLERK_PUBLISHABLE_KEY` injectée par le build Android dans un `BuildConfig` non sensible; le build auth-enabled échoue si elle est absente et la valeur n’est jamais écrite dans les logs ou docs.
 - Bridge Kotlin/Dart Android, service Dart non-web et contrat de résultats/erreurs typés.
-- Connexion Google native via le mécanisme Android recommandé par Clerk; configuration Clerk/Google requise pour package `com.contentglowz.app` et empreintes SHA-1 des clés debug/release.
+- Connexion Google native via le mécanisme Android recommandé par Clerk; configuration Clerk/Google requise pour package `com.contentglows.app` et empreintes SHA-1 des clés debug/release.
 - Callback OAuth/deep link Android: allowlist Clerk, intent-filter strict, traitement idempotent dans `onCreate` et `onNewIntent`, puis reprise du flux Flutter.
 - Restauration, refresh de token, déconnexion et intégration avec `AuthSessionNotifier`, `ApiService` et bootstrap FastAPI actuels.
 - Tests Dart unitaires, tests Kotlin unitaires/instrumentés nécessaires au bridge/callback, et checklist d’auth manuelle sur appareil Android réel.
@@ -136,7 +136,7 @@ Preuve ordonnée requise:
 2. Tests Kotlin locaux et/ou instrumentés couvrant l’initialisation, la traduction d’erreurs, le routage de `onNewIntent` et l’idempotence du callback avec un fake injectable; aucune vraie session ni token dans les fixtures.
 3. Vérification Gradle Android de la résolution de dépendance, minSdk et manifest merger.
 4. Test d’intégration sur appareil Android réel: Google native sign-in → session APK → `GET /api/bootstrap` bearer valide → navigation workspace; relance de l’app → session restaurée; logout → 401/no token.
-5. Preuve de callback navigateur seulement pour le fournisseur/scénario qui la requiert: navigation externe → `clerk://com.contentglowz.app.callback` → app active; cancellation et callback répété.
+5. Preuve de callback navigateur seulement pour le fournisseur/scénario qui la requiert: navigation externe → `clerk://com.contentglows.app.callback` → app active; cancellation et callback répété.
 6. Non-régression web: validation Clerk runtime existante et contrôle des routes auth en build/preview.
 7. Checklist durable: `shipglows_data/workflow/test-checklists/android-native-clerk-auth-bridge.md`, remplie avec build id, commits, dates Paris/UTC, appareils/versions masqués si nécessaire, résultats et diagnostics redacted.
 
@@ -153,7 +153,7 @@ Exception-with-proof: le test OAuth réel ne peut pas être automatisé de bout 
 
 # Invariants
 
-- Une identité Clerk (`sub`) reste l’unique identité utilisateur de ContentGlowz; aucun `userId` local ne la remplace.
+- Une identité Clerk (`sub`) reste l’unique identité utilisateur de ContentGlows; aucun `userId` local ne la remplace.
 - Chaque requête FastAPI authentifiée récupère un token frais par le service de plateforme; aucun token Clerk n’est durablement stocké côté Flutter.
 - Une session Clerk Android est source de vérité pour Android; une session ClerkJS est source de vérité pour web. Elles ne sont ni copiées ni converties l’une dans l’autre.
 - Chaque callback est passé une fois au SDK Clerk et ne peut pas doubler le bootstrap, la navigation ou la session.
@@ -193,14 +193,14 @@ Exception-with-proof: le test OAuth réel ne peut pas être automatisé de bout 
 
 - [ ] Task 1: Valider et pinner le contrat SDK/configuration Android Clerk.
   - Fichier : `app/android/app/build.gradle.kts`, `app/android/app/src/main/AndroidManifest.xml`, configuration Clerk/Google hors Git.
-  - Action : Vérifier minSdk effectif; le fixer à >=24 si Flutter le fournit plus bas; injecter `CLERK_PUBLISHABLE_KEY` depuis l’environnement/CI Gradle dans `BuildConfig` et faire échouer tout build auth-enabled si elle est absente; ajouter l’API-only SDK Clerk à une version stable précise; activer Native API Clerk; configurer Google Android+Web clients et l’allowlist callback pour `clerk://com.contentglowz.app.callback` sans enregistrer de secret.
+  - Action : Vérifier minSdk effectif; le fixer à >=24 si Flutter le fournit plus bas; injecter `CLERK_PUBLISHABLE_KEY` depuis l’environnement/CI Gradle dans `BuildConfig` et faire échouer tout build auth-enabled si elle est absente; ajouter l’API-only SDK Clerk à une version stable précise; activer Native API Clerk; configurer Google Android+Web clients et l’allowlist callback pour `clerk://com.contentglows.app.callback` sans enregistrer de secret.
   - User story link : permet une session Android officielle et un retour contrôlé.
   - Depends on : none.
   - Validate with : Gradle dependency insight/build, manifest merger, revue dashboard redacted et preuve de package/signature testée.
   - Notes : Ne pas utiliser `clerk-android-ui` ni `clerk_flutter`.
 
 - [ ] Task 2: Créer le propriétaire Kotlin de Clerk et le bridge Flutter.
-  - Fichier : `app/android/app/src/main/kotlin/com/contentglowz/app/ContentGlowzApplication.kt`, `app/android/app/src/main/kotlin/com/contentglowz/app/auth/ClerkAuthChannel.kt`, `app/android/app/src/main/kotlin/com/contentglowz/app/MainActivity.kt`.
+  - Fichier : `app/android/app/src/main/kotlin/com/contentglows/app/ContentGlowsApplication.kt`, `app/android/app/src/main/kotlin/com/contentglows/app/auth/ClerkAuthChannel.kt`, `app/android/app/src/main/kotlin/com/contentglows/app/MainActivity.kt`.
   - Action : Initialiser Clerk une fois dans `Application`; créer un channel injecté/testable exposant `initialize`, `signInWithGoogle`, `restoreSession`, `getFreshToken`, `signOut`; laisser `SSOReceiverActivity` du SDK traiter son callback allowlisté et annuler les opérations en cours à la destruction.
   - User story link : orchestre Google, callback et session native sans quitter définitivement l’APK.
   - Depends on : Task 1.
@@ -235,7 +235,7 @@ Exception-with-proof: le test OAuth réel ne peut pas être automatisé de bout 
 
 - [ ] Une installation Android avec Clerk Native API activée affiche l’action Google native et ne lance pas le login ClerkJS web.
 - [ ] Une connexion Google réussie active une session Clerk Android et conduit l’utilisateur vers onboarding ou workspace selon `/api/bootstrap`.
-- [ ] Si un OAuth navigateur est utilisé, le retour `clerk://com.contentglowz.app.callback` revient dans l’APK et est traité par `SSOReceiverActivity` du SDK.
+- [ ] Si un OAuth navigateur est utilisé, le retour `clerk://com.contentglows.app.callback` revient dans l’APK et est traité par `SSOReceiverActivity` du SDK.
 - [ ] Les callbacks annulés, invalides ou répétés ne créent aucune session ni navigation dupliquée et fournissent un diagnostic expurgé/action de réessai.
 - [ ] Un redémarrage de l’APK restaure une session native existante, récupère un token frais et appelle FastAPI; aucune valeur raw token/session n’est persistée dans SharedPreferences.
 - [ ] `Authorization: Bearer` est fourni par `getFreshToken` à FastAPI; FastAPI reste capable de refuser un token invalide par sa validation Clerk/JWKS existante.
@@ -286,7 +286,7 @@ None. Les paramètres opérateur matériels sont déterminés : Android natif Ko
 | 2026-07-18 | 104-sg-end | GPT-5 Codex | Closure bookkeeping prepared with evidence-based changelog and checklist; product closure deferred until required native/provider/device and web proof exists. | deferred | 005-sg-ship |
 | 2026-07-18 | 109-sg-auth-debug + 106-sg-fix | GPT-5 Codex | Diagnosed the release-only Clerk initialization timeout from redacted device diagnostics and added the missing main-manifest INTERNET permission. | fix-attempted; release/device retest remains required | Build a release APK and retest Google return-to-app. |
 | 2026-07-29 | 109-sg-auth-debug + 106-sg-fix | GPT-5 Codex | Replaced the retired One Tap helper with Clerk's native Google OAuth API; retained visible in-progress feedback. | implemented; device OAuth still failed before browser launch | Inspect the SDK callback contract and dashboard allowlist. |
-| 2026-07-30 | 109-sg-auth-debug + 106-sg-fix + 004-sg-deploy | GPT-5 Codex | Corrected the callback contract to Clerk Android's own `clerk://com.contentglowz.app.callback` receiver, removed the incompatible Activity handler, updated docs, and produced a signed release APK. | fix-attempted; CI run 30550466642 passed with APK Signature Scheme v2 verification; physical OAuth proof remains required. | Set the exact Clerk redirect allowlist and test Google sign-in on Android. |
+| 2026-07-30 | 109-sg-auth-debug + 106-sg-fix + 004-sg-deploy | GPT-5 Codex | Corrected the callback contract to Clerk Android's own `clerk://com.contentglows.app.callback` receiver, removed the incompatible Activity handler, updated docs, and produced a signed release APK. | fix-attempted; CI run 30550466642 passed with APK Signature Scheme v2 verification; physical OAuth proof remains required. | Set the exact Clerk redirect allowlist and test Google sign-in on Android. |
 | 2026-07-30 | 900-shipglowz-core | GPT-5 Codex | Refreshed the shared Flutter/Clerk auth-debug reference with the pinned Android SDK 1.0.36 callback contract, dashboard prerequisites, redaction boundaries, and visible async-feedback requirements. | documented; no product code change; device/provider OAuth proof remains pending. | Reuse this reference for future Flutter + Clerk Android investigations. |
 | 2026-07-30 | 103-sg-verify | GPT-5 Codex | Excellence pass: rechecked the shared reference, project callback consistency, Flutter analysis, focused Android bridge tests, diagnostics/redaction contract, and manual checklist state. | partial; standard local/docs gates pass, but all required device/provider/web checklist rows remain NOT_RUN, so no excellence or ship-readiness claim is made. | Route Android scenarios to 107-sg-test with the signed APK and configured Clerk instance; route web preview proof to 108-sg-browser/405-sg-prod. |
 

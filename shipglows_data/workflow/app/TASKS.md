@@ -1,11 +1,11 @@
-# Tasks — ContentGlowz (Flutter)
+# Tasks — ContentGlows (Flutter)
 
 > **Priority:** 🔴 P0 blocker · 🟠 P1 high · 🟡 P2 normal · 🟢 P3 low · ⚪ deferred
 > **Status:** 📋 todo · 🔄 in progress · ✅ done · ⛔ blocked · 💤 deferred
 
 **Stack**: Flutter 3.41, Riverpod, GoRouter, Dio, flutter_card_swiper, Google Fonts | **Phase**: Phase 11 — Offline sync V2 shipped
 
-**Backend**: Python FastAPI (23 agents CrewAI/PydanticAI) at ContentGlowz_lab/
+**Backend**: Python FastAPI (23 agents CrewAI/PydanticAI) at ContentGlows_lab/
 
 **Top priority**: Reprendre les priorités app haut impact après validation hostée du fix Clerk OTP.
 
@@ -73,7 +73,7 @@
 | ✅ | Spec architecture, Clerk auth FastAPI + Flutter, Bootstrap, Projects, User data, Content ownership | ✅ done |
 | ✅ | Flutter auth headless Clerk, session restore, onboarding réel, 401 handling | ✅ done |
 | ✅ | Écran auth Clerk officiel + fallback diagnostics quand le SDK reste bloqué au chargement | ✅ done |
-| ✅ | Auth web déportée sur ContentGlowz Site + handoff sécurisé vers Flutter web (`/entry` + exchange backend) | ✅ done |
+| ✅ | Auth web déportée sur ContentGlows Site + handoff sécurisé vers Flutter web (`/entry` + exchange backend) | ✅ done |
 | ✅ | Vérifier runtime Clerk réel en environnement Flutter | ✅ done |
 | ✅ | Remplacer l'auth web Flutter beta / handoff par ClerkJS officiel sur le domaine app (`/sign-in`, `/sso-callback`, Google direct) | ✅ done |
 | ✅ | Corriger le callback OAuth Clerk web pour finaliser la session sur `/sso-callback` avant le retour vers `/#/entry` | ✅ done |
@@ -94,7 +94,7 @@
 > Unifier les 3 pipelines déconnectés (Psychology, SEO, Newsletter) en un flux unique:
 > Sources → Idea Pool → Angles enrichis → Pipelines par format → Review Queue
 
-### Backend (contentglowz/)
+### Backend (contentglows/)
 
 | Pri | Task | Status |
 |-----|------|--------|
@@ -110,7 +110,7 @@
 | ✅ | Scheduler ingestion jobs — ingest_newsletters, ingest_seo job types + API triggers manuels | ✅ done |
 | ✅ | Nettoyage legacy JS — suppression chatbot/ Next.js (41 MB), prototypes v0, BMAD framework | ✅ done |
 
-### Flutter (contentglowz-app/)
+### Flutter (contentglows-app/)
 
 | Pri | Task | Status |
 |-----|------|--------|
@@ -128,7 +128,7 @@
 > Intégrer DataForSEO API v3 comme source de données SEO réelles dans tout le pipeline.
 > Remplace SerpApi (SERP-only) + Advertools (combos mock) par une API unifiée.
 
-### Backend (contentglowz/)
+### Backend (contentglows/)
 
 | Pri | Task | Status |
 |-----|------|--------|
@@ -188,7 +188,7 @@
 | ✅ | Regrouper les 17 tabs en sections (Content, Create, Analyze, System) | High | Low | ✅ done — dividers visuels entre sections |
 | ✅ | Validation runtime Clerk (site sign-in réel, handoff web, restore session, `/api/bootstrap`) | High | Medium | ✅ done — auth web directe via ClerkJS sur le domaine app, bootstrap validé |
 | ✅ | OAuth flow pour connecter les channels (via LATE/Zernio) | High | Medium | ✅ done — Connect + Disconnect complets |
-| ✅ | Landing page produit (ContentGlowz_site rebrand complet) | High | Medium | ✅ done — Hero, Features, How It Works, Pricing Free/19/49, Use Cases, FAQ |
+| ✅ | Landing page produit (ContentGlows_site rebrand complet) | High | Medium | ✅ done — Hero, Features, How It Works, Pricing Free/19/49, Use Cases, FAQ |
 | ✅ | Feedback Admin v1 côté Flutter — soumission texte/audio, historique local léger, accès anonyme et écran admin in-app | High | Medium | ✅ done — client FastAPI prêt, build-time allowlist + docs ajoutés |
 | ✅ | Localisation app EN/FR — préférence de langue (système/anglais/français) + couverture FR sur les écrans shell, debug et drip | High | Medium | ✅ done — AppLanguage, persistance SharedPreferences et passe UI sur settings/editor/drip/uptime/work domains/runs/research |
 | ✅ | Système de thème complet — light/dark/system persisté + réglage utilisateur + thème éditorial partagé | High | Medium | ✅ done — préférence normalisée, `ThemeMode` branché sur l'app Flutter, palette/tokens centralisés |
@@ -232,7 +232,7 @@
 | ✅ | Mobile UX audit — bottom nav redesign, responsive typography, touch targets, layout fixes | ✅ done |
 | 🟡 | Corriger l'overlap Android de l'onboarding demo avec la barre systeme native | ✅ done - retest appareil suivi dans BUG-2026-05-05-001 |
 | 🟡 | Corriger le bouton retour Android: revenir dans la demo et confirmer avant fermeture app | ✅ done - retest appareil suivi dans BUG-2026-05-05-002 |
-| ✅ | Rebrand produit `ContentGlowzz` → `ContentGlowz` (nom app, package Android, manifests web, scripts et docs) | ✅ done |
+| ✅ | Rebrand produit `ContentGlowsz` → `ContentGlows` (nom app, package Android, manifests web, scripts et docs) | ✅ done |
 | ✅ | Localisation app EN/FR — préférence de langue (système/anglais/français) + couverture FR sur les écrans shell, debug et drip | ✅ done |
 | ✅ | Ajouter un accès direct au rituel dans le menu mobile "More" pour augmenter la fréquence de remplissage | ✅ done |
 | 🟠 | Ajouter une visite guidée simplifiée (4 cartes max) pour mode “publier vite” : parcours orienté résultats, choix rapide au premier lancement | 📋 todo |
@@ -251,7 +251,7 @@
 
 | Pri | Task | Status |
 |-----|------|--------|
-| 🔴 | Remplacer les 722 valeurs visuelles Flutter hardcodées par des helpers issus de `AppTheme`/`tools/design-tokens/contentglowz_theme.json` | 🔄 in progress |
+| 🔴 | Remplacer les 722 valeurs visuelles Flutter hardcodées par des helpers issus de `AppTheme`/`tools/design-tokens/contentglows_theme.json` | 🔄 in progress |
 | 🔴 | Introduire des tokens Flutter responsives mobile pour tailles de texte, padding, gap et rayons, puis migrer les écrans principaux | 🔄 in progress |
 | 🟠 | Tokeniser les couleurs directes restantes (`Colors.red`, `Colors.white`, alphas de bordures) hors fichiers de thème générés | 📋 todo |
 | 🟠 | Ajouter une vérification automatisée qui bloque les nouveaux `fontSize`, `EdgeInsets` et `BorderRadius.circular` hors exceptions autorisées | 📋 todo |

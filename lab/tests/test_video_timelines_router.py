@@ -216,7 +216,7 @@ def _create_project_asset(
     *,
     media_kind: str = "image",
     mime_type: str = "image/png",
-    storage_uri: str = "https://contentglowz-test.b-cdn.net/assets/image.png?token=secret",
+    storage_uri: str = "https://contentglows-test.b-cdn.net/assets/image.png?token=secret",
 ):
     return ctx.status_service.create_project_asset(
         project_id="project-1",
@@ -266,7 +266,7 @@ async def test_video_timeline_router_create_version_preview_approve_and_final(ti
         ),
         current_user=ctx.user,
     )
-    assert version.renderer_props["composition_id"] == "ContentGlowzTimelineVideo"
+    assert version.renderer_props["composition_id"] == "ContentGlowsTimelineVideo"
 
     preview = await router.request_video_timeline_preview(
         timeline.timeline_id,
@@ -1148,7 +1148,7 @@ async def test_video_timeline_version_resolves_render_safe_assets_and_records_us
     )
 
     descriptor = version.renderer_props["assets"][asset.id]
-    assert descriptor["render_url"] == "https://contentglowz-test.b-cdn.net/assets/image.png"
+    assert descriptor["render_url"] == "https://contentglows-test.b-cdn.net/assets/image.png"
     assert "storage_uri" not in descriptor
 
     usages = ctx.status_service.get_project_asset_usage(
@@ -1267,7 +1267,7 @@ async def test_video_timeline_preview_fails_cleanly_without_renderer(timeline_co
 @pytest.mark.asyncio
 async def test_video_timeline_gcs_artifact_is_signed_by_backend(timeline_context, monkeypatch):
     ctx = timeline_context
-    monkeypatch.setenv("CONTENTGLOWZ_RENDER_STORAGE", "gcs")
+    monkeypatch.setenv("CONTENTGLOWS_RENDER_STORAGE", "gcs")
     monkeypatch.setenv("GCS_RENDER_BUCKET", "private-render-bucket")
     monkeypatch.setenv("GCS_RENDER_PREFIX", "renders")
     signed_calls = []
@@ -1322,7 +1322,7 @@ async def test_video_timeline_gcs_artifact_is_signed_by_backend(timeline_context
 @pytest.mark.asyncio
 async def test_video_timeline_persists_expected_gcs_artifact_before_dispatch(timeline_context, monkeypatch):
     ctx = timeline_context
-    monkeypatch.setenv("CONTENTGLOWZ_RENDER_STORAGE", "gcs")
+    monkeypatch.setenv("CONTENTGLOWS_RENDER_STORAGE", "gcs")
     monkeypatch.setenv("GCS_RENDER_BUCKET", "private-render-bucket")
     monkeypatch.setenv("GCS_RENDER_PREFIX", "renders")
     timeline = await _create_timeline(ctx)
@@ -1367,7 +1367,7 @@ async def test_video_timeline_persists_expected_gcs_artifact_before_dispatch(tim
 @pytest.mark.asyncio
 async def test_video_timeline_rejects_mismatched_gcs_artifact(timeline_context, monkeypatch):
     ctx = timeline_context
-    monkeypatch.setenv("CONTENTGLOWZ_RENDER_STORAGE", "gcs")
+    monkeypatch.setenv("CONTENTGLOWS_RENDER_STORAGE", "gcs")
     monkeypatch.setenv("GCS_RENDER_BUCKET", "private-render-bucket")
     monkeypatch.setenv("GCS_RENDER_PREFIX", "renders")
     set_video_renderer_adapter_for_tests(_MismatchGcsRenderer())

@@ -2,7 +2,7 @@
 title: "SEO Deployment"
 description: "Automate your SEO content creation. Generate optimized articles, run batch campaigns, and schedule recurring content - all from one dashboard."
 pubDate: 2026-02-02
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["seo", "content automation", "productivity", "dashboard"]
 featured: true
 image: "/images/blog/seo-deployment.jpg"
@@ -312,4 +312,4 @@ Ready to automate your content?
 
 ---
 
-**Questions?** Contact support@contentglowz.com or [join our community](#discord).
+**Questions?** Contact support@contentglows.com or [join our community](#discord).

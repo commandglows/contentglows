@@ -8,9 +8,9 @@ updated: "2026-04-25"
 status: ready
 source_skill: sf-spec
 scope: "feature / bug"
-owner: "ContentGlowz"
+owner: "ContentGlows"
 confidence: medium
-user_story: "En tant qu'utilisateur connecte de ContentGlowz, je veux creer, modifier, deselectionner et archiver mes projets de facon coherente, afin de controler quelle source alimente l'application sans etre bloque par GitHub."
+user_story: "En tant qu'utilisateur connecte de ContentGlows, je veux creer, modifier, deselectionner et archiver mes projets de facon coherente, afin de controler quelle source alimente l'application sans etre bloque par GitHub."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -51,9 +51,9 @@ Ready.
 
 ## User Story
 
-En tant qu'utilisateur connecte de ContentGlowz, je veux creer, modifier, deselectionner et archiver mes projets de facon coherente, afin de controler quelle source alimente l'application sans etre bloque par GitHub.
+En tant qu'utilisateur connecte de ContentGlows, je veux creer, modifier, deselectionner et archiver mes projets de facon coherente, afin de controler quelle source alimente l'application sans etre bloque par GitHub.
 
-Primary actor: authenticated ContentGlowz user.
+Primary actor: authenticated ContentGlows user.
 
 Trigger: user lands on the app, sees an empty feed/dashboard, uses the project picker, or opens the Projects screen.
 

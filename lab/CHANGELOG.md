@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to ContentGlowz are documented here.
+All notable changes to ContentGlows are documented here.
 
 ## [Unreleased]
 
@@ -10,7 +10,7 @@ All notable changes to ContentGlowz are documented here.
 - Added regression coverage for dual-mode AI runtime platform resolution and dispatch-pipeline provider matrices across article, newsletter, short, and social formats.
 
 ### Changed
-- Aligned the production API Caddy setup with `api.contentglowz.com` as the primary host, `api.winflowz.com` as an optional temporary alias, and the PM2 FastAPI upstream on `localhost:3002`.
+- Aligned the production API Caddy setup with `api.contentglows.com` as the primary host, `api.winflowz.com` as an optional temporary alias, and the PM2 FastAPI upstream on `localhost:3002`.
 - Documented the API domain migration checklist for DNS, Doppler Clerk validation vars, Caddy aliasing, client `API_BASE_URL`, and `/health` verification.
 - Marked the strict-BYOK AI runtime spec as superseded by the dual-mode BYOK/platform runtime spec and refreshed the dual-mode chantier status with automated proof.
 
@@ -133,7 +133,7 @@ All notable changes to ContentGlowz are documented here.
 - **`agents/seo/schemas/pipeline_outputs.py`** — 6 Pydantic BaseModel schemas for SEO pipeline stage outputs: `ResearchOutput`, `StrategyOutput`, `WritingOutput`, `TechnicalOutput`, `MarketingOutput`, `EditingOutput`. All fields are flat (`str`, `list[str]`, `int`, `float`) to maximise LLM JSON parsing reliability
 
 ### Changed (continued)
-- **Branding/defaults aligned from `ContentGlowzz` to `ContentGlowz`** — updated project paths, domains, Doppler project names, Bunny/IMAP defaults, memory IDs, repo links, and operational docs/examples across the backend and documentation
+- **Branding/defaults aligned from `ContentGlowsz` to `ContentGlows`** — updated project paths, domains, Doppler project names, Bunny/IMAP defaults, memory IDs, repo links, and operational docs/examples across the backend and documentation
 - **SEO pipeline tasks now use `output_pydantic=`** — all 6 tasks in `seo_crew.py` have a typed schema attached; agents must emit valid JSON matching the schema instead of free-form text
 - **`results["structured"]`** added to `generate_content()` return value — callers get typed model instances (e.g. `results["structured"]["editing"].publication_ready`) alongside the existing `results["outputs"]` string dict (API shape preserved)
 - **`_raw()` helper** prefers `task.output.pydantic.model_dump_json()` over raw LLM text when Pydantic parsing succeeds; graceful fallback to raw string when it doesn't
@@ -167,7 +167,7 @@ All notable changes to ContentGlowz are documented here.
 - **Clerk JWT auth on 12 unprotected routers** — deployment, drip, templates, images, mesh, research, scheduler, newsletter, internal_linking, preview, reels, runs now require valid bearer token
 - **Shell injection eliminated** — all `subprocess.run(shell=True)` + f-string commands replaced with `shell=False` + list args in publishing_tools.py and tech_audit_tools.py
 - **Global exception handler no longer leaks internals** — `str(exc)` removed from 500 responses, errors logged server-side only
-- **CORS regex tightened** — `*.vercel.app` narrowed to `contentglowz*.vercel.app`
+- **CORS regex tightened** — `*.vercel.app` narrowed to `contentglows*.vercel.app`
 - **Input sanitization** on test_runner.py user-supplied file paths
 
 ### Changed
@@ -216,7 +216,7 @@ All notable changes to ContentGlowz are documented here.
   - Zero new dependencies (httpx + bs4 already in stack)
   - 5 tests (full OG, fallbacks, relative images, empty HTML, model)
 - `shipglows_data/workflow/specs/lab/social-listener.md` — technical specification for social listener module
-- Feature documentation on ContentGlowz site:
+- Feature documentation on ContentGlows site:
   - `platform/social-listening.md` — Social Listening feature page
   - `platform/content-quality-scoring.md` — Content Quality Scoring feature page
   - `platform/link-previews.md` — Link Previews feature page
@@ -248,7 +248,7 @@ All notable changes to ContentGlowz are documented here.
 ## [2026-03-10]
 
 ### Added
-- PostHog injecté dans `website/src/layouts/Layout.astro` (production uniquement, placeholder `POSTHOG_KEY_CONTENTGLOWZ` à remplacer)
+- PostHog injecté dans `website/src/layouts/Layout.astro` (production uniquement, placeholder `POSTHOG_KEY_CONTENTGLOWS` à remplacer)
 - Page `/privacy` créée (`website/src/pages/privacy.astro`) avec bouton opt-out PostHog
 
 ## [Unreleased]

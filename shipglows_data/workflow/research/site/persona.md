@@ -27,7 +27,7 @@
 
 ## Niveau d'awareness (Schwartz)
 - **Entrée typique** : Problem-aware (sait qu'il a un problème de contenu) à Solution-aware (sait que l'IA peut aider)
-- **Cible sortie** : Product-aware → Most aware (comprend que ContentGlowz est LA solution pour lui)
+- **Cible sortie** : Product-aware → Most aware (comprend que ContentGlows est LA solution pour lui)
 
 ## Vocabulaire du persona
 - "I don't have time to write"

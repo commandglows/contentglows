@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 15:02:22 UTC"
 updated: "2026-05-11"
@@ -13,7 +13,7 @@ source_model: "gpt-5.5"
 scope: "feature"
 owner: "Diane"
 confidence: "high"
-user_story: "En tant que créatrice connectée à ContentGlowz, je veux voir et respecter mes droits de génération IA avant de lancer des images, rendus ou uploads coûteux, afin de produire sans surprise de blocage ni coût opérateur non contrôlé."
+user_story: "En tant que créatrice connectée à ContentGlows, je veux voir et respecter mes droits de génération IA avant de lancer des images, rendus ou uploads coûteux, afin de produire sans surprise de blocage ni coût opérateur non contrôlé."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
@@ -57,7 +57,7 @@ evidence:
   - "lab/status/cost_tracker.py already persists estimated external API costs by project, job, job_type, pipeline, mode, provider, and time range."
   - "lab/api/services/job_store.py persists async jobs in Turso but does not store user_id/org_id or quota reservation data."
   - "app/lib/data/services/api_service.dart already maps structured API error envelopes with code, kind, provider, settingsPath, and retryable."
-  - "app/lib/presentation/screens/settings/integrations_screen.dart already mentions BYOK versus ContentGlowz-managed credits in AI runtime copy."
+  - "app/lib/presentation/screens/settings/integrations_screen.dart already mentions BYOK versus ContentGlows-managed credits in AI runtime copy."
   - "site/src/components/Pricing.astro currently states that all plans include AI generation costs and no hidden fees, which may conflict with BYOK/PAYG and future managed-credit packaging."
   - "User decision 2026-05-11: quota enforcement must hard-block before provider calls when managed usage is insufficient."
   - "User decision 2026-05-11: future commercial model is pay-as-you-go for managed AI generation."
@@ -77,19 +77,19 @@ Ready. This chantier defines the implementation foundation for usage accounting,
 
 ## User Story
 
-En tant que créatrice connectée à ContentGlowz, je veux voir et respecter mes droits de génération IA avant de lancer des images, rendus ou uploads coûteux, afin de produire sans surprise de blocage ni coût opérateur non contrôlé.
+En tant que créatrice connectée à ContentGlows, je veux voir et respecter mes droits de génération IA avant de lancer des images, rendus ou uploads coûteux, afin de produire sans surprise de blocage ni coût opérateur non contrôlé.
 
-Secondary operator story: en tant qu'opératrice ContentGlowz, je veux suivre les coûts Flux/Bunny/Remotion et agir sur les abus ou crédits problématiques, afin de protéger la marge, la disponibilité et les utilisateurs légitimes.
+Secondary operator story: en tant qu'opératrice ContentGlows, je veux suivre les coûts Flux/Bunny/Remotion et agir sur les abus ou crédits problématiques, afin de protéger la marge, la disponibilité et les utilisateurs légitimes.
 
 ## Minimal Behavior Contract
 
-When an authenticated user starts a managed AI generation action such as Flux image generation, future Remotion rendering, or a quota-governed upload/render step, ContentGlowz resolves the user's PAYG entitlement/balance, estimates or reserves the required usage, checks user-scoped limits and abuse limits, and either creates a recoverable queued job with visible usage state or hard-blocks before any paid provider call. On completion, the system records actual provider cost and consumed units, reconciles reservations, and updates the app-facing usage display. If the provider fails, user-facing usage is refunded/released according to an auditable policy. The easy edge case to miss is concurrency: two simultaneous jobs must not both pass a limit check against stale remaining credits.
+When an authenticated user starts a managed AI generation action such as Flux image generation, future Remotion rendering, or a quota-governed upload/render step, ContentGlows resolves the user's PAYG entitlement/balance, estimates or reserves the required usage, checks user-scoped limits and abuse limits, and either creates a recoverable queued job with visible usage state or hard-blocks before any paid provider call. On completion, the system records actual provider cost and consumed units, reconciles reservations, and updates the app-facing usage display. If the provider fails, user-facing usage is refunded/released according to an auditable policy. The easy edge case to miss is concurrency: two simultaneous jobs must not both pass a limit check against stale remaining credits.
 
 ## Success Behavior
 
 - Given a signed-in user with sufficient managed generation entitlement, when they request a Flux image generation from an owned project, then the backend creates a quota reservation before submitting to Flux and returns a job/generation response containing quota status, reservation id, estimated cost/units, and next polling path.
 - Given the provider succeeds and Bunny upload succeeds, when the worker completes, then the usage ledger records actual consumed units, provider cost metadata, Bunny storage/transfer estimate when available, project/user scope, and links to the job/generation record.
-- Given the provider exposes actual cost metadata, when reconciliation runs, then ContentGlowz stores both estimated and actual cost without trusting client-sent cost fields.
+- Given the provider exposes actual cost metadata, when reconciliation runs, then ContentGlows stores both estimated and actual cost without trusting client-sent cost fields.
 - Given a user's quota is near exhaustion, when the app loads generation controls, then the UI shows remaining quota/credits, reset or renewal state if applicable, and disables or warns on actions that cannot be started.
 - Given a quota block occurs, when the app receives the API response, then it displays a recoverable explanation with structured code, retryable flag, and an actionable destination to the existing AI runtime/settings surface or support/admin request flow; checkout links are not required by this chantier.
 - Given admin/ops reviews usage, when they inspect a user/project/org, then they can see quota state, recent reservations, actual provider spend, failed/refunded jobs, manual overrides, and abuse flags.
@@ -111,7 +111,7 @@ When an authenticated user starts a managed AI generation action such as Flux im
 
 ## Problem
 
-Flux Image Robot V1 intentionally excludes quota and billing enforcement while adding an operator-paid provider path with potentially material variable cost. ContentGlowz also has BYOK commitments for app-visible LLM actions and existing copy that mixes subscription, BYOK, and "AI generation costs included" claims. The chosen direction is PAYG managed usage on top of platform/BYOK access; without a separate quota/billing/cost-control layer, future AI image generation, rendering, upload processing, and video workflows can create margin risk, inconsistent user promises, unclear refund behavior, and poor recoverability when users hit limits.
+Flux Image Robot V1 intentionally excludes quota and billing enforcement while adding an operator-paid provider path with potentially material variable cost. ContentGlows also has BYOK commitments for app-visible LLM actions and existing copy that mixes subscription, BYOK, and "AI generation costs included" claims. The chosen direction is PAYG managed usage on top of platform/BYOK access; without a separate quota/billing/cost-control layer, future AI image generation, rendering, upload processing, and video workflows can create margin risk, inconsistent user promises, unclear refund behavior, and poor recoverability when users hit limits.
 
 ## Solution
 
@@ -138,7 +138,7 @@ Add a backend-owned entitlement and usage ledger that gates managed AI generatio
 - Deciding final customer-facing terminology for PAYG units. Internally this chantier uses `managed_usage_unit` so enforcement can be implemented without committing public pricing language.
 - Implementing checkout, Stripe/Polar integration, invoices, tax, accounting, payment recovery, or dunning.
 - Changing the Flux Image Robot V1 provider implementation except where future integration points need to be named.
-- Enforcing monetary quotas on BYOK OpenRouter LLM calls. BYOK flows may still have non-monetary abuse/rate limits, but they do not consume ContentGlowz-managed PAYG units in this chantier.
+- Enforcing monetary quotas on BYOK OpenRouter LLM calls. BYOK flows may still have non-monetary abuse/rate limits, but they do not consume ContentGlows-managed PAYG units in this chantier.
 - Anonymous/free public generation.
 - Enterprise contract management, custom SLA, procurement workflows, or manual invoicing.
 - Full data warehouse/BI pipeline; the first version may expose operational summaries from Turso/libSQL.
@@ -151,7 +151,7 @@ Add a backend-owned entitlement and usage ledger that gates managed AI generatio
 - Quota enforcement must happen before paid provider submission, not only after job completion.
 - Reservations must be atomic enough to prevent concurrent overspend.
 - Provider cost fields are evidence, not entitlement; a user cannot increase allowance by sending cost data.
-- BYOK OpenRouter remains separate from ContentGlowz-managed provider spend unless an explicit future business decision changes that.
+- BYOK OpenRouter remains separate from ContentGlows-managed provider spend unless an explicit future business decision changes that.
 - Existing abuse controls from the Flux spec remain required even when paid quotas exist.
 - Pricing values from BFL/Bunny/Remotion docs are not hard-coded as business truth; provider price tables must be configurable and reviewable.
 - If a provider does not expose exact cost, estimates must include provider, model/action, pricing table version, and confidence.
@@ -413,7 +413,7 @@ Add a backend-owned entitlement and usage ledger that gates managed AI generatio
 - Start with the backend ledger and atomic reservation service before touching UI. UI state without enforcement creates false safety.
 - Keep public pricing values out of code. Use configurable policy fixtures and explicit names such as `managed_image_generation_default`; the only required unit for this chantier is internal `managed_usage_unit`.
 - Do not trust client-sent units, costs, provider names, or plan ids. The backend resolves all entitlement and cost policy.
-- Preserve BYOK separation from the strict BYOK spec. User OpenRouter costs are not ContentGlowz-managed credits by default.
+- Preserve BYOK separation from the strict BYOK spec. User OpenRouter costs are not ContentGlows-managed credits by default.
 - Freshness gate for this chantier: current official BFL docs were checked on 2026-05-11 and support nullable `cost`, `input_mp`, and `output_mp` response metadata. Bunny pricing, Remotion rendering cost model, and checkout provider docs are intentionally out of scope unless implementation adds hard-coded pricing, Remotion-specific billing enforcement, checkout, invoices, taxes, or dunning.
 - Stop and create a separate admin-auth spec if no reliable admin authorization model exists when Task 10 begins.
 - Stop and reroute to architecture review if libSQL cannot support safe atomic reservation semantics in the deployed environment.

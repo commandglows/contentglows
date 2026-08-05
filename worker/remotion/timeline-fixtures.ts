@@ -1,7 +1,7 @@
-import type { ContentGlowzTimelineProps } from "./ContentGlowzTimelineVideo";
+import type { ContentGlowsTimelineProps } from "./ContentGlowsTimelineVideo";
 
-export const verticalTimelineFixture: ContentGlowzTimelineProps = {
-  composition_id: "ContentGlowzTimelineVideo",
+export const verticalTimelineFixture: ContentGlowsTimelineProps = {
+  composition_id: "ContentGlowsTimelineVideo",
   timeline_id: "timeline-vertical-001",
   version_id: "version-vertical-001",
   format: {
@@ -53,7 +53,7 @@ export const verticalTimelineFixture: ContentGlowzTimelineProps = {
       start_frame: 20,
       duration_in_frames: 120,
       trim_start_frame: 0,
-      text: "Unified ContentGlowz timeline",
+      text: "Unified ContentGlows timeline",
       style: {
         font_size: 68,
         text_align: "center",
@@ -116,7 +116,7 @@ export const verticalTimelineFixture: ContentGlowzTimelineProps = {
   },
 };
 
-export const landscapeTimelineFixture: ContentGlowzTimelineProps = {
+export const landscapeTimelineFixture: ContentGlowsTimelineProps = {
   ...verticalTimelineFixture,
   timeline_id: "timeline-landscape-001",
   version_id: "version-landscape-001",

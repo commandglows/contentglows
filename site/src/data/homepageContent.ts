@@ -100,16 +100,16 @@ export interface HomePageContent {
 
 export const homepageContent: Record<Locale, HomePageContent> = {
   en: {
-    title: 'ContentGlowz — Human-Led AI Content Workspace',
+    title: 'ContentGlows — Human-Led AI Content Workspace',
     description:
-      'ContentGlowz turns ideas into reviewed articles, newsletters, social posts, and video scripts with AI assistance, clear approval, scheduling, and supported publishing flows.',
+      'ContentGlows turns ideas into reviewed articles, newsletters, social posts, and video scripts with AI assistance, clear approval, scheduling, and supported publishing flows.',
     hero: {
       ariaLabel: 'articles, newsletters, social posts, video scripts',
       rotatingWords: ['articles', 'newsletters', 'social posts', 'video scripts'],
       titlePrefix: 'AI drafts your',
       titleSuffix: 'You stay in control.',
       subtitle:
-        'ContentGlowz is a human-led content workspace for creators and lean teams. Capture ideas, shape them with your voice, review every draft, then schedule or publish through the channels that are connected. If the backend is briefly unavailable, cached reads and supported queued edits help you keep momentum.',
+        'ContentGlows is a human-led content workspace for creators and lean teams. Capture ideas, shape them with your voice, review every draft, then schedule or publish through the channels that are connected. If the backend is briefly unavailable, cached reads and supported queued edits help you keep momentum.',
       primaryCta: 'Continue with Google',
       secondaryCta: 'Open App',
       stats: [
@@ -130,7 +130,7 @@ export const homepageContent: Record<Locale, HomePageContent> = {
         },
         { icon: '📉', text: "You start strong on Monday. By Thursday, you've posted nothing." },
       ],
-      transition: 'ContentGlowz fixes this.',
+      transition: 'ContentGlows fixes this.',
     },
     robots: {
       intro: {
@@ -205,7 +205,7 @@ export const homepageContent: Record<Locale, HomePageContent> = {
         {
           title: 'Publishing With Clear Limits',
           icon: '🚀',
-          body: 'Connect supported social channels when you are ready. ContentGlowz keeps account state, review, scheduling, and publish feedback visible in one workspace.',
+          body: 'Connect supported social channels when you are ready. ContentGlows keeps account state, review, scheduling, and publish feedback visible in one workspace.',
         },
         {
           title: 'Usable During Short Outages',
@@ -223,20 +223,20 @@ export const homepageContent: Record<Locale, HomePageContent> = {
       intro: {
         title: "Who It's For",
         description:
-          'ContentGlowz is for people who have something to say but not enough time to say it everywhere',
+          'ContentGlows is for people who have something to say but not enough time to say it everywhere',
       },
       cards: [
         {
           title: 'Solo Founders',
           icon: '🚀',
           quote:
-            "You're building a product and need to ship content for SEO, social, and newsletters. But writing isn't your job. ContentGlowz turns your weekly ritual into drafts you can review.",
+            "You're building a product and need to ship content for SEO, social, and newsletters. But writing isn't your job. ContentGlows turns your weekly ritual into drafts you can review.",
         },
         {
           title: 'Content Creators',
           icon: '✍️',
           quote:
-            'You have one idea. ContentGlowz helps shape it into the formats you need: a blog post, a social post, a newsletter section, or a short video script.',
+            'You have one idea. ContentGlows helps shape it into the formats you need: a blog post, a social post, a newsletter section, or a short video script.',
         },
         {
           title: 'SEO-Driven Sites',
@@ -248,7 +248,7 @@ export const homepageContent: Record<Locale, HomePageContent> = {
           title: 'Affiliate Marketers',
           icon: '💰',
           quote:
-            'Register your affiliate programs. ContentGlowz surfaces matching opportunities and keeps active, paused, and expired programs visible before links are used.',
+            'Register your affiliate programs. ContentGlows surfaces matching opportunities and keeps active, paused, and expired programs visible before links are used.',
         },
         {
           title: 'Small Agencies',
@@ -341,13 +341,13 @@ export const homepageContent: Record<Locale, HomePageContent> = {
     faq: {
       intro: {
         title: 'Frequently Asked Questions',
-        description: 'Everything you need to know about ContentGlowz',
+        description: 'Everything you need to know about ContentGlows',
       },
       items: [
         {
           question: 'Does the AI really sound like me?',
           answer:
-            'ContentGlowz uses weekly rituals, audience personas, and positioning inputs to draft closer to your voice. You still review and edit before anything goes out.',
+            'ContentGlows uses weekly rituals, audience personas, and positioning inputs to draft closer to your voice. You still review and edit before anything goes out.',
         },
         {
           question: 'What content formats are supported?',
@@ -355,24 +355,24 @@ export const homepageContent: Record<Locale, HomePageContent> = {
             'Blog articles, newsletters, social posts, short-form video scripts, reels, and YouTube video scripts are modeled in the workspace. You choose the formats that fit each idea.',
         },
         {
-          question: 'Where can I publish from ContentGlowz?',
+          question: 'Where can I publish from ContentGlows?',
           answer:
             'Supported social channels can be connected from Settings. External publishing depends on connected accounts and the current backend-supported channel flow; unsupported channels stay visible as blocked or manual paths.',
         },
         {
           question: 'Do I review every piece of content?',
           answer:
-            'Yes. ContentGlowz is human-led: AI drafts, you approve, skip, edit, schedule, or publish through supported connected flows.',
+            'Yes. ContentGlows is human-led: AI drafts, you approve, skip, edit, schedule, or publish through supported connected flows.',
         },
         {
           question: 'How does SEO work?',
           answer:
-            'ContentGlowz uses DataForSEO for keyword data, competitor analysis, and SERP tracking. Articles can target keywords with real search volume, while rankings still depend on quality, site authority, and execution.',
+            'ContentGlows uses DataForSEO for keyword data, competitor analysis, and SERP tracking. Articles can target keywords with real search volume, while rankings still depend on quality, site authority, and execution.',
         },
         {
           question: 'What about affiliate links?',
           answer:
-            'Register your affiliate programs with keywords. ContentGlowz can surface relevant matches when the topic fits, and you control which programs are active.',
+            'Register your affiliate programs with keywords. ContentGlows can surface relevant matches when the topic fits, and you control which programs are active.',
         },
         {
           question: 'Are API costs included?',
@@ -402,16 +402,16 @@ export const homepageContent: Record<Locale, HomePageContent> = {
     },
   },
   fr: {
-    title: 'ContentGlowz — Espace de contenu IA avec validation humaine',
+    title: 'ContentGlows — Espace de contenu IA avec validation humaine',
     description:
-      "ContentGlowz t'aide à transformer tes idées en articles, newsletters, posts sociaux et scripts vidéo relus, avec assistance IA, validation claire, planification et publication prise en charge.",
+      "ContentGlows t'aide à transformer tes idées en articles, newsletters, posts sociaux et scripts vidéo relus, avec assistance IA, validation claire, planification et publication prise en charge.",
     hero: {
       ariaLabel: 'articles, newsletters, posts sociaux, scripts vidéo',
       rotatingWords: ['articles', 'newsletters', 'posts sociaux', 'scripts vidéo'],
       titlePrefix: 'L’IA prépare tes',
       titleSuffix: 'Tu gardes la main.',
       subtitle:
-        "ContentGlowz est un espace de contenu piloté par l'humain pour créateurs et petites équipes. Capture tes idées, affine-les avec ta voix, relis chaque brouillon, puis planifie ou publie via les canaux connectés. Si le backend est brièvement indisponible, les lectures en cache et les edits pris en charge en file locale t'aident à garder le rythme.",
+        "ContentGlows est un espace de contenu piloté par l'humain pour créateurs et petites équipes. Capture tes idées, affine-les avec ta voix, relis chaque brouillon, puis planifie ou publie via les canaux connectés. Si le backend est brièvement indisponible, les lectures en cache et les edits pris en charge en file locale t'aident à garder le rythme.",
       primaryCta: 'Continuer avec Google',
       secondaryCta: "Ouvrir l'app",
       stats: [
@@ -432,7 +432,7 @@ export const homepageContent: Record<Locale, HomePageContent> = {
         },
         { icon: '📉', text: 'Tu démarres fort le lundi. Le jeudi, tu n’as encore rien publié.' },
       ],
-      transition: 'ContentGlowz remet de l’ordre là-dedans.',
+      transition: 'ContentGlows remet de l’ordre là-dedans.',
     },
     robots: {
       intro: {
@@ -507,7 +507,7 @@ export const homepageContent: Record<Locale, HomePageContent> = {
         {
           title: 'Publier avec des limites claires',
           icon: '🚀',
-          body: 'Connecte les canaux sociaux pris en charge quand tu es prêt. ContentGlowz garde visibles l’état des comptes, la revue, la planification et le retour de publication.',
+          body: 'Connecte les canaux sociaux pris en charge quand tu es prêt. ContentGlows garde visibles l’état des comptes, la revue, la planification et le retour de publication.',
         },
         {
           title: 'Utilisable pendant les petites coupures',
@@ -525,20 +525,20 @@ export const homepageContent: Record<Locale, HomePageContent> = {
       intro: {
         title: 'Pour qui ?',
         description:
-          'ContentGlowz sert les personnes qui ont des choses à dire mais pas assez de temps pour le dire partout',
+          'ContentGlows sert les personnes qui ont des choses à dire mais pas assez de temps pour le dire partout',
       },
       cards: [
         {
           title: 'Solo founders',
           icon: '🚀',
           quote:
-            'Tu construis un produit et tu dois publier pour le SEO, le social et les newsletters. Mais écrire n’est pas ton métier. ContentGlowz transforme ton rituel hebdo en brouillons à relire.',
+            'Tu construis un produit et tu dois publier pour le SEO, le social et les newsletters. Mais écrire n’est pas ton métier. ContentGlows transforme ton rituel hebdo en brouillons à relire.',
         },
         {
           title: 'Créateurs de contenu',
           icon: '✍️',
           quote:
-            'Tu pars d’une seule idée. ContentGlowz t’aide à la décliner dans les formats utiles : article, post social, section newsletter ou script vidéo court.',
+            'Tu pars d’une seule idée. ContentGlows t’aide à la décliner dans les formats utiles : article, post social, section newsletter ou script vidéo court.',
         },
         {
           title: 'Sites pilotés par le SEO',
@@ -550,7 +550,7 @@ export const homepageContent: Record<Locale, HomePageContent> = {
           title: 'Marketeurs affiliation',
           icon: '💰',
           quote:
-            'Enregistre tes programmes d’affiliation. ContentGlowz fait remonter les opportunités compatibles et garde visibles les programmes actifs, en pause ou expirés avant usage.',
+            'Enregistre tes programmes d’affiliation. ContentGlows fait remonter les opportunités compatibles et garde visibles les programmes actifs, en pause ou expirés avant usage.',
         },
         {
           title: 'Petites agences',
@@ -644,13 +644,13 @@ export const homepageContent: Record<Locale, HomePageContent> = {
     faq: {
       intro: {
         title: 'Questions fréquentes',
-        description: 'Tout ce qu’il te faut savoir sur ContentGlowz',
+        description: 'Tout ce qu’il te faut savoir sur ContentGlows',
       },
       items: [
         {
           question: 'Est-ce que l’IA peut vraiment sonner comme moi ?',
           answer:
-            'ContentGlowz s’appuie sur tes rituels hebdos, tes personas et ton positionnement pour proposer des brouillons plus proches de ta voix. Tu relis et tu édites toujours avant toute sortie.',
+            'ContentGlows s’appuie sur tes rituels hebdos, tes personas et ton positionnement pour proposer des brouillons plus proches de ta voix. Tu relis et tu édites toujours avant toute sortie.',
         },
         {
           question: 'Quels formats de contenu sont pris en charge ?',
@@ -658,24 +658,24 @@ export const homepageContent: Record<Locale, HomePageContent> = {
             'Articles de blog, newsletters, posts sociaux, scripts vidéo courts, reels et scripts YouTube sont modélisés dans l’espace de travail. Tu choisis les formats adaptés à chaque idée.',
         },
         {
-          question: 'Où puis-je publier depuis ContentGlowz ?',
+          question: 'Où puis-je publier depuis ContentGlows ?',
           answer:
             'Les canaux sociaux pris en charge se connectent depuis les réglages. La publication externe dépend des comptes connectés et du flow backend actuellement supporté ; les canaux non supportés restent visibles comme bloqués ou manuels.',
         },
         {
           question: 'Est-ce que je relis chaque contenu ?',
           answer:
-            'Oui. ContentGlowz reste piloté par l’humain : l’IA prépare, puis tu valides, passes, édites, planifies ou publies via les flows connectés pris en charge.',
+            'Oui. ContentGlows reste piloté par l’humain : l’IA prépare, puis tu valides, passes, édites, planifies ou publies via les flows connectés pris en charge.',
         },
         {
           question: 'Comment fonctionne le SEO ?',
           answer:
-            'ContentGlowz utilise DataForSEO pour les mots-clés, l’analyse concurrentielle et le suivi SERP. Les articles peuvent viser des mots-clés à vraie volumétrie, mais les résultats dépendent toujours de la qualité, de l’autorité du site et de l’exécution.',
+            'ContentGlows utilise DataForSEO pour les mots-clés, l’analyse concurrentielle et le suivi SERP. Les articles peuvent viser des mots-clés à vraie volumétrie, mais les résultats dépendent toujours de la qualité, de l’autorité du site et de l’exécution.',
         },
         {
           question: 'Et pour les liens affiliés ?',
           answer:
-            'Enregistre tes programmes affiliés avec leurs mots-clés. ContentGlowz peut faire remonter les correspondances pertinentes quand le sujet colle, et tu gardes le contrôle sur les programmes actifs.',
+            'Enregistre tes programmes affiliés avec leurs mots-clés. ContentGlows peut faire remonter les correspondances pertinentes quand le sujet colle, et tu gardes le contrôle sur les programmes actifs.',
         },
         {
           question: 'Les coûts API sont-ils inclus ?',

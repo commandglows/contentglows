@@ -1,4 +1,4 @@
-# Audit Log — ContentGlowz Site
+# Audit Log — ContentGlows Site
 
 | Date       | Scope        | Code | Design | Copy | SEO | GTM | Translate | Deps | Perf | Overall | Issues     |
 |------------|--------------|------|--------|------|-----|-----|-----------|------|------|---------|------------|

@@ -88,7 +88,7 @@ Ce single-flight ne change pas le contrat de securite. Si la resolution partagee
 - [ ] Task 1: Stabiliser le cycle de vie du routeur pour eviter toute recreation disruptive
   - File: `lib/providers/providers.dart`, `lib/router.dart`
   - Action: Introduire un provider dedie pour `GoRouter` (instance creee une fois), avec route definitions extraites dans `router.dart` pour eviter duplication/derive.
-  - Notes: Le routeur doit vivre hors `ContentGlowzApp.build()` pour eliminer l'effet `initialLocation` au resume.
+  - Notes: Le routeur doit vivre hors `ContentGlowsApp.build()` pour eliminer l'effet `initialLocation` au resume.
 
 - [ ] Task 2: Connecter MaterialApp au routeur stable
   - File: `lib/main.dart`

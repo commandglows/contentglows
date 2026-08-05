@@ -2,7 +2,7 @@
 title: "Startup Journey Chronicles"
 description: "Follow our complete startup journey from idea to revenue. Real metrics, challenges, and decisions in building an AI-powered SEO automation platform."
 pubDate: 2026-01-15
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["startup journey", "build in public", "saas metrics", "entrepreneurship"]
 featured: true
 image: "/images/blog/startup-journey-hub.jpg"
@@ -63,7 +63,7 @@ Building in public means sharing everything - the wins, the losses, and the toug
 
 **Results:** 60% cost savings, faster iteration, better developer experience.
 
-### [Platform Architecture Evolution](./contentglowz-platform.md)
+### [Platform Architecture Evolution](./contentglows-platform.md)
 
 **TL;DR:** How our architecture evolved from simple monolith to multi-service system handling AI agents, database, and web dashboard.
 
@@ -235,7 +235,7 @@ Building in public means sharing everything - the wins, the losses, and the toug
 - Notion (documentation)
 
 **Analytics:**
-- ContentGlowz Analytics (cookie-free, built-in)
+- ContentGlows Analytics (cookie-free, built-in)
 - Google Analytics (web)
 - Stripe (revenue)
 - Mixpanel (funnels)
@@ -263,9 +263,9 @@ Building in public means sharing everything - the wins, the losses, and the toug
 ## 📬 Follow Our Journey
 
 **Weekly Updates:**
-- [Twitter/X @ContentGlowz](https://twitter.com/contentglowz) - Daily insights
+- [Twitter/X @ContentGlows](https://twitter.com/contentglows) - Daily insights
 - [Newsletter](#newsletter) - Weekly roundup and metrics
-- [GitHub](https://github.com/user/contentglowz) - Open source development
+- [GitHub](https://github.com/user/contentglows) - Open source development
 
 **Monthly Reports:**
 - [Blog](#blog) - Detailed metrics and decisions

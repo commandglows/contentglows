@@ -2,7 +2,7 @@
 title: "SEO Strategy & Implementation Guides"
 description: "Master modern SEO strategies with our comprehensive guides. From topical mesh optimization to AI-powered research, learn proven techniques for ranking success."
 pubDate: 2026-01-15
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["seo strategy", "topical mesh", "content optimization", "competitive analysis"]
 featured: true
 image: "/images/blog/seo-strategy-hub.jpg"
@@ -170,17 +170,17 @@ def generate_optimized_title(keyword, intent, angle):
   "description": "Master content marketing automation with AI tools...",
   "author": {
     "@type": "Organization",
-    "name": "ContentGlowz"
+    "name": "ContentGlows"
   },
   "publisher": {
     "@type": "Organization", 
-    "name": "ContentGlowz"
+    "name": "ContentGlows"
   },
   "datePublished": "2026-01-15",
   "dateModified": "2026-01-15",
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://contentglowz.com/guide"
+    "@id": "https://contentglows.com/guide"
   }
 }
 ```

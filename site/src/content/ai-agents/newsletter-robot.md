@@ -2,7 +2,7 @@
 title: "Newsletter Robot: AI-Powered Weekly Newsletters That Curate Themselves"
 description: "Automatically discover, filter, and compile the best content into professional newsletters. AI curation meets strict quality control."
 pubDate: 2026-01-15
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["newsletter", "automation", "content curation", "email marketing", "ai agents"]
 featured: true
 image: "/images/blog/newsletter-robot.jpg"

@@ -2,15 +2,15 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
 import {
-  contentGlowzTimelinePropsSchema,
+  contentGlowsTimelinePropsSchema,
   deriveTimelineMetadata,
-} from "./ContentGlowzTimelineVideo";
+} from "./ContentGlowsTimelineVideo";
 import { landscapeTimelineFixture, verticalTimelineFixture } from "./timeline-fixtures";
 
-describe("ContentGlowz timeline props", () => {
+describe("ContentGlows timeline props", () => {
   it("accepts vertical and landscape fixtures", () => {
-    assert.equal(contentGlowzTimelinePropsSchema.safeParse(verticalTimelineFixture).success, true);
-    assert.equal(contentGlowzTimelinePropsSchema.safeParse(landscapeTimelineFixture).success, true);
+    assert.equal(contentGlowsTimelinePropsSchema.safeParse(verticalTimelineFixture).success, true);
+    assert.equal(contentGlowsTimelinePropsSchema.safeParse(landscapeTimelineFixture).success, true);
   });
 
   it("derives Remotion metadata from validated timeline props", () => {
@@ -23,7 +23,7 @@ describe("ContentGlowz timeline props", () => {
   });
 
   it("rejects unsupported fps and overlong timelines", () => {
-    const parsed = contentGlowzTimelinePropsSchema.safeParse({
+    const parsed = contentGlowsTimelinePropsSchema.safeParse({
       ...verticalTimelineFixture,
       format: {
         ...verticalTimelineFixture.format,

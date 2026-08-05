@@ -1,5 +1,5 @@
 {
-  "composition_id": "ContentGlowzTimelineVideo",
+  "composition_id": "ContentGlowsTimelineVideo",
   "timeline_id": "timeline-smoke",
   "version_id": "version-smoke",
   "format": {
@@ -40,7 +40,7 @@
       "type": "text",
       "start_frame": 0,
       "duration_in_frames": 30,
-      "text": "ContentGlowz timeline smoke",
+      "text": "ContentGlows timeline smoke",
       "style": {
         "font_size": 64,
         "color": "#f8fafc",

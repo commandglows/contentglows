@@ -13,7 +13,7 @@
 │ >_ OpenAI Codex (v0.128.0)                   │
 │                                              │
 │ model:       gpt-5.5 high   /model to change │
-│ directory:   ~/contentglowz                   │
+│ directory:   ~/contentglows                   │
 │ permissions: YOLO mode                       │
 ╰──────────────────────────────────────────────╯
 
@@ -27,7 +27,7 @@
 │ >_ OpenAI Codex (v0.128.0)                   │
 │                                              │
 │ model:       gpt-5.5 high   /model to change │
-│ directory:   ~/contentglowz                   │
+│ directory:   ~/contentglows                   │
 │ permissions: YOLO mode                       │
 ╰──────────────────────────────────────────────╯
 
@@ -53,7 +53,7 @@
   repo.
 
 • Le repo est un monorepo Astro + Flutter + FastAPI; la priorité qui nous
-  concerne est clairement ContentGlowz App. Je vais maintenant cartographier
+  concerne est clairement ContentGlows App. Je vais maintenant cartographier
   les dossiers et chercher les mots-clés liés à capture, media, permissions,
   recorder, screenshot et plateformes Flutter/web.
 
@@ -96,7 +96,7 @@ sions-Policy/display-capture
 • Techniquement, deux familles se dessinent : capturer le rendu Flutter de
   l’app elle-même, ou demander au système/navigateur une vraie capture
   écran. Ce n’est pas la même promesse produit : la première est fiable pour
-  “exporter une vue ContentGlowz”, la seconde couvre l’écran/fenêtre mais
+  “exporter une vue ContentGlows”, la seconde couvre l’écran/fenêtre mais
   déclenche toujours des permissions visibles et varie beaucoup selon
   navigateur/mobile.
 
@@ -121,7 +121,7 @@ sions-Policy/display-capture
   Verdict court : oui, l’idée est bonne et faisable, mais il faut séparer
   deux promesses :
 
-  1. Capturer l’app ContentGlowz elle-même : faisable proprement, surtout
+  1. Capturer l’app ContentGlows elle-même : faisable proprement, surtout
      web-first.
   2. Capturer tout l’écran / une autre app / le navigateur complet :
      faisable sur desktop web et Android natif, mais toujours avec
@@ -164,7 +164,7 @@ sions-Policy/display-capture
   | Audio système | Variable | Variable | Possible mais très contraint |
 
   Approche recommandée
-  Je ferais une V1 web-first centrée sur “capturer ContentGlowz”, pas
+  Je ferais une V1 web-first centrée sur “capturer ContentGlows”, pas
   “espionner l’écran”.
 
   V1 web-first
@@ -186,7 +186,7 @@ sions-Policy/display-capture
   Pour le screenshot, utiliser Flutter RenderRepaintBoundary.toImage() est
   le chemin naturel. Pour la vidéo web de l’app, l’option la plus
   intéressante est HTMLCanvasElement.captureStream() + MediaRecorder, parce
-  que ContentGlowz Flutter web rend principalement dans un canvas. Pour la
+  que ContentGlows Flutter web rend principalement dans un canvas. Pour la
   vraie capture écran desktop, utiliser
   navigator.mediaDevices.getDisplayMedia().
 
@@ -338,9 +338,9 @@ Something went wrong? Hit `/feedback` to report the issue.
   │ skills/tmux-capture-conversation/scripts/capture_tmux_conversation.sh"
   │ --dry-run
   └ Title: Conversation tmux - panneau courant - nvim
-    Destination: /home/ubuntu/contentglowz/docs/conversations/
+    Destination: /home/ubuntu/contentglows/docs/conversations/
     … +3 lines (ctrl + t to view transcript)
-    Neovim command: cd /home/ubuntu/contentglowz/docs/conversations && nvim
+    Neovim command: cd /home/ubuntu/contentglows/docs/conversations && nvim
     conversation-tmux-panneau-courant-nvim-20260504-191511.md
 
 ────────────────────────────────────────────────────────────────────────────
@@ -360,7 +360,7 @@ Something went wrong? Hit `/feedback` to report the issue.
 • Questions 1/1 answered
   • Je propose de capturer le panneau tmux courant avec le titre «
     Conversation feature capture écran et vidéo » vers `/home/ubuntu/
-    contentglowz/site/docs/conversations/conversation-feature-
+    contentglows/site/docs/conversations/conversation-feature-
     capture-ecran-video-20260504.md`. Est-ce bon ?
     answer: Oui (Recommended)
 
@@ -372,7 +372,7 @@ Something went wrong? Hit `/feedback` to report the issue.
   ## Résumé
 
   Capturer le panneau tmux courant en Markdown comme matière première
-  éditoriale pour le site ContentGlowz. Aucun article publiable ne sera
+  éditoriale pour le site ContentGlows. Aucun article publiable ne sera
   créé à cette étape : la capture servira de source pour rédiger ensuite
   un vrai article sur la feature capture d’écran + vidéo et son
   fonctionnement.
@@ -380,7 +380,7 @@ Something went wrong? Hit `/feedback` to report the issue.
   ## Paramètres Validés
 
   - Titre : Conversation feature capture écran et vidéo
-  - Destination : /home/ubuntu/contentglowz/site/docs/
+  - Destination : /home/ubuntu/contentglows/site/docs/
     conversations/conversation-feature-capture-ecran-video-20260504.md
   - Cible tmux : panneau courant
   - Usage : source interne pour rédaction web, pas contenu publié
@@ -394,7 +394,7 @@ Something went wrong? Hit `/feedback` to report the issue.
   "$SHIPGLOWZ_ROOT/skills/tmux-capture-conversation/scripts/
 capture_tmux_conversation.sh" \
     --title "Conversation feature capture écran et vidéo" \
-    --destination "/home/ubuntu/contentglowz/site/docs/
+    --destination "/home/ubuntu/contentglows/site/docs/
 conversations/conversation-feature-capture-ecran-video-20260504.md" \
     --yes
 
@@ -431,6 +431,6 @@ conversations/conversation-feature-capture-ecran-video-20260504.md" \
 
 › Run /review on my current changes
 
-  gpt-5.5 xhigh · ~/contentglowz · Context 48% left · 5h 54% · weekly 22%
+  gpt-5.5 xhigh · ~/contentglows · Context 48% left · 5h 54% · weekly 22%
 
 /home/ubuntu/home/ubuntu/home/ubuntu

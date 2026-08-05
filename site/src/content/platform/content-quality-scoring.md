@@ -2,7 +2,7 @@
 title: "Content Quality Scoring"
 description: "Measure readability before you publish. Get Flesch-Kincaid, Gunning Fog, SMOG, and Coleman-Liau scores for every article — with a quality grade and actionable feedback."
 pubDate: 2026-03-30
-author: "ContentGlowz Team"
+author: "ContentGlows Team"
 tags: ["readability", "content quality", "seo", "writing", "flesch", "editing"]
 featured: true
 image: "/images/blog/content-quality-scoring.jpg"
@@ -128,7 +128,7 @@ Run quality scoring on your existing articles to find which ones need rewriting:
 
 ```bash
 # Score an existing article
-curl -X POST https://api.contentglowz.com/api/content/{id}/readability \
+curl -X POST https://api.contentglows.com/api/content/{id}/readability \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
@@ -161,12 +161,12 @@ Target the sweet spot: complex enough to demonstrate expertise, simple enough th
 
 ## Getting Started
 
-Quality scoring is built into the SEO deployment pipeline. Every article generated through ContentGlowz is automatically scored before publication.
+Quality scoring is built into the SEO deployment pipeline. Every article generated through ContentGlows is automatically scored before publication.
 
 To score existing content or content from external sources, use the API:
 
 ```bash
-curl -X POST https://api.contentglowz.com/api/content/{id}/readability \
+curl -X POST https://api.contentglows.com/api/content/{id}/readability \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 

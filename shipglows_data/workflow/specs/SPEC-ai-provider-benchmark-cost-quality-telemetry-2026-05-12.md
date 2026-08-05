@@ -2,7 +2,7 @@
 artifact: spec
 metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
-project: "contentglowz"
+project: "contentglows"
 created: "2026-05-12"
 created_at: "2026-05-12 20:35:56 UTC"
 updated: "2026-05-12"
@@ -13,14 +13,14 @@ source_model: "GPT-5 Codex"
 scope: "feature"
 owner: "Diane"
 confidence: "high"
-user_story: "En tant qu'operatrice ContentGlowz, je veux comparer les providers IA sur cout, latence, fiabilite et qualite observable, afin de choisir les bons providers par workflow et proteger le PAYG sans exposer un benchmark public aux creatrices."
+user_story: "En tant qu'operatrice ContentGlows, je veux comparer les providers IA sur cout, latence, fiabilite et qualite observable, afin de choisir les bons providers par workflow et proteger le PAYG sans exposer un benchmark public aux creatrices."
 risk_level: "high"
 security_impact: "yes"
 docs_impact: "yes"
 linked_systems:
   - "lab"
   - "app"
-  - "contentglowz/v0-ai-image-generation-benchmark"
+  - "contentglows/v0-ai-image-generation-benchmark"
   - "Image Robot"
   - "Flux/BFL"
   - "OpenRouter BYOK"
@@ -53,7 +53,7 @@ depends_on:
   - artifact: "shipglows_data/technical/lab/guidelines.md"
     artifact_version: "1.0.0"
     required_status: "reviewed"
-  - artifact: "contentglowz/v0-ai-image-generation-benchmark"
+  - artifact: "contentglows/v0-ai-image-generation-benchmark"
     artifact_version: "local prototype"
     required_status: "inspiration-only"
   - artifact: "BFL pricing and FLUX.2 API docs"
@@ -71,11 +71,11 @@ depends_on:
 supersedes: []
 evidence:
   - "User request 2026-05-12: create an internal spec for provider benchmark, provider choice, cost/latency/quality telemetry, useful for PAYG."
-  - "Product context: contentglowz is inspiration only; keep the current Flutter/FastAPI/Clerk/Turso/Bunny stack."
+  - "Product context: contentglows is inspiration only; keep the current Flutter/FastAPI/Clerk/Turso/Bunny stack."
   - "Product context: the benchmark should support efficient social-content workflows and operator decisions, not a public model playground."
-  - "Prototype evidence: contentglowz/v0-ai-image-generation-benchmark compares model/provider, durationMs, cost, success and history across image generation providers."
-  - "Prototype evidence: contentglowz/v0-ai-image-generation-benchmark/app/api/generate-single/route.ts measures request start/end time per model and calculates provider-specific cost, but returns base64 images and uses Next/FAL/Prodia/xAI directly."
-  - "Prototype evidence: contentglowz/v0-ai-image-generation-benchmark/lib/pricing.ts hard-codes stale pricing tables; ContentGlowz must use versioned provider cost catalogs and actual provider metadata instead."
+  - "Prototype evidence: contentglows/v0-ai-image-generation-benchmark compares model/provider, durationMs, cost, success and history across image generation providers."
+  - "Prototype evidence: contentglows/v0-ai-image-generation-benchmark/app/api/generate-single/route.ts measures request start/end time per model and calculates provider-specific cost, but returns base64 images and uses Next/FAL/Prodia/xAI directly."
+  - "Prototype evidence: contentglows/v0-ai-image-generation-benchmark/lib/pricing.ts hard-codes stale pricing tables; ContentGlows must use versioned provider cost catalogs and actual provider metadata instead."
   - "Code evidence: lab/status/cost_tracker.py already persists DataForSEO-shaped estimated costs by project/job/pipeline/provider but is not a general AI provider telemetry ledger."
   - "Code evidence: lab/api/services/image_generation_store.py stores provider_cost and provider_metadata_json for ImageGeneration, but no benchmark run, quality signal, pricing-table version, or provider recommendation state."
   - "Code evidence: lab/api/services/flux_image_generation.py captures provider_request_id and provider_cost from BFL submit response, and lab/api/routers/images.py stores it after generation."
@@ -95,23 +95,23 @@ AI Provider Benchmark Cost Quality Telemetry
 
 ## Status
 
-Draft. This spec defines an internal ContentGlowz layer for provider benchmarking, production telemetry, cost evidence, quality signals and provider-choice recommendations. V1 starts with image generation because Flux/Image Robot and the `contentglowz` benchmark inspiration are already concrete. The data model must be shared enough to extend later to audio, STT, video rendering and Remotion-related provider decisions without exposing a public model playground.
+Draft. This spec defines an internal ContentGlows layer for provider benchmarking, production telemetry, cost evidence, quality signals and provider-choice recommendations. V1 starts with image generation because Flux/Image Robot and the `contentglows` benchmark inspiration are already concrete. The data model must be shared enough to extend later to audio, STT, video rendering and Remotion-related provider decisions without exposing a public model playground.
 
 ## User Story
 
-En tant qu'operatrice ContentGlowz, je veux comparer les providers IA sur cout, latence, fiabilite et qualite observable, afin de choisir les bons providers par workflow et proteger le PAYG sans exposer un benchmark public aux creatrices.
+En tant qu'operatrice ContentGlows, je veux comparer les providers IA sur cout, latence, fiabilite et qualite observable, afin de choisir les bons providers par workflow et proteger le PAYG sans exposer un benchmark public aux creatrices.
 
 ## Minimal Behavior Contract
 
-ContentGlowz records a normalized internal telemetry event whenever an AI provider job is benchmarked or completed in production: provider, model, workflow action, input/output units, estimated cost, actual provider cost when available, latency split, success/failure, error code, output durability, quality signals and pricing-catalog version. Admin operators can run controlled benchmark suites on fixture prompts/assets and review scorecards by provider/action/profile. The system may recommend a default provider or flag regressions, but it must not automatically switch customer jobs to a new provider unless an explicit allowlisted rollout policy exists. If provider docs, price data, quality samples, ownership, quota or storage evidence is missing, the run is marked partial and no provider-choice change is applied. The easy edge case to miss is treating "quality" as a single subjective score: V1 must combine fixture review, output validation and real workflow acceptance signals, while keeping private prompts, assets and provider secrets out of logs and public analytics.
+ContentGlows records a normalized internal telemetry event whenever an AI provider job is benchmarked or completed in production: provider, model, workflow action, input/output units, estimated cost, actual provider cost when available, latency split, success/failure, error code, output durability, quality signals and pricing-catalog version. Admin operators can run controlled benchmark suites on fixture prompts/assets and review scorecards by provider/action/profile. The system may recommend a default provider or flag regressions, but it must not automatically switch customer jobs to a new provider unless an explicit allowlisted rollout policy exists. If provider docs, price data, quality samples, ownership, quota or storage evidence is missing, the run is marked partial and no provider-choice change is applied. The easy edge case to miss is treating "quality" as a single subjective score: V1 must combine fixture review, output validation and real workflow acceptance signals, while keeping private prompts, assets and provider secrets out of logs and public analytics.
 
 ## Success Behavior
 
 - Given an admin operator opens the internal benchmark surface, when they choose an image benchmark suite, then the app shows fixture suites, candidate providers/models, last run status, median/p95 latency, estimated and actual cost, success rate, quality score, sample output links when safe, and current recommendation.
 - Given a benchmark run is started, when the backend validates admin access and provider availability, then it creates a benchmark run record with fixture ids, provider candidates, pricing catalog version, run mode, initiated_by user id, and a pollable status.
 - Given benchmark candidates are image providers, when the runner executes, then each provider receives the same normalized prompt, format, dimensions, reference policy and safety settings compatible with that provider, and the system records start time, provider submission time, provider completion time, Bunny storage time, total time and normalized outcome.
-- Given a provider returns exact cost metadata, when the run completes, then ContentGlowz records actual provider cost separately from estimated cost and marks the cost source as `provider_reported`.
-- Given a provider does not return exact cost, when the run completes, then ContentGlowz computes an estimate from a versioned cost catalog and marks confidence and pricing source rather than inventing exact spend.
+- Given a provider returns exact cost metadata, when the run completes, then ContentGlows records actual provider cost separately from estimated cost and marks the cost source as `provider_reported`.
+- Given a provider does not return exact cost, when the run completes, then ContentGlows computes an estimate from a versioned cost catalog and marks confidence and pricing source rather than inventing exact spend.
 - Given benchmark output is durable and safe for internal review, when it is uploaded to Bunny, then the scorecard can display samples only to admin users and only via server-owned asset descriptors.
 - Given an admin rates benchmark output, when they submit the rating, then the system stores rubric scores for social usefulness: prompt adherence, visual consistency, readability, artifact level, brand safety, format fit and publishability.
 - Given production Image Robot generations complete, when telemetry is recorded, then the system adds non-sensitive production signals such as job success, provider latency, provider cost, output persisted, user kept as candidate, user promoted as primary, regenerated, tombstoned, or used in a placement.
@@ -135,7 +135,7 @@ ContentGlowz records a normalized internal telemetry event whenever an AI provid
 
 ## Problem
 
-The `contentglowz` image benchmark shows a useful product idea: compare model outputs, speed and costs side by side. In ContentGlowz, copying that as a user-facing playground would be the wrong product. The real need is internal: decide which provider/model should power each guided workflow, know actual cost and latency for PAYG, detect provider regressions, and collect quality evidence from real social-content outcomes. The current backend has partial pieces, including `api_cost_log`, `ImageGeneration.provider_cost`, Flux provider metadata and quota specs, but it lacks a normalized cross-provider telemetry contract, benchmark runs, quality scoring, pricing catalog versions and admin-only provider recommendations.
+The `contentglows` image benchmark shows a useful product idea: compare model outputs, speed and costs side by side. In ContentGlows, copying that as a user-facing playground would be the wrong product. The real need is internal: decide which provider/model should power each guided workflow, know actual cost and latency for PAYG, detect provider regressions, and collect quality evidence from real social-content outcomes. The current backend has partial pieces, including `api_cost_log`, `ImageGeneration.provider_cost`, Flux provider metadata and quota specs, but it lacks a normalized cross-provider telemetry contract, benchmark runs, quality scoring, pricing catalog versions and admin-only provider recommendations.
 
 ## Solution
 
@@ -166,7 +166,7 @@ Create an internal AI provider benchmark and telemetry subsystem. It records nor
 - Exact public pricing, credit pack pricing, checkout, invoices, taxes or payment-provider logic. Those remain owned by the quota/billing spec and future commercial specs.
 - Full BI warehouse, external analytics platform, long-term data lake or ML-based automatic quality judge in V1.
 - Storing private user prompts or private media samples in benchmark fixtures without explicit admin-selected sanitization.
-- Benchmarking every provider in the market. V1 benchmarks providers already integrated or explicitly under evaluation for ContentGlowz.
+- Benchmarking every provider in the market. V1 benchmarks providers already integrated or explicitly under evaluation for ContentGlows.
 - Replacing `SPEC-ai-generation-quotas-billing-2026-05-11.md`; this spec supplies telemetry evidence and recommendations, not entitlement enforcement.
 - Replacing app-visible BYOK policies. BYOK OpenRouter usage remains separate from operator-paid managed usage unless a future spec changes it.
 - Legal/compliance guarantee for generated content quality, copyright or caption accuracy.
@@ -195,11 +195,11 @@ Create an internal AI provider benchmark and telemetry subsystem. It records nor
   - `shipglows_data/workflow/specs/monorepo/SPEC-video-editor-ai-audio-music-backgrounds-2026-05-11.md`
   - `shipglows_data/workflow/specs/monorepo/SPEC-text-based-media-editing-social-video-2026-05-12.md`
 - Local inspiration only:
-  - `contentglowz/v0-ai-image-generation-benchmark/lib/types.ts`
-  - `contentglowz/v0-ai-image-generation-benchmark/lib/models.ts`
-  - `contentglowz/v0-ai-image-generation-benchmark/lib/pricing.ts`
-  - `contentglowz/v0-ai-image-generation-benchmark/app/api/generate-single/route.ts`
-  - `contentglowz/v0-ai-image-generation-benchmark/components/benchmark/*`
+  - `contentglows/v0-ai-image-generation-benchmark/lib/types.ts`
+  - `contentglows/v0-ai-image-generation-benchmark/lib/models.ts`
+  - `contentglows/v0-ai-image-generation-benchmark/lib/pricing.ts`
+  - `contentglows/v0-ai-image-generation-benchmark/app/api/generate-single/route.ts`
+  - `contentglows/v0-ai-image-generation-benchmark/components/benchmark/*`
 - Existing backend files to read first:
   - `lab/status/cost_tracker.py`
   - `lab/api/services/image_generation_store.py`
@@ -266,7 +266,7 @@ Create an internal AI provider benchmark and telemetry subsystem. It records nor
 - A production generation is successful but user discards it; quality signal should count as weak negative outcome, not a provider failure.
 - User promotes a generated image as primary then later tombstones it; telemetry should keep both events with timestamps rather than overwriting quality history.
 - Provider latency is dominated by queue wait; benchmark scorecards should separate queue wait from processing where provider data allows.
-- Provider succeeds but produces wrong dimensions or unsafe format; output is failure for ContentGlowz even if provider billed success.
+- Provider succeeds but produces wrong dimensions or unsafe format; output is failure for ContentGlows even if provider billed success.
 - A provider result is visually good but too expensive for PAYG margin; recommendation may be `premium/canary` rather than default.
 - A cheap provider is fast but produces unreadable thumbnails; social-quality rubric should prevent it from becoming preferred for thumbnails.
 - An admin manually rates the wrong fixture; rating must be tied to run_result_id and reversible/auditable.
@@ -290,7 +290,7 @@ Create an internal AI provider benchmark and telemetry subsystem. It records nor
   - User story link : Makes benchmark history and provider evidence durable and auditable.
   - Depends on : Task 1.
   - Validate with : store tests for empty DB startup, upgraded DB, run/result persistence, recommendation history, tenant/admin filters and no destructive migrations.
-  - Notes : Follow ContentGlowz Turso migration guardrails during implementation.
+  - Notes : Follow ContentGlows Turso migration guardrails during implementation.
 
 - [ ] Task 3: Create versioned provider cost catalog service
   - Fichier : `lab/api/services/ai_provider_cost_catalog.py`
@@ -443,8 +443,8 @@ Create an internal AI provider benchmark and telemetry subsystem. It records nor
 ## Execution Notes
 
 - Read first:
-  - `contentglowz/v0-ai-image-generation-benchmark/lib/types.ts`
-  - `contentglowz/v0-ai-image-generation-benchmark/app/api/generate-single/route.ts`
+  - `contentglows/v0-ai-image-generation-benchmark/lib/types.ts`
+  - `contentglows/v0-ai-image-generation-benchmark/app/api/generate-single/route.ts`
   - `lab/status/cost_tracker.py`
   - `lab/api/services/image_generation_store.py`
   - `lab/api/services/flux_image_generation.py`
@@ -468,7 +468,7 @@ None blocking for this draft. Assumptions captured for readiness: V1 is admin/in
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
-| 2026-05-12 20:35:56 UTC | sf-spec | GPT-5 Codex | Created internal spec for provider benchmark, cost/latency/quality telemetry and provider-choice evidence from contentglowz benchmark inspiration, repo scan and official provider docs. | Draft saved. | /sf-ready AI Provider Benchmark Cost Quality Telemetry |
+| 2026-05-12 20:35:56 UTC | sf-spec | GPT-5 Codex | Created internal spec for provider benchmark, cost/latency/quality telemetry and provider-choice evidence from contentglows benchmark inspiration, repo scan and official provider docs. | Draft saved. | /sf-ready AI Provider Benchmark Cost Quality Telemetry |
 
 ## Current Chantier Flow
 

@@ -1,4 +1,4 @@
-# Audit Log — ContentGlowz
+# Audit Log — ContentGlows
 
 🟢 [site] audit: dependency health | date: 2026-06-12 | overall: B | issues: 0_vulns+0_outdated+1_license_review_gap | scope: npm
 🟠 [worker] audit: dependency health | date: 2026-06-12 | overall: C | issues: 6_moderate_vulns+2_config_gaps+1_license_unknown | scope: npm

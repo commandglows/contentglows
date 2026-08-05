@@ -1,4 +1,4 @@
-# Tasks — ContentGlowz
+# Tasks — ContentGlows
 
 ## Priority Snapshot — 2026-07-12
 

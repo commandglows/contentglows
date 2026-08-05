@@ -31,8 +31,8 @@ next_step: "/sf-docs update shipglows_data/technical/app/context-function-tree.m
 - `main()`
   - Initializes Flutter + SharedPreferences + diagnostics.
   - Boots `ProviderScope` with overrides for prefs and diagnostics.
-  - Renders `ContentGlowzApp`.
-- `ContentGlowzApp`
+  - Renders `ContentGlowsApp`.
+- `ContentGlowsApp`
   - Builds `MaterialApp.router`.
   - Reads language/theme providers.
   - Adds `_OfflineSyncBridge` overlay.
@@ -115,8 +115,8 @@ next_step: "/sf-docs update shipglows_data/technical/app/context-function-tree.m
 - `clerk_auth_service.dart`, `clerk_auth_service_web.dart`, `clerk_auth_service_android.dart`, `clerk_auth_service_stub.dart`
   - target-selected ClerkJS web bridge, Kotlin Android bridge, and signed-out fallback.
 
-## `android/app/src/main/kotlin/com/contentglowz/contentglowz_app`
-- `ContentGlowzApplication`
+## `android/app/src/main/kotlin/com/contentglows/contentglows_app`
+- `ContentGlowsApplication`
   - initializes Clerk Android once when a build-injected publishable key exists.
 - `MainActivity` + `auth/ClerkAuthChannel`
   - keeps capture/media channels and exposes initialize, Google sign-in,

@@ -1,6 +1,6 @@
 ---
 title: "Newsletter Robot : une veille email automatisée avec IMAP et CrewAI"
-description: "Découvrez l'architecture actuelle du Newsletter Robot ContentGlowz : lecture Gmail par IMAP, recherche Exa et génération orchestrée avec CrewAI."
+description: "Découvrez l'architecture actuelle du Newsletter Robot ContentGlows : lecture Gmail par IMAP, recherche Exa et génération orchestrée avec CrewAI."
 locale: "fr"
 publishDate: "2026-02-02"
 updatedDate: "2026-07-13"
@@ -23,7 +23,7 @@ L'architecture actuellement supportée repose sur trois briques :
 
 IMAP couvre le besoin actuel sans ajouter un fournisseur d'intégration supplémentaire. Le backend utilise un mot de passe d'application Gmail, limite la lecture à un dossier dédié et peut déplacer les messages traités dans un dossier d'archive.
 
-Cette solution garde une frontière simple : ContentGlowz accède uniquement à la boîte configurée par l'opérateur. Une intégration gérée pourra être réévaluée plus tard si elle apporte un avantage produit clair et si elle reste compatible avec la version de CrewAI utilisée par le projet.
+Cette solution garde une frontière simple : ContentGlows accède uniquement à la boîte configurée par l'opérateur. Une intégration gérée pourra être réévaluée plus tard si elle apporte un avantage produit clair et si elle reste compatible avec la version de CrewAI utilisée par le projet.
 
 ## Le flux de génération
 
@@ -57,10 +57,10 @@ NEWSLETTER_IMAP_EMAIL=your-newsletters@gmail.com
 NEWSLETTER_IMAP_PASSWORD=xxxx-xxxx-xxxx-xxxx
 NEWSLETTER_IMAP_HOST=imap.gmail.com
 NEWSLETTER_IMAP_FOLDER=Newsletters
-NEWSLETTER_IMAP_ARCHIVE=CONTENTGLOWZ_DONE
+NEWSLETTER_IMAP_ARCHIVE=CONTENTGLOWS_DONE
 ```
 
-Le compte doit rester dédié à la veille. Le dossier `Newsletters` délimite les messages à analyser et `CONTENTGLOWZ_DONE` reçoit ceux qui ont été traités.
+Le compte doit rester dédié à la veille. Le dossier `Newsletters` délimite les messages à analyser et `CONTENTGLOWS_DONE` reçoit ceux qui ont été traités.
 
 ## Vérifier la configuration
 

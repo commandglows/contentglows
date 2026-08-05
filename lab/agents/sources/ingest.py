@@ -107,7 +107,7 @@ def ingest_newsletter_inbox(
     max_results: int = 20,
     project_id: Optional[str] = None,
     persona_context: Optional[str] = None,
-    archive_folder: str = "CONTENTGLOWZ_DONE",
+    archive_folder: str = "CONTENTGLOWS_DONE",
     user_id: Optional[str] = None,
     reader=None,
 ) -> int:
