@@ -19,7 +19,7 @@ litellm>=1.83.14,<3.0  # Keep floor above known proxy/security advisory ranges.
 # Data Collection & Analysis
 exa-py>=1.0.0,<2.0
 firecrawl-py>=0.0.1,<2.0
-beautifulsoup4>=4.12.0,<5.0
+beautifulsoup4>=4.15.0,<5.0
 requests>=2.34.2,<3.0
 svix>=1.28.0,<2.0
 pyjwt[crypto]>=2.10.1,<3.0  # Clerk JWT signature and claims validation.
