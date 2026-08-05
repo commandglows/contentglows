@@ -1,10 +1,10 @@
 ---
 artifact: competitive_intelligence
 metadata_schema_version: "1.0"
-artifact_version: "1.1.0"
+artifact_version: "1.2.0"
 project: "contentglows"
 created: "2026-05-11"
-updated: "2026-07-08"
+updated: "2026-08-05"
 status: reviewed
 source_skill: sf-veille
 scope: "project-competitors-and-inspirations"
@@ -22,6 +22,7 @@ evidence:
   - "Fresh public-source review on 2026-07-07 for https://subscribr.ai/ and the AppSumo product/questions/reviews pages."
   - "Fresh public-source review on 2026-07-07 for https://play.google.com/store/apps/details?id=com.typeless.mobile."
   - "Fresh public-source review on 2026-07-08 for https://saaszilla.co/deals/tubeonai/."
+  - "Fresh public-source review on 2026-08-05 for https://grabltd.com/products/awz-media-player-for-windows/; direct product page was not machine-readable, so claims are limited to the GrabLTD catalogue description."
 depends_on:
   - "shipglows_data/business/business.md@1.0.0"
 supersedes:
@@ -91,6 +92,7 @@ ContentGlows est le projet le plus concerné par cette veille: génération, rec
 | [Airbin](https://betalist.com/startups/airbin) | Inspiration workspace | 6/10 | Workspace privé de fichiers + recherche contexte: utile pour bibliothèque de sources clients. |
 | [Kurate](https://betalist.com/startups/kurate) | Inspiration curation | 5/10 | Classement d'articles scientifiques: pattern utile pour scoring de sources et sélection documentaire. |
 | [Impulse AI](https://betalist.com/startups/impulse-ai) | Inspiration déploiement IA | 5/10 | À surveiller si ContentGlows veut packager/déployer des modèles ou pipelines IA. |
+| [AWZ Media Player for Windows](https://grabltd.com/products/awz-media-player-for-windows) | Inspiration workflow média | 5/10 | Lecteur Windows multi-format avec conversion et découpe intégrées. Inspiration utile pour le sas d'ingestion, de prévisualisation et de préparation des médias avant traitement IA, mais trop éloignée pour être un concurrent direct. |
 
 ## Notes de dispatch
 
@@ -116,6 +118,17 @@ Quand une reference produit passe par AppSumo, la page marketplace n'est pas seu
 - pour ContentGlows, c'est une bonne source de "voix du client" a confronter a la page officielle du produit.
 
 Subscribr est un bon exemple: la page site vend le workflow "idea -> script -> publish", tandis que la page AppSumo confirme ce que les utilisateurs valorisent concretement (gain de temps, hooks, repurposing blog, workflow YouTube focalise) et ce que le produit ne fait pas encore bien (ameliorer retroactivement les anciennes videos).
+
+## Note ciblée — AWZ Media Player comme sas média
+
+AWZ Media Player n'est pas un concurrent de la promesse ContentGlows: c'est un utilitaire desktop Windows qui ouvre de nombreux formats audio et vidéo, puis les convertit ou les découpe dans la même interface. Son intérêt pour ContentGlows est le pattern de préparation avant IA:
+
+- accepter rapidement plusieurs formats et sources locales;
+- prévisualiser et isoler un extrait avant l'analyse ou le repurposing;
+- convertir vers un format de travail stable sans imposer un second outil;
+- garder un workflow court entre le fichier brut et la sortie éditoriale.
+
+La leçon produit n'est pas de construire un lecteur multimédia complet, mais de rendre l'ingestion locale plus tolérante et le pré-traitement plus visible dans les workflows ContentGlows.
 
 - `app`: surface applicative, UX, rapports, visualisation, workflows utilisateur.
 - `lab`: backend, pipelines, données, agents, sources et expérimentation.

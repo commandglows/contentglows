@@ -1,7 +1,7 @@
 module.exports = {
   apps: [{
-    name: "contentglows_lab",
-    cwd: "/home/claude/contentglows/lab",
+    name: "contentglowz_lab",
+    cwd: "/home/claude/contentglowz/lab",
     script: "bash",
     args: ["-lc", "export PORT=45000 && flox activate -- bash -lc './venv/bin/python main.py'"],
     env: {

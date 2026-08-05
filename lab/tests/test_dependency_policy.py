@@ -10,7 +10,7 @@ APPROVED_CHROMADB_IMPORTS: set[Path] = set()
 
 
 def _python_files() -> list[Path]:
-    ignored_parts = {".git", ".venv", "__pycache__", ".pytest_cache"}
+    ignored_parts = {".git", ".flox", ".venv", "venv", "__pycache__", ".pytest_cache"}
     return [
         path
         for path in ROOT.rglob("*.py")
@@ -53,6 +53,21 @@ def test_pydantic_ai_requirement_uses_supported_v1_floor():
 def test_runtime_install_documentation_uses_lockfile():
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     assert "pip install -r requirements.lock" in readme
+
+
+def test_clerk_jwt_runtime_dependency_is_explicit():
+    requirements = (ROOT / "requirements.txt").read_text(encoding="utf-8").lower()
+    lock = (ROOT / "requirements.lock").read_text(encoding="utf-8").lower()
+
+    assert "pyjwt[crypto]>=" in requirements
+    assert "pyjwt[crypto]==" in lock
+
+
+def test_hashed_runtime_lock_includes_unsafe_build_dependencies():
+    lock = (ROOT / "requirements.lock").read_text(encoding="utf-8").lower()
+
+    assert "pip-compile --allow-unsafe --generate-hashes" in lock
+    assert "setuptools==" in lock
 
 
 def test_dependabot_tracks_lab_python_dependencies():
