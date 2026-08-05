@@ -41,8 +41,8 @@ dependencies:
 
 devDependencies:
   '@remotion/eslint-config-flat':
-    specifier: 4.0.494
-    version: 4.0.494(eslint@9.39.5)(typescript@5.7.3)
+    specifier: 4.0.502
+    version: 4.0.502(eslint@9.39.5)(typescript@5.7.3)
   '@types/express':
     specifier: 5.0.6
     version: 5.0.6
@@ -323,6 +323,16 @@ packages:
     os: [win32]
     requiresBuild: true
     optional: true
+
+  /@eslint-community/eslint-utils@4.10.1(eslint@9.39.5):
+    resolution: {integrity: sha512-cuadcxVFE8sDK6iWJbs8Sn0av2Nrh2QSGQhVlBW9AaAHqHwjWsZHT8LJ4hFGPh7ASBV2deFdM7H/DPjulmh8rg==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    peerDependencies:
+      eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
+    dependencies:
+      eslint: 9.39.5
+      eslint-visitor-keys: 3.4.3
+    dev: true
 
   /@eslint-community/eslint-utils@4.9.1(eslint@9.39.5):
     resolution: {integrity: sha512-phrYmNiYppR7znFEdqgfWHXR6NCkZEK7hwWDHZUjit/2/U0r6XvkDl0SYnoM51Hq7FhCGdLDT6zxCCOY1hexsQ==}
@@ -930,8 +940,8 @@ packages:
     dev: false
     optional: true
 
-  /@remotion/eslint-config-flat@4.0.494(eslint@9.39.5)(typescript@5.7.3):
-    resolution: {integrity: sha512-lBXOZILj4Qi9oaPuCf2qY4YzfjhvfaSIG3Bjpe8kzt2bHP1/X53HoePLonUhF8jftABnPhB9EXuJU/Mlhs5SSA==}
+  /@remotion/eslint-config-flat@4.0.502(eslint@9.39.5)(typescript@5.7.3):
+    resolution: {integrity: sha512-OI5Y9IXePGBu1DMGqEDDf+xwV6t2O3WaoT7Z37YXxmOueaM/bJLxirQl1cvGiFiX4WAonvxPvcl+r5BTsvkPxA==}
     peerDependencies:
       eslint: '>=9'
     dependencies:
@@ -1627,7 +1637,7 @@ packages:
       eslint: ^8.57.0 || ^9.0.0
       typescript: '>=4.8.4 <5.8.0'
     dependencies:
-      '@eslint-community/eslint-utils': 4.9.1(eslint@9.39.5)
+      '@eslint-community/eslint-utils': 4.10.1(eslint@9.39.5)
       '@typescript-eslint/scope-manager': 8.21.0
       '@typescript-eslint/types': 8.21.0
       '@typescript-eslint/typescript-estree': 8.21.0(typescript@5.7.3)
@@ -1927,8 +1937,8 @@ packages:
       concat-map: 0.0.1
     dev: true
 
-  /brace-expansion@2.1.2:
-    resolution: {integrity: sha512-w5JZcKgdhDOgOwm8H+KgbosopHMuGcl6qbulwjtz3SM7I7P3yW1eAjzMPLrIE+NQ9vjgANKHWeMHnrT0OXW1oA==}
+  /brace-expansion@2.1.4:
+    resolution: {integrity: sha512-hGfVzPxthbf3+2yjg/RBs60cB0FhqBS/zvdV/4wn4/BmN0bNMMHPc4V/BbFieqf1TKAGGAHnY4eSjajCl0f2Xg==}
     dependencies:
       balanced-match: 1.0.2
     dev: true
@@ -3080,7 +3090,7 @@ packages:
     resolution: {integrity: sha512-OBwBN9AL4dqmETlpS2zasx+vTeWclWzkblfZk7KTA5j3jeOONz/tRCnZomUyvNg83wL5Zv9Ss6HMJXAgL8R2Yg==}
     engines: {node: '>=16 || 14 >=14.17'}
     dependencies:
-      brace-expansion: 2.1.2
+      brace-expansion: 2.1.4
     dev: true
 
   /minimist@1.2.6:
