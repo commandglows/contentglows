@@ -1,11 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../data/models/brand_profile.dart';
 import '../../../data/models/content_item.dart';
+import '../../../data/models/project_asset.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../providers/providers.dart';
 import '../../theme/app_theme.dart';
@@ -245,6 +244,21 @@ class BrandProfilesScreen extends ConsumerWidget {
     required BrandProfile profile,
   }) async {
     try {
+      final blueprints = await ref
+          .read(apiServiceProvider)
+          .fetchBrandVideoBlueprints(
+            projectId: profile.projectId,
+            brandProfileId: profile.id,
+          );
+      final hasActiveBlueprint = blueprints.any(
+        (blueprint) => blueprint['status'] == 'active',
+      );
+      if (!hasActiveBlueprint) {
+        if (!context.mounted) return;
+        await _openVideoStyleSetup(context, ref, profile);
+        return;
+      }
+      if (!context.mounted) return;
       final previewContent = await _selectPreviewContent(context, ref);
       if (previewContent == null) return;
 
@@ -284,6 +298,49 @@ class BrandProfilesScreen extends ConsumerWidget {
     }
   }
 
+  Future<void> _openVideoStyleSetup(
+    BuildContext context,
+    WidgetRef ref,
+    BrandProfile profile,
+  ) async {
+    final draft = await showDialog<_VideoStyleDraft>(
+      context: context,
+      builder: (_) => const _VideoStyleSetupDialog(),
+    );
+    if (draft == null || !context.mounted) return;
+    try {
+      await ref
+          .read(apiServiceProvider)
+          .createBrandVideoBlueprint(
+            projectId: profile.projectId,
+            brandProfileId: profile.id,
+            name: draft.name,
+            defaultArchetype: draft.archetype,
+          );
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            context.tr(
+              'Video style saved. Generate a preview when you are ready.',
+            ),
+          ),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } catch (error, stackTrace) {
+      if (!context.mounted) return;
+      showCopyableDiagnosticSnackBar(
+        context,
+        ref,
+        message: context.tr('Could not save the video style.'),
+        scope: 'settings.brand_profiles.video_style',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
   Future<ContentItem?> _selectPreviewContent(
     BuildContext context,
     WidgetRef ref,
@@ -305,10 +362,23 @@ class BrandProfilesScreen extends ConsumerWidget {
       return null;
     }
 
+    Map<String, String> personaNames = const {};
+    try {
+      final personas = await ref.read(personasProvider.future);
+      personaNames = {
+        for (final persona in personas)
+          if (persona.id != null) persona.id!: persona.name,
+      };
+    } catch (_) {
+      // Persona context is supplementary for historical content. A temporary
+      // persona lookup failure must not block a safe branded-preview choice.
+    }
+    if (!context.mounted) return null;
     return showModalBottomSheet<ContentItem>(
       context: context,
       showDragHandle: true,
-      builder: (_) => _BrandPreviewContentSheet(items: items),
+      builder: (_) =>
+          _BrandPreviewContentSheet(items: items, personaNames: personaNames),
     );
   }
 }
@@ -585,7 +655,7 @@ class _BrandProfileCard extends StatelessWidget {
                 ),
                 OutlinedButton(
                   onPressed: onPreview,
-                  child: Text(context.tr('Preview impact')),
+                  child: Text(context.tr('Generate video preview')),
                 ),
                 OutlinedButton(
                   onPressed: onSetDefault,
@@ -645,9 +715,13 @@ class _MiniChip extends StatelessWidget {
 }
 
 class _BrandPreviewContentSheet extends StatelessWidget {
-  const _BrandPreviewContentSheet({required this.items});
+  const _BrandPreviewContentSheet({
+    required this.items,
+    required this.personaNames,
+  });
 
   final List<ContentItem> items;
+  final Map<String, String> personaNames;
 
   @override
   Widget build(BuildContext context) {
@@ -683,13 +757,121 @@ class _BrandPreviewContentSheet extends StatelessWidget {
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.play_circle_outline_rounded),
               title: Text(item.title),
-              subtitle: Text(
-                context.tr('{type} - Complete', {'type': item.typeLabel}),
-              ),
+              subtitle: Text(_subtitleFor(context, item)),
               onTap: () => Navigator.of(context).pop(item),
             ),
         ],
       ),
+    );
+  }
+
+  String _subtitleFor(BuildContext context, ContentItem item) {
+    final personaId = item.metadata?['persona_id']?.toString();
+    final personaName = personaId == null ? null : personaNames[personaId];
+    final base = context.tr('{type} - Complete', {'type': item.typeLabel});
+    if (personaName != null) {
+      return '$base · ${context.tr('Audience')}: $personaName';
+    }
+    if (personaId != null) {
+      return '$base · ${context.tr('Audience unavailable')}';
+    }
+    return base;
+  }
+}
+
+class _VideoStyleDraft {
+  const _VideoStyleDraft({required this.name, required this.archetype});
+
+  final String name;
+  final String archetype;
+}
+
+class _VideoStyleSetupDialog extends StatefulWidget {
+  const _VideoStyleSetupDialog();
+
+  @override
+  State<_VideoStyleSetupDialog> createState() => _VideoStyleSetupDialogState();
+}
+
+class _VideoStyleSetupDialogState extends State<_VideoStyleSetupDialog> {
+  final _nameController = TextEditingController(text: 'Default video style');
+  String _archetype = 'faceless_reel';
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(context.tr('Set up a video style')),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            context.tr(
+              'This reusable style lets ContentGlows prepare a branded video preview for this profile.',
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          TextField(
+            controller: _nameController,
+            autofocus: true,
+            decoration: InputDecoration(labelText: context.tr('Style name')),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          DropdownButtonFormField<String>(
+            initialValue: _archetype,
+            decoration: InputDecoration(labelText: context.tr('Video format')),
+            items: const [
+              DropdownMenuItem(
+                value: 'faceless_reel',
+                child: Text('Faceless reel'),
+              ),
+              DropdownMenuItem(value: 'ugc_ad', child: Text('UGC ad')),
+              DropdownMenuItem(
+                value: 'product_demo',
+                child: Text('Product demo'),
+              ),
+              DropdownMenuItem(
+                value: 'talking_head_highlight',
+                child: Text('Talking-head highlight'),
+              ),
+              DropdownMenuItem(
+                value: 'testimonial_cut',
+                child: Text('Testimonial cut'),
+              ),
+              DropdownMenuItem(value: 'recap', child: Text('Recap')),
+            ],
+            onChanged: (value) {
+              if (value != null) {
+                setState(() => _archetype = value);
+              }
+            },
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(context.tr('Cancel')),
+        ),
+        FilledButton(
+          onPressed: () {
+            final name = _nameController.text.trim();
+            if (name.isEmpty) {
+              return;
+            }
+            Navigator.of(
+              context,
+            ).pop(_VideoStyleDraft(name: name, archetype: _archetype));
+          },
+          child: Text(context.tr('Save video style')),
+        ),
+      ],
     );
   }
 }
@@ -708,14 +890,14 @@ class _BrandProfileEditorDialogState
     extends ConsumerState<BrandProfileEditorDialog> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
-  late final TextEditingController _logoController;
+  String? _logoAssetId;
   late final TextEditingController _primaryColorsController;
   late final TextEditingController _secondaryColorsController;
   late final TextEditingController _fontHeadingController;
   late final TextEditingController _fontBodyController;
   late final TextEditingController _toneKeywordsController;
-  late final TextEditingController _ctaDefaultsController;
-  late final TextEditingController _captionDefaultsController;
+  late final TextEditingController _ctaTextController;
+  late final TextEditingController _captionStyleController;
   late final TextEditingController _transitionFamilyController;
   late bool _introModuleEnabled;
   late bool _outroModuleEnabled;
@@ -729,7 +911,7 @@ class _BrandProfileEditorDialogState
     final draft =
         widget.profile?.toDraft() ?? const BrandProfileDraft(name: '');
     _nameController = TextEditingController(text: draft.name);
-    _logoController = TextEditingController(text: draft.logoAssetId ?? '');
+    _logoAssetId = draft.logoAssetId;
     _primaryColorsController = TextEditingController(
       text: draft.primaryColors.join(', '),
     );
@@ -743,15 +925,11 @@ class _BrandProfileEditorDialogState
     _toneKeywordsController = TextEditingController(
       text: draft.toneKeywords.join(', '),
     );
-    _ctaDefaultsController = TextEditingController(
-      text: draft.ctaDefaults == null
-          ? ''
-          : JsonEncoder.withIndent('  ').convert(draft.ctaDefaults),
+    _ctaTextController = TextEditingController(
+      text: _readText(draft.ctaDefaults, const ['primaryText', 'text']),
     );
-    _captionDefaultsController = TextEditingController(
-      text: draft.captionStyleDefaults == null
-          ? ''
-          : JsonEncoder.withIndent('  ').convert(draft.captionStyleDefaults),
+    _captionStyleController = TextEditingController(
+      text: _readText(draft.captionStyleDefaults, const ['style', 'preset']),
     );
     _transitionFamilyController = TextEditingController(
       text: draft.transitionFamily ?? '',
@@ -765,14 +943,13 @@ class _BrandProfileEditorDialogState
   @override
   void dispose() {
     _nameController.dispose();
-    _logoController.dispose();
     _primaryColorsController.dispose();
     _secondaryColorsController.dispose();
     _fontHeadingController.dispose();
     _fontBodyController.dispose();
     _toneKeywordsController.dispose();
-    _ctaDefaultsController.dispose();
-    _captionDefaultsController.dispose();
+    _ctaTextController.dispose();
+    _captionStyleController.dispose();
     _transitionFamilyController.dispose();
     super.dispose();
   }
@@ -780,6 +957,16 @@ class _BrandProfileEditorDialogState
   @override
   Widget build(BuildContext context) {
     final isEditing = widget.profile != null;
+    final assetLibrary = ref.watch(projectAssetLibraryProvider);
+    final logoAssets =
+        assetLibrary.asData?.value.assets
+            .where((asset) => asset.mediaKind == 'image')
+            .toList() ??
+        const <ProjectAsset>[];
+    final selectedLogoId = _logoAssetId ?? '';
+    final hasSelectedLogo =
+        selectedLogoId.isEmpty ||
+        logoAssets.any((asset) => asset.id == selectedLogoId);
 
     return AlertDialog(
       scrollable: true,
@@ -806,7 +993,39 @@ class _BrandProfileEditorDialogState
                   return null;
                 },
               ),
-              _buildField(controller: _logoController, label: 'Logo asset id'),
+              DropdownButtonFormField<String>(
+                initialValue: selectedLogoId,
+                decoration: InputDecoration(
+                  labelText: 'Logo',
+                  helperText: assetLibrary.hasError
+                      ? 'Project library unavailable. Your saved logo stays unchanged.'
+                      : 'Choose an image from your project library.',
+                ),
+                items: [
+                  const DropdownMenuItem(
+                    value: '',
+                    child: Text('No logo selected'),
+                  ),
+                  if (!hasSelectedLogo)
+                    DropdownMenuItem(
+                      value: selectedLogoId,
+                      child: const Text('Saved logo unavailable'),
+                    ),
+                  ...logoAssets.map(
+                    (asset) => DropdownMenuItem(
+                      value: asset.id,
+                      child: Text(asset.fileName ?? asset.id),
+                    ),
+                  ),
+                ],
+                onChanged: assetLibrary.isLoading
+                    ? null
+                    : (value) => setState(
+                        () => _logoAssetId = value == null || value.isEmpty
+                            ? null
+                            : value,
+                      ),
+              ),
               _buildField(
                 controller: _primaryColorsController,
                 label: 'Primary colors',
@@ -832,14 +1051,14 @@ class _BrandProfileEditorDialogState
                 label: 'Transition family',
               ),
               _buildField(
-                controller: _ctaDefaultsController,
-                label: 'CTA defaults JSON',
-                maxLines: 4,
+                controller: _ctaTextController,
+                label: 'Default call to action',
+                helperText: 'Example: Discover more',
               ),
               _buildField(
-                controller: _captionDefaultsController,
-                label: 'Caption defaults JSON',
-                maxLines: 4,
+                controller: _captionStyleController,
+                label: 'Caption style',
+                helperText: 'Example: Clear, large, high contrast',
               ),
               const SizedBox(height: AppSpacing.sm),
               DropdownButtonFormField<String>(
@@ -926,14 +1145,22 @@ class _BrandProfileEditorDialogState
     }
     final draft = BrandProfileDraft(
       name: _nameController.text.trim(),
-      logoAssetId: _cleanNullable(_logoController.text),
+      logoAssetId: _logoAssetId,
       primaryColors: _csv(_primaryColorsController.text),
       secondaryColors: _csv(_secondaryColorsController.text),
       fontHeading: _cleanNullable(_fontHeadingController.text),
       fontBody: _cleanNullable(_fontBodyController.text),
       toneKeywords: _csv(_toneKeywordsController.text),
-      ctaDefaults: _parseJsonMap(_ctaDefaultsController.text),
-      captionStyleDefaults: _parseJsonMap(_captionDefaultsController.text),
+      ctaDefaults: _withText(
+        widget.profile?.ctaDefaults,
+        'primaryText',
+        _ctaTextController.text,
+      ),
+      captionStyleDefaults: _withText(
+        widget.profile?.captionStyleDefaults,
+        'style',
+        _captionStyleController.text,
+      ),
       motionIntensity: _motionIntensity,
       transitionFamily: _cleanNullable(_transitionFamilyController.text),
       introModuleEnabled: _introModuleEnabled,
@@ -993,18 +1220,27 @@ class _BrandProfileEditorDialogState
         .toList();
   }
 
-  Map<String, dynamic>? _parseJsonMap(String value) {
+  String _readText(Map<String, dynamic>? values, List<String> keys) {
+    if (values == null) return '';
+    for (final key in keys) {
+      final value = values[key]?.toString().trim();
+      if (value != null && value.isNotEmpty) return value;
+    }
+    return '';
+  }
+
+  Map<String, dynamic>? _withText(
+    Map<String, dynamic>? current,
+    String key,
+    String value,
+  ) {
+    final next = Map<String, dynamic>.from(current ?? const {});
     final trimmed = value.trim();
     if (trimmed.isEmpty) {
-      return null;
+      next.remove(key);
+    } else {
+      next[key] = trimmed;
     }
-    final decoded = jsonDecode(trimmed);
-    if (decoded is Map<String, dynamic>) {
-      return decoded;
-    }
-    if (decoded is Map) {
-      return Map<String, dynamic>.from(decoded);
-    }
-    throw const FormatException('Expected a JSON object.');
+    return next.isEmpty ? null : next;
   }
 }

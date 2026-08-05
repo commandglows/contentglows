@@ -579,6 +579,7 @@ class _AnglesScreenState extends ConsumerState<AnglesScreen> {
       final result = await api.dispatchPipeline(
         angle: angle,
         creatorVoice: creatorProfile?.voice,
+        personaId: _selectedPersona?.id,
       );
 
       if (!mounted) return;

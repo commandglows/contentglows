@@ -1,3 +1,12 @@
+## [Unreleased]
+
+### Added
+- The Brand Profiles flow now lets creators set up an active video style before requesting a branded preview, so the required video blueprint is visible and recoverable in the app.
+- Content generated from an Angle now retains the selected persona identifier as content metadata for downstream context and preview selection.
+
+### Changed
+- Brand profile editing uses plain-language CTA and caption-style fields instead of raw JSON input, while retaining any existing advanced values.
+
 ## [2026-07-12]
 
 ### Added

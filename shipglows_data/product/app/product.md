@@ -1,10 +1,10 @@
 ---
 artifact: product_context
 metadata_schema_version: "1.0"
-artifact_version: "1.2.0"
+artifact_version: "1.3.0"
 project: "app"
 created: "2026-04-26"
-updated: "2026-07-13"
+updated: "2026-08-05"
 status: "reviewed"
 source_skill: sf-docs
 scope: product
@@ -39,7 +39,7 @@ desired_outcomes:
   - Preserve workspace and queue state continuity across app restarts and reconnection cycles.
 non_goals:
   - Native mobile auth stack parity or native-only feature set.
-next_review: "2026-07-26"
+next_review: "2026-08-19"
 next_step: "/sf-docs audit shipglows_data/product/app/product.md"
 ---
 
@@ -52,6 +52,7 @@ next_step: "/sf-docs audit shipglows_data/product/app/product.md"
 - provides authenticated onboarding and workspace bootstrap via Clerk + FastAPI session flow;
 - supports multi-project workspace management with an explicit active-project selection model;
 - runs content workflows (feed, ideas, angles, editor, personas, scheduling, drip plans, affiliation/content domains);
+- preserves the selected Angle persona as content-scoped metadata, so one brand can serve several audiences without duplicating persona records;
 - exposes `Project Intelligence V1` for project-scoped source ingestion, recommendations, and Idea Pool conversion;
 - exposes `Video Timeline V1` for backend-orchestrated preview/final render preparation from existing content items;
 - exposes a pre-generation source library where creators can add image, video, audio, text and public-link sources, resolve individual failures, and deliberately choose between saving `Sources prêtes` or starting `Générer la vidéo`;
@@ -74,6 +75,7 @@ next_step: "/sf-docs audit shipglows_data/product/app/product.md"
 - **Video Timeline V1 scope:** timeline editing plus preview/final render orchestration through backend contracts, without direct Flutter-to-worker calls.
 - **Video Source Intake V1 scope:** collecting and validating project-scoped sources, saving an exact ready revision, and optionally handing that revision to generation. Video generation execution, editing, rendering and publication remain separate stages.
 - **Ahead-of-time branded video scope:** the feed can request safe refreshes of branded-video candidates, consume compact readiness states, surface preflight blockers directly on the card, and keep the video editor as an explicit optional branch instead of the default path.
+- **Brand profile scope:** reusable visual and editorial defaults apply to branded video generation; the app requests an explicit active video style before it starts a preview render, and a persona remains associated with its content rather than the profile.
 - **Android-only V1 scope:** local device screenshot and screen-recording capture with Android consent, app-scoped storage, preview, discard, and share/export.
 - **Partially in scope / not finished:** end-to-end external publish execution by channel.
   - Route and UX for publish actions exists in some paths, but full channel-account linking and feedback loop are not fully closed yet.

@@ -652,6 +652,7 @@ async def dispatch_pipeline(
             tags=[fmt],
             metadata={
                 "angle": request.angle_data,
+                "persona_id": request.angle_data.get("persona_id"),
                 "pipeline_task_id": task_id,
                 "seo_keyword": request.seo_keyword,
                 "seo_signals": request.angle_data.get("seo_signals"),

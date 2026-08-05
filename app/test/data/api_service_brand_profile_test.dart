@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io' as io;
 
 import 'package:app/data/models/brand_profile.dart';
+import 'package:app/data/models/ritual.dart';
 import 'package:app/data/services/api_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -93,6 +94,37 @@ void main() {
             case 'DELETE /api/brand-profiles/brand-2':
               request.response.write('{"success":true}');
               break;
+            case 'GET /api/brand-video-blueprints':
+              request.response.write(
+                jsonEncode([
+                  {
+                    'id': 'blueprint-1',
+                    'status': 'active',
+                    'brand_profile_id': 'brand-2',
+                  },
+                ]),
+              );
+              break;
+            case 'POST /api/brand-video-blueprints':
+              request.response.statusCode = 201;
+              request.response.write(
+                jsonEncode({
+                  'id': 'blueprint-2',
+                  'status': jsonDecode(body)['status'],
+                  'brand_profile_id': jsonDecode(body)['brand_profile_id'],
+                }),
+              );
+              break;
+            case 'POST /api/psychology/dispatch-pipeline':
+              request.response.write(
+                jsonEncode({
+                  'task_id': 'task-1',
+                  'content_record_id': 'content-1',
+                  'format': 'article',
+                  'status': 'running',
+                }),
+              );
+              break;
             default:
               request.response.statusCode = 404;
               request.response.write('{"detail":"not found"}');
@@ -122,11 +154,36 @@ void main() {
           isDefault: true,
         ),
       );
+      final blueprints = await api.fetchBrandVideoBlueprints(
+        projectId: 'project-1',
+        brandProfileId: 'brand-2',
+      );
+      final blueprint = await api.createBrandVideoBlueprint(
+        projectId: 'project-1',
+        brandProfileId: 'brand-2',
+        name: 'Short-form',
+        defaultArchetype: 'faceless_reel',
+      );
+      final dispatch = await api.dispatchPipeline(
+        angle: const AngleSuggestion(
+          title: 'Persona-aware angle',
+          hook: 'Hook',
+          angle: 'Angle',
+          contentType: 'blog_post',
+          narrativeThread: 'Thread',
+          painPointAddressed: 'Pain point',
+          confidence: 90,
+        ),
+        personaId: 'persona-1',
+      );
       await api.deleteBrandProfile(brandProfileId: 'brand-2');
 
       expect(profiles.single.name, 'Primary');
       expect(created.id, 'brand-2');
       expect(updated.isDefault, isTrue);
+      expect(blueprints.single['status'], 'active');
+      expect(blueprint['id'], 'blueprint-2');
+      expect(dispatch?['content_record_id'], 'content-1');
       expect(
         capturedRequests
             .map((entry) => '${entry.method} ${entry.path}')
@@ -135,10 +192,21 @@ void main() {
           'GET /api/brand-profiles',
           'POST /api/brand-profiles',
           'PATCH /api/brand-profiles/brand-2',
+          'GET /api/brand-video-blueprints',
+          'POST /api/brand-video-blueprints',
+          'POST /api/psychology/dispatch-pipeline',
           'DELETE /api/brand-profiles/brand-2',
         ],
       );
       expect(capturedRequests.first.query['projectId'], 'project-1');
+      expect(capturedRequests[3].query, {
+        'projectId': 'project-1',
+        'brandProfileId': 'brand-2',
+      });
+      expect(
+        jsonDecode(capturedRequests[5].body)['angle_data']['persona_id'],
+        'persona-1',
+      );
     },
   );
 }

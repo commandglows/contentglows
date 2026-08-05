@@ -845,6 +845,57 @@ class ApiService {
     }
   }
 
+  Future<List<Map<String, dynamic>>> fetchBrandVideoBlueprints({
+    required String projectId,
+    required String brandProfileId,
+  }) async {
+    if (allowDemoData) {
+      return const <Map<String, dynamic>>[];
+    }
+    try {
+      final response = await _dio.get(
+        '/api/brand-video-blueprints',
+        queryParameters: {
+          'projectId': projectId,
+          'brandProfileId': brandProfileId,
+        },
+      );
+      final data = response.data;
+      if (data is! List) {
+        throw const ApiException(
+          ApiErrorType.invalidResponse,
+          'Invalid brand video blueprints response from FastAPI.',
+        );
+      }
+      return data.whereType<Map>().map((item) => _asMap(item)).toList();
+    } on DioException catch (error) {
+      throw _mapDioException(error);
+    }
+  }
+
+  Future<Map<String, dynamic>> createBrandVideoBlueprint({
+    required String projectId,
+    required String brandProfileId,
+    required String name,
+    required String defaultArchetype,
+  }) async {
+    try {
+      final response = await _dio.post(
+        '/api/brand-video-blueprints',
+        data: {
+          'project_id': projectId,
+          'brand_profile_id': brandProfileId,
+          'name': name,
+          'status': 'active',
+          'default_archetype': defaultArchetype,
+        },
+      );
+      return _asMap(response.data);
+    } on DioException catch (error) {
+      throw _mapDioException(error);
+    }
+  }
+
   Future<void> onboardProject(String? sourceUrl, String name) async {
     try {
       await _dio.post(
@@ -3255,6 +3306,7 @@ class ApiService {
   Future<Map<String, dynamic>?> dispatchPipeline({
     required AngleSuggestion angle,
     Map<String, dynamic>? creatorVoice,
+    String? personaId,
     String? projectId,
   }) async {
     if (allowDemoData) {
@@ -3288,6 +3340,7 @@ class ApiService {
             'narrative_thread': angle.narrativeThread,
             'pain_point_addressed': angle.painPointAddressed,
             'confidence': angle.confidence,
+            'persona_id': personaId,
           },
           'target_format': targetFormat,
           'creator_voice': creatorVoice,
