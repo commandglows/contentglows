@@ -41,6 +41,26 @@ class AppThemeTokens {
   static const spacing4 = 16.0;
   static const spacing5 = 20.0;
   static const spacing6 = 24.0;
+  static const spacing3Half = 3.0;
+  static const spacingHalf = 1.5;
+  static const spacing0b = 2.0;
+  static const spacing1Half = 6.0;
+  static const spacing18 = 18.0;
+  static const spacing22 = 22.0;
+  static const spacing32 = 32.0;
+  static const spacing10 = 10.0;
+  static const text10 = 10.0;
+  static const text11 = 11.0;
+  static const text13 = 13.0;
+  static const text15 = 15.0;
+  static const text12Half = 12.5;
+  static const text17 = 17.0;
+  static const text24 = 24.0;
+  static const text20 = 20.0;
+  static const radiusTiny = 2.0;
+  static const radiusNarrow = 10.0;
+  static const durationLong = Duration(seconds: 2);
+  static const durationSettle = Duration(milliseconds: 180);
 
   static const radiusSm = 8.0;
   static const radiusMd = 12.0;
@@ -54,6 +74,8 @@ class AppThemeTokens {
   static const textSm = 14.0;
   static const textBase = 16.0;
   static const textLg = 20.0;
+  static const textXl = 24.0;
+  static const textXxl = 20.0;
 
   static const darkElevatedSurface = Color(0xFF111827);
   static const darkMutedSurface = Color(0xFF1E293B);

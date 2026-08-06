@@ -118,8 +118,8 @@ class SettingsScreen extends ConsumerWidget {
             title: 'Content rules',
             caption:
                 'Decide whether ContentGlows generates automatically or pauses for your review.',
-            gap: 16,
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+            gap: AppSpacing.md,
+            padding: const EdgeInsets.all(AppSpacing.md),
             children: [
               _IdeaPoolBlock(
                 userSettings: userSettings,
@@ -276,7 +276,7 @@ class _AccountGroup extends ConsumerWidget {
                     height: _kSettingsStatusAvatarSize,
                     decoration: BoxDecoration(
                       color: statusColor.withAlpha(28),
-                      borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(AppRadii.narrow),
                     ),
                     child: Icon(
                       isSignedIn
@@ -297,11 +297,11 @@ class _AccountGroup extends ConsumerWidget {
                           statusLabel,
                           style: TextStyle(
                             color: statusColor,
-                            fontSize: AppText.base - 1,
+                            fontSize: AppText.medium,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        SizedBox(height: AppSpacing.xxs / 2),
+                        SizedBox(height: AppSpacing.xxsHalf),
                         Text(
                           subtitle,
                           style: TextStyle(
@@ -524,7 +524,7 @@ class _IdeaPoolBlock extends ConsumerWidget {
         );
       },
       loading: () => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
         child: Row(
           children: [
             const SizedBox(
@@ -582,11 +582,11 @@ class _FrequencyBlock extends ConsumerWidget {
               context.tr('How much content should the AI generate?'),
               style: TextStyle(
                 color: theme.colorScheme.onSurfaceVariant,
-                fontSize: 13,
+                fontSize: AppText.compact,
                 height: 1.4,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm),
             _FrequencyRow(
               icon: Icons.article_outlined,
               label: 'Blog articles',
@@ -650,7 +650,7 @@ class _FrequencyBlock extends ConsumerWidget {
         );
       },
       loading: () => const Padding(
-        padding: EdgeInsets.symmetric(vertical: 16),
+        padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
         child: Center(
           child: SizedBox(
             width: 20,
@@ -710,7 +710,7 @@ class _FrequencyRow extends StatelessWidget {
       textAlign: TextAlign.right,
       style: TextStyle(
         color: value == 0 ? theme.colorScheme.onSurfaceVariant : color,
-        fontSize: 13,
+                fontSize: AppText.compact,
         fontWeight: FontWeight.w600,
       ),
     );
@@ -727,7 +727,7 @@ class _FrequencyRow extends StatelessWidget {
                 context.tr(label),
                 style: TextStyle(
                   color: theme.colorScheme.onSurface,
-                  fontSize: 14,
+                  fontSize: AppText.sm,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -782,7 +782,12 @@ class _LanguageRow extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.xxs,
+              AppSpacing.lg,
+              AppSpacing.sm,
+            ),
               child: Text(
                 context.tr('App language'),
                 style: Theme.of(ctx).textTheme.titleMedium,
@@ -897,7 +902,12 @@ class _AppearanceRow extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.xxs,
+              AppSpacing.lg,
+              AppSpacing.sm,
+            ),
               child: Text(
                 context.tr('Theme'),
                 style: Theme.of(ctx).textTheme.titleMedium,
@@ -966,7 +976,7 @@ class _NotificationsRow extends ConsumerWidget {
               height: 36,
               decoration: BoxDecoration(
                 color: AppTheme.approveColor.withAlpha(25),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(AppRadii.narrow),
               ),
               child: Icon(
                 Icons.notifications_outlined,
@@ -978,7 +988,7 @@ class _NotificationsRow extends ConsumerWidget {
               context.tr('Push notifications'),
               style: TextStyle(
                 color: theme.colorScheme.onSurface,
-                fontSize: 15,
+                fontSize: AppText.medium,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -988,7 +998,7 @@ class _NotificationsRow extends ConsumerWidget {
                   : context.tr('Get notified when new content is ready'),
               style: TextStyle(
                 color: theme.colorScheme.onSurfaceVariant,
-                fontSize: 12,
+                fontSize: AppText.xs,
               ),
             ),
             value: value,
@@ -1044,7 +1054,7 @@ class _AboutRow extends StatelessWidget {
             height: 36,
             decoration: BoxDecoration(
               color: theme.colorScheme.primary.withAlpha(25),
-              borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(AppRadii.narrow),
             ),
             child: Icon(
               Icons.info_outline,
@@ -1060,7 +1070,7 @@ class _AboutRow extends StatelessWidget {
                 Text(
                   'ContentGlows',
                   style: TextStyle(
-                    fontSize: 15,
+                    fontSize: AppText.medium,
                     fontWeight: FontWeight.w600,
                     color: theme.colorScheme.onSurface,
                   ),
@@ -1070,7 +1080,7 @@ class _AboutRow extends StatelessWidget {
                   context.tr('Content Approval Pipeline v0.1.0'),
                   style: TextStyle(
                     color: theme.colorScheme.onSurfaceVariant,
-                    fontSize: 12,
+                    fontSize: AppText.xs,
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -1078,7 +1088,7 @@ class _AboutRow extends StatelessWidget {
                   context.tr('AI generates content, you swipe to publish.'),
                   style: TextStyle(
                     color: theme.colorScheme.onSurfaceVariant,
-                    fontSize: 12,
+                    fontSize: AppText.xs,
                     height: 1.4,
                   ),
                 ),

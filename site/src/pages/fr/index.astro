@@ -54,7 +54,7 @@ const content = homepageContent.fr;
     pointer-events: none;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: var(--breakpoint-md-max)) {
     .landing-shell > section + section::before {
       inset-inline: var(--space-4);
       inline-size: calc(100% - (var(--space-4) * 2));

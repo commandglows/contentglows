@@ -70,7 +70,7 @@ const localeSwitch = getLocaleSwitchTarget(Astro.url.pathname);
     top: 0;
     left: 0;
     right: 0;
-    width: 100%;
+    width: var(--size-full);
     z-index: var(--z-index-floating);
     background: var(--color-surface-navbar);
     backdrop-filter: var(--surface-backdrop-blur);
@@ -79,7 +79,7 @@ const localeSwitch = getLocaleSwitchTarget(Astro.url.pathname);
   }
 
   .container {
-    width: 100%;
+    width: var(--size-full);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -185,7 +185,7 @@ const localeSwitch = getLocaleSwitchTarget(Astro.url.pathname);
 
   .hamburger-line {
     display: block;
-    width: 100%;
+    width: var(--size-full);
     height: calc(var(--space-1) * 0.75);
     background: var(--color-text-primary);
     border-radius: var(--radius-sm);
@@ -208,14 +208,14 @@ const localeSwitch = getLocaleSwitchTarget(Astro.url.pathname);
     display: none;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: var(--breakpoint-md-max)) {
     .nav-links {
       display: none;
       position: absolute;
       inset-block-start: 100%;
       inset-inline: 0;
       flex-direction: column;
-      width: 100%;
+      width: var(--size-full);
       background: var(--color-surface-card-glass);
       backdrop-filter: var(--surface-backdrop-blur);
       padding: var(--space-6) var(--space-4);

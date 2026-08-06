@@ -94,7 +94,7 @@ const { content } = Astro.props;
     background-clip: text;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: var(--breakpoint-md-max)) {
     .problem-section {
             padding: var(--space-12) 0 var(--space-8);
     }

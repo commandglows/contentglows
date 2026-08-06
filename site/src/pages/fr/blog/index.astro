@@ -243,7 +243,7 @@ const rest = posts.filter((p) => p.id !== featured?.id);
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
-    height: 100%;
+    height: var(--size-full);
   }
 
   .post-card-body h3 {
@@ -275,7 +275,7 @@ const rest = posts.filter((p) => p.id !== featured?.id);
     font-weight: 600;
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: var(--breakpoint-tablet)) {
     .featured-card {
       grid-template-columns: 1fr;
     }

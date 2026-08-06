@@ -84,7 +84,7 @@ class _InAppTourOverlayState extends ConsumerState<InAppTourOverlay> {
             BoxShadow(
               color: colorScheme.shadow.withValues(alpha: 0.22),
               blurRadius: 24,
-              offset: const Offset(0, 8),
+              offset: const Offset(0, AppSpacing.xs),
             ),
           ],
         ),
@@ -100,7 +100,7 @@ class _InAppTourOverlayState extends ConsumerState<InAppTourOverlay> {
               context.tr(step.title),
               style: TextStyle(
                 color: colorScheme.onSurface,
-                fontSize: AppText.base + 1,
+                fontSize: AppText.tall,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -140,7 +140,7 @@ class _InAppTourOverlayState extends ConsumerState<InAppTourOverlay> {
                         context.tr(step.hint!),
                         style: TextStyle(
                           color: AppTheme.approveColor,
-                          fontSize: AppText.sm - 1.5,
+                          fontSize: AppText.body,
                           fontWeight: FontWeight.w500,
                           height: 1.35,
                         ),
@@ -163,16 +163,22 @@ class _InAppTourOverlayState extends ConsumerState<InAppTourOverlay> {
       builder: (context, constraints) {
         final screenWidth = constraints.maxWidth;
         final screenHeight = constraints.maxHeight;
-        final cardWidth = (screenWidth - 24).clamp(0.0, 420.0);
+        final cardWidth = (screenWidth - AppSpacing.lg).clamp(0.0, 420.0);
         final cardHeightEstimate = 250.0;
         _position = Offset(
           _position.dx.clamp(
-            12,
-            (screenWidth - cardWidth - 12).clamp(12, double.infinity),
+            AppSpacing.sm,
+            (screenWidth - cardWidth - AppSpacing.sm).clamp(
+              AppSpacing.sm,
+              double.infinity,
+            ),
           ),
           _position.dy.clamp(
-            12,
-            (screenHeight - cardHeightEstimate - 12).clamp(12, double.infinity),
+            AppSpacing.sm,
+            (screenHeight - cardHeightEstimate - AppSpacing.sm).clamp(
+              AppSpacing.sm,
+              double.infinity,
+            ),
           ),
         );
 
@@ -189,16 +195,16 @@ class _InAppTourOverlayState extends ConsumerState<InAppTourOverlay> {
                     _position += details.delta;
                     _position = Offset(
                       _position.dx.clamp(
-                        12,
-                        (screenWidth - cardWidth - 12).clamp(
-                          12,
+                        AppSpacing.sm,
+                        (screenWidth - cardWidth - AppSpacing.sm).clamp(
+                          AppSpacing.sm,
                           double.infinity,
                         ),
                       ),
                       _position.dy.clamp(
-                        12,
-                        (screenHeight - cardHeightEstimate - 12).clamp(
-                          12,
+                        AppSpacing.sm,
+                        (screenHeight - cardHeightEstimate - AppSpacing.sm).clamp(
+                          AppSpacing.sm,
                           double.infinity,
                         ),
                       ),
@@ -207,8 +213,13 @@ class _InAppTourOverlayState extends ConsumerState<InAppTourOverlay> {
                 },
                 child: SafeArea(
                   top: false,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 12, 12),
+                child: Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      0,
+                      0,
+                      AppSpacing.sm,
+                      AppSpacing.sm,
+                    ),
                     child: stepCard,
                   ),
                 ),
@@ -295,12 +306,12 @@ class _InAppTourOverlayState extends ConsumerState<InAppTourOverlay> {
         return Expanded(
           child: Container(
             height: 3,
-            margin: const EdgeInsets.symmetric(horizontal: 1.5),
+            margin: const EdgeInsets.symmetric(horizontal: AppSpacing.thin),
             decoration: BoxDecoration(
               color: isActive
                   ? AppTheme.approveColor
                   : colorScheme.outlineVariant.withValues(alpha: 0.35),
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: BorderRadius.circular(AppRadii.xxs),
             ),
           ),
         );
@@ -326,14 +337,14 @@ class _InAppTourOverlayState extends ConsumerState<InAppTourOverlay> {
             label: Text(context.tr('Previous')),
             style: TextButton.styleFrom(
               foregroundColor: colorScheme.onSurface,
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.compact),
             ),
           ),
         TextButton(
           onPressed: controller.skip,
           style: TextButton.styleFrom(
             foregroundColor: colorScheme.onSurfaceVariant,
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.compact),
           ),
           child: Text(context.tr('Skip tour')),
         ),
@@ -343,7 +354,7 @@ class _InAppTourOverlayState extends ConsumerState<InAppTourOverlay> {
             onPressed: () => context.go(route),
             style: TextButton.styleFrom(
               foregroundColor: AppTheme.approveColor,
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.compact),
             ),
             child: Text(
               context.tr(
@@ -363,7 +374,10 @@ class _InAppTourOverlayState extends ConsumerState<InAppTourOverlay> {
           label: Text(context.tr(tour.isLast ? 'Finish' : 'Next')),
           style: FilledButton.styleFrom(
             backgroundColor: AppTheme.approveColor,
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.dense,
+              vertical: AppSpacing.compact,
+            ),
           ),
         ),
       ],

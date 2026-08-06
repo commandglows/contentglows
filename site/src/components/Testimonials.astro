@@ -31,6 +31,13 @@ const { content } = Astro.props;
 
 <style>
   .testimonials-section {
+    --testimonials-animation-duration: 3.4s;
+    --testimonial-icon-delay-1: 0.1s;
+    --testimonial-icon-delay-2: 0.3s;
+    --testimonial-icon-delay-3: 0.6s;
+    --testimonial-icon-delay-4: 0.9s;
+    --testimonial-icon-delay-5: 1.2s;
+    --testimonial-icon-delay-6: 1.5s;
         padding: var(--space-24) 0;
     background: var(--color-surface);
   }
@@ -104,31 +111,31 @@ const { content } = Astro.props;
     }
 
     .testimonial-card .card-title-icon {
-      animation: emoji-bounce 3.4s ease-in-out infinite;
+      animation: emoji-bounce var(--testimonials-animation-duration) ease-in-out infinite;
     }
 
     .testimonial-card:nth-child(1) .card-title-icon {
-      animation-delay: 0.1s;
+      animation-delay: var(--testimonial-icon-delay-1);
     }
 
     .testimonial-card:nth-child(2) .card-title-icon {
-      animation-delay: 0.3s;
+      animation-delay: var(--testimonial-icon-delay-2);
     }
 
     .testimonial-card:nth-child(3) .card-title-icon {
-      animation-delay: 0.6s;
+      animation-delay: var(--testimonial-icon-delay-3);
     }
 
     .testimonial-card:nth-child(4) .card-title-icon {
-      animation-delay: 0.9s;
+      animation-delay: var(--testimonial-icon-delay-4);
     }
 
     .testimonial-card:nth-child(5) .card-title-icon {
-      animation-delay: 1.2s;
+      animation-delay: var(--testimonial-icon-delay-5);
     }
 
     .testimonial-card:nth-child(6) .card-title-icon {
-      animation-delay: 1.5s;
+      animation-delay: var(--testimonial-icon-delay-6);
     }
 
     .is-active .card-title-icon {
@@ -167,7 +174,7 @@ const { content } = Astro.props;
     }
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: var(--breakpoint-md-max)) {
     .testimonials-section {
             padding: var(--space-16) 0;
     }

@@ -6,7 +6,7 @@ project: "contentglows"
 created: "2026-08-05"
 created_at: "2026-08-05 17:34:00 UTC"
 updated: "2026-08-05"
-updated_at: "2026-08-05 18:18:00 UTC"
+updated_at: "2026-08-05 18:22:00 UTC"
 status: implemented
 source_skill: "100-sg-spec"
 source_model: "GPT-5 Codex"
@@ -195,6 +195,7 @@ None.
 | 2026-08-05 17:54:00 | 001-sg-build | GPT-5 Codex | Checked both deployed app hosts in a browser without generating content. | `app.contentglows.com` is rejected by Clerk for an invalid origin; `app.contentglowz.com` reaches the signed-out entry screen, but no authenticated workspace is available. | Recheck Brand Studio and Angles with a real test session. |
 | 2026-08-05 18:14:00 | 103-sg-verify excellence | GPT-5 Codex | Checked API payload/metadata contracts, focused Flutter and FastAPI tests, static analysis, diff integrity, and the fresh excellence pass. Repaired persona lookup recovery and replaced manual logo-ID entry with project-library selection. | Partial: 2 Flutter tests and 5 Python tests pass, analysis and diff integrity pass. Rendered authenticated proof remains unavailable; drift scan reports pre-existing candidates in touched legacy screens. | proof_type: auth/browser/manual QA; owner_skill: 109-sg-auth-debug then 108-sg-browser; scenario: select persona in Angles, create content, open Brand Studio, verify persona label, deleted-persona neutral state, logo selection, and blueprint preflight without rendering; target_or_environment: authenticated `app.contentglowz.com` test workspace. |
 | 2026-08-05 18:18:00 | 004-sg-deploy prepare | GPT-5 Codex | Prepared the bounded release scope without staging, committing, pushing, or deploying. | Partial: local checks are green, but authenticated rendered proof is still required. The release manifest excludes the pre-existing untracked backlog and exploration files; the current development mode is unknown-vercel because `app/vercel.json` exists without a documented project mode. | Obtain authenticated test-workspace proof before authorizing a bounded commit/push/deploy. |
+| 2026-08-05 18:22:00 | 011-sg-pilotage tasks | GPT-5 Codex | Added the remaining authenticated-flow and widget-test work as explicit execution tasks after the pushed change. | Two test tasks are now tracked; no completion claim changed. | Run the authenticated scenario first, then add the widget coverage. |
 
 ## Current Chantier Flow
 

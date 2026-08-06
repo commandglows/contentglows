@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../data/models/app_access_state.dart';
 import '../../l10n/app_localizations.dart';
 import '../../providers/providers.dart';
+import '../theme/app_theme.dart';
 import '../widgets/app_error_view.dart';
 import '../widgets/app_exit_confirmation.dart';
 
@@ -335,18 +336,18 @@ class _ShellContent extends StatelessWidget {
                           : Icons.warning_amber_rounded,
                       color: bannerTextColor,
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: Text(
                         bannerParts.join(' '),
                         style: TextStyle(
                           color: bannerTextColor,
-                          fontSize: 13,
+                          fontSize: AppText.compact,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.sm),
                     TextButton(
                       onPressed: () => context.go('/uptime'),
                       child: Text(
@@ -431,19 +432,24 @@ class _SideRail extends StatelessWidget {
           children: [
             // Logo area
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.md,
+                AppSpacing.md,
+                AppSpacing.md,
+                AppSpacing.xs,
+              ),
               child: Row(
                 children: [
                   Icon(
                     Icons.auto_awesome,
                     color: colorScheme.primary,
-                    size: 24,
+                    size: AppSpacing.xl,
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.xs),
                   Text(
                     context.tr('ContentGlows'),
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: AppText.base,
                       fontWeight: FontWeight.w800,
                       color: colorScheme.onSurface,
                     ),
@@ -451,19 +457,24 @@ class _SideRail extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.xs),
             // Sections
             Expanded(
               child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
                 children: [
                   for (final section in sections) ...[
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 16, 12, 6),
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.sm,
+                        AppSpacing.md,
+                        AppSpacing.sm,
+                        6,
+                      ),
                       child: Text(
                         context.tr(section.label).toUpperCase(),
                         style: TextStyle(
-                          fontSize: 10,
+                          fontSize: AppText.xxs,
                           fontWeight: FontWeight.w700,
                           color: colorScheme.outlineVariant,
                           letterSpacing: 1.2,
@@ -519,15 +530,18 @@ class _SideNavItem extends StatelessWidget {
         : colorScheme.surface.withValues(alpha: 0);
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 2),
+      padding: const EdgeInsets.only(bottom: AppSpacing.xxsHalf),
       child: Material(
         color: bgColor,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(AppRadii.md),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(AppRadii.md),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.sm,
+              vertical: AppSpacing.sm + AppSpacing.micro,
+            ),
             child: Row(
               children: [
                 Badge(
@@ -535,12 +549,12 @@ class _SideNavItem extends StatelessWidget {
                   label: badgeCount != null ? Text('$badgeCount') : null,
                   child: Icon(icon, color: color, size: 20),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
                     context.tr(label),
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: AppText.compact,
                       color: color,
                       fontWeight: isSelected
                           ? FontWeight.w600
@@ -637,7 +651,7 @@ class _BottomNav extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: colorScheme.surface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.lg)),
       ),
       builder: (ctx) => DraggableScrollableSheet(
         expand: false,
@@ -652,32 +666,37 @@ class _BottomNav extends StatelessWidget {
             child: ListView(
               controller: scrollController,
               padding: EdgeInsets.fromLTRB(
-                12,
-                10,
-                12,
-                12 + MediaQuery.viewInsetsOf(sheetContext).bottom,
+                AppSpacing.sm,
+                AppSpacing.xs,
+                AppSpacing.sm,
+                    AppSpacing.md + MediaQuery.viewInsetsOf(sheetContext).bottom,
               ),
               children: [
                 Center(
                   child: Container(
                     width: 36,
-                    height: 4,
-                    margin: const EdgeInsets.only(bottom: 12),
+                    height: AppSpacing.xxs,
+                    margin: const EdgeInsets.only(bottom: AppSpacing.sm),
                     decoration: BoxDecoration(
                       color: colorScheme.outlineVariant.withValues(alpha: 0.5),
-                      borderRadius: BorderRadius.circular(2),
+                      borderRadius: BorderRadius.circular(AppSpacing.xxs),
                     ),
                   ),
                 ),
                 for (final section in sections) ...[
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(6, 10, 6, 4),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.xxs,
+                      AppSpacing.xs,
+                      AppSpacing.xxs,
+                      AppSpacing.xxs,
+                    ),
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
                         context.tr(section.label).toUpperCase(),
                         style: TextStyle(
-                          fontSize: 11,
+                          fontSize: AppText.tight,
                           fontWeight: FontWeight.w700,
                           color: colorScheme.outlineVariant,
                           letterSpacing: 1.0,
@@ -698,25 +717,25 @@ class _BottomNav extends StatelessWidget {
                           : colorScheme.surface.withValues(alpha: 0);
                       return Material(
                         color: bgColor,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(AppRadii.md),
                         child: InkWell(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(AppRadii.md),
                           onTap: () {
                             Navigator.pop(ctx);
                             onNavigate(item.path);
                           },
                           child: SizedBox(
-                            width: 76,
-                            height: 60,
+                            width: AppSpacing.xl + AppSpacing.md,
+                            height: AppSpacing.xl + AppSpacing.md,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(item.icon, color: color, size: 22),
-                                const SizedBox(height: 3),
+                                const SizedBox(height: AppSpacing.xxsHalf),
                                 Text(
                                   context.tr(item.label),
                                   style: TextStyle(
-                                    fontSize: 11,
+                                    fontSize: AppText.tight,
                                     color: color,
                                     fontWeight: isSelected
                                         ? FontWeight.w600
@@ -767,7 +786,7 @@ class _NavTab extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -776,11 +795,11 @@ class _NavTab extends StatelessWidget {
               label: badgeCount != null ? Text('$badgeCount') : null,
               child: Icon(icon, color: color, size: 24),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xxs),
             Text(
               context.tr(label),
               style: TextStyle(
-                fontSize: 12,
+                fontSize: AppText.sm,
                 color: color,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
               ),

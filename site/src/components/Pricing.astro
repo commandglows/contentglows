@@ -195,7 +195,7 @@ const pricingSchema = {
     margin-bottom: var(--space-4);
     display: flex;
     justify-content: center;
-    width: 100%;
+    width: var(--size-full);
   }
 
   .features {
@@ -261,7 +261,7 @@ const pricingSchema = {
     font-size: var(--text-sm);
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: var(--breakpoint-md-max)) {
     .pricing-section {
             padding: var(--space-16) 0;
     }
@@ -300,7 +300,7 @@ const pricingSchema = {
     }
 
     .pricing-summary-chip {
-      width: 100%;
+      width: var(--size-full);
       align-items: flex-start;
       justify-content: flex-start;
       background: transparent;
@@ -309,7 +309,7 @@ const pricingSchema = {
     }
 
     .pricing-summary {
-      width: 100%;
+      width: var(--size-full);
       align-items: stretch;
     }
 

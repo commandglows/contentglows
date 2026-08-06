@@ -247,7 +247,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
                     context.tr(label),
                     style: TextStyle(
                       color: color,
-                      fontSize: AppText.base + 8,
+      fontSize: AppText.xxxl,
                       fontWeight: FontWeight.bold,
                       letterSpacing: _kFeedOverlayLetterSpacing,
                     ),
@@ -556,8 +556,10 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
         content: Text(message),
         backgroundColor: color.withAlpha(200),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        duration: const Duration(seconds: 2),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadii.md),
+        ),
+        duration: AppMotion.long,
       ),
     );
   }
@@ -926,7 +928,12 @@ class _FeedEmptyDashboardState extends ConsumerState<_FeedEmptyDashboard> {
   ) {
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.xl,
+        AppSpacing.lg,
+        AppSpacing.xl,
+        AppSpacing.wide,
+      ),
       children: [
         Text(
           context.tr('Swipe to Publish'),
@@ -1068,7 +1075,7 @@ class _MobileActionDeck extends StatefulWidget {
 class _MobileActionDeckState extends State<_MobileActionDeck> {
   static const double _commitDistance = 96;
   static const double _commitVelocity = 420;
-  static const Duration _settleDuration = Duration(milliseconds: 180);
+  static const Duration _settleDuration = AppMotion.settle;
 
   double _dragX = 0;
   bool _isDragging = false;
@@ -1247,7 +1254,10 @@ class _SwipeCue extends StatelessWidget {
     return Opacity(
       opacity: opacity.clamp(0.0, 1.0),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
+      ),
         decoration: BoxDecoration(
           color: color.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(AppRadii.pill),
@@ -1263,7 +1273,7 @@ class _SwipeCue extends StatelessWidget {
               style: TextStyle(
                 color: color,
                 fontWeight: FontWeight.w900,
-                fontSize: 12,
+                fontSize: AppText.xs,
               ),
             ),
           ],
@@ -1290,7 +1300,7 @@ class _DashboardActionCard extends StatelessWidget {
     return Opacity(
       opacity: isPreview ? 0.42 : 1,
       child: Container(
-        padding: const EdgeInsets.all(18),
+        padding: const EdgeInsets.all(AppSpacing.dense),
         decoration: BoxDecoration(
           color: colorScheme.surface,
           borderRadius: BorderRadius.circular(AppRadii.card),
@@ -1383,7 +1393,7 @@ class _DashboardActionCard extends StatelessWidget {
             const SizedBox(height: 10),
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(14),
+              padding: const EdgeInsets.all(AppText.sm),
               decoration: BoxDecoration(
                 color: action.color.withValues(alpha: 0.09),
                 borderRadius: BorderRadius.circular(AppRadii.lg),
@@ -1456,7 +1466,7 @@ class _DashboardDetailsPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.62),
         borderRadius: BorderRadius.circular(AppRadii.lg),
@@ -1473,7 +1483,7 @@ class _DashboardDetailsPanel extends StatelessWidget {
             ),
             if (index != action.details.length - 1)
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
                 child: Divider(
                   height: 1,
                   color: colorScheme.outlineVariant.withValues(alpha: 0.45),
@@ -1624,7 +1634,7 @@ class _DashboardCompleteState extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Container(
-      padding: const EdgeInsets.all(22),
+      padding: const EdgeInsets.all(AppSpacing.mid),
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(AppRadii.card),
@@ -1698,16 +1708,19 @@ class _InlineCountBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.compact,
+        vertical: AppSpacing.compactStack,
+      ),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(AppRadii.pill),
       ),
       child: Text(
         label,
         style: TextStyle(
           color: colorScheme.onSurfaceVariant,
-          fontSize: 12,
+          fontSize: AppText.xs,
           fontWeight: FontWeight.w600,
         ),
       ),

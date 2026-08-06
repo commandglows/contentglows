@@ -299,7 +299,7 @@ const breadcrumbSchema = {
   }
 
   /* On mobile: stack ToC below content */
-  @media (max-width: 768px) {
+  @media (max-width: var(--breakpoint-md-max)) {
     .article-body.has-toc {
       display: flex;
       flex-direction: column-reverse;

@@ -209,11 +209,22 @@ class AppTheme {
 
 class AppSpacing {
   static const double xxs = AppThemeTokens.spacing1;
+  static const double xs2 = AppThemeTokens.spacing1b;
   static const double xs = AppThemeTokens.spacing2;
   static const double sm = AppThemeTokens.spacing3;
   static const double md = AppThemeTokens.spacing4;
   static const double lg = AppThemeTokens.spacing5;
   static const double xl = AppThemeTokens.spacing6;
+  static const double xxl = AppThemeTokens.spacing0b;
+  static const double xxs2 = AppThemeTokens.spacing1Half;
+  static const double compact = AppThemeTokens.spacing10;
+  static const double xxsHalf = AppThemeTokens.spacing0b;
+  static const double micro = AppThemeTokens.spacing3Half;
+  static const double thin = AppThemeTokens.spacingHalf;
+  static const double dense = AppThemeTokens.spacing18;
+  static const double mid = AppThemeTokens.spacing22;
+  static const double wide = AppThemeTokens.spacing32;
+  static const double compactStack = AppThemeTokens.spacing1Half;
 
   static double scale(BuildContext context) {
     return MediaQuery.sizeOf(context).width < AppThemeTokens.mobileBreakpoint
@@ -235,16 +246,18 @@ class AppSpacing {
 
   static EdgeInsets card(BuildContext context) {
     final compact = scale(context);
-    return EdgeInsets.all(AppThemeTokens.spacing4 * compact);
+    return EdgeInsets.all(AppSpacing.md * compact);
   }
 }
 
 class AppRadii {
   static const double sm = AppThemeTokens.radiusSm;
+  static const double xxs = AppThemeTokens.radiusTiny;
   static const double md = AppThemeTokens.radiusMd;
   static const double lg = AppThemeTokens.radiusLg;
   static const double xl = AppThemeTokens.radiusXl;
   static const double xxl = AppThemeTokens.radius2xl;
+  static const double narrow = AppThemeTokens.radiusNarrow;
   static const double card = AppThemeTokens.radius2xl;
   static const double button = AppThemeTokens.radiusLg;
   static const double input = AppThemeTokens.radiusMd;
@@ -257,6 +270,24 @@ class AppText {
   static double get sm => AppThemeTokens.textSm;
   static double get base => AppThemeTokens.textBase;
   static double get lg => AppThemeTokens.textLg;
+  static double get xxs => AppThemeTokens.text10;
+  static double get xs11 => AppThemeTokens.text11;
+  static double get tight => AppThemeTokens.text11;
+  static double get compact => AppThemeTokens.text13;
+  static double get medium => AppThemeTokens.text15;
+  static double get tall => AppThemeTokens.text17;
+  static double get body => AppThemeTokens.text12Half;
+  static double get xxl => AppThemeTokens.text20;
+  static double get xxxl => AppThemeTokens.text24;
+
+  @Deprecated('Use tight')
+  static double get xs11 => tight;
+  @Deprecated('Use compact')
+  static double get sm1 => compact;
+  @Deprecated('Use medium')
+  static double get sm2 => medium;
+  @Deprecated('Use body')
+  static double get md5 => body;
   static double compact(BuildContext context, double value) {
     return value * AppSpacing.scale(context);
   }
@@ -267,6 +298,8 @@ class AppMotion {
   static const Duration fast = AppThemeTokens.durationFast;
   static const Duration base = AppThemeTokens.durationBase;
   static const Duration slow = AppThemeTokens.durationSlow;
+  static const Duration long = AppThemeTokens.durationLong;
+  static const Duration settle = AppThemeTokens.durationSettle;
   static const String standard = AppThemeTokens.standardMotion;
   static const String out = AppThemeTokens.outMotion;
   static const String spring = AppThemeTokens.springMotion;

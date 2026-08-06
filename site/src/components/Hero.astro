@@ -176,7 +176,7 @@ const { content } = Astro.props;
     letter-spacing: var(--tracking-superwide);
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: var(--breakpoint-md-max)) {
     .hero {
       padding: var(--hero-mobile-padding-y) 0 var(--space-12);
     }

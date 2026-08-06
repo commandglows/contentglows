@@ -65,7 +65,7 @@ const labels = getBlogLabels(currentLocale);
     box-shadow: var(--shadow-card);
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: var(--breakpoint-mobile)) {
     .cta-banner-content {
       flex-direction: column;
       text-align: center;

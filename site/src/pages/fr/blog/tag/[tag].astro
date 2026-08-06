@@ -181,7 +181,7 @@ const labels = getBlogLabels('fr');
 
   .back-link:hover { color: var(--color-primary); }
 
-  @media (max-width: 640px) {
+  @media (max-width: var(--breakpoint-narrow-max)) {
     .post-card {
       flex-direction: column;
     }

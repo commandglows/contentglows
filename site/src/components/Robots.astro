@@ -38,6 +38,10 @@ const { content } = Astro.props;
 
 <style>
   .robots-section {
+    --robot-animation-duration: 4.2s;
+    --robot-icon-delay-1: 0.15s;
+    --robot-icon-delay-2: 0.55s;
+    --robot-icon-delay-3: 0.95s;
         padding: var(--space-24) 0;
     background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-surface-subtle) 100%);
   }
@@ -114,19 +118,19 @@ const { content } = Astro.props;
 
   @media (prefers-reduced-motion: no-preference) {
     .robot-icon {
-      animation: emoji-bounce 4.2s ease-in-out infinite;
+      animation: emoji-bounce var(--robot-animation-duration) ease-in-out infinite;
     }
 
     .robot-card:nth-child(1) .robot-icon {
-      animation-delay: 0.15s;
+      animation-delay: var(--robot-icon-delay-1);
     }
 
     .robot-card:nth-child(2) .robot-icon {
-      animation-delay: 0.55s;
+      animation-delay: var(--robot-icon-delay-2);
     }
 
     .robot-card:nth-child(3) .robot-icon {
-      animation-delay: 0.95s;
+      animation-delay: var(--robot-icon-delay-3);
     }
   }
 
@@ -171,7 +175,7 @@ const { content } = Astro.props;
     color: var(--color-primary);
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: var(--breakpoint-md-max)) {
     .robots-section {
             padding: var(--space-16) 0;
     }

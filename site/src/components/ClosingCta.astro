@@ -62,7 +62,7 @@ const locale = detectLocaleFromPath(Astro.url.pathname);
     margin-inline: auto;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: var(--breakpoint-md-max)) {
     .closing-cta {
             padding: var(--space-16) 0;
     }

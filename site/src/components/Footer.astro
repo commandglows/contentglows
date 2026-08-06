@@ -193,7 +193,7 @@ const localeSwitch = getLocaleSwitchTarget(Astro.url.pathname);
     color: var(--color-text-on-dark);
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: var(--breakpoint-md-max)) {
     .footer-content {
       grid-template-columns: 1fr;
       gap: var(--space-12);
