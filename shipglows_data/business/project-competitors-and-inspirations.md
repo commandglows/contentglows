@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.2.0"
 project: "contentglows"
 created: "2026-05-11"
-updated: "2026-08-05"
+updated: "2026-08-07"
 status: reviewed
 source_skill: sf-veille
 scope: "project-competitors-and-inspirations"
@@ -23,6 +23,10 @@ evidence:
   - "Fresh public-source review on 2026-07-07 for https://play.google.com/store/apps/details?id=com.typeless.mobile."
   - "Fresh public-source review on 2026-07-08 for https://saaszilla.co/deals/tubeonai/."
   - "Fresh public-source review on 2026-08-05 for https://grabltd.com/products/awz-media-player-for-windows/; direct product page was not machine-readable, so claims are limited to the GrabLTD catalogue description."
+  - "Fresh public-source review on 2026-08-07 for https://grabltd.com/products/crayo/."
+  - "Fresh public-source review on 2026-08-07 for https://crayo.ai/."
+  - "Fresh public-source review on 2026-08-07 for https://grabltd.com/products/branding5-evergreen/."
+  - "Fresh public-source review on 2026-08-07 for https://appsumo.com/products/zerorank-ai/."
 depends_on:
   - "shipglows_data/business/business.md@1.0.0"
 supersedes:
@@ -64,6 +68,8 @@ ContentGlows est le projet le plus concerné par cette veille: génération, rec
 | [Filmora](https://filmora.wondershare.com/) | Concurrent / inspiration | 9/10 | Référence directe pour l'éditeur vidéo grand public/pro: timeline, AI Copilot, multicam, captions, motion tracking, adjustment layers, templates et export. À benchmarker pour l'UX d'édition et l'assistance IA. |
 | [PixVerse](https://pixverse.ai/en) | Concurrent / inspiration | 9/10 | Référence directe pour la génération vidéo IA: text-to-video, image-to-video, agent guidé, templates, multi-shot, lip sync, audio et workflows courts orientés social. À benchmarker pour la génération et le remix. |
 | [Pixizen](https://pixizen.io/fr) | Concurrent / inspiration | 9/10 | Plateforme AI de création publicitaire et produit: images, vidéos, captions, voix et motion. Très proche des workflows de génération, orchestration et publication de contenus marketing. |
+| [Crayo](https://grabltd.com/products/crayo) | Concurrent direct / inspiration | 9/10 | Outil de création de vidéos courtes IA orienté workflow de production rapide: pertinent pour benchmarker pricing de conversion, vitesse, intégrations et framing du "AI Video Creator". |
+| [Crayo.ai](https://crayo.ai) | Concurrent direct / inspiration | 8/10 | Version produit autonome de Crayo (AI Video Editor) utile pour comparer promesse UX/positionnement, onboarding de création vidéo courte et cohérence d'offre entre marketplace et site propriétaire. |
 | [Subscribr](https://subscribr.ai/) + [page AppSumo](https://appsumo.com/products/subscribr/) | Concurrent indirect / inspiration contenu | 8/10 | Référence utile pour l'idéation et l'écriture guidée à partir de signaux qui performent déjà: idées outliers, suivi de concurrents, script en voix de marque, hooks, thumbnails. La page AppSumo ajoute un angle très utile de retours clients, objections, cas d'usage réels et limites produit. |
 | [TubeOnAI](https://saaszilla.co/deals/tubeonai/) | Concurrent / inspiration contenu | 8/10 | Synthèse de vidéos, podcasts et articles avec repurposing vers posts, blogs et newsletters. Très bon benchmark pour transformer des sources longues en sorties éditoriales et en contenus dérivés. |
 | [Vento](https://vento.so/) | Concurrent / inspiration workflow | 8/10 | Très bon benchmark pour l'édition live pendant l'enregistrement: pause, rewind de quelques secondes, re-record sur la même prise, prises multiples depuis un point de reprise, chapitres, annotations auteur, transcription audio, webcam + audio système. À benchmarker pour un mode "retake sans redémarrer". |
@@ -91,8 +97,10 @@ ContentGlows est le projet le plus concerné par cette veille: génération, rec
 | [IntelCue](https://betalist.com/startups/intelcue-2) | Inspiration recherche | 6/10 | Market intelligence branchée à Claude/ChatGPT: utile pour briefs concurrentiels automatisés. |
 | [Airbin](https://betalist.com/startups/airbin) | Inspiration workspace | 6/10 | Workspace privé de fichiers + recherche contexte: utile pour bibliothèque de sources clients. |
 | [Kurate](https://betalist.com/startups/kurate) | Inspiration curation | 5/10 | Classement d'articles scientifiques: pattern utile pour scoring de sources et sélection documentaire. |
+| [ZeroRank AI](https://appsumo.com/products/zerorank-ai/) | Inspiration veilles/visibilité IA | 5/10 | Produit AppSumo orienté visibilité de réponse AI: intéressant pour imaginer des fonctionnalités autour de la mesure de présence dans les résultats IA/LLM et la priorisation des actifs de marque. |
 | [Impulse AI](https://betalist.com/startups/impulse-ai) | Inspiration déploiement IA | 5/10 | À surveiller si ContentGlows veut packager/déployer des modèles ou pipelines IA. |
 | [AWZ Media Player for Windows](https://grabltd.com/products/awz-media-player-for-windows) | Inspiration workflow média | 5/10 | Lecteur Windows multi-format avec conversion et découpe intégrées. Inspiration utile pour le sas d'ingestion, de prévisualisation et de préparation des médias avant traitement IA, mais trop éloignée pour être un concurrent direct. |
+| [Branding5 Evergreen](https://grabltd.com/products/branding5-evergreen) | Inspiration workflow marque | 5/10 | Offre d'analyse/audit de marque liée au branding, utile pour repenser le point d'entrée sur stratégie de marque et packaging avant de pousser la production de contenu. |
 
 ## Notes de dispatch
 

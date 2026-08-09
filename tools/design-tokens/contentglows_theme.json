@@ -168,7 +168,8 @@
     },
     "input": {
       "radius": "14px",
-      "radiusCompact": "12px"
+      "radiusCompact": "12px",
+      "compactWidth": "150px"
     },
     "nav": {
       "radius": "9999px"

@@ -75,6 +75,9 @@ def _run_migrations(conn: Connection) -> None:
         "ALTER TABLE project_assets ADD COLUMN storage_object_key TEXT",
         "ALTER TABLE project_assets ADD COLUMN storage_version TEXT",
         "ALTER TABLE project_assets ADD COLUMN storage_checksum_sha256 TEXT",
+        "ALTER TABLE project_assets ADD COLUMN original_file_name TEXT",
+        "ALTER TABLE project_assets ADD COLUMN category_id TEXT",
+        "ALTER TABLE project_assets ADD COLUMN subcategory_id TEXT",
         """
         CREATE TABLE IF NOT EXISTS content_assets (
             id TEXT PRIMARY KEY,
@@ -109,6 +112,9 @@ def _run_migrations(conn: Connection) -> None:
             source TEXT NOT NULL,
             mime_type TEXT,
             file_name TEXT,
+            original_file_name TEXT,
+            category_id TEXT,
+            subcategory_id TEXT,
             storage_uri TEXT,
             storage_provider TEXT,
             storage_namespace TEXT,
@@ -312,6 +318,14 @@ def _run_migrations(conn: Connection) -> None:
                 continue
             raise
 
+    conn.execute(
+        """
+        UPDATE project_assets
+        SET original_file_name = file_name
+        WHERE original_file_name IS NULL AND file_name IS NOT NULL
+        """
+    )
+
     for stmt in [
         "CREATE INDEX IF NOT EXISTS idx_ideas_user ON idea_pool(user_id)",
         "CREATE INDEX IF NOT EXISTS idx_content_user ON content_records(user_id)",
@@ -329,6 +343,7 @@ def _run_migrations(conn: Connection) -> None:
         "CREATE INDEX IF NOT EXISTS idx_project_assets_user ON project_assets(user_id)",
         "CREATE INDEX IF NOT EXISTS idx_project_assets_kind ON project_assets(project_id, media_kind)",
         "CREATE INDEX IF NOT EXISTS idx_project_assets_source ON project_assets(project_id, source)",
+        "CREATE INDEX IF NOT EXISTS idx_project_assets_category ON project_assets(project_id, category_id, subcategory_id, updated_at)",
         "CREATE UNIQUE INDEX IF NOT EXISTS idx_project_assets_content_asset ON project_assets(content_asset_id) WHERE content_asset_id IS NOT NULL",
         "CREATE INDEX IF NOT EXISTS idx_project_asset_usages_asset ON project_asset_usages(asset_id)",
         "CREATE INDEX IF NOT EXISTS idx_project_asset_usages_target ON project_asset_usages(project_id, target_type, target_id)",

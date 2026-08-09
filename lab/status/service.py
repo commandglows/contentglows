@@ -23,6 +23,8 @@ from api.services.asset_understanding import (
 )
 from api.services.asset_understanding_normalizer import normalize_understanding_payload
 from api.services.project_asset_storage import build_project_asset_storage_descriptor
+from api.services.social_placement_registry import lookup_placement, validate_placement_id
+from status.asset_categories import validate_project_asset_category
 from status.db import get_connection, init_db
 from status.audit import AuditActor, actor_from_string, coerce_actor
 from status.schemas import (
@@ -822,6 +824,8 @@ class StatusService:
         user_id: str,
         media_kind: Optional[str] = None,
         source: Optional[str] = None,
+        category_id: Optional[str] = None,
+        subcategory_id: Optional[str] = None,
         include_tombstoned: bool = False,
         limit: int = 50,
         offset: int = 0,
@@ -831,6 +835,7 @@ class StatusService:
             ProjectAssetMediaKind(media_kind)
         if source:
             ProjectAssetSource(source)
+        category_id, subcategory_id = validate_project_asset_category(category_id, subcategory_id)
 
         query = "SELECT * FROM project_assets WHERE project_id = ? AND user_id = ?"
         params: List[Any] = [project_id, user_id]
@@ -843,6 +848,12 @@ class StatusService:
         if source:
             query += " AND source = ?"
             params.append(source)
+        if category_id:
+            query += " AND category_id = ?"
+            params.append(category_id)
+        if subcategory_id:
+            query += " AND subcategory_id = ?"
+            params.append(subcategory_id)
         query += " ORDER BY updated_at DESC, id DESC LIMIT ? OFFSET ?"
         params.extend([limit, offset])
 
@@ -873,6 +884,9 @@ class StatusService:
         source: str,
         mime_type: Optional[str] = None,
         file_name: Optional[str] = None,
+        original_file_name: Optional[str] = None,
+        category_id: Optional[str] = None,
+        subcategory_id: Optional[str] = None,
         storage_uri: Optional[str] = None,
         storage_locator: Optional[StorageLocator] = None,
         source_asset_id: Optional[str] = None,
@@ -883,6 +897,7 @@ class StatusService:
         ProjectAssetMediaKind(media_kind)
         ProjectAssetSource(source)
         ProjectAssetLifecycleStatus(status)
+        category_id, subcategory_id = validate_project_asset_category(category_id, subcategory_id)
         if storage_locator is not None and not isinstance(storage_locator, StorageLocator):
             storage_locator = StorageLocator.model_validate(storage_locator)
 
@@ -892,11 +907,12 @@ class StatusService:
             """
             INSERT INTO project_assets (
                 id, project_id, user_id, source_asset_id, content_asset_id,
-                media_kind, source, mime_type, file_name, storage_uri,
+                media_kind, source, mime_type, file_name, original_file_name,
+                category_id, subcategory_id, storage_uri,
                 storage_provider, storage_namespace, storage_object_key,
                 storage_version, storage_checksum_sha256, status,
                 metadata, created_at, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 asset_id,
@@ -908,6 +924,9 @@ class StatusService:
                 source,
                 mime_type,
                 file_name,
+                original_file_name or file_name,
+                category_id,
+                subcategory_id,
                 storage_uri,
                 storage_locator.provider if storage_locator else None,
                 storage_locator.namespace if storage_locator else None,
@@ -926,6 +945,40 @@ class StatusService:
             user_id=user_id,
             event_type="created",
             metadata=metadata or {},
+        )
+        self._conn.commit()
+        return self.get_project_asset_detail(
+            project_id=project_id,
+            user_id=user_id,
+            asset_id=asset_id,
+        )
+
+    def assign_project_asset_category(
+        self,
+        *,
+        project_id: str,
+        user_id: str,
+        asset_id: str,
+        category_id: Optional[str],
+        subcategory_id: Optional[str] = None,
+    ) -> ProjectAssetRecord:
+        self.get_project_asset_detail(project_id=project_id, user_id=user_id, asset_id=asset_id)
+        category_id, subcategory_id = validate_project_asset_category(category_id, subcategory_id)
+        now = datetime.utcnow().isoformat()
+        self._conn.execute(
+            """
+            UPDATE project_assets
+            SET category_id = ?, subcategory_id = ?, updated_at = ?
+            WHERE id = ? AND project_id = ? AND user_id = ?
+            """,
+            (category_id, subcategory_id, now, asset_id, project_id, user_id),
+        )
+        self._record_project_asset_event(
+            asset_id=asset_id,
+            project_id=project_id,
+            user_id=user_id,
+            event_type="category_assigned" if category_id else "category_cleared",
+            metadata={"category_id": category_id, "subcategory_id": subcategory_id},
         )
         self._conn.commit()
         return self.get_project_asset_detail(
@@ -1210,59 +1263,108 @@ class StatusService:
             target_id=target_id,
             usage_action=usage_action,
         )
+        placement = self._canonicalize_publish_placement(
+            placement=placement,
+            usage_action=usage_action,
+        )
         now = datetime.utcnow().isoformat()
 
-        if is_primary:
+        usage_id = str(uuid.uuid4())
+        self._conn.execute("BEGIN IMMEDIATE")
+        try:
+            if is_primary:
+                self._demote_matching_primary_usages(
+                    project_id=project_id,
+                    user_id=user_id,
+                    target_type=target_type,
+                    target_id=target_id,
+                    placement=placement,
+                    now=now,
+                )
             self._conn.execute(
                 """
-                UPDATE project_asset_usages
-                SET is_primary = 0, updated_at = ?
-                WHERE project_id = ? AND target_type = ? AND target_id = ?
-                  AND COALESCE(placement, '') = COALESCE(?, '') AND deleted_at IS NULL
+                INSERT INTO project_asset_usages (
+                    id, asset_id, project_id, user_id, target_type, target_id, placement,
+                    usage_action, is_primary, metadata, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
-                (now, project_id, target_type, target_id, placement),
+                (
+                    usage_id,
+                    asset_id,
+                    project_id,
+                    user_id,
+                    target_type,
+                    target_id,
+                    placement,
+                    usage_action,
+                    1 if is_primary else 0,
+                    json.dumps(metadata or {}),
+                    now,
+                    now,
+                ),
             )
-
-        usage_id = str(uuid.uuid4())
-        self._conn.execute(
-            """
-            INSERT INTO project_asset_usages (
-                id, asset_id, project_id, user_id, target_type, target_id, placement,
-                usage_action, is_primary, metadata, created_at, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            (
-                usage_id,
-                asset_id,
-                project_id,
-                user_id,
-                target_type,
-                target_id,
-                placement,
-                usage_action,
-                1 if is_primary else 0,
-                json.dumps(metadata or {}),
-                now,
-                now,
-            ),
-        )
-        self._record_project_asset_event(
-            asset_id=asset_id,
-            project_id=project_id,
-            user_id=user_id,
-            event_type="selected",
-            target_type=target_type,
-            target_id=target_id,
-            placement=placement,
-            metadata={
-                "usage_action": usage_action,
-                "usage_id": usage_id,
-                "is_primary": is_primary,
-            },
-        )
-        self._conn.commit()
+            self._record_project_asset_event(
+                asset_id=asset_id,
+                project_id=project_id,
+                user_id=user_id,
+                event_type="selected",
+                target_type=target_type,
+                target_id=target_id,
+                placement=placement,
+                metadata={
+                    "usage_action": usage_action,
+                    "usage_id": usage_id,
+                    "is_primary": is_primary,
+                },
+            )
+            self._conn.commit()
+        except Exception:
+            self._conn.rollback()
+            raise
         row = self._conn.execute("SELECT * FROM project_asset_usages WHERE id = ?", (usage_id,)).fetchone()
         return self._row_to_project_asset_usage(row)
+
+    def list_primary_project_asset_usages(
+        self,
+        *,
+        project_id: str,
+        user_id: str,
+        content_id: str,
+    ) -> list[tuple[ProjectAssetUsageRecord, ProjectAssetRecord | None]]:
+        """Return one newest owner-scoped primary per canonical publish placement."""
+
+        self._ensure_usage_target_owned(
+            project_id=project_id,
+            user_id=user_id,
+            target_type="content",
+            target_id=content_id,
+            usage_action="publish_media",
+        )
+        rows = self._conn.execute(
+            """
+            SELECT * FROM project_asset_usages
+            WHERE project_id=? AND user_id=? AND target_type='content' AND target_id=?
+              AND is_primary=1 AND deleted_at IS NULL AND placement IS NOT NULL
+            ORDER BY updated_at DESC, id DESC
+            """,
+            (project_id, user_id, content_id),
+        ).fetchall()
+        resolved: dict[str, tuple[ProjectAssetUsageRecord, ProjectAssetRecord | None]] = {}
+        for row in rows:
+            entry = lookup_placement(row["placement"])
+            if entry is None or entry.id in resolved:
+                continue
+            usage = self._row_to_project_asset_usage(row)
+            try:
+                asset = self.get_project_asset_detail(
+                    project_id=project_id,
+                    user_id=user_id,
+                    asset_id=usage.asset_id,
+                )
+            except ContentNotFoundError:
+                asset = None
+            resolved[entry.id] = (usage.model_copy(update={"placement": entry.id}), asset)
+        return list(resolved.values())
 
     def set_project_asset_primary(
         self,
@@ -1297,28 +1399,31 @@ class StatusService:
         target_id: str,
         placement: Optional[str] = None,
     ) -> int:
+        requested_entry = lookup_placement(placement) if placement else None
+        canonical_placement = requested_entry.id if requested_entry else placement
         now = datetime.utcnow().isoformat()
         rows = self._conn.execute(
             """
-            SELECT asset_id FROM project_asset_usages
+            SELECT id, asset_id, placement FROM project_asset_usages
             WHERE project_id = ? AND user_id = ? AND target_type = ? AND target_id = ?
-              AND COALESCE(placement, '') = COALESCE(?, '') AND is_primary = 1
-              AND deleted_at IS NULL
+              AND is_primary = 1 AND deleted_at IS NULL
             """,
-            (project_id, user_id, target_type, target_id, placement),
+            (project_id, user_id, target_type, target_id),
         ).fetchall()
-        cursor = self._conn.execute(
-            """
-            UPDATE project_asset_usages
-            SET is_primary = 0, updated_at = ?
-            WHERE project_id = ? AND user_id = ? AND target_type = ? AND target_id = ?
-              AND COALESCE(placement, '') = COALESCE(?, '') AND is_primary = 1
-              AND deleted_at IS NULL
-            """,
-            (now, project_id, user_id, target_type, target_id, placement),
-        )
-        changed = cursor.rowcount if cursor.rowcount is not None else 0
+        matches = []
         for row in rows:
+            existing_entry = lookup_placement(row["placement"]) if row["placement"] else None
+            existing_placement = existing_entry.id if existing_entry else row["placement"]
+            if existing_placement == canonical_placement:
+                matches.append(row)
+        if matches:
+            placeholders = ",".join("?" for _ in matches)
+            self._conn.execute(
+                f"UPDATE project_asset_usages SET is_primary=0, updated_at=? WHERE id IN ({placeholders})",
+                (now, *(row["id"] for row in matches)),
+            )
+        changed = len(matches)
+        for row in matches:
             self._record_project_asset_event(
                 asset_id=row["asset_id"],
                 project_id=project_id,
@@ -1326,11 +1431,58 @@ class StatusService:
                 event_type="primary_cleared",
                 target_type=target_type,
                 target_id=target_id,
-                placement=placement,
+                placement=canonical_placement,
                 metadata={"cleared_count": changed},
             )
         self._conn.commit()
         return changed
+
+    @staticmethod
+    def _canonicalize_publish_placement(
+        *, placement: Optional[str], usage_action: str
+    ) -> Optional[str]:
+        if usage_action not in {"publish_media", "set_primary"}:
+            return placement
+        if not placement:
+            raise ProjectAssetEligibilityError(
+                f"usage_action '{usage_action}' requires a publish placement"
+            )
+        try:
+            return validate_placement_id(placement)
+        except ValueError as exc:
+            raise ProjectAssetEligibilityError(str(exc)) from exc
+
+    def _demote_matching_primary_usages(
+        self,
+        *,
+        project_id: str,
+        user_id: str,
+        target_type: str,
+        target_id: str,
+        placement: Optional[str],
+        now: str,
+    ) -> None:
+        rows = self._conn.execute(
+            """
+            SELECT id, placement FROM project_asset_usages
+            WHERE project_id=? AND user_id=? AND target_type=? AND target_id=?
+              AND is_primary=1 AND deleted_at IS NULL
+            """,
+            (project_id, user_id, target_type, target_id),
+        ).fetchall()
+        canonical = lookup_placement(placement).id if placement and lookup_placement(placement) else placement
+        ids = []
+        for row in rows:
+            existing = lookup_placement(row["placement"])
+            existing_value = existing.id if existing else row["placement"]
+            if existing_value == canonical:
+                ids.append(row["id"])
+        if ids:
+            placeholders = ",".join("?" for _ in ids)
+            self._conn.execute(
+                f"UPDATE project_asset_usages SET is_primary=0, updated_at=? WHERE id IN ({placeholders})",
+                (now, *ids),
+            )
 
     def tombstone_project_asset(
         self,
@@ -2000,9 +2152,10 @@ class StatusService:
             """
             INSERT INTO project_assets (
                 id, project_id, user_id, source_asset_id, content_asset_id,
-                media_kind, source, mime_type, file_name, storage_uri, status,
-                metadata, created_at, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                media_kind, source, mime_type, file_name, original_file_name,
+                category_id, subcategory_id, storage_uri, status, metadata,
+                created_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 new_asset_id,
@@ -2014,6 +2167,9 @@ class StatusService:
                 source_row["source"],
                 source_row["mime_type"],
                 source_row["file_name"],
+                source_row["original_file_name"],
+                source_row["category_id"],
+                source_row["subcategory_id"],
                 source_row["storage_uri"],
                 ProjectAssetLifecycleStatus.ACTIVE.value,
                 json.dumps(source_metadata),
@@ -2128,8 +2284,9 @@ class StatusService:
                 """
                 INSERT INTO project_assets (
                     id, project_id, user_id, source_asset_id, content_asset_id, media_kind, source,
-                    mime_type, file_name, storage_uri, status, metadata, created_at, updated_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    mime_type, file_name, original_file_name, storage_uri, status, metadata,
+                    created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     str(uuid.uuid4()),
@@ -2140,6 +2297,7 @@ class StatusService:
                     media_kind,
                     ProjectAssetSource.CONTENT_ASSET.value,
                     row["mime_type"],
+                    row["file_name"],
                     row["file_name"],
                     row["storage_uri"],
                     status,
@@ -2508,6 +2666,9 @@ class StatusService:
             source=row["source"],
             mime_type=row["mime_type"],
             file_name=row["file_name"],
+            original_file_name=row["original_file_name"] if "original_file_name" in row_keys else row["file_name"],
+            category_id=row["category_id"] if "category_id" in row_keys else None,
+            subcategory_id=row["subcategory_id"] if "subcategory_id" in row_keys else None,
             storage_uri=row["storage_uri"],
             storage_locator=storage_locator,
             status=row["status"],

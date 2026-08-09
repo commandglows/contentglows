@@ -67,6 +67,8 @@ from api.routers import (
     search_console_router,
     project_intelligence_router,
     assets_router,
+    placement_registry_router,
+    social_placements_router,
     reel_renders_router,
     video_timelines_router,
     brand_profiles_router,
@@ -519,6 +521,8 @@ app.include_router(settings_integrations_router)
 app.include_router(search_console_router)
 app.include_router(project_intelligence_router)
 app.include_router(assets_router)
+app.include_router(placement_registry_router)
+app.include_router(social_placements_router)
 app.include_router(reel_renders_router)
 app.include_router(video_timelines_router)
 app.include_router(brand_profiles_router)

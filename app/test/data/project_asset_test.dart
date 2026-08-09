@@ -14,6 +14,11 @@ void main() {
             'source': 'image_robot',
             'mime_type': 'image/png',
             'file_name': 'visual.png',
+            'original_file_name': 'Original Visual.png',
+            'category_id': 'editorial_visual',
+            'subcategory_id': 'infographic',
+            'suggested_export_file_name':
+                'editorial_visual-infographic-original-visual.png',
             'storage_descriptor': {'provider': 'bunny', 'status': 'ready'},
             'status': 'active',
             'metadata': {'prompt': 'sunset'},
@@ -31,6 +36,41 @@ void main() {
       expect(result.items.single.id, 'asset-1');
       expect(result.items.single.storageDescriptor['provider'], 'bunny');
       expect(result.items.single.metadata['prompt'], 'sunset');
+      expect(result.items.single.originalFileName, 'Original Visual.png');
+      expect(result.items.single.categoryId, 'editorial_visual');
+      expect(
+        result.items.single.suggestedExportFileName,
+        'editorial_visual-infographic-original-visual.png',
+      );
+    });
+
+    test('parses localized category catalog with stable ids', () {
+      final catalog = ProjectAssetCategoryCatalog.fromJson({
+        'version': '2026-08-07.1',
+        'locale': 'fr',
+        'supported_locales': ['en', 'fr'],
+        'categories': [
+          {
+            'category_id': 'editorial_visual',
+            'label': 'Visuel éditorial',
+            'subcategories': [
+              {'subcategory_id': 'infographic', 'label': 'Infographie'},
+            ],
+          },
+        ],
+      });
+
+      expect(
+        catalog.categoryById('editorial_visual')?.label,
+        'Visuel éditorial',
+      );
+      expect(
+        catalog
+            .categoryById('editorial_visual')
+            ?.subcategoryById('infographic')
+            ?.label,
+        'Infographie',
+      );
     });
 
     test(

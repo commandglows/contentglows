@@ -30,6 +30,7 @@ import '../models/project_asset.dart';
 import '../models/project_intelligence.dart';
 import '../models/ritual.dart';
 import '../models/search_console.dart';
+import '../models/social_placement.dart';
 import '../models/video_timeline.dart';
 import '../models/video_source_intake.dart';
 import 'offline_storage_service.dart';
@@ -2195,6 +2196,8 @@ class ApiService {
     required String projectId,
     String? mediaKind,
     String? source,
+    String? categoryId,
+    String? subcategoryId,
     bool includeTombstoned = false,
     int limit = 50,
     int offset = 0,
@@ -2204,6 +2207,8 @@ class ApiService {
     final queryParameters = _compactMap({
       'media_kind': normalizeOptionalText(mediaKind),
       'source': normalizeOptionalText(source),
+      'category_id': normalizeOptionalText(categoryId),
+      'subcategory_id': normalizeOptionalText(subcategoryId),
       'include_tombstoned': includeTombstoned,
       'limit': limit,
       'offset': offset,
@@ -2219,6 +2224,23 @@ class ApiService {
     }
   }
 
+  Future<ProjectAssetCategoryCatalog> getProjectAssetCategoryCatalog({
+    required String projectId,
+    String? locale,
+  }) async {
+    final idMappings = await _loadIdMappings();
+    final resolvedProjectId = _resolveEntityId(projectId, idMappings);
+    try {
+      final response = await _dio.get(
+        '/api/projects/$resolvedProjectId/assets/categories',
+        queryParameters: _compactMap({'locale': normalizeOptionalText(locale)}),
+      );
+      return ProjectAssetCategoryCatalog.fromJson(_asMap(response.data));
+    } on DioException catch (error) {
+      throw _mapDioException(error);
+    }
+  }
+
   Future<ProjectAsset> getProjectAssetDetail({
     required String projectId,
     required String assetId,
@@ -2229,6 +2251,29 @@ class ApiService {
     try {
       final response = await _dio.get(
         '/api/projects/$resolvedProjectId/assets/$resolvedAssetId',
+      );
+      return ProjectAsset.fromJson(_asMap(response.data));
+    } on DioException catch (error) {
+      throw _mapDioException(error);
+    }
+  }
+
+  Future<ProjectAsset> assignProjectAssetCategory({
+    required String projectId,
+    required String assetId,
+    String? categoryId,
+    String? subcategoryId,
+  }) async {
+    final idMappings = await _loadIdMappings();
+    final resolvedProjectId = _resolveEntityId(projectId, idMappings);
+    final resolvedAssetId = _resolveEntityId(assetId, idMappings);
+    try {
+      final response = await _dio.patch(
+        '/api/projects/$resolvedProjectId/assets/$resolvedAssetId/category',
+        data: {
+          'category_id': normalizeOptionalText(categoryId),
+          'subcategory_id': normalizeOptionalText(subcategoryId),
+        },
       );
       return ProjectAsset.fromJson(_asMap(response.data));
     } on DioException catch (error) {
@@ -4876,6 +4921,7 @@ class ApiService {
     List<String> mediaUrls = const [],
     List<String> tags = const [],
     bool publishNow = true,
+    bool useAssetPlacements = true,
   }) async {
     if (allowDemoData) {
       return {
@@ -4888,7 +4934,12 @@ class ApiService {
       'content': content,
       'platforms': platforms,
       'title': title,
-      'media_urls': mediaUrls.isEmpty ? null : mediaUrls,
+      'media_contract_version': useAssetPlacements
+          ? 'asset_placements.v1'
+          : null,
+      'media_urls': !useAssetPlacements && mediaUrls.isNotEmpty
+          ? mediaUrls
+          : null,
       'tags': tags.isEmpty ? null : tags,
       'content_record_id': contentRecordId,
       'publish_now': publishNow,
@@ -4911,6 +4962,59 @@ class ApiService {
         blockedMessage:
             'Publishing is unavailable until FastAPI and publish integrations are back.',
       );
+    }
+  }
+
+  Future<SocialPlacementRegistry> fetchPlacementRegistry({
+    String locale = 'en',
+  }) async {
+    try {
+      final response = await _dio.get(
+        '/api/placement-registry',
+        queryParameters: {'locale': locale},
+      );
+      return SocialPlacementRegistry.fromJson(_asMap(response.data));
+    } on DioException catch (error) {
+      throw _mapDioException(error);
+    }
+  }
+
+  Future<PlacementPlan> fetchPlacementPlan({
+    required String contentId,
+    required List<String> platforms,
+    String locale = 'en',
+  }) async {
+    final idMappings = await _loadIdMappings();
+    final resolvedContentId = _resolveEntityId(contentId, idMappings);
+    try {
+      final response = await _dio.get(
+        '/api/content/$resolvedContentId/placement-plan',
+        queryParameters: {'platform': platforms, 'locale': locale},
+        options: Options(listFormat: ListFormat.multi),
+      );
+      return PlacementPlan.fromJson(_asMap(response.data));
+    } on DioException catch (error) {
+      throw _mapDioException(error);
+    }
+  }
+
+  Future<PublishPreflightResponse> preflightPublish({
+    required String contentRecordId,
+    required List<PublishPlatformTarget> platforms,
+    String? registryVersion,
+  }) async {
+    final idMappings = await _loadIdMappings();
+    final resolvedContentId = _resolveEntityId(contentRecordId, idMappings);
+    final payload = _compactMap({
+      'content_record_id': resolvedContentId,
+      'platforms': platforms.map((target) => target.toJson()).toList(),
+      'registry_version': normalizeOptionalText(registryVersion),
+    });
+    try {
+      final response = await _dio.post('/api/publish/preflight', data: payload);
+      return PublishPreflightResponse.fromJson(_asMap(response.data));
+    } on DioException catch (error) {
+      throw _mapDioException(error);
     }
   }
 

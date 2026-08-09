@@ -33,6 +33,7 @@ void main() {
 
     await tester.pumpAndSettle();
     expect(find.text('global-shot.mp4'), findsOneWidget);
+    expect(find.textContaining('Video · video'), findsOneWidget);
     expect(find.byIcon(Icons.public_rounded), findsOneWidget);
   });
 }
@@ -53,10 +54,27 @@ class _TestAssetNotifier extends ProjectAssetLibraryNotifier {
           metadata: const {'candidate_type': 'candidate_global_asset'},
           storageDescriptor: const {'provider': 'bunny'},
           fileName: 'global-shot.mp4',
+          categoryId: 'video_media',
+          subcategoryId: 'b_roll',
+          suggestedExportFileName: 'video_media-b_roll-global-shot.mp4',
           createdAt: DateTime.utc(2026, 5, 11, 18, 0),
           updatedAt: DateTime.utc(2026, 5, 11, 18, 0),
         ),
       ],
+      categoryCatalog: const ProjectAssetCategoryCatalog(
+        version: '2026-08-07.1',
+        locale: 'en',
+        supportedLocales: ['en', 'fr'],
+        categories: [
+          ProjectAssetCategory(
+            categoryId: 'video_media',
+            label: 'Video',
+            subcategories: [
+              ProjectAssetSubcategory(subcategoryId: 'b_roll', label: 'B-roll'),
+            ],
+          ),
+        ],
+      ),
       total: 1,
     );
   }

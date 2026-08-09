@@ -27,6 +27,8 @@ from .settings_integrations import router as settings_integrations_router
 from .search_console import router as search_console_router
 from .project_intelligence import router as project_intelligence_router
 from .assets import router as assets_router
+from .placement_registry import router as placement_registry_router
+from .social_placements import router as social_placements_router
 from .reel_renders import router as reel_renders_router
 from .video_timelines import router as video_timelines_router
 from .brand_profiles import router as brand_profiles_router
@@ -63,6 +65,8 @@ __all__ = [
     "search_console_router",
     "project_intelligence_router",
     "assets_router",
+    "placement_registry_router",
+    "social_placements_router",
     "reel_renders_router",
     "video_timelines_router",
     "brand_profiles_router",

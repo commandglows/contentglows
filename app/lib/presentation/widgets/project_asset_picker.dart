@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/models/project_asset.dart';
 import '../../l10n/app_localizations.dart';
 import '../../providers/providers.dart';
+import '../theme/app_theme_tokens.dart';
 
 class ProjectAssetPicker extends ConsumerWidget {
   const ProjectAssetPicker({
@@ -13,6 +14,9 @@ class ProjectAssetPicker extends ConsumerWidget {
     required this.usageAction,
     this.placement,
     this.allowedMediaKinds,
+    this.platformLabel,
+    this.slotLabel,
+    this.selectAsPrimary = false,
     this.onSelected,
   });
 
@@ -21,6 +25,9 @@ class ProjectAssetPicker extends ConsumerWidget {
   final String usageAction;
   final String? placement;
   final Set<String>? allowedMediaKinds;
+  final String? platformLabel;
+  final String? slotLabel;
+  final bool selectAsPrimary;
   final void Function(ProjectAssetUsage usage)? onSelected;
 
   @override
@@ -36,13 +43,7 @@ class ProjectAssetPicker extends ConsumerWidget {
       data: (state) {
         final selectedId = state.selectedAssetId;
         final selectedAsset = state.selectedAsset;
-        final visibleAssets = allowedMediaKinds == null
-            ? state.assets
-            : state.assets
-                  .where(
-                    (asset) => allowedMediaKinds!.contains(asset.mediaKind),
-                  )
-                  .toList();
+        final visibleAssets = state.assets;
         final usage = selectedId == null
             ? const <ProjectAssetUsage>[]
             : (state.assetUsage[selectedId] ?? const <ProjectAssetUsage>[]);
@@ -55,8 +56,8 @@ class ProjectAssetPicker extends ConsumerWidget {
         final selectedRecommendations = selectedId == null
             ? null
             : state.assetRecommendations[selectedId];
-        final recommendation = (selectedRecommendations == null ||
-                selectedRecommendations.isEmpty)
+        final recommendation =
+            (selectedRecommendations == null || selectedRecommendations.isEmpty)
             ? null
             : selectedRecommendations.first;
 
@@ -69,8 +70,11 @@ class ProjectAssetPicker extends ConsumerWidget {
               onRefresh: controller.refresh,
               onMediaKindChanged: controller.setMediaKindFilter,
               onSourceChanged: controller.setSourceFilter,
+              onCategoryChanged: controller.setCategoryFilter,
+              onSubcategoryChanged: controller.setSubcategoryFilter,
               onIncludeTombstonedChanged: controller.setIncludeTombstoned,
               onAssetTap: controller.selectAsset,
+              incompatibilityFor: _incompatibilityFor,
             );
             final detailPane = _AssetDetailPane(
               asset: selectedAsset,
@@ -78,7 +82,13 @@ class ProjectAssetPicker extends ConsumerWidget {
               events: events,
               understanding: understanding,
               recommendation: recommendation,
+              categoryCatalog: state.categoryCatalog,
               isMutating: state.isMutating,
+              platformLabel: platformLabel,
+              slotLabel: slotLabel,
+              incompatibilityReason: selectedAsset == null
+                  ? null
+                  : _incompatibilityFor(selectedAsset),
               onSelect: selectedAsset == null
                   ? null
                   : () async {
@@ -88,6 +98,7 @@ class ProjectAssetPicker extends ConsumerWidget {
                         targetId: targetId,
                         usageAction: usageAction,
                         placement: placement,
+                        isPrimary: selectAsPrimary,
                       );
                       if (result != null) {
                         onSelected?.call(result);
@@ -115,16 +126,29 @@ class ProjectAssetPicker extends ConsumerWidget {
                   : () => controller.restoreAsset(selectedAsset.id),
               onQueueUnderstanding: selectedAsset == null
                   ? null
-                  : () => controller.queueUnderstanding(assetId: selectedAsset.id),
+                  : () => controller.queueUnderstanding(
+                      assetId: selectedAsset.id,
+                    ),
               onRefreshUnderstanding: selectedAsset == null
                   ? null
-                  : () => controller.refreshUnderstandingStatus(assetId: selectedAsset.id),
+                  : () => controller.refreshUnderstandingStatus(
+                      assetId: selectedAsset.id,
+                    ),
               onAttachGlobal: selectedAsset == null
                   ? null
                   : () => controller.attachGlobalAsset(
                       globalAssetId: selectedAsset.id,
                       selectForAssetIdAfterAttach: selectedAsset.id,
                     ),
+              onCategoryAssigned: selectedAsset == null
+                  ? null
+                  : (categoryId, subcategoryId) async {
+                      await controller.assignCategory(
+                        assetId: selectedAsset.id,
+                        categoryId: categoryId,
+                        subcategoryId: subcategoryId,
+                      );
+                    },
             );
 
             if (!twoPanels) {
@@ -162,6 +186,24 @@ class ProjectAssetPicker extends ConsumerWidget {
       },
     );
   }
+
+  String? _incompatibilityFor(ProjectAsset asset) {
+    if (asset.status != 'active' || asset.tombstonedAt != null) {
+      return 'This asset is not active.';
+    }
+    final accepted = allowedMediaKinds;
+    if (accepted == null || accepted.isEmpty) return null;
+    final family = switch (asset.mediaKind) {
+      'image' || 'thumbnail' || 'video_cover' || 'capture' => 'image',
+      'video' || 'render_output' => 'video',
+      'audio' || 'music' => 'audio',
+      _ => asset.mediaKind,
+    };
+    if (!accepted.contains(family)) {
+      return 'This asset type is not compatible with the placement.';
+    }
+    return null;
+  }
 }
 
 class _AssetListPane extends StatelessWidget {
@@ -171,8 +213,11 @@ class _AssetListPane extends StatelessWidget {
     required this.onRefresh,
     required this.onMediaKindChanged,
     required this.onSourceChanged,
+    required this.onCategoryChanged,
+    required this.onSubcategoryChanged,
     required this.onIncludeTombstonedChanged,
     required this.onAssetTap,
+    required this.incompatibilityFor,
   });
 
   final ProjectAssetLibraryState state;
@@ -180,8 +225,11 @@ class _AssetListPane extends StatelessWidget {
   final Future<void> Function() onRefresh;
   final void Function(String?) onMediaKindChanged;
   final void Function(String?) onSourceChanged;
+  final void Function(String?) onCategoryChanged;
+  final void Function(String?) onSubcategoryChanged;
   final void Function(bool) onIncludeTombstonedChanged;
   final Future<void> Function(String?) onAssetTap;
+  final String? Function(ProjectAsset asset) incompatibilityFor;
 
   static const _mediaKindOptions = <String>[
     'image',
@@ -194,6 +242,9 @@ class _AssetListPane extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final catalog = state.categoryCatalog;
+    final selectedCategory = catalog?.categoryById(state.categoryFilter);
     return Column(
       children: [
         Padding(
@@ -248,6 +299,54 @@ class _AssetListPane extends StatelessWidget {
                       onSourceChanged(value.trim().isEmpty ? null : value),
                 ),
               ),
+              if (catalog != null)
+                SizedBox(
+                  width: AppThemeTokens.inputCompactWidth,
+                  child: DropdownButtonFormField<String?>(
+                    initialValue: state.categoryFilter,
+                    isExpanded: true,
+                    isDense: true,
+                    decoration: const InputDecoration(isDense: true),
+                    hint: Text(context.tr('Category')),
+                    items: [
+                      DropdownMenuItem<String>(
+                        value: null,
+                        child: Text(context.tr('All')),
+                      ),
+                      ...catalog.categories.map(
+                        (category) => DropdownMenuItem<String>(
+                          value: category.categoryId,
+                          child: Text(category.label),
+                        ),
+                      ),
+                    ],
+                    onChanged: onCategoryChanged,
+                  ),
+                ),
+              if (selectedCategory != null)
+                SizedBox(
+                  width: AppThemeTokens.inputCompactWidth,
+                  child: DropdownButtonFormField<String?>(
+                    initialValue: state.subcategoryFilter,
+                    isExpanded: true,
+                    isDense: true,
+                    decoration: const InputDecoration(isDense: true),
+                    hint: Text(context.tr('Subcategory')),
+                    items: [
+                      DropdownMenuItem<String>(
+                        value: null,
+                        child: Text(context.tr('All')),
+                      ),
+                      ...selectedCategory.subcategories.map(
+                        (subcategory) => DropdownMenuItem<String>(
+                          value: subcategory.subcategoryId,
+                          child: Text(subcategory.label),
+                        ),
+                      ),
+                    ],
+                    onChanged: onSubcategoryChanged,
+                  ),
+                ),
               FilterChip(
                 label: Text(context.tr('Tombstoned')),
                 selected: state.includeTombstoned,
@@ -272,6 +371,8 @@ class _AssetListPane extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final asset = assets[index];
                     final selected = state.selectedAssetId == asset.id;
+                    final incompatibility = incompatibilityFor(asset);
+                    final category = catalog?.categoryById(asset.categoryId);
                     return ListTile(
                       dense: true,
                       selected: selected,
@@ -283,17 +384,26 @@ class _AssetListPane extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       subtitle: Text(
-                        '${asset.mediaKind} · ${asset.source}',
+                        incompatibility == null
+                            ? '${category?.label ?? context.tr('Uncategorized')} · ${asset.mediaKind} · ${asset.source}'
+                            : context.tr(incompatibility),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       trailing: Wrap(
                         spacing: 4,
                         children: [
-                          if (asset.metadata['candidate_type'] == 'candidate_global_asset')
+                          if (asset.metadata['candidate_type'] ==
+                              'candidate_global_asset')
                             const Icon(Icons.public_rounded, size: 16),
                           if (asset.status == 'tombstoned')
                             const Icon(Icons.archive_rounded, size: 16),
+                          if (incompatibility != null)
+                            Icon(
+                              Icons.block_rounded,
+                              size: AppThemeTokens.spacing4,
+                              color: theme.colorScheme.error,
+                            ),
                         ],
                       ),
                     );
@@ -325,7 +435,11 @@ class _AssetDetailPane extends StatelessWidget {
     required this.events,
     required this.understanding,
     required this.recommendation,
+    required this.categoryCatalog,
     required this.isMutating,
+    this.platformLabel,
+    this.slotLabel,
+    this.incompatibilityReason,
     this.onSelect,
     this.onSetPrimary,
     required this.onClearPrimary,
@@ -334,6 +448,7 @@ class _AssetDetailPane extends StatelessWidget {
     this.onQueueUnderstanding,
     this.onRefreshUnderstanding,
     this.onAttachGlobal,
+    this.onCategoryAssigned,
   });
 
   final ProjectAsset? asset;
@@ -341,7 +456,11 @@ class _AssetDetailPane extends StatelessWidget {
   final List<ProjectAssetEvent> events;
   final AssetUnderstandingStatusResponse? understanding;
   final ProjectAssetRecommendationItem? recommendation;
+  final ProjectAssetCategoryCatalog? categoryCatalog;
   final bool isMutating;
+  final String? platformLabel;
+  final String? slotLabel;
+  final String? incompatibilityReason;
   final Future<void> Function()? onSelect;
   final Future<void> Function()? onSetPrimary;
   final Future<void> Function() onClearPrimary;
@@ -350,6 +469,7 @@ class _AssetDetailPane extends StatelessWidget {
   final Future<void> Function()? onQueueUnderstanding;
   final Future<void> Function()? onRefreshUnderstanding;
   final Future<void> Function()? onAttachGlobal;
+  final Future<void> Function(String?, String?)? onCategoryAssigned;
 
   @override
   Widget build(BuildContext context) {
@@ -360,19 +480,30 @@ class _AssetDetailPane extends StatelessWidget {
       );
     }
     final isTombstoned = asset!.status == 'tombstoned';
+    final category = categoryCatalog?.categoryById(asset!.categoryId);
     final result = understanding?.result;
-    final suggestedTags = result?.tags
+    final suggestedTags =
+        result?.tags
             .where((tag) => !tag.acceptedByUser && !tag.rejectedByUser)
             .toList() ??
         const <AssetSemanticTag>[];
     final acceptedTags =
         result?.tags.where((tag) => tag.acceptedByUser).toList() ??
-            const <AssetSemanticTag>[];
+        const <AssetSemanticTag>[];
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (slotLabel != null) ...[
+            Text(
+              platformLabel == null
+                  ? slotLabel!
+                  : '$platformLabel · $slotLabel',
+              style: Theme.of(context).textTheme.labelLarge,
+            ),
+            const SizedBox(height: AppThemeTokens.spacing2),
+          ],
           Text(
             asset!.fileName ?? asset!.id,
             maxLines: 1,
@@ -381,13 +512,77 @@ class _AssetDetailPane extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text('${asset!.mediaKind} · ${asset!.source}'),
+          if (incompatibilityReason != null) ...[
+            const SizedBox(height: AppThemeTokens.spacing2),
+            Text(
+              context.tr(incompatibilityReason!),
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+          ],
+          if (categoryCatalog != null) ...[
+            const SizedBox(height: AppThemeTokens.spacing2),
+            DropdownButtonFormField<String?>(
+              initialValue: asset!.categoryId,
+              isExpanded: true,
+              decoration: InputDecoration(labelText: context.tr('Category')),
+              items: [
+                DropdownMenuItem<String>(
+                  value: null,
+                  child: Text(context.tr('Uncategorized')),
+                ),
+                ...categoryCatalog!.categories.map(
+                  (item) => DropdownMenuItem<String>(
+                    value: item.categoryId,
+                    child: Text(item.label),
+                  ),
+                ),
+              ],
+              onChanged: isMutating
+                  ? null
+                  : (value) => onCategoryAssigned?.call(value, null),
+            ),
+            if (category != null && category.subcategories.isNotEmpty) ...[
+              const SizedBox(height: AppThemeTokens.spacing2),
+              DropdownButtonFormField<String?>(
+                initialValue: asset!.subcategoryId,
+                isExpanded: true,
+                decoration: InputDecoration(
+                  labelText: context.tr('Subcategory'),
+                ),
+                items: [
+                  DropdownMenuItem<String>(
+                    value: null,
+                    child: Text(context.tr('No subcategory')),
+                  ),
+                  ...category.subcategories.map(
+                    (item) => DropdownMenuItem<String>(
+                      value: item.subcategoryId,
+                      child: Text(item.label),
+                    ),
+                  ),
+                ],
+                onChanged: isMutating
+                    ? null
+                    : (value) =>
+                          onCategoryAssigned?.call(category.categoryId, value),
+              ),
+            ],
+            if (asset!.suggestedExportFileName != null)
+              Text(
+                context.tr('Export name: {name}', {
+                  'name': asset!.suggestedExportFileName,
+                }),
+              ),
+          ],
           const SizedBox(height: 8),
           Wrap(
             spacing: 6,
             runSpacing: 6,
             children: [
               FilledButton.tonal(
-                onPressed: isMutating ? null : onSelect,
+                onPressed: isMutating || incompatibilityReason != null
+                    ? null
+                    : onSelect,
                 child: Text(context.tr('Select')),
               ),
               OutlinedButton(
@@ -428,37 +623,33 @@ class _AssetDetailPane extends StatelessWidget {
             ),
           if (acceptedTags.isNotEmpty)
             Text(
-              context.tr(
-                'Accepted tags: {tags}',
-                {'tags': acceptedTags.map((tag) => tag.label).join(', ')},
-              ),
+              context.tr('Accepted tags: {tags}', {
+                'tags': acceptedTags.map((tag) => tag.label).join(', '),
+              }),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
           if (suggestedTags.isNotEmpty)
             Text(
-              context.tr(
-                'Suggested tags: {tags}',
-                {'tags': suggestedTags.map((tag) => tag.label).join(', ')},
-              ),
+              context.tr('Suggested tags: {tags}', {
+                'tags': suggestedTags.map((tag) => tag.label).join(', '),
+              }),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
           if (recommendation != null && recommendation!.fitReasons.isNotEmpty)
             Text(
-              context.tr(
-                'Fit: {reason}',
-                {'reason': recommendation!.fitReasons.first.toString()},
-              ),
+              context.tr('Fit: {reason}', {
+                'reason': recommendation!.fitReasons.first.toString(),
+              }),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
           if (recommendation != null && recommendation!.warnings.isNotEmpty)
             Text(
-              context.tr(
-                'Warnings: {warnings}',
-                {'warnings': recommendation!.warnings.join(', ')},
-              ),
+              context.tr('Warnings: {warnings}', {
+                'warnings': recommendation!.warnings.join(', '),
+              }),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),

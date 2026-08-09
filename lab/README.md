@@ -8,6 +8,7 @@ This root README is now an entrypoint, not the canonical technical source of tru
 
 - Technical index: `shipglows_data/technical/lab/README.md`
 - Architecture: `shipglows_data/technical/lab/architecture.md`
+- Placement and publish API contract: `shipglows_data/technical/lab/backend-runtime-and-product-apis.md`
 - Context: `shipglows_data/technical/lab/context.md`
 - Workflow backlog: `shipglows_data/workflow/lab/TASKS.md`
 - QA log: `shipglows_data/workflow/qa/TEST_LOG.md`

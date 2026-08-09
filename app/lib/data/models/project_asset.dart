@@ -14,6 +14,10 @@ class ProjectAsset {
     this.contentAssetId,
     this.mimeType,
     this.fileName,
+    this.originalFileName,
+    this.categoryId,
+    this.subcategoryId,
+    this.suggestedExportFileName,
     this.storageUri,
     this.tombstonedAt,
     this.cleanupEligibleAt,
@@ -28,6 +32,10 @@ class ProjectAsset {
   final String source;
   final String? mimeType;
   final String? fileName;
+  final String? originalFileName;
+  final String? categoryId;
+  final String? subcategoryId;
+  final String? suggestedExportFileName;
   final String? storageUri;
   final Map<String, dynamic> storageDescriptor;
   final String status;
@@ -52,6 +60,16 @@ class ProjectAsset {
       source: (json['source'] ?? '').toString(),
       mimeType: _asStringOrNull(json['mimeType'] ?? json['mime_type']),
       fileName: _asStringOrNull(json['fileName'] ?? json['file_name']),
+      originalFileName: _asStringOrNull(
+        json['originalFileName'] ?? json['original_file_name'],
+      ),
+      categoryId: _asStringOrNull(json['categoryId'] ?? json['category_id']),
+      subcategoryId: _asStringOrNull(
+        json['subcategoryId'] ?? json['subcategory_id'],
+      ),
+      suggestedExportFileName: _asStringOrNull(
+        json['suggestedExportFileName'] ?? json['suggested_export_file_name'],
+      ),
       storageUri: _asStringOrNull(json['storageUri'] ?? json['storage_uri']),
       storageDescriptor: _asMap(
         json['storageDescriptor'] ?? json['storage_descriptor'],
@@ -267,6 +285,97 @@ class ProjectAssetListResponse {
   }
 }
 
+class ProjectAssetSubcategory {
+  const ProjectAssetSubcategory({
+    required this.subcategoryId,
+    required this.label,
+  });
+
+  final String subcategoryId;
+  final String label;
+
+  factory ProjectAssetSubcategory.fromJson(Map<String, dynamic> json) {
+    return ProjectAssetSubcategory(
+      subcategoryId: (json['subcategoryId'] ?? json['subcategory_id'] ?? '')
+          .toString(),
+      label: (json['label'] ?? '').toString(),
+    );
+  }
+}
+
+class ProjectAssetCategory {
+  const ProjectAssetCategory({
+    required this.categoryId,
+    required this.label,
+    this.subcategories = const <ProjectAssetSubcategory>[],
+  });
+
+  final String categoryId;
+  final String label;
+  final List<ProjectAssetSubcategory> subcategories;
+
+  factory ProjectAssetCategory.fromJson(Map<String, dynamic> json) {
+    return ProjectAssetCategory(
+      categoryId: (json['categoryId'] ?? json['category_id'] ?? '').toString(),
+      label: (json['label'] ?? '').toString(),
+      subcategories: _asList(
+        json['subcategories'],
+      ).map(ProjectAssetSubcategory.fromJson).toList(),
+    );
+  }
+
+  ProjectAssetSubcategory? subcategoryById(String? subcategoryId) {
+    if (subcategoryId == null) {
+      return null;
+    }
+    for (final subcategory in subcategories) {
+      if (subcategory.subcategoryId == subcategoryId) {
+        return subcategory;
+      }
+    }
+    return null;
+  }
+}
+
+class ProjectAssetCategoryCatalog {
+  const ProjectAssetCategoryCatalog({
+    required this.version,
+    required this.locale,
+    required this.supportedLocales,
+    required this.categories,
+  });
+
+  final String version;
+  final String locale;
+  final List<String> supportedLocales;
+  final List<ProjectAssetCategory> categories;
+
+  factory ProjectAssetCategoryCatalog.fromJson(Map<String, dynamic> json) {
+    return ProjectAssetCategoryCatalog(
+      version: (json['version'] ?? '').toString(),
+      locale: (json['locale'] ?? '').toString(),
+      supportedLocales: _asList(
+        json['supportedLocales'] ?? json['supported_locales'],
+      ).map((item) => item.toString()).toList(),
+      categories: _asList(
+        json['categories'],
+      ).map(ProjectAssetCategory.fromJson).toList(),
+    );
+  }
+
+  ProjectAssetCategory? categoryById(String? categoryId) {
+    if (categoryId == null) {
+      return null;
+    }
+    for (final category in categories) {
+      if (category.categoryId == categoryId) {
+        return category;
+      }
+    }
+    return null;
+  }
+}
+
 class AssetSemanticTag {
   const AssetSemanticTag({
     required this.key,
@@ -315,7 +424,8 @@ class AssetSceneSegment {
 
   factory AssetSceneSegment.fromJson(Map<String, dynamic> json) {
     return AssetSceneSegment(
-      startSeconds: _asDouble(json['startSeconds'] ?? json['start_seconds']) ?? 0,
+      startSeconds:
+          _asDouble(json['startSeconds'] ?? json['start_seconds']) ?? 0,
       endSeconds: _asDouble(json['endSeconds'] ?? json['end_seconds']) ?? 0,
       label: (json['label'] ?? '').toString(),
       confidence: _asDouble(json['confidence']) ?? 0,
@@ -399,15 +509,14 @@ class AssetUnderstandingResult {
       segments: _asList(
         json['segments'],
       ).map(AssetSceneSegment.fromJson).toList(),
-      sourceAttribution: _asMapOrNull(
-            json['sourceAttribution'] ?? json['source_attribution'],
-          ) ==
-          null
+      sourceAttribution:
+          _asMapOrNull(
+                json['sourceAttribution'] ?? json['source_attribution'],
+              ) ==
+              null
           ? null
           : AssetSourceAttribution.fromJson(
-              _asMap(
-                json['sourceAttribution'] ?? json['source_attribution'],
-              ),
+              _asMap(json['sourceAttribution'] ?? json['source_attribution']),
             ),
       credentialSource: _asStringOrNull(
         json['credentialSource'] ?? json['credential_source'],
@@ -467,8 +576,8 @@ class AssetUnderstandingJob {
         json['credentialSource'] ?? json['credential_source'],
       ),
       status: (json['status'] ?? '').toString(),
-      idempotencyKey:
-          (json['idempotencyKey'] ?? json['idempotency_key'] ?? '').toString(),
+      idempotencyKey: (json['idempotencyKey'] ?? json['idempotency_key'] ?? '')
+          .toString(),
       retryOfJobId: _asStringOrNull(
         json['retryOfJobId'] ?? json['retry_of_job_id'],
       ),
@@ -529,28 +638,33 @@ class ProjectAssetRecommendationItem {
 
   factory ProjectAssetRecommendationItem.fromJson(Map<String, dynamic> json) {
     final fitReasons = _asList(json['fitReasons'] ?? json['fit_reasons']);
-    final placementsRaw = json['suggestedPlacements'] ?? json['suggested_placements'];
+    final placementsRaw =
+        json['suggestedPlacements'] ?? json['suggested_placements'];
     final warningsRaw = json['warnings'];
     return ProjectAssetRecommendationItem(
       assetId: (json['assetId'] ?? json['asset_id'] ?? '').toString(),
       score: _asDouble(json['score']) ?? 0,
       candidateType:
-          (json['candidateType'] ?? json['candidate_type'] ?? 'attached_project_asset')
+          (json['candidateType'] ??
+                  json['candidate_type'] ??
+                  'attached_project_asset')
               .toString(),
       sourceProjectId: _asStringOrNull(
         json['sourceProjectId'] ?? json['source_project_id'],
       ),
-      requiresProjectAttachment: _asBool(
+      requiresProjectAttachment:
+          _asBool(
             json['requiresProjectAttachment'] ??
                 json['requires_project_attachment'],
           ) ??
           false,
       fitReasons: fitReasons,
       suggestedPlacements: _asStringList(placementsRaw),
-      sourceAttribution: _asMapOrNull(
-            json['sourceAttribution'] ?? json['source_attribution'],
-          ) ==
-          null
+      sourceAttribution:
+          _asMapOrNull(
+                json['sourceAttribution'] ?? json['source_attribution'],
+              ) ==
+              null
           ? null
           : AssetSourceAttribution.fromJson(
               _asMap(json['sourceAttribution'] ?? json['source_attribution']),
@@ -565,7 +679,9 @@ class ProjectAssetRecommendationResponse {
 
   final List<ProjectAssetRecommendationItem> items;
 
-  factory ProjectAssetRecommendationResponse.fromJson(Map<String, dynamic> json) {
+  factory ProjectAssetRecommendationResponse.fromJson(
+    Map<String, dynamic> json,
+  ) {
     return ProjectAssetRecommendationResponse(
       items: _asList(
         json['items'],

@@ -17,6 +17,8 @@ from api.models.status import (
     ProjectAssetRecommendationRequest,
     ProjectAssetRecommendationResponse,
     ProjectAssetCleanupReportResponse,
+    ProjectAssetCategoryAssignmentRequest,
+    ProjectAssetCategoryCatalogResponse,
     ProjectAssetEligibilityRequest,
     ProjectAssetEligibilityResponse,
     ProjectAssetEventResponse,
@@ -30,6 +32,10 @@ from api.models.status import (
 )
 from api.services.project_asset_cleanup import build_project_asset_cleanup_report
 from api.services.project_asset_storage import build_project_asset_storage_descriptor
+from status.asset_categories import (
+    get_project_asset_category_catalog,
+    suggested_project_asset_export_file_name,
+)
 from status.service import (
     ContentNotFoundError,
     ProjectAssetEligibilityError,
@@ -41,6 +47,13 @@ router = APIRouter(prefix="/api/projects/{project_id}/assets", tags=["Project As
 
 def _asset_to_response(asset) -> ProjectAssetResponse:
     payload = asset.model_dump()
+    payload["suggested_export_file_name"] = suggested_project_asset_export_file_name(
+        asset_id=payload["id"],
+        category_id=payload.get("category_id"),
+        subcategory_id=payload.get("subcategory_id"),
+        original_file_name=payload.get("original_file_name"),
+        file_name=payload.get("file_name"),
+    )
     payload["storage_descriptor"] = build_project_asset_storage_descriptor(
         storage_uri=payload.get("storage_uri"),
         storage_locator=getattr(asset, "storage_locator", None),
@@ -85,6 +98,8 @@ async def list_project_assets(
     project_id: str,
     media_kind: Optional[str] = Query(None),
     source: Optional[str] = Query(None),
+    category_id: Optional[str] = Query(None),
+    subcategory_id: Optional[str] = Query(None),
     include_tombstoned: bool = Query(False),
     limit: int = Query(50, ge=1, le=200),
     offset: int = Query(0, ge=0),
@@ -98,6 +113,8 @@ async def list_project_assets(
             user_id=current_user.user_id,
             media_kind=media_kind,
             source=source,
+            category_id=category_id,
+            subcategory_id=subcategory_id,
             include_tombstoned=include_tombstoned,
             limit=limit,
             offset=offset,
@@ -105,6 +122,16 @@ async def list_project_assets(
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc))
     return ProjectAssetListResponse(items=[_asset_to_response(a) for a in items], total=len(items))
+
+
+@router.get("/categories", response_model=ProjectAssetCategoryCatalogResponse)
+async def get_project_asset_category_catalog_route(
+    project_id: str,
+    locale: Optional[str] = Query(None, max_length=35),
+    current_user: CurrentUser = Depends(require_current_user),
+):
+    await require_owned_project_id(project_id, current_user)
+    return ProjectAssetCategoryCatalogResponse(**get_project_asset_category_catalog(locale))
 
 
 @router.get("/cleanup-report", response_model=ProjectAssetCleanupReportResponse)
@@ -144,6 +171,30 @@ async def get_project_asset_detail(
         raise HTTPException(status_code=404, detail=str(exc))
     except ValueError as exc:
         raise HTTPException(status_code=409, detail=str(exc))
+
+
+@router.patch("/{asset_id}/category", response_model=ProjectAssetResponse)
+async def assign_project_asset_category(
+    project_id: str,
+    asset_id: str,
+    request: ProjectAssetCategoryAssignmentRequest,
+    current_user: CurrentUser = Depends(require_current_user),
+):
+    await require_owned_project_id(project_id, current_user)
+    svc = get_status_service()
+    try:
+        asset = svc.assign_project_asset_category(
+            project_id=project_id,
+            user_id=current_user.user_id,
+            asset_id=asset_id,
+            category_id=request.category_id,
+            subcategory_id=request.subcategory_id,
+        )
+        return _asset_to_response(asset)
+    except ContentNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
 
 
 @router.post("/{asset_id}/eligibility", response_model=ProjectAssetEligibilityResponse)

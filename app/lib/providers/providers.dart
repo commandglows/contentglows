@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'dart:ui';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
@@ -33,6 +34,7 @@ import '../data/models/project_asset.dart';
 import '../data/models/project_intelligence.dart';
 import '../data/models/ritual.dart';
 import '../data/models/search_console.dart';
+import '../data/models/social_placement.dart';
 import '../data/services/api_service.dart';
 import '../data/services/clerk_auth_service.dart';
 import '../data/services/feedback_local_store.dart';
@@ -55,6 +57,16 @@ final appLanguagePreferenceProvider =
     StateNotifierProvider<AppLanguagePreferenceNotifier, String>((ref) {
       return AppLanguagePreferenceNotifier(ref);
     });
+
+final projectAssetCategoryLocaleProvider = Provider<String>((ref) {
+  final preference = ref.watch(appLanguagePreferenceProvider);
+  final resolved = normalizeAppLanguagePreference(
+    preference == appLanguageSystem
+        ? PlatformDispatcher.instance.locale.languageCode
+        : preference,
+  );
+  return resolved == appLanguageSystem ? appLanguageEnglish : resolved;
+});
 
 final appThemePreferenceProvider =
     StateNotifierProvider<AppThemePreferenceNotifier, String>((ref) {
@@ -1514,6 +1526,9 @@ class ProjectAssetLibraryState {
     this.total = 0,
     this.mediaKindFilter,
     this.sourceFilter,
+    this.categoryFilter,
+    this.subcategoryFilter,
+    this.categoryCatalog,
     this.includeTombstoned = false,
     this.selectedAssetId,
     this.assetDetails = const <String, ProjectAsset>{},
@@ -1532,6 +1547,9 @@ class ProjectAssetLibraryState {
   final int total;
   final String? mediaKindFilter;
   final String? sourceFilter;
+  final String? categoryFilter;
+  final String? subcategoryFilter;
+  final ProjectAssetCategoryCatalog? categoryCatalog;
   final bool includeTombstoned;
   final String? selectedAssetId;
   final Map<String, ProjectAsset> assetDetails;
@@ -1563,6 +1581,11 @@ class ProjectAssetLibraryState {
     bool clearMediaKindFilter = false,
     String? sourceFilter,
     bool clearSourceFilter = false,
+    String? categoryFilter,
+    bool clearCategoryFilter = false,
+    String? subcategoryFilter,
+    bool clearSubcategoryFilter = false,
+    ProjectAssetCategoryCatalog? categoryCatalog,
     bool? includeTombstoned,
     String? selectedAssetId,
     bool clearSelectedAssetId = false,
@@ -1585,6 +1608,13 @@ class ProjectAssetLibraryState {
       sourceFilter: clearSourceFilter
           ? null
           : (sourceFilter ?? this.sourceFilter),
+      categoryFilter: clearCategoryFilter
+          ? null
+          : (categoryFilter ?? this.categoryFilter),
+      subcategoryFilter: clearSubcategoryFilter
+          ? null
+          : (subcategoryFilter ?? this.subcategoryFilter),
+      categoryCatalog: categoryCatalog ?? this.categoryCatalog,
       includeTombstoned: includeTombstoned ?? this.includeTombstoned,
       selectedAssetId: clearSelectedAssetId
           ? null
@@ -1640,18 +1670,35 @@ class ProjectAssetLibraryNotifier
     final sourceFilter = previous?.projectId == projectId
         ? previous?.sourceFilter
         : null;
+    final categoryFilter = previous?.projectId == projectId
+        ? previous?.categoryFilter
+        : null;
+    final subcategoryFilter = previous?.projectId == projectId
+        ? previous?.subcategoryFilter
+        : null;
     final includeTombstoned = previous?.projectId == projectId
         ? previous?.includeTombstoned ?? false
         : false;
     try {
-      final response = await ref
-          .read(apiServiceProvider)
-          .listProjectAssets(
-            projectId: projectId,
-            mediaKind: mediaKindFilter,
-            source: sourceFilter,
-            includeTombstoned: includeTombstoned,
-          );
+      final api = ref.read(apiServiceProvider);
+      final locale = ref.watch(projectAssetCategoryLocaleProvider);
+      ProjectAssetCategoryCatalog? categoryCatalog;
+      try {
+        categoryCatalog = await api.getProjectAssetCategoryCatalog(
+          projectId: projectId,
+          locale: locale,
+        );
+      } catch (_) {
+        categoryCatalog = previous?.categoryCatalog;
+      }
+      final response = await api.listProjectAssets(
+        projectId: projectId,
+        mediaKind: mediaKindFilter,
+        source: sourceFilter,
+        categoryId: categoryFilter,
+        subcategoryId: subcategoryFilter,
+        includeTombstoned: includeTombstoned,
+      );
       if (!_isFresh(projectId, revision)) {
         return previous ?? ProjectAssetLibraryState.empty(projectId);
       }
@@ -1661,6 +1708,9 @@ class ProjectAssetLibraryNotifier
         total: response.total,
         mediaKindFilter: mediaKindFilter,
         sourceFilter: sourceFilter,
+        categoryFilter: categoryFilter,
+        subcategoryFilter: subcategoryFilter,
+        categoryCatalog: categoryCatalog,
         includeTombstoned: includeTombstoned,
       );
     } catch (error) {
@@ -1671,6 +1721,9 @@ class ProjectAssetLibraryNotifier
         projectId: projectId,
         mediaKindFilter: mediaKindFilter,
         sourceFilter: sourceFilter,
+        categoryFilter: categoryFilter,
+        subcategoryFilter: subcategoryFilter,
+        categoryCatalog: previous?.categoryCatalog,
         includeTombstoned: includeTombstoned,
         lastError: error,
       );
@@ -1701,6 +1754,37 @@ class ProjectAssetLibraryNotifier
       current.copyWith(
         sourceFilter: value,
         clearSourceFilter: value == null || value.trim().isEmpty,
+        clearSelectedAssetId: true,
+      ),
+    );
+    ref.invalidateSelf();
+  }
+
+  void setCategoryFilter(String? value) {
+    final current = state.asData?.value;
+    if (current == null) {
+      return;
+    }
+    state = AsyncData(
+      current.copyWith(
+        categoryFilter: value,
+        clearCategoryFilter: value == null || value.trim().isEmpty,
+        clearSubcategoryFilter: true,
+        clearSelectedAssetId: true,
+      ),
+    );
+    ref.invalidateSelf();
+  }
+
+  void setSubcategoryFilter(String? value) {
+    final current = state.asData?.value;
+    if (current == null) {
+      return;
+    }
+    state = AsyncData(
+      current.copyWith(
+        subcategoryFilter: value,
+        clearSubcategoryFilter: value == null || value.trim().isEmpty,
         clearSelectedAssetId: true,
       ),
     );
@@ -2043,6 +2127,48 @@ class ProjectAssetLibraryNotifier
     }
   }
 
+  Future<ProjectAsset?> assignCategory({
+    required String assetId,
+    String? categoryId,
+    String? subcategoryId,
+  }) async {
+    final current = state.asData?.value;
+    final projectId = current?.projectId;
+    if (current == null || projectId == null) {
+      return null;
+    }
+    final revision = _contextRevision;
+    state = AsyncData(current.copyWith(isMutating: true, clearLastError: true));
+    try {
+      final asset = await ref
+          .read(apiServiceProvider)
+          .assignProjectAssetCategory(
+            projectId: projectId,
+            assetId: assetId,
+            categoryId: categoryId,
+            subcategoryId: subcategoryId,
+          );
+      if (!_isFresh(projectId, revision)) {
+        return asset;
+      }
+      final fresh = state.asData?.value ?? current;
+      state = AsyncData(fresh.copyWith(isMutating: false));
+      await refresh();
+      if (!_isActiveProjectState(projectId)) {
+        return asset;
+      }
+      await selectAsset(assetId);
+      return asset;
+    } catch (error) {
+      if (!_isFresh(projectId, revision)) {
+        rethrow;
+      }
+      final fresh = state.asData?.value ?? current;
+      state = AsyncData(fresh.copyWith(isMutating: false, lastError: error));
+      rethrow;
+    }
+  }
+
   Future<ProjectAssetUsage?> selectForTarget({
     required String assetId,
     required String targetType,
@@ -2241,6 +2367,242 @@ class ProjectAssetLibraryNotifier
       state = AsyncData(fresh.copyWith(isMutating: false, lastError: error));
       rethrow;
     }
+  }
+}
+
+class SocialPlacementState {
+  const SocialPlacementState({
+    required this.contentId,
+    this.projectId,
+    this.plan,
+    this.preflight,
+    this.isLoadingPlan = false,
+    this.isRunningPreflight = false,
+    this.needsRegistryRefresh = false,
+    this.lastError,
+  });
+
+  final String contentId;
+  final String? projectId;
+  final PlacementPlan? plan;
+  final PublishPreflightResponse? preflight;
+  final bool isLoadingPlan;
+  final bool isRunningPreflight;
+  final bool needsRegistryRefresh;
+  final Object? lastError;
+
+  String? get registryVersion =>
+      preflight?.registryVersion ?? plan?.registryVersion;
+
+  bool get isBusy => isLoadingPlan || isRunningPreflight;
+
+  bool get hasBlockingIssues =>
+      needsRegistryRefresh || preflight?.hasBlockingIssues == true;
+
+  List<PlatformPlacementPlan> get displayPlatforms {
+    final currentPlan = plan;
+    final currentPreflight = preflight;
+    if (currentPreflight == null) {
+      return currentPlan?.platforms ?? const <PlatformPlacementPlan>[];
+    }
+    final planByPlatform = <String, PlatformPlacementPlan>{
+      for (final platform
+          in currentPlan?.platforms ?? const <PlatformPlacementPlan>[])
+        platform.platformId: platform,
+    };
+    return currentPreflight.platforms.map((platform) {
+      final planned = planByPlatform[platform.platformId];
+      final labels = <String, String>{
+        for (final slot in planned?.slots ?? const <PlacementSlot>[])
+          slot.placementId: slot.label,
+      };
+      return PlatformPlacementPlan(
+        platformId: platform.platformId,
+        label: planned?.label ?? platform.platformId,
+        canPublish: platform.canPublish,
+        slots: platform.slots
+            .map(
+              (slot) =>
+                  slot.copyWith(label: labels[slot.placementId] ?? slot.label),
+            )
+            .toList(),
+        issues: platform.issues,
+      );
+    }).toList();
+  }
+
+  SocialPlacementState copyWith({
+    String? projectId,
+    PlacementPlan? plan,
+    bool clearPlan = false,
+    PublishPreflightResponse? preflight,
+    bool clearPreflight = false,
+    bool? isLoadingPlan,
+    bool? isRunningPreflight,
+    bool? needsRegistryRefresh,
+    Object? lastError,
+    bool clearLastError = false,
+  }) {
+    return SocialPlacementState(
+      contentId: contentId,
+      projectId: projectId ?? this.projectId,
+      plan: clearPlan ? null : (plan ?? this.plan),
+      preflight: clearPreflight ? null : (preflight ?? this.preflight),
+      isLoadingPlan: isLoadingPlan ?? this.isLoadingPlan,
+      isRunningPreflight: isRunningPreflight ?? this.isRunningPreflight,
+      needsRegistryRefresh: needsRegistryRefresh ?? this.needsRegistryRefresh,
+      lastError: clearLastError ? null : (lastError ?? this.lastError),
+    );
+  }
+}
+
+final socialPlacementProvider = StateNotifierProvider.autoDispose
+    .family<SocialPlacementNotifier, SocialPlacementState, String>((
+      ref,
+      contentId,
+    ) {
+      final projectId = ref.watch(activeProjectIdProvider);
+      return SocialPlacementNotifier(
+        ref: ref,
+        contentId: contentId,
+        projectId: projectId,
+      );
+    });
+
+class SocialPlacementNotifier extends StateNotifier<SocialPlacementState> {
+  SocialPlacementNotifier({
+    required this.ref,
+    required String contentId,
+    required String? projectId,
+  }) : super(SocialPlacementState(contentId: contentId, projectId: projectId));
+
+  final Ref ref;
+  int _revision = 0;
+  bool _disposed = false;
+
+  bool _isFresh(int revision) {
+    return !_disposed &&
+        revision == _revision &&
+        ref.read(activeProjectIdProvider) == state.projectId;
+  }
+
+  Future<PlacementPlan?> loadPlan({
+    required List<String> platforms,
+    required String locale,
+  }) async {
+    final normalizedPlatforms = platforms
+        .map((value) => value.trim())
+        .where((value) => value.isNotEmpty)
+        .toSet()
+        .toList();
+    if (normalizedPlatforms.isEmpty) {
+      state = state.copyWith(
+        clearPlan: true,
+        clearPreflight: true,
+        needsRegistryRefresh: false,
+        clearLastError: true,
+      );
+      return null;
+    }
+    final revision = ++_revision;
+    state = state.copyWith(
+      isLoadingPlan: true,
+      clearPreflight: true,
+      clearLastError: true,
+    );
+    try {
+      final plan = await ref
+          .read(apiServiceProvider)
+          .fetchPlacementPlan(
+            contentId: state.contentId,
+            platforms: normalizedPlatforms,
+            locale: locale,
+          );
+      if (!_isFresh(revision) || plan.contentId != state.contentId) {
+        return null;
+      }
+      state = state.copyWith(
+        plan: plan,
+        isLoadingPlan: false,
+        needsRegistryRefresh: false,
+        clearLastError: true,
+      );
+      return plan;
+    } catch (error) {
+      if (_isFresh(revision)) {
+        state = state.copyWith(isLoadingPlan: false, lastError: error);
+      }
+      return null;
+    }
+  }
+
+  Future<PublishPreflightResponse?> runPreflight({
+    required List<PublishPlatformTarget> platforms,
+    bool refreshPlanOnStale = true,
+    List<String> planPlatforms = const <String>[],
+    String locale = 'en',
+  }) async {
+    if (platforms.isEmpty) return null;
+    final revision = ++_revision;
+    final requestedVersion = state.plan?.registryVersion;
+    state = state.copyWith(isRunningPreflight: true, clearLastError: true);
+    try {
+      final preflight = await ref
+          .read(apiServiceProvider)
+          .preflightPublish(
+            contentRecordId: state.contentId,
+            platforms: platforms,
+            registryVersion: requestedVersion,
+          );
+      if (!_isFresh(revision) || preflight.contentId != state.contentId) {
+        return null;
+      }
+      final stale =
+          requestedVersion != null &&
+          requestedVersion != preflight.registryVersion;
+      state = state.copyWith(
+        preflight: preflight,
+        isRunningPreflight: false,
+        needsRegistryRefresh: stale,
+        clearLastError: true,
+      );
+      if (stale && refreshPlanOnStale && planPlatforms.isNotEmpty) {
+        await loadPlan(platforms: planPlatforms, locale: locale);
+        return runPreflight(
+          platforms: platforms,
+          refreshPlanOnStale: false,
+          planPlatforms: planPlatforms,
+          locale: locale,
+        );
+      }
+      return preflight;
+    } catch (error) {
+      if (_isFresh(revision)) {
+        state = state.copyWith(isRunningPreflight: false, lastError: error);
+      }
+      return null;
+    }
+  }
+
+  Future<void> refresh({
+    required List<String> planPlatforms,
+    required List<PublishPlatformTarget> publishTargets,
+    required String locale,
+  }) async {
+    final plan = await loadPlan(platforms: planPlatforms, locale: locale);
+    if (plan == null || publishTargets.isEmpty) return;
+    await runPreflight(
+      platforms: publishTargets,
+      planPlatforms: planPlatforms,
+      locale: locale,
+    );
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    _revision++;
+    super.dispose();
   }
 }
 

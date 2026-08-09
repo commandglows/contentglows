@@ -69,6 +69,7 @@ class AppThemeTokens {
   static const radius2xl = 28.0;
   static const radiusPill = 9999.0;
   static const radiusCompact = 12.0;
+  static const inputCompactWidth = 150.0;
 
   static const textXs = 12.0;
   static const textSm = 14.0;

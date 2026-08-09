@@ -2,6 +2,7 @@ from datetime import datetime
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import pytest
 from fastapi import FastAPI, HTTPException
 from fastapi.testclient import TestClient
 
@@ -24,6 +25,8 @@ class _FakeAsyncClient:
 
     async def post(self, *args, **kwargs):
         self.post_calls.append((args, kwargs))
+        if isinstance(self._response, BaseException):
+            raise self._response
         return self._response
 
     async def get(self, *args, **kwargs):
@@ -51,6 +54,8 @@ def _owned_record(status="approved", metadata=None):
     return SimpleNamespace(
         id="content_1",
         project_id="project_a",
+        user_id="user_123",
+        content_type="social_post",
         status=status,
         metadata=metadata or {},
     )
@@ -222,8 +227,8 @@ def test_publish_persists_metadata_and_published_transitions():
         {"platform": "twitter", "accountId": "acct_1"}
     ]
 
-    fake_service.update_content.assert_called_once()
-    _, kwargs = fake_service.update_content.call_args
+    assert fake_service.update_content.call_count == 2
+    _, kwargs = fake_service.update_content.call_args_list[-1]
     assert kwargs["target_url"] == "https://x.example/post_123"
     assert kwargs["metadata"]["existing"] == "value"
     publish_meta = kwargs["metadata"]["publish"]
@@ -233,6 +238,9 @@ def test_publish_persists_metadata_and_published_transitions():
     assert publish_meta["status"] == "published"
     assert publish_meta["platform_urls"] == {"twitter": "https://x.example/post_123"}
     assert publish_meta["platformResults"][0]["status"] == "published"
+    assert publish_meta["mediaContract"] == "legacy_raw_urls"
+    assert publish_meta["legacyMediaCount"] == 0
+    assert "providerRequestId" in publish_meta
 
     assert fake_service.transition.call_count == 2
     assert fake_service.transition.call_args_list[0].args == (
@@ -291,9 +299,10 @@ def test_publish_supports_typed_video_media_payload():
         )
 
     assert response.status_code == 200
-    assert fake_client.post_calls[0][1]["json"]["media"] == [
+    assert fake_client.post_calls[0][1]["json"]["mediaItems"] == [
         {"type": "video", "url": "https://cdn.example.test/final.mp4"}
     ]
+    assert "media" not in fake_client.post_calls[0][1]["json"]
 
 
 def test_publish_persists_scheduled_state_without_published_transition():
@@ -337,8 +346,8 @@ def test_publish_persists_scheduled_state_without_published_transition():
     payload = response.json()
     assert payload["status"] == "scheduled"
 
-    fake_service.update_content.assert_called_once()
-    _, kwargs = fake_service.update_content.call_args
+    assert fake_service.update_content.call_count == 2
+    _, kwargs = fake_service.update_content.call_args_list[-1]
     assert kwargs["target_url"] is None
     assert kwargs["metadata"]["publish"]["status"] == "scheduled"
     assert kwargs["metadata"]["publish"]["scheduled_for"] == "2026-03-30T10:00:00Z"
@@ -491,3 +500,326 @@ def test_disconnect_is_local_and_project_scoped():
         "local_acct_1",
         provider="zernio",
     )
+
+
+def test_asset_contract_rejects_legacy_fields_before_provider_call():
+    client = _build_client()
+    fake_record = _owned_record()
+    fake_service = MagicMock()
+    with (
+        patch("api.routers.publish.get_status_service", return_value=fake_service),
+        patch("api.routers.publish.require_owned_content_record", AsyncMock(return_value=fake_record)),
+        patch("api.routers.publish.httpx.AsyncClient") as provider,
+    ):
+        response = client.post(
+            "/api/publish",
+            json={
+                "content": "Conflict",
+                "platforms": [{"platform": "instagram", "account_id": "acct_1"}],
+                "content_record_id": "content_1",
+                "media_contract_version": "asset_placements.v1",
+                "media_urls": ["https://assets.example.com/image.png"],
+            },
+        )
+
+    assert response.status_code == 400
+    assert response.json()["detail"]["code"] == "PFL_LEGACY_CONFLICT"
+    provider.assert_not_called()
+
+
+def test_legacy_media_rejects_private_url_before_provider_call():
+    client = _build_client()
+    fake_record = _owned_record()
+    fake_service = MagicMock()
+    with (
+        patch("api.routers.publish.get_status_service", return_value=fake_service),
+        patch("api.routers.publish.require_owned_content_record", AsyncMock(return_value=fake_record)),
+        patch("api.routers.publish.require_active_publish_account", AsyncMock(return_value=_authorized_account())),
+        patch("api.routers.publish.httpx.AsyncClient") as provider,
+    ):
+        response = client.post(
+            "/api/publish",
+            json={
+                "content": "Private media",
+                "platforms": [{"platform": "twitter", "account_id": "acct_1"}],
+                "content_record_id": "content_1",
+                "media_urls": ["http://127.0.0.1/private.png"],
+            },
+        )
+
+    assert response.status_code == 400
+    provider.assert_not_called()
+    fake_service.update_content.assert_not_called()
+
+
+def test_asset_contract_blocks_missing_instagram_media_without_provider_call():
+    client = _build_client()
+    fake_record = _owned_record()
+    fake_service = MagicMock()
+    fake_service.list_primary_project_asset_usages.return_value = []
+    with (
+        patch("api.routers.publish.get_status_service", return_value=fake_service),
+        patch("api.routers.publish.require_owned_content_record", AsyncMock(return_value=fake_record)),
+        patch("api.routers.publish.require_active_publish_account", AsyncMock(return_value=_authorized_account())),
+        patch("api.routers.publish.httpx.AsyncClient") as provider,
+    ):
+        response = client.post(
+            "/api/publish",
+            json={
+                "content": "Instagram post",
+                "platforms": [{"platform": "instagram", "account_id": "acct_1"}],
+                "content_record_id": "content_1",
+                "media_contract_version": "asset_placements.v1",
+            },
+        )
+
+    assert response.status_code == 409
+    assert response.json()["detail"]["can_publish"] is False
+    assert response.json()["detail"]["issues"][0]["code"] == "PFL_MISSING_REQUIRED"
+    provider.assert_not_called()
+    fake_service.update_content.assert_not_called()
+
+
+def test_asset_contract_blocks_missing_vertical_short_without_provider_call():
+    client = _build_client()
+    fake_record = _owned_record()
+    fake_record.content_type = "short"
+    fake_service = MagicMock()
+    fake_service.list_primary_project_asset_usages.return_value = []
+    with (
+        patch("api.routers.publish.get_status_service", return_value=fake_service),
+        patch("api.routers.publish.require_owned_content_record", AsyncMock(return_value=fake_record)),
+        patch("api.routers.publish.require_active_publish_account", AsyncMock(return_value=_authorized_account())),
+        patch("api.routers.publish.httpx.AsyncClient") as provider,
+    ):
+        response = client.post(
+            "/api/publish",
+            json={
+                "content": "Short",
+                "platforms": [{"platform": "tiktok", "account_id": "acct_1"}],
+                "content_record_id": "content_1",
+                "media_contract_version": "asset_placements.v1",
+            },
+        )
+
+    assert response.status_code == 409
+    assert any(
+        issue["placement_id"] == "PLC_VERTICAL_SHORT_VIDEO"
+        for issue in response.json()["detail"]["issues"]
+    )
+    provider.assert_not_called()
+
+
+@pytest.mark.parametrize(
+    ("asset", "expected_code"),
+    [
+        (None, "PFL_ASSET_NOT_FOUND"),
+        (
+            SimpleNamespace(
+                id="asset_1",
+                status="tombstoned",
+                media_kind="image",
+                mime_type="image/png",
+                storage_uri="bunny://zone/image.png",
+            ),
+            "PFL_ASSET_STATUS_BLOCKED",
+        ),
+        (
+            SimpleNamespace(
+                id="asset_1",
+                status="active",
+                media_kind="audio",
+                mime_type="audio/mpeg",
+                storage_uri="bunny://zone/audio.mp3",
+            ),
+            "PFL_ASSET_INCOMPATIBLE",
+        ),
+    ],
+)
+def test_asset_contract_never_calls_provider_for_invalid_primary(asset, expected_code):
+    client = _build_client()
+    fake_record = _owned_record()
+    usage = SimpleNamespace(asset_id="asset_1", placement="PLC_SOCIAL_POST_IMAGE")
+    fake_service = MagicMock()
+    fake_service.list_primary_project_asset_usages.return_value = [(usage, asset)]
+    with (
+        patch("api.routers.publish.get_status_service", return_value=fake_service),
+        patch("api.routers.publish.require_owned_content_record", AsyncMock(return_value=fake_record)),
+        patch("api.routers.publish.require_active_publish_account", AsyncMock(return_value=_authorized_account())),
+        patch("api.routers.publish.httpx.AsyncClient") as provider,
+    ):
+        response = client.post(
+            "/api/publish",
+            json={
+                "content": "Invalid asset",
+                "platforms": [{"platform": "instagram", "account_id": "acct_1"}],
+                "content_record_id": "content_1",
+                "media_contract_version": "asset_placements.v1",
+            },
+        )
+
+    assert response.status_code == 409
+    assert any(issue["code"] == expected_code for issue in response.json()["detail"]["issues"])
+    provider.assert_not_called()
+
+
+def test_asset_contract_builds_media_items_from_server_resolved_primary(monkeypatch):
+    monkeypatch.setenv("BUNNY_CDN_HOSTNAME", "content.example.b-cdn.net")
+    client = _build_client()
+    fake_record = _owned_record()
+    usage = SimpleNamespace(asset_id="asset_1", placement="PLC_SOCIAL_POST_IMAGE")
+    asset = SimpleNamespace(
+        id="asset_1",
+        status="active",
+        media_kind="image",
+        mime_type="image/png",
+        storage_uri="bunny://zone/path/image.png?token=ignored",
+    )
+    fake_service = MagicMock()
+    fake_service.list_primary_project_asset_usages.return_value = [(usage, asset)]
+    fake_service.get_content.return_value = fake_record
+    provider_response = MagicMock(
+        status_code=200,
+        headers={"content-type": "application/json"},
+    )
+    provider_response.json.return_value = {
+        "post": {"id": "post_asset_1", "status": "published", "platforms": []}
+    }
+    fake_client = _FakeAsyncClient(provider_response)
+    with (
+        patch("api.routers.publish.get_status_service", return_value=fake_service),
+        patch("api.routers.publish.require_owned_content_record", AsyncMock(return_value=fake_record)),
+        patch("api.routers.publish.require_active_publish_account", AsyncMock(return_value=_authorized_account())),
+        patch("api.routers.publish.httpx.AsyncClient", return_value=fake_client),
+    ):
+        response = client.post(
+            "/api/publish",
+            json={
+                "content": "Instagram post",
+                "platforms": [{"platform": "instagram", "account_id": "acct_1"}],
+                "content_record_id": "content_1",
+                "media_contract_version": "asset_placements.v1",
+                "registry_version": "2026-05-13.1",
+            },
+        )
+
+    assert response.status_code == 200
+    outbound = fake_client.post_calls[0][1]
+    assert outbound["json"]["mediaItems"] == [
+        {"type": "image", "url": "https://content.example.b-cdn.net/path/image.png"}
+    ]
+    assert "media" not in outbound["json"]
+    assert outbound["headers"]["x-request-id"]
+    publish_meta = fake_service.update_content.call_args_list[-1].kwargs["metadata"]["publish"]
+    assert publish_meta["assetPlacements"] == [
+        {
+            "assetId": "asset_1",
+            "placementId": "PLC_SOCIAL_POST_IMAGE",
+            "platformId": "PLAT_INSTAGRAM",
+        }
+    ]
+    assert publish_meta["providerMediaSummary"] == [{"type": "image"}]
+    assert "url" not in str(publish_meta["providerMediaSummary"])
+
+
+def test_timeout_retry_reuses_request_id_and_reconciles_existing_post():
+    client = _build_client()
+    fake_record = _owned_record()
+    fake_service = MagicMock()
+    fake_service.get_content.return_value = fake_record
+
+    def apply_update(_content_id, **kwargs):
+        if "metadata" in kwargs:
+            fake_record.metadata = kwargs["metadata"]
+        return fake_record
+
+    fake_service.update_content.side_effect = apply_update
+
+    def apply_transition(_content_id, next_status, _actor, **_kwargs):
+        fake_record.status = next_status
+
+    fake_service.transition.side_effect = apply_transition
+    timeout_client = _FakeAsyncClient(__import__("httpx").TimeoutException("timeout"))
+    provider_response = MagicMock(status_code=200, headers={"content-type": "application/json"})
+    provider_response.json.return_value = {
+        "existingPost": True,
+        "post": {"id": "post_existing", "status": "published", "platforms": []},
+    }
+    existing_client = _FakeAsyncClient(provider_response)
+    with (
+        patch("api.routers.publish.get_status_service", return_value=fake_service),
+        patch("api.routers.publish.require_owned_content_record", AsyncMock(return_value=fake_record)),
+        patch("api.routers.publish.require_active_publish_account", AsyncMock(return_value=_authorized_account())),
+        patch("api.routers.publish.httpx.AsyncClient", side_effect=[timeout_client, existing_client]),
+    ):
+        first = client.post(
+            "/api/publish",
+            json={
+                "content": "Retry me",
+                "platforms": [{"platform": "twitter", "account_id": "acct_1"}],
+                "content_record_id": "content_1",
+            },
+        )
+        second = client.post(
+            "/api/publish",
+            json={
+                "content": "Retry me",
+                "platforms": [{"platform": "twitter", "account_id": "acct_1"}],
+                "content_record_id": "content_1",
+            },
+        )
+
+    assert first.json()["status"] == "reconciliation_pending"
+    assert second.json()["post_id"] == "post_existing"
+    first_id = timeout_client.post_calls[0][1]["headers"]["x-request-id"]
+    second_id = existing_client.post_calls[0][1]["headers"]["x-request-id"]
+    assert first_id == second_id
+    publish_meta = fake_record.metadata["publish"]
+    assert publish_meta["existingPost"] is True
+    assert [call.args[1] for call in fake_service.transition.call_args_list] == [
+        "publishing",
+        "published",
+    ]
+
+
+def test_provider_rejection_is_persisted_as_sanitized_failure():
+    client = _build_client()
+    fake_record = _owned_record()
+    fake_service = MagicMock()
+    fake_service.get_content.return_value = fake_record
+    provider_response = MagicMock(status_code=400, headers={"content-type": "application/json"})
+    provider_response.json.return_value = {
+        "code": "invalid_media",
+        "message": "secret provider body must not escape",
+        "details": {"token": "provider-secret"},
+    }
+    with (
+        patch("api.routers.publish.get_status_service", return_value=fake_service),
+        patch("api.routers.publish.require_owned_content_record", AsyncMock(return_value=fake_record)),
+        patch("api.routers.publish.require_active_publish_account", AsyncMock(return_value=_authorized_account())),
+        patch(
+            "api.routers.publish.httpx.AsyncClient",
+            return_value=_FakeAsyncClient(provider_response),
+        ),
+    ):
+        response = client.post(
+            "/api/publish",
+            json={
+                "content": "Rejected",
+                "platforms": [{"platform": "PLAT_X", "account_id": "acct_1"}],
+                "content_record_id": "content_1",
+            },
+        )
+
+    assert response.status_code == 502
+    assert response.json()["detail"] == {
+        "type": "provider_error",
+        "code": "invalid_media",
+        "param": None,
+        "message": "The publish provider rejected the request.",
+    }
+    publish_meta = fake_service.update_content.call_args_list[-1].kwargs["metadata"]["publish"]
+    assert publish_meta["status"] == "failed"
+    assert publish_meta["errors"] == [{"type": "provider_error", "code": "invalid_media"}]
+    assert "provider-secret" not in str(publish_meta)
+    assert "secret provider body" not in str(publish_meta)

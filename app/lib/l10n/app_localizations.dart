@@ -1045,7 +1045,6 @@ class AppLocalizations {
         'Articles publies dans l ordre des fichiers.',
     'Aspirations and desired outcomes': 'Aspirations et resultats souhaites',
     'Brief description of the program...': 'Breve description du programme...',
-    'Category': 'Categorie',
     'Clerk is connected, but workspace bootstrap failed. ContentGlows stays in degraded mode until FastAPI returns a usable bootstrap.':
         'Clerk est connecte, mais l initialisation du workspace a echoue. ContentGlows reste en mode degrade jusqu a ce que FastAPI retourne un bootstrap exploitable.',
     'Commission': 'Commission',
@@ -1633,6 +1632,7 @@ class AppLocalizations {
     'Upload failed.': "Échec de l'import.",
     'Asset library unavailable': 'Bibliothèque de ressources indisponible',
     'Attach global': 'Attacher globalement',
+    'Category': 'Catégorie',
     'Capture': 'Capture',
     'Capture could not complete. You can try again.':
         'La capture n’a pas pu aboutir. Tu peux réessayer.',
@@ -1670,6 +1670,10 @@ class AppLocalizations {
     'Select an asset': 'Sélectionner une ressource',
     'Source': 'Source',
     'Sources': 'Sources',
+    'Subcategory': 'Sous-catégorie',
+    'No subcategory': 'Aucune sous-catégorie',
+    'Uncategorized': 'Sans catégorie',
+    'Export name: {name}': 'Nom d’export : {name}',
     'Tombstoned': 'Masqué',
     'Usage: {count}': 'Utilisation : {count}',
     'Waiting for Android screen capture consent.':

@@ -7,10 +7,15 @@ delete, sign, or verify remote objects.
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, Optional
+import os
 from urllib.parse import urlsplit, urlunsplit
 
 if TYPE_CHECKING:
     from status.schemas import StorageLocator
+
+
+class ProjectAssetDeliveryError(ValueError):
+    """Raised when persisted storage cannot yield a safe provider media URL."""
 
 
 def build_project_asset_storage_descriptor(
@@ -100,6 +105,46 @@ def _looks_like_bunny_host(host: str) -> bool:
         or host.endswith(".bunnycdn.com")
         or host == "storage.bunnycdn.com"
     )
+
+
+def resolve_project_asset_delivery_url(
+    storage_uri: Optional[str], storage_locator: Optional["StorageLocator"] = None
+) -> str:
+    """Resolve only durable Bunny storage to a query-free HTTPS delivery URL."""
+
+    if storage_locator is not None and storage_locator.provider.lower() == "bunny":
+        configured = (os.getenv("BUNNY_CDN_HOSTNAME") or "").strip()
+        configured_parsed = urlsplit(
+            configured if "://" in configured else f"//{configured}"
+        )
+        hostname = (configured_parsed.netloc or configured_parsed.path).strip("/")
+        path = storage_locator.object_key.lstrip("/")
+        if hostname and path:
+            return f"https://{hostname}/{path}"
+        raise ProjectAssetDeliveryError("Bunny asset delivery path is incomplete")
+
+    if not isinstance(storage_uri, str) or not storage_uri.strip():
+        raise ProjectAssetDeliveryError("Asset storage is missing")
+
+    parsed = urlsplit(storage_uri.strip())
+    scheme = parsed.scheme.lower()
+    if scheme == "bunny":
+        configured = (os.getenv("BUNNY_CDN_HOSTNAME") or "").strip()
+        if not configured:
+            raise ProjectAssetDeliveryError("Bunny CDN hostname is not configured")
+        configured_parsed = urlsplit(
+            configured if "://" in configured else f"//{configured}"
+        )
+        hostname = (configured_parsed.netloc or configured_parsed.path).strip("/")
+        path = parsed.path.lstrip("/")
+        if not hostname or not path:
+            raise ProjectAssetDeliveryError("Bunny asset delivery path is incomplete")
+        return f"https://{hostname}/{path}"
+
+    if scheme in {"http", "https"} and _looks_like_bunny_host(parsed.netloc.lower()):
+        return urlunsplit(("https", parsed.netloc, parsed.path, "", ""))
+
+    raise ProjectAssetDeliveryError("Asset storage is not durable Bunny media")
 
 
 def _descriptor(

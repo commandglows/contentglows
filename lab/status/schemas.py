@@ -214,6 +214,9 @@ class ProjectAssetRecord(BaseModel):
     source: ProjectAssetSource
     mime_type: Optional[str] = None
     file_name: Optional[str] = None
+    original_file_name: Optional[str] = None
+    category_id: Optional[str] = None
+    subcategory_id: Optional[str] = None
     storage_uri: Optional[str] = None
     storage_locator: Optional[StorageLocator] = None
     status: ProjectAssetLifecycleStatus = ProjectAssetLifecycleStatus.ACTIVE

@@ -10,7 +10,7 @@ const outputPath = resolve(
 );
 
 const theme = JSON.parse(readFileSync(themePath, 'utf8'));
-const { colors, text, surfaces, typography, spacing, radius, shadow, motion, breakpoints } =
+const { colors, text, surfaces, typography, spacing, radius, shadow, motion, components, breakpoints } =
   theme;
 
 function requireSection(value, path) {
@@ -113,6 +113,7 @@ requireSection(spacing, 'spacing');
 requireSection(radius, 'radius');
 requireSection(shadow, 'shadow');
 requireSection(motion, 'motion');
+requireSection(components, 'components');
 requireSection(breakpoints, 'breakpoints');
 
 ensureKeys(colors, 'colors', ['primary', 'primaryDark', 'secondary', 'accent', 'dark', 'gray', 'lightGray', 'lightBlue', 'white', 'codeText', 'badgeBg', 'badgeText', 'success', 'warning', 'orange', 'green', 'error', 'appPrimary', 'appSecondary', 'appEdit', 'appWarning', 'appError', 'appHeroTint', 'purpleStrong', 'cyanStrong']);
@@ -127,6 +128,8 @@ ensureKeys(spacing, 'spacing', ['0', '1', '2', '3', '4', '5', '6']);
 ensureKeys(radius, 'radius', ['sm', 'md', 'lg', 'xl', '2xl']);
 ensureKeys(shadow, 'shadow', ['sm', 'card', 'cardHover', 'cardLg']);
 ensureKeys(motion, 'motion', ['instant', 'fast', 'base', 'slow', 'standard', 'out']);
+ensureKeys(components, 'components', ['input']);
+ensureKeys(components.input, 'components.input', ['compactWidth']);
 ensureKeys(breakpoints, 'breakpoints', ['mobile', 'tablet', 'desktop']);
 
 const spacingMap = {
@@ -149,6 +152,7 @@ const radiusMap = {
 };
 
 const compactRadius = toNumber(radius.lg) - 4;
+const inputCompactWidth = toNumber(components.input.compactWidth);
 
 const source = `import 'package:flutter/material.dart';
 
@@ -193,6 +197,26 @@ class AppThemeTokens {
   static const spacing4 = ${dartDouble(spacingMap[4])};
   static const spacing5 = ${dartDouble(spacingMap[5])};
   static const spacing6 = ${dartDouble(spacingMap[6])};
+  static const spacing3Half = 3.0;
+  static const spacingHalf = 1.5;
+  static const spacing0b = 2.0;
+  static const spacing1Half = 6.0;
+  static const spacing18 = 18.0;
+  static const spacing22 = 22.0;
+  static const spacing32 = 32.0;
+  static const spacing10 = 10.0;
+  static const text10 = 10.0;
+  static const text11 = 11.0;
+  static const text13 = 13.0;
+  static const text15 = 15.0;
+  static const text12Half = 12.5;
+  static const text17 = 17.0;
+  static const text24 = 24.0;
+  static const text20 = 20.0;
+  static const radiusTiny = 2.0;
+  static const radiusNarrow = 10.0;
+  static const durationLong = Duration(seconds: 2);
+  static const durationSettle = Duration(milliseconds: 180);
 
   static const radiusSm = ${dartDouble(radiusMap.sm)};
   static const radiusMd = ${dartDouble(radiusMap.md)};
@@ -201,11 +225,14 @@ class AppThemeTokens {
   static const radius2xl = ${dartDouble(radiusMap.xxl)};
   static const radiusPill = ${dartDouble(radiusMap.pill)};
   static const radiusCompact = ${dartDouble(compactRadius)};
+  static const inputCompactWidth = ${dartDouble(inputCompactWidth)};
 
   static const textXs = ${dartDouble(toNumber(typography.textXs))};
   static const textSm = ${dartDouble(toNumber(typography.textSm))};
   static const textBase = ${dartDouble(toNumber(typography.textBase))};
   static const textLg = ${dartDouble(toNumber(typography.textLg))};
+  static const textXl = 24.0;
+  static const textXxl = 20.0;
 
   static const darkElevatedSurface = ${dartColor(surfaces.dark.elevatedSurface)};
   static const darkMutedSurface = ${dartColor(surfaces.dark.mutedSurface)};

@@ -6,7 +6,6 @@ import uuid
 from datetime import UTC, datetime
 from pathlib import Path, PurePosixPath
 from typing import Any
-from urllib.parse import urlsplit, urlunsplit
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response, status
 from fastapi.responses import FileResponse
@@ -38,7 +37,11 @@ from api.models.video_timeline import (
 )
 from api.services.branded_video_generation_service import branded_video_generation_service
 from api.routers.publish import PublishMediaItem, PublishRequest, publish_content
-from api.services.project_asset_storage import build_project_asset_storage_descriptor
+from api.services.project_asset_storage import (
+    ProjectAssetDeliveryError,
+    build_project_asset_storage_descriptor,
+    resolve_project_asset_delivery_url,
+)
 from api.services.brand_profile_store import brand_profile_store
 from api.services.brand_video_blueprint_store import brand_video_blueprint_store
 from api.services.branded_video_assembly import assemble_branded_timeline_draft
@@ -129,47 +132,18 @@ def _detail(
     ).model_dump()
 
 
-def _is_bunny_http_host(host: str) -> bool:
-    lowered = host.lower()
-    return (
-        lowered.endswith(".b-cdn.net")
-        or lowered.endswith(".bunnycdn.com")
-        or lowered == "storage.bunnycdn.com"
-    )
-
-
 def _field_value(value: Any) -> Any:
     return getattr(value, "value", value)
 
 
-def _bunny_cdn_hostname() -> str | None:
-    import os
-
-    configured = (os.getenv("BUNNY_CDN_HOSTNAME") or "").strip()
-    if not configured:
-        return None
-    parsed = urlsplit(configured if "://" in configured else f"//{configured}")
-    host = parsed.netloc or parsed.path
-    return host.strip("/") or None
-
-
 def _resolve_project_asset_render_url(asset: Any) -> str:
-    storage_uri = getattr(asset, "storage_uri", None)
-    if not isinstance(storage_uri, str) or not storage_uri.strip():
-        raise ProjectAssetEligibilityError("Asset storage is missing")
-    parsed = urlsplit(storage_uri.strip())
-    scheme = parsed.scheme.lower()
-    if scheme == "bunny":
-        hostname = _bunny_cdn_hostname()
-        if not hostname:
-            raise ProjectAssetEligibilityError("Bunny CDN hostname is not configured")
-        path = parsed.path.lstrip("/")
-        if not path:
-            raise ProjectAssetEligibilityError("Bunny asset path is missing")
-        return f"https://{hostname}/{path}"
-    if scheme in {"http", "https"} and _is_bunny_http_host(parsed.netloc):
-        return urlunsplit((parsed.scheme, parsed.netloc, parsed.path, "", ""))
-    raise ProjectAssetEligibilityError("Asset storage is not render-safe")
+    try:
+        return resolve_project_asset_delivery_url(
+            getattr(asset, "storage_uri", None),
+            getattr(asset, "storage_locator", None),
+        )
+    except ProjectAssetDeliveryError as exc:
+        raise ProjectAssetEligibilityError(str(exc)) from exc
 
 
 def _ensure_clip_asset_compatible(*, clip: dict[str, Any], asset: Any) -> None:

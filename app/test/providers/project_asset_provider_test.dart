@@ -28,6 +28,7 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         apiServiceProvider.overrideWithValue(api),
+        projectAssetCategoryLocaleProvider.overrideWithValue('en'),
         activeProjectProvider.overrideWith((ref) => ref.watch(activeProject)),
       ],
     );
@@ -182,6 +183,55 @@ void main() {
       );
     },
   );
+
+  test('loads category catalog and sends exact category filter', () async {
+    final api = _FakeAssetApiService();
+    final activeProject =
+        StateNotifierProvider<_ActiveProjectNotifier, Project?>(
+          (ref) => _ActiveProjectNotifier(_project('project-a', 'A')),
+        );
+    final container = ProviderContainer(
+      overrides: [
+        apiServiceProvider.overrideWithValue(api),
+        projectAssetCategoryLocaleProvider.overrideWithValue('en'),
+        activeProjectProvider.overrideWith((ref) => ref.watch(activeProject)),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    final initial = await container.read(projectAssetLibraryProvider.future);
+    expect(
+      initial.categoryCatalog?.categories.single.categoryId,
+      'editorial_visual',
+    );
+
+    container
+        .read(projectAssetLibraryProvider.notifier)
+        .setCategoryFilter('editorial_visual');
+    final filtered = await container.read(projectAssetLibraryProvider.future);
+
+    expect(filtered.categoryFilter, 'editorial_visual');
+    expect(api.categoryFilters.last, 'editorial_visual');
+  });
+
+  test(
+    'assignCategory sends canonical ids without stale state bleed',
+    () async {
+      final api = _FakeAssetApiService();
+      await _runStaleMutationScenario(
+        api: api,
+        runMutation: (notifier) => notifier.assignCategory(
+          assetId: 'asset-a',
+          categoryId: 'editorial_visual',
+          subcategoryId: 'infographic',
+        ),
+      );
+
+      expect(api.assignmentCalls, [
+        'project-a:asset-a:editorial_visual:infographic',
+      ]);
+    },
+  );
 }
 
 typedef _MutationRunner =
@@ -198,6 +248,7 @@ Future<void> _runStaleMutationScenario({
   final container = ProviderContainer(
     overrides: [
       apiServiceProvider.overrideWithValue(api),
+      projectAssetCategoryLocaleProvider.overrideWithValue('en'),
       activeProjectProvider.overrideWith((ref) => ref.watch(activeProject)),
     ],
   );
@@ -235,6 +286,7 @@ Future<void> _runStaleRefreshReselectScenario({
   final container = ProviderContainer(
     overrides: [
       apiServiceProvider.overrideWithValue(api),
+      projectAssetCategoryLocaleProvider.overrideWithValue('en'),
       activeProjectProvider.overrideWith((ref) => ref.watch(activeProject)),
     ],
   );
@@ -276,6 +328,8 @@ class _FakeAssetApiService extends ApiService {
   final List<String> detailCallPairs = [];
   final List<String> usageCallPairs = [];
   final List<String> eventCallPairs = [];
+  final List<String?> categoryFilters = [];
+  final List<String> assignmentCalls = [];
   final Completer<void> secondProjectAListStarted = Completer<void>();
 
   Future<void> _delayForProject(String projectId) async {
@@ -289,11 +343,14 @@ class _FakeAssetApiService extends ApiService {
     required String projectId,
     String? mediaKind,
     String? source,
+    String? categoryId,
+    String? subcategoryId,
     bool includeTombstoned = false,
     int limit = 50,
     int offset = 0,
   }) async {
     listCallProjectIds.add(projectId);
+    categoryFilters.add(categoryId);
     if (projectId == 'project-a' &&
         listCallProjectIds.where((id) => id == 'project-a').length == 2 &&
         !secondProjectAListStarted.isCompleted) {
@@ -309,6 +366,42 @@ class _FakeAssetApiService extends ApiService {
       ],
       total: 1,
     );
+  }
+
+  @override
+  Future<ProjectAssetCategoryCatalog> getProjectAssetCategoryCatalog({
+    required String projectId,
+    String? locale,
+  }) async {
+    return const ProjectAssetCategoryCatalog(
+      version: '2026-08-07.1',
+      locale: 'en',
+      supportedLocales: ['en', 'fr'],
+      categories: [
+        ProjectAssetCategory(
+          categoryId: 'editorial_visual',
+          label: 'Editorial visual',
+          subcategories: [
+            ProjectAssetSubcategory(
+              subcategoryId: 'infographic',
+              label: 'Infographic',
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  @override
+  Future<ProjectAsset> assignProjectAssetCategory({
+    required String projectId,
+    required String assetId,
+    String? categoryId,
+    String? subcategoryId,
+  }) async {
+    assignmentCalls.add('$projectId:$assetId:$categoryId:$subcategoryId');
+    await _delayForProject(projectId);
+    return _asset(id: assetId, projectId: projectId);
   }
 
   @override

@@ -10,9 +10,11 @@ from __future__ import annotations
 
 import os
 import sys
+import ipaddress
+import uuid
 from datetime import UTC, datetime
 from typing import Any, Dict, List, Optional
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlsplit
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
@@ -26,6 +28,12 @@ from api.dependencies.ownership import (
     require_owned_project_id,
 )
 from api.services.user_data_store import user_data_store
+from api.services.social_placement_preflight import (
+    PFL_LEGACY_CONFLICT,
+    PFL_PROVIDER_CONTRACT_UNSUPPORTED,
+    run_publish_preflight,
+)
+from api.services.social_placement_registry import REGISTRY_VERSION, validate_platform_id
 from status.schemas import ContentLifecycleStatus
 from status.service import InvalidTransitionError, get_status_service
 
@@ -72,6 +80,11 @@ class PublishRequest(BaseModel):
     title: Optional[str] = Field(None, description="Reference title")
     media_urls: List[str] = Field(default_factory=list, description="URLs of images/videos to attach")
     media: List[PublishMediaItem] = Field(default_factory=list, description="Typed media attachments")
+    media_contract_version: Optional[str] = Field(
+        None,
+        description="Use asset_placements.v1 for server-resolved project asset media",
+    )
+    registry_version: Optional[str] = None
     scheduled_for: Optional[str] = Field(None, description="ISO 8601 datetime for scheduling")
     publish_now: bool = Field(default=True, description="Publish immediately")
     tags: List[str] = Field(default_factory=list)
@@ -102,6 +115,35 @@ def _provider_media_payload(request: PublishRequest) -> list[dict[str, str]]:
     return [{"type": "image", "url": url} for url in request.media_urls if str(url).strip()]
 
 
+def _legacy_provider_media_payload(request: PublishRequest) -> list[dict[str, str]]:
+    media = _provider_media_payload(request)
+    for item in media:
+        item_type = item["type"]
+        if item_type not in {"image", "video"}:
+            raise HTTPException(status_code=400, detail="Legacy media type must be image or video.")
+        item["url"] = _validated_public_media_url(item["url"])
+    return media
+
+
+def _validated_public_media_url(value: str) -> str:
+    parsed = urlsplit(str(value).strip())
+    if parsed.scheme.lower() not in {"http", "https"} or not parsed.hostname:
+        raise HTTPException(status_code=400, detail="Legacy media URLs must be public HTTP(S) URLs.")
+    if parsed.username or parsed.password or parsed.fragment:
+        raise HTTPException(status_code=400, detail="Legacy media URL contains unsupported credentials or fragments.")
+    host = parsed.hostname.rstrip(".").lower()
+    if host == "localhost" or host.endswith((".localhost", ".local", ".internal")):
+        raise HTTPException(status_code=400, detail="Legacy media URLs must use a public host.")
+    try:
+        address = ipaddress.ip_address(host)
+    except ValueError:
+        pass
+    else:
+        if not address.is_global:
+            raise HTTPException(status_code=400, detail="Legacy media URLs must use a public host.")
+    return str(value).strip()
+
+
 # -- Provider helpers --------------------------------------------------------
 
 
@@ -117,15 +159,32 @@ def _get_api_key() -> str:
     return key
 
 
-def _headers() -> dict[str, str]:
-    return {
+def _headers(request_id: str | None = None) -> dict[str, str]:
+    headers = {
         "Authorization": f"Bearer {_get_api_key()}",
         "Content-Type": "application/json",
     }
+    if request_id:
+        headers["x-request-id"] = request_id
+    return headers
 
 
 def _normalize_platform(platform: str) -> str:
     normalized = platform.strip().lower()
+    try:
+        canonical = validate_platform_id(platform)
+    except ValueError:
+        canonical = None
+    if canonical:
+        normalized = {
+            "PLAT_X": "twitter",
+            "PLAT_LINKEDIN": "linkedin",
+            "PLAT_INSTAGRAM": "instagram",
+            "PLAT_TIKTOK": "tiktok",
+            "PLAT_YOUTUBE": "youtube",
+            "PLAT_WORDPRESS": "wordpress",
+            "PLAT_GHOST": "ghost",
+        }[canonical]
     if normalized in UNSUPPORTED_CONTENTGLOWS_CHANNELS:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -137,6 +196,20 @@ def _normalize_platform(platform: str) -> str:
             detail=f"Unsupported platform '{platform}'.",
         )
     return normalized
+
+
+def _registry_platform_for_provider(platform: str) -> str:
+    try:
+        return validate_platform_id(platform)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "code": PFL_PROVIDER_CONTRACT_UNSUPPORTED,
+                "registry_version": REGISTRY_VERSION,
+                "message": f"Platform '{platform}' is outside asset_placements.v1.",
+            },
+        ) from exc
 
 
 def _json_response(resp: httpx.Response) -> Any:
@@ -152,11 +225,13 @@ def _json_response(resp: httpx.Response) -> Any:
 def _provider_error_payload(data: Any) -> dict[str, Any]:
     if isinstance(data, dict):
         detail = data.get("details") if isinstance(data.get("details"), dict) else {}
+        code = data.get("code") or detail.get("code") or "zernio_error"
+        param = data.get("param") or detail.get("param")
         return {
-            "type": data.get("type") or detail.get("type") or "provider_error",
-            "code": data.get("code") or detail.get("code") or data.get("error") or "zernio_error",
-            "param": data.get("param") or detail.get("param"),
-            "message": data.get("error") or data.get("message") or "Zernio provider error.",
+            "type": str(data.get("type") or detail.get("type") or "provider_error")[:80],
+            "code": str(code)[:120],
+            "param": str(param)[:120] if param is not None else None,
+            "message": "The publish provider rejected the request.",
         }
     return {
         "type": "provider_error",
@@ -221,6 +296,8 @@ def _extract_post(data: Any) -> dict[str, Any]:
         return data["post"]
     if isinstance(data, dict) and isinstance(data.get("posts"), list):
         return data["posts"][0] if data["posts"] else {}
+    if isinstance(data, dict) and isinstance(data.get("existingPost"), dict):
+        return data["existingPost"]
     if isinstance(data, list):
         return data[0] if data else {}
     return data if isinstance(data, dict) else {}
@@ -241,17 +318,17 @@ def _platform_results(post: dict[str, Any]) -> list[dict[str, Any]]:
         error_payload = None
         if isinstance(error, dict):
             error_payload = {
-                "type": error.get("type") or "platform_error",
-                "code": error.get("code") or error.get("message") or "platform_error",
-                "param": error.get("param"),
-                "message": error.get("message") or error.get("error"),
+                "type": str(error.get("type") or "platform_error")[:80],
+                "code": str(error.get("code") or "platform_error")[:120],
+                "param": str(error.get("param"))[:120] if error.get("param") is not None else None,
+                "message": "The platform rejected this publish target.",
             }
         elif error:
             error_payload = {
                 "type": "platform_error",
                 "code": "platform_error",
                 "param": None,
-                "message": str(error),
+                "message": "The platform rejected this publish target.",
             }
         results.append(
             {
@@ -350,11 +427,32 @@ def _merge_publish_metadata(
     platform_results: list[dict[str, Any]],
     scheduled_for: Optional[str],
     errors: list[dict[str, Any]],
+    provider_request_id: str,
+    media_contract: str,
+    registry_version: str | None,
+    asset_placements: list[dict[str, str]],
+    provider_media_summary: list[dict[str, str]],
+    legacy_media_count: int,
+    existing_post: bool = False,
 ) -> Dict[str, Any]:
     metadata = dict(existing)
     publish_meta = metadata.get("publish")
     publish_state = dict(publish_meta) if isinstance(publish_meta, dict) else {}
     synced_at = datetime.now(UTC).isoformat()
+    sanitized_results = [
+        {
+            "platform": result.get("platform"),
+            "status": result.get("status"),
+            "platformPostUrl": result.get("platformPostUrl"),
+            "error": _sanitize_error_metadata(result.get("error")),
+        }
+        for result in platform_results
+    ]
+    sanitized_errors = [
+        sanitized
+        for error in errors
+        if (sanitized := _sanitize_error_metadata(error)) is not None
+    ]
     publish_state.update(
         {
             "provider": PROVIDER,
@@ -363,17 +461,33 @@ def _merge_publish_metadata(
             "publishStatus": status_value,
             "status": status_value,
             "platform_urls": platform_urls,
-            "platformResults": platform_results,
-            "errors": errors,
+            "platformResults": sanitized_results,
+            "errors": sanitized_errors,
             "scheduledFor": scheduled_for,
             "scheduled_for": scheduled_for,
             "syncedAt": synced_at,
             "synced_at": synced_at,
             "retryAvailable": status_value in {"partial", "failed", "reconciliation_pending"},
+            "providerRequestId": provider_request_id,
+            "mediaContract": media_contract,
+            "registryVersion": registry_version,
+            "assetPlacements": asset_placements,
+            "providerMediaSummary": provider_media_summary,
+            "legacyMediaCount": legacy_media_count,
+            "existingPost": existing_post,
         }
     )
     metadata["publish"] = publish_state
     return metadata
+
+
+def _sanitize_error_metadata(error: Any) -> dict[str, str] | None:
+    if not isinstance(error, dict):
+        return None
+    return {
+        "type": str(error.get("type") or "provider_error")[:80],
+        "code": str(error.get("code") or "provider_error")[:120],
+    }
 
 
 def _persist_publish_result(
@@ -386,6 +500,13 @@ def _persist_publish_result(
     platform_results: list[dict[str, Any]],
     scheduled_for: Optional[str],
     errors: list[dict[str, Any]],
+    provider_request_id: str,
+    media_contract: str,
+    registry_version: str | None,
+    asset_placements: list[dict[str, str]],
+    provider_media_summary: list[dict[str, str]],
+    legacy_media_count: int,
+    existing_post: bool = False,
 ) -> None:
     svc = get_status_service()
     record = svc.get_content(content_record_id)
@@ -398,6 +519,13 @@ def _persist_publish_result(
         platform_results=platform_results,
         scheduled_for=scheduled_for,
         errors=errors,
+        provider_request_id=provider_request_id,
+        media_contract=media_contract,
+        registry_version=registry_version,
+        asset_placements=asset_placements,
+        provider_media_summary=provider_media_summary,
+        legacy_media_count=legacy_media_count,
+        existing_post=existing_post,
     )
     svc.update_content(content_record_id, metadata=metadata, target_url=target_url)
 
@@ -439,13 +567,51 @@ def _persist_publish_result(
 
 def _assert_publish_not_duplicate(record: Any) -> None:
     lifecycle = str(record.status)
-    if lifecycle in {ContentLifecycleStatus.PUBLISHING.value, ContentLifecycleStatus.PUBLISHED.value}:
-        raise HTTPException(status_code=409, detail="Content is already publishing or published.")
     publish_meta = record.metadata.get("publish") if isinstance(record.metadata, dict) else None
+    pending_reconciliation = bool(
+        isinstance(publish_meta, dict)
+        and not publish_meta.get("providerPostId")
+        and str(publish_meta.get("publishStatus") or publish_meta.get("status") or "")
+        in {"prepared", "reconciliation_pending"}
+    )
+    if lifecycle == ContentLifecycleStatus.PUBLISHED.value or (
+        lifecycle == ContentLifecycleStatus.PUBLISHING.value and not pending_reconciliation
+    ):
+        raise HTTPException(status_code=409, detail="Content is already publishing or published.")
     if isinstance(publish_meta, dict) and publish_meta.get("providerPostId"):
         status_value = str(publish_meta.get("publishStatus") or publish_meta.get("status") or "")
         if status_value in {"scheduled", "publishing", "published", "partial", "reconciliation_pending"}:
             raise HTTPException(status_code=409, detail="Content already has an active Zernio publish result.")
+
+
+def _prepare_provider_request_id(*, svc: Any, record: Any) -> str:
+    metadata = dict(record.metadata or {})
+    existing_publish = metadata.get("publish")
+    publish_state = dict(existing_publish) if isinstance(existing_publish, dict) else {}
+    prior_status = str(publish_state.get("publishStatus") or publish_state.get("status") or "")
+    existing_request_id = publish_state.get("providerRequestId")
+    if existing_request_id and prior_status in {"prepared", "reconciliation_pending"}:
+        return str(existing_request_id)
+    request_id = str(uuid.uuid4())
+    publish_state.update(
+        {
+            "provider": PROVIDER,
+            "providerRequestId": request_id,
+            "publishStatus": "prepared",
+            "status": "prepared",
+            "preparedAt": datetime.now(UTC).isoformat(),
+        }
+    )
+    metadata["publish"] = publish_state
+    svc.update_content(str(record.id), metadata=metadata)
+    return request_id
+
+
+def _media_contract_error(code: str, message: str, *, status_code: int = 400) -> HTTPException:
+    return HTTPException(
+        status_code=status_code,
+        detail={"code": code, "registry_version": REGISTRY_VERSION, "message": message},
+    )
 
 
 # -- Endpoints ---------------------------------------------------------------
@@ -459,12 +625,28 @@ async def publish_content(
     """Publish or schedule a post using only accounts authorized for the content project."""
     svc = get_status_service()
     record = await require_owned_content_record(request.content_record_id, current_user, svc)
+    if getattr(record, "user_id", None) not in {None, current_user.user_id}:
+        raise HTTPException(status_code=404, detail="Content not found")
     _assert_publish_not_duplicate(record)
     project_id = record.project_id
     if not project_id:
         raise HTTPException(status_code=403, detail="Content record is not scoped to a project.")
 
+    has_legacy_media = bool(request.media or request.media_urls)
+    if request.media_contract_version == "asset_placements.v1" and has_legacy_media:
+        raise _media_contract_error(
+            PFL_LEGACY_CONFLICT,
+            "asset_placements.v1 cannot be combined with media or media_urls.",
+        )
+    if request.media_contract_version not in {None, "asset_placements.v1"}:
+        raise _media_contract_error(
+            PFL_PROVIDER_CONTRACT_UNSUPPORTED,
+            "Unsupported media_contract_version.",
+            status_code=422,
+        )
+
     provider_targets: list[dict[str, Any]] = []
+    provider_platforms: list[str] = []
     for target in request.platforms:
         platform = _normalize_platform(target.platform)
         account = await require_active_publish_account(
@@ -481,6 +663,46 @@ async def publish_content(
                 **({"customContent": {"text": target.custom_content}} if target.custom_content else {}),
             }
         )
+        provider_platforms.append(platform)
+
+    media_contract = "asset_placements.v1" if request.media_contract_version else "legacy_raw_urls"
+    asset_placements: list[dict[str, str]] = []
+    provider_media_summary: list[dict[str, str]] = []
+    legacy_media_count = 0
+    if media_contract == "asset_placements.v1":
+        registry_platforms = [_registry_platform_for_provider(value) for value in provider_platforms]
+        preflight = run_publish_preflight(
+            status_service=svc,
+            content=record,
+            user_id=current_user.user_id,
+            platform_ids=registry_platforms,
+            requested_registry_version=request.registry_version,
+        )
+        if not preflight.response.can_publish:
+            raise HTTPException(status_code=409, detail=preflight.response.model_dump())
+        media_payload = []
+        seen_media = set()
+        for item in preflight.resolved_media_items:
+            key = (item.type, item.url)
+            if key not in seen_media:
+                seen_media.add(key)
+                media_payload.append({"type": item.type, "url": item.url})
+            asset_placements.append(
+                {
+                    "assetId": item.asset_id,
+                    "placementId": item.placement_id,
+                    "platformId": item.platform_id,
+                }
+            )
+        provider_media_summary = [
+            {"type": item["type"]} for item in media_payload
+        ]
+    else:
+        media_payload = _legacy_provider_media_payload(request)
+        legacy_media_count = len(media_payload)
+        provider_media_summary = [{"type": item["type"]} for item in media_payload]
+
+    provider_request_id = _prepare_provider_request_id(svc=svc, record=record)
 
     payload: Dict[str, Any] = {
         "content": request.content,
@@ -491,19 +713,24 @@ async def publish_content(
         payload["title"] = request.title
     if request.tags:
         payload["tags"] = request.tags
-    media_payload = _provider_media_payload(request)
     if media_payload:
-        payload["media"] = media_payload
+        payload["mediaItems"] = media_payload
     if request.scheduled_for and not request.publish_now:
         payload["scheduledFor"] = request.scheduled_for
 
     try:
         async with httpx.AsyncClient(timeout=30.0) as client:
-            resp = await client.post(f"{ZERNIO_BASE}/posts", headers=_headers(), json=payload)
+            resp = await client.post(
+                f"{ZERNIO_BASE}/posts",
+                headers=_headers(provider_request_id),
+                json=payload,
+            )
         if resp.status_code >= 400:
             _raise_provider_error(resp)
 
-        post = _extract_post(_json_response(resp))
+        response_data = _json_response(resp)
+        existing_post = bool(response_data.get("existingPost")) if isinstance(response_data, dict) else False
+        post = _extract_post(response_data)
         post_id = _post_id(post)
         publish_status = str(post.get("status") or ("scheduled" if not request.publish_now else "published"))
         platform_results = _platform_results(post)
@@ -523,6 +750,13 @@ async def publish_content(
             platform_results=platform_results,
             scheduled_for=post.get("scheduledFor") or request.scheduled_for,
             errors=errors,
+            provider_request_id=provider_request_id,
+            media_contract=media_contract,
+            registry_version=REGISTRY_VERSION if media_contract == "asset_placements.v1" else None,
+            asset_placements=asset_placements,
+            provider_media_summary=provider_media_summary,
+            legacy_media_count=legacy_media_count,
+            existing_post=existing_post,
         )
 
         return PublishResponse(
@@ -546,10 +780,38 @@ async def publish_content(
                 platform_results=[],
                 scheduled_for=request.scheduled_for,
                 errors=[{"type": "timeout", "code": "zernio_timeout", "param": None}],
+                provider_request_id=provider_request_id,
+                media_contract=media_contract,
+                registry_version=REGISTRY_VERSION if media_contract == "asset_placements.v1" else None,
+                asset_placements=asset_placements,
+                provider_media_summary=provider_media_summary,
+                legacy_media_count=legacy_media_count,
             )
         except InvalidTransitionError:
             pass
         return PublishResponse(success=False, status="reconciliation_pending", error="Zernio API timeout")
+    except HTTPException as exc:
+        detail = exc.detail if isinstance(exc.detail, dict) else {"code": "zernio_error"}
+        try:
+            _persist_publish_result(
+                content_record_id=request.content_record_id,
+                current_user=current_user,
+                post_id=None,
+                status_value="failed",
+                platform_urls={},
+                platform_results=[],
+                scheduled_for=request.scheduled_for,
+                errors=[detail],
+                provider_request_id=provider_request_id,
+                media_contract=media_contract,
+                registry_version=REGISTRY_VERSION if media_contract == "asset_placements.v1" else None,
+                asset_placements=asset_placements,
+                provider_media_summary=provider_media_summary,
+                legacy_media_count=legacy_media_count,
+            )
+        except InvalidTransitionError:
+            pass
+        raise
 
 
 @router.get("/accounts", summary="List project-scoped connected social accounts")

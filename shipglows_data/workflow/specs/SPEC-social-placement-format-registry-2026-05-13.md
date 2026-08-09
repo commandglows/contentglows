@@ -1,13 +1,13 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "1.1.0"
 project: "contentglows"
 created: "2026-05-13"
 created_at: "2026-05-13 03:21:04 UTC"
-updated: "2026-05-13"
-updated_at: "2026-05-13 03:21:04 UTC"
-status: draft
+updated: "2026-08-08"
+updated_at: "2026-08-08 19:01:11 UTC"
+status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: "feature"
@@ -31,12 +31,27 @@ linked_systems:
   - "Clerk"
   - "Turso/libSQL"
 depends_on:
-  - artifact: "shipglows_data/workflow/specs/SPEC-unified-project-asset-library-2026-05-11.md"
+  - artifact: "shipglows_data/business/business.md"
     artifact_version: "1.0.0"
+    required_status: "reviewed"
+  - artifact: "shipglows_data/product/app/product.md"
+    artifact_version: "1.3.0"
+    required_status: "reviewed"
+  - artifact: "shipglows_data/technical/lab/guidelines.md"
+    artifact_version: "1.1.0"
+    required_status: "reviewed"
+  - artifact: "shipglows_data/technical/app/guidelines.md"
+    artifact_version: "1.1.0"
+    required_status: "reviewed"
+  - artifact: "shipglows_data/technical/design-system-authority.md"
+    artifact_version: "1.0.0"
+    required_status: "draft"
+  - artifact: "shipglows_data/workflow/specs/SPEC-unified-project-asset-library-2026-05-11.md"
+    artifact_version: "1.1.0"
     required_status: "ready"
   - artifact: "shipglows_data/workflow/specs/SPEC-flux-ai-provider-image-robot-2026-05-11.md"
-    artifact_version: "1.0.0"
-    required_status: "in_progress"
+    artifact_version: "1.0.1"
+    required_status: "reviewed"
   - artifact: "shipglows_data/workflow/specs/app/SPEC-editor-linked-ai-visuals-ui-2026-05-11.md"
     artifact_version: "unknown"
     required_status: "ready"
@@ -49,12 +64,15 @@ depends_on:
   - artifact: "shipglows_data/workflow/specs/monorepo/SPEC-text-based-media-editing-social-video-2026-05-12.md"
     artifact_version: "unknown"
     required_status: "draft"
-  - artifact: "contentglows/INSPIRATION.md"
-    artifact_version: "unknown"
-    required_status: "inspiration-only"
-  - artifact: "contentglows/GUIDELINES.md"
-    artifact_version: "unknown"
-    required_status: "inspiration-only"
+  - artifact: "shipglows_data/business/project-competitors-and-inspirations.md"
+    artifact_version: "1.2.0"
+    required_status: "reviewed"
+  - artifact: "Zernio create-post and media validation API"
+    artifact_version: "official docs checked 2026-08-08: https://docs.zernio.com/posts/create-post and https://docs.zernio.com/validate/validate-media"
+    required_status: "official"
+  - artifact: "Zernio Instagram platform guide"
+    artifact_version: "official provider docs checked 2026-08-08: https://docs.zernio.com/platforms/instagram"
+    required_status: "advisory until direct Meta refresh for strict numeric enforcement"
   - artifact: "TikTok Content Posting API media transfer guide"
     artifact_version: "official docs checked 2026-05-13: https://developers.tiktok.com/doc/content-posting-api-media-transfer-guide"
     required_status: "official"
@@ -74,8 +92,8 @@ supersedes: []
 evidence:
   - "User request 2026-05-12/13: spec Social placement / formats de publication from contentglows inspiration, linking assets to platforms: thumbnail, vertical, post image, video courte, audio."
   - "User product direction: ContentGlows should guide users toward efficient social content, not a free creative playground."
-  - "contentglows/INSPIRATION.md: Canva simplicity, CapCut templates, Remotion composable video, Descript text editing and AI media tools are inspirations only."
-  - "contentglows/GUIDELINES.md: generated outputs should use standard formats: MP4, MP3/WAV, PNG/JPG/WebP, GIF/MP4; preview when possible; workflow between tools."
+  - "shipglows_data/business/project-competitors-and-inspirations.md: Canva simplicity, CapCut templates, Remotion composable video, Descript text editing and AI media tools are inspirations only."
+  - "Canonical app/lab guidelines: generated outputs use standard interoperable media formats, backend auth remains authoritative, and API changes preserve Flutter compatibility."
   - "Code evidence: app/lib/data/models/content_item.dart defines PublishingChannel for wordpress, ghost, twitter, linkedin, instagram, tiktok and youtube."
   - "Code evidence: app/lib/presentation/screens/editor/platform_preview_sheet.dart shows platform previews but has no asset slot or placement validation."
   - "Code evidence: lab/api/routers/publish.py accepts media_urls and sends them to Zernio as image media without project asset ownership or placement validation."
@@ -83,7 +101,9 @@ evidence:
   - "Code evidence: lab/status/service.py supports usage actions including select_for_content, publish_media and set_primary, but video_version target validation is not available yet."
   - "Code evidence: app/lib/presentation/widgets/project_asset_picker.dart already accepts a placement string and can be reused for slot-specific picking."
   - "Fresh docs checked 2026-05-13: official docs confirm current social APIs treat media as platform-specific upload/use cases rather than arbitrary raw URLs."
-next_step: "/sf-ready Social placement format registry"
+  - "Fresh provider docs checked 2026-08-08: Zernio POST /v1/posts accepts mediaItems, supports x-request-id idempotency, and exposes media URL validation; current local publish code still sends the legacy media field and no idempotency header."
+  - "Readiness review 2026-08-08: remaining tasks were aligned to current files, exact endpoint and legacy-input precedence were fixed, and proportional OWASP/Test Contracts were added."
+next_step: "/102-sg-start Social Placement Format Registry"
 ---
 
 # Title
@@ -92,7 +112,7 @@ Social Placement Format Registry
 
 ## Status
 
-Draft. This spec defines the product and technical contract for mapping project assets to platform-specific publication placements. It builds on the now-existing project asset library and makes publish/review flows understand slots such as blog hero, post image, link thumbnail, video thumbnail, vertical short video, reel cover, caption file and audio track.
+Ready. The backend registry slice is already implemented: stable format, platform and placement IDs, EN/FR labels, legacy aliases, validation and an authenticated read-only registry endpoint. Tasks 3-15 are the bounded remaining implementation contract for placement planning, compatibility checks, publish preflight, Flutter consumers, proof and documentation.
 
 ## User Story
 
@@ -105,8 +125,8 @@ When a creator opens a content editor, video editor or publish review for an own
 ## Success Behavior
 
 - Given an authenticated creator owns a project and opens a content editor, when the content targets blog, X/Twitter, LinkedIn, Instagram, TikTok or YouTube, then the app requests a backend placement plan for that content and renders platform-specific slots.
-- Given a blog article targets blog plus social promotion, when the plan is built, then it includes at least `blog_hero`, `social_post_image` and `link_thumbnail` or `og_card` recommendations where relevant.
-- Given a social post targets X/Twitter or LinkedIn, when no asset is required, then the plan still recommends a `social_post_image` or link thumbnail but does not block text-only publish.
+- Given a blog article targets blog plus social promotion, when the plan is built, then it includes at least `PLC_BLOG_HERO`, `PLC_SOCIAL_POST_IMAGE` and `PLC_LINK_THUMBNAIL` recommendations where relevant.
+- Given a social post targets X/Twitter or LinkedIn, when no asset is required, then the plan still recommends `PLC_SOCIAL_POST_IMAGE` or `PLC_LINK_THUMBNAIL` but does not block text-only publish.
 - Given a post targets Instagram feed or a vertical short targets TikTok/Instagram Reels/YouTube Shorts, when no compatible visual/video asset is attached, then publish preflight returns a blocking missing-placement issue for that platform.
 - Given a YouTube video target exists, when the plan is built, then thumbnail and video placements are represented separately so the editor can validate a thumbnail without confusing it with the main video render.
 - Given an asset picker opens from a slot, when the user selects an asset, then the backend creates or updates a project asset usage with `target_type=content`, `target_id=<content_record_id>`, `placement=<placement_id>`, `usage_action=publish_media` or `set_primary`, and records whether it is primary.
@@ -125,7 +145,7 @@ When a creator opens a content editor, video editor or publish review for an own
 - A required placement with no selected primary asset returns a blocking preflight issue for platforms that require media, and a warning for platforms where media is optional.
 - A selected asset with status `local_only`, `degraded` or `tombstoned` returns a blocking issue for publish media and is never sent to the provider.
 - A selected asset whose media kind, MIME, aspect ratio, duration or storage descriptor is incompatible with the slot returns a typed compatibility issue and keeps the previous valid selection unchanged.
-- A direct raw `media_urls` publish request from legacy clients must not bypass the new project asset validation in new UI flows. If legacy compatibility remains during rollout, the backend must mark it as legacy and never mix it with validated `asset_placements` without a clear precedence rule.
+- A direct raw `media`/`media_urls` request without `media_contract_version` uses only the documented legacy validation path. Declaring `asset_placements.v1` with either raw field returns `400`/`PFL_LEGACY_CONFLICT`; the backend never mixes contracts.
 - A provider timeout or rejection after internal preflight persists a normalized platform error in publish metadata without changing asset usage state.
 - A stale registry version in Flutter triggers a registry refresh before publish instead of publishing with hidden outdated client assumptions.
 - What must never happen: raw public URLs accepted as trusted media authority, cross-project asset publish, local-only files sent to Zernio, tombstoned assets reused, provider secrets or signed tokens returned to Flutter, or a silent downgrade from a missing required video/image slot to text-only publish on media-first platforms.
@@ -140,20 +160,33 @@ ContentGlows inspiration points in the right direction: Canva and CapCut show th
 
 Add a backend-owned social placement registry and publish preflight layer. The registry defines stable placement ids, supported platforms, content types, required/recommended rules, compatible asset media kinds, format hints, media intent and external doc provenance. Flutter consumes the registry to render slots in the editor/publish review and uses the existing project asset picker to attach assets by placement. The publish backend resolves those asset usages server-side and builds provider media payloads only from owned, active, durable assets.
 
+### V1 API and media transition contract
+
+- Keep the existing authenticated `GET /api/placement-registry` endpoint as the full catalog endpoint.
+- Add `GET /api/content/{content_id}/placement-plan?platform=<value>&platform=<value>&locale=<locale>`. The backend resolves the owned content record and its project, maps its existing `content_type` to a canonical `FMT_*` id, resolves platform aliases to canonical `PLAT_*` ids, and returns `registry_version`, `content_id`, `format_id`, per-platform slots and issue codes. The response does not expose `user_id`, storage paths or provider credentials.
+- Add `POST /api/publish/preflight` with `content_record_id`, the same platform/account targets used by publish, and optional `registry_version`. V1 resolves selected media only from primary `project_asset_usages` rows where `target_type=content`, `target_id=<content_record_id>` and `placement=<canonical PLC_* id>`; the client does not need to resend asset ids to publish.
+- The preflight response returns `can_publish`, the current `registry_version`, per-platform `can_publish`, resolved slot summaries, sanitized provider `mediaItems` summaries and stable issue codes. Required failures set `can_publish=false`; advisory or recommended gaps remain warnings.
+- Stable V1 issue codes are `PFL_MISSING_REQUIRED`, `PFL_ASSET_NOT_FOUND`, `PFL_ASSET_FORBIDDEN`, `PFL_ASSET_STATUS_BLOCKED`, `PFL_ASSET_INCOMPATIBLE`, `PFL_STORAGE_UNAVAILABLE`, `PFL_REGISTRY_STALE`, `PFL_UNSUPPORTED_PLATFORM`, `PFL_PROVIDER_CONTRACT_UNSUPPORTED` and `PFL_LEGACY_CONFLICT`. Labels/messages are localizable; codes are immutable and never translated.
+- `media_contract_version="asset_placements.v1"` selects the new contract. In that mode `media` and `media_urls` are rejected with `400`/`PFL_LEGACY_CONFLICT`; the backend uses only validated primary usages.
+- Requests that omit `media_contract_version` but contain `media` or `media_urls` remain on the explicit legacy compatibility path. The backend never mixes those values with project asset usages, validates that URLs are public HTTP(S) media inputs before provider submission, records `mediaContract="legacy_raw_urls"` plus a sanitized count in publish metadata, and never records them as validated project assets. New Flutter code must always send `asset_placements.v1` and must never send raw media URLs.
+- Provider payload construction uses the current Zernio field `mediaItems`, not the local legacy `media` field. Each item is derived from a backend-resolved durable Bunny URL and contains only provider-supported fields. Reuse or extract the existing Bunny URL resolution behavior from `lab/api/routers/video_timelines.py`; do not create a second inconsistent URL policy.
+- Each logical provider create-post call sends one persisted UUID as `x-request-id`. Retries for the same logical publish reuse it; a new publish attempt gets a new value. Handle Zernio's `existingPost` idempotent response as the original post result rather than as a second publication.
+- If a required placement cannot be represented by the current Zernio contract, preflight returns `PFL_PROVIDER_CONTRACT_UNSUPPORTED` and no provider call occurs. Optional provider-unsupported placements remain warnings and are not silently inserted into `mediaItems`.
+
 ## Scope In
 
 - A versioned placement registry in `lab` covering V1 platform/channel surfaces: blog/CMS output, X/Twitter, LinkedIn, Instagram, TikTok and YouTube.
 - Stable placement ids for V1:
-  - `blog_hero`
-  - `inline_image`
-  - `social_post_image`
-  - `link_thumbnail`
-  - `video_thumbnail`
-  - `vertical_short_video`
-  - `landscape_video`
-  - `reel_cover`
-  - `caption_track`
-  - `audio_track`
+  - `PLC_BLOG_HERO`
+  - `PLC_INLINE_IMAGE`
+  - `PLC_SOCIAL_POST_IMAGE`
+  - `PLC_LINK_THUMBNAIL`
+  - `PLC_VIDEO_THUMBNAIL`
+  - `PLC_VERTICAL_SHORT_VIDEO`
+  - `PLC_LANDSCAPE_VIDEO`
+  - `PLC_REEL_COVER`
+  - `PLC_CAPTION_TRACK`
+  - `PLC_AUDIO_TRACK`
 - Registry fields for platform id, content types, target placement, asset media kinds, MIME families, recommended aspect ratios, minimum dimensions where safe, duration bands, required/recommended/blocking policy, provider media intent, doc sources, `last_reviewed_at` and `rule_strictness`.
 - Backend placement plan endpoint for a content item and selected platforms.
 - Backend publish preflight endpoint or publish-route preflight function that validates selected placements before provider calls.
@@ -190,10 +223,14 @@ Add a backend-owned social placement registry and publish preflight layer. The r
 - The existing project asset library remains the storage/governance layer; this spec adds platform placement semantics, not a new asset table unless needed for registry snapshots.
 - Bunny CDN remains the durable media path. Provider-temporary URLs are not durable placement assets.
 - Raw `media_urls` cannot be the new publish contract.
+- New Flutter requests must send `media_contract_version="asset_placements.v1"`; legacy requests are detected only by an absent version plus present `media`/`media_urls`, are never mixed with primary usages, and remain explicitly observable for later retirement.
 - Blog/CMS outputs are represented in placement planning, but current Zernio social publish excludes `wordpress` and `ghost`; CMS publishing remains a separate integration.
 - Instagram exact constraints must be manually refreshed from official Meta docs before strict Instagram-specific dimensions/durations are enforced. Until then, V1 should use conservative recommended presets and provider rejection handling rather than pretending the agent-cached snippet is authoritative.
+- Current Zernio provider docs may confirm that Instagram requires media and may inform advisory hints, but they do not authorize strict numeric Instagram enforcement in the registry without the direct Meta refresh above.
 - Video-version placements cannot mutate `target_type=video_version` until the video asset store validation ships; V1 may attach publish placements to `target_type=content` and link to video render assets by asset id/metadata.
 - Placement ids must be stable. Display labels can change, ids cannot silently change because project asset usages depend on them.
+- For `publish_media` and placement-scoped `set_primary`, aliases are accepted at the API boundary but canonical `PLC_*` ids are persisted. Existing legacy aliases are resolved during preflight; unrelated placements such as `editor_body` are ignored, not rewritten.
+- UI changes follow `tools/design-tokens/contentglows_theme.json` through `tools/design-tokens/generate_app_theme_tokens.mjs`; no one-off visual constants are introduced when a shared token applies.
 
 ## Dependencies
 
@@ -217,8 +254,11 @@ Add a backend-owned social placement registry and publish preflight layer. The r
   - `app/test/presentation/screens/editor/editor_screen_test.dart`
 - Existing project docs:
   - `lab/README.md`
-  - `contentglows/INSPIRATION.md`
-  - `contentglows/GUIDELINES.md`
+  - `shipglows_data/business/project-competitors-and-inspirations.md`
+  - `shipglows_data/product/app/product.md`
+  - `shipglows_data/technical/lab/guidelines.md`
+  - `shipglows_data/technical/app/guidelines.md`
+  - `shipglows_data/technical/design-system-authority.md`
 - Related specs:
   - `shipglows_data/workflow/specs/SPEC-unified-project-asset-library-2026-05-11.md`
   - `shipglows_data/workflow/specs/SPEC-flux-ai-provider-image-robot-2026-05-11.md`
@@ -226,6 +266,9 @@ Add a backend-owned social placement registry and publish preflight layer. The r
   - `shipglows_data/workflow/specs/monorepo/SPEC-video-editor-ai-audio-music-backgrounds-2026-05-11.md`
   - `shipglows_data/workflow/specs/monorepo/SPEC-text-based-media-editing-social-video-2026-05-12.md`
 - Fresh external docs:
+  - `fresh-docs checked`: Zernio create-post API uses `mediaItems` and supports per-logical-request `x-request-id` idempotency: `https://docs.zernio.com/posts/create-post`.
+  - `fresh-docs checked`: Zernio media validation rejects private/localhost URLs and reports media metadata/limits: `https://docs.zernio.com/validate/validate-media`.
+  - `fresh-docs checked`: Zernio's current Instagram guide confirms that media is required; its numeric limits remain advisory in ContentGlows until direct Meta refresh: `https://docs.zernio.com/platforms/instagram`.
   - `fresh-docs checked`: TikTok Content Posting API media transfer guide: `https://developers.tiktok.com/doc/content-posting-api-media-transfer-guide`.
   - `fresh-docs checked`: X API media upload and post docs: `https://docs.x.com/x-api/media/upload-media`, `https://docs.x.com/x-api/posts/manage-tweets/introduction`.
   - `fresh-docs checked`: LinkedIn Posts and Videos APIs: `https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/posts-api?view=li-lms-2026-01`, `https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/videos-api`.
@@ -243,33 +286,37 @@ Add a backend-owned social placement registry and publish preflight layer. The r
 - Every selected publish asset must be active, durable, owned by the same project and compatible with the placement.
 - Tombstoned, degraded and local-only assets are never eligible for publish media.
 - A primary usage is unique per target and placement.
+- Placement-scoped primary selection and demotion stay within the same `project_id` and `user_id`, and run atomically so concurrent requests cannot leave two active primaries for one content/placement.
 - Candidate assets can appear in UI but do not publish until selected as primary or explicitly included by the backend plan.
 - Registry warnings are visible before the publish call; provider errors are normalized after the provider call.
 - Platform docs are unstable, so the registry must store provenance and last review metadata.
+- Rule provenance is platform-specific. A rule may not inherit unrelated X or YouTube documentation merely because all rules are stored in one registry module.
+- A publish request uses exactly one media contract: validated primary usages or the explicit legacy raw-URL path, never both.
+- A logical provider call is idempotent across retries and records a request id without exposing it to unrelated users.
 
 ## Links & Consequences
 
-- `lab/api/routers/publish.py`: must stop treating app-provided media URLs as the authoritative media contract for new publish flows. It needs preflight validation and provider payload construction from project assets.
+- `lab/api/routers/publish.py`: must stop treating app-provided media URLs as the authoritative media contract for new publish flows, use current Zernio `mediaItems`, preserve the explicit isolated legacy path, and reuse a persisted `x-request-id` during reconciliation/retry.
 - `lab/api/routers/assets.py`: existing placement and usage endpoints can remain, but this spec may add placement-aware filters or usage summaries.
-- `lab/status/service.py`: eligibility currently supports broad `publish_media`; it needs placement registry checks for asset media kind, target platform, required slot and current asset status.
+- `lab/status/service.py`: eligibility currently supports broad `publish_media`; it needs canonical placement validation, owner-scoped primary lookup, atomic primary replacement and placement registry checks for asset media kind, target platform, required slot and current asset status.
 - `lab/api/models/status.py`: may need typed placement/preflight response models or a new `api/models/social_placements.py`.
 - `app/lib/presentation/widgets/project_asset_picker.dart`: should receive placement/platform constraints so users do not pick irrelevant assets for a slot.
 - `app/lib/presentation/screens/editor/platform_preview_sheet.dart`: should display selected/missing assets alongside platform previews, not just text truncation.
 - `app/lib/data/models/content_item.dart`: existing `PublishingChannel` is the app-facing channel enum; registry platform ids must map cleanly to it.
-- Publish metadata: should record `assetPlacements`, registry version, platform preflight issues and provider media payload summary without storing raw signed tokens.
+- Publish metadata: should record `assetPlacements`, registry version, media contract, platform preflight issues, logical provider request id and a sanitized provider media summary without storing raw signed tokens or raw legacy URLs.
 - Analytics/ops: preflight warnings should be counted so we can learn which slots users miss most often.
 - Security: this is a hardening step for publish media ownership and URL trust.
 
 ## Documentation Coherence
 
-- Update `lab/README.md` with the placement registry, preflight endpoint, supported placement ids and legacy `media_urls` behavior.
-- Add an internal note to any publish API documentation that `asset_placements` or server-selected project asset usages are the preferred media path.
-- Update Flutter developer notes or README with the rule: UI may display registry hints but backend validation is final.
+- Update `lab/README.md` and `shipglows_data/technical/lab/backend-runtime-and-product-apis.md` with the catalog, plan/preflight endpoints, supported stable ids, Zernio `mediaItems`, idempotent retry contract and exact legacy `media`/`media_urls` behavior.
+- Update `shipglows_data/technical/app/architecture.md` with the rule that Flutter displays registry hints but backend validation and server-selected primary usages are final; new UI publish requests send `asset_placements.v1` and no raw media URL fields.
+- Update `CHANGELOG.md` because the authenticated publish API contract changes while preserving an explicit legacy path.
 - Add support/product copy for users explaining missing required asset, recommended asset, incompatible asset and generate/choose actions.
 - Update related specs when implemented:
-  - Flux/Image Robot should list which generated image profiles satisfy `blog_hero`, `social_post_image`, `link_thumbnail`, `video_thumbnail` and `reel_cover`.
-  - Remotion video spec should emit render assets usable for `vertical_short_video`, `landscape_video` and `video_thumbnail`.
-  - AI audio spec should emit assets usable for `audio_track` and future caption/audio placements.
+  - Flux/Image Robot should list which generated image profiles satisfy `PLC_BLOG_HERO`, `PLC_SOCIAL_POST_IMAGE`, `PLC_LINK_THUMBNAIL`, `PLC_VIDEO_THUMBNAIL` and `PLC_REEL_COVER`.
+  - Remotion video spec should emit render assets usable for `PLC_VERTICAL_SHORT_VIDEO`, `PLC_LANDSCAPE_VIDEO` and `PLC_VIDEO_THUMBNAIL`.
+  - AI audio spec should emit assets usable for `PLC_AUDIO_TRACK` and future caption/audio placements.
 
 ## Edge Cases
 
@@ -282,19 +329,23 @@ Add a backend-owned social placement registry and publish preflight layer. The r
 - The user tombstones an asset after it was selected. Future publish preflight blocks it and asks for replacement; historical usage remains visible.
 - Flutter has a cached registry and backend has a newer registry. Publish preflight returns current registry version and issue codes; UI refreshes.
 - Provider accepts a media payload that passed internal preflight but fails platform-side. Publish metadata stores normalized platform error and does not mutate asset usages.
+- A timeout followed by a retry reuses the same logical `x-request-id`; an `existingPost` response is reconciled as the first call's result and does not create a second content lifecycle transition.
+- Two primary-selection requests race for the same content/placement. The final committed primary is unique, and preflight never constructs media from two active primaries.
+- An old client sends only `media_urls`. The request follows the legacy validation/metadata path. If it also declares `asset_placements.v1`, it fails with `PFL_LEGACY_CONFLICT` before any provider call.
+- A primary usage contains a legacy placement alias. Preflight resolves it to the canonical `PLC_*` id for compatibility; new selections persist only the canonical id.
 - Direct provider docs are inaccessible during implementation. Exact hard blocking for that platform rule must remain conservative or warning-only until manually refreshed.
 
 ## Implementation Tasks
 
-- [ ] Task 1: Add backend placement registry models
-  - File: `lab/api/models/social_placements.py`
-  - Action: Define Pydantic models for `PlacementSpec`, `PlacementRule`, `PlacementPlan`, `PlacementSlot`, `PlacementIssue`, `AssetPlacementInput`, `PublishPreflightRequest` and `PublishPreflightResponse`.
-  - User story link: Makes platform slots explicit and inspectable.
+- [x] Task 1: Add the canonical backend registry read contract
+  - File: `lab/api/services/social_placement_registry.py`, `lab/api/routers/placement_registry.py`
+  - Action: Define immutable registry entry/rule types, stable `FMT_*`, `PLAT_*` and `PLC_*` ids, EN/FR labels, legacy aliases, validation and the authenticated read-only catalog endpoint.
+  - User story link: Makes the shared format/platform/placement vocabulary explicit and inspectable.
   - Depends on: Existing project asset models.
-  - Validate with: `python -m pytest lab/tests/test_social_placement_registry.py` after tests are added.
-  - Notes: Keep ids ASCII and stable; include `registry_version`, `last_reviewed_at`, `doc_sources` and `rule_strictness`.
+  - Validate with: from `lab/`, `python3 -m pytest tests/test_placement_registry.py`.
+  - Notes: Implemented in the existing backend registry tranche. Labels and aliases may evolve; canonical ids may not.
 
-- [ ] Task 2: Implement the registry service
+- [x] Task 2: Implement the registry service
   - File: `lab/api/services/social_placement_registry.py`
   - Action: Create the V1 registry for blog/CMS output, X/Twitter, LinkedIn, Instagram, TikTok and YouTube with the stable placement ids listed in this spec.
   - User story link: Converts content type/platform choices into required and recommended asset slots.
@@ -302,33 +353,33 @@ Add a backend-owned social placement registry and publish preflight layer. The r
   - Validate with: Unit tests for each content type/platform combination and registry version.
   - Notes: Use conservative recommendations for Instagram until official docs are manually refreshed; do not embed unverified exact limits as blocking rules.
 
-- [ ] Task 3: Add placement plan/preflight routes
-  - File: `lab/api/routers/social_placements.py`
-  - Action: Expose `GET /api/content/{content_id}/placement-plan` or equivalent project/content-scoped endpoint, plus `POST /api/publish/preflight` if not folded into publish.
+- [x] Task 3: Add typed plan/preflight contracts and exact routes
+  - File: `lab/api/models/social_placements.py`, `lab/api/services/social_placement_registry.py`, `lab/api/routers/social_placements.py`, `lab/api/main.py`, `lab/api/routers/__init__.py`
+  - Action: Define Pydantic `PlacementPlan`, `PlacementSlot`, `PlacementIssue`, `PublishPreflightRequest` and `PublishPreflightResponse`; expose the exact V1 endpoints in `V1 API and media transition contract`; map existing content/platform aliases to canonical ids; and replace the registry's shared `_DOC_SOURCES` tuple with rule-specific provenance so Instagram rules do not cite unrelated X/YouTube docs.
   - User story link: Lets the UI show slots before publishing.
   - Depends on: Task 2.
-  - Validate with: Router tests for auth, ownership, unsupported platforms, missing content and plan shape.
-  - Notes: Route naming can follow existing API conventions, but plan and preflight must be content-owned and project-scoped.
+  - Validate with: Router/model tests for `401`, owned content, cross-project/nonexistent content, repeated platform query values, aliases, unsupported platforms, locale, issue shape and registry version.
+  - Notes: Register one router without changing the existing catalog route. Return `404` for an inaccessible content id to avoid ownership enumeration; return `422` for unsupported public platform input.
 
-- [ ] Task 4: Add server-side asset compatibility checks
-  - File: `lab/status/service.py`
-  - Action: Extend project asset eligibility for `publish_media` to accept placement/platform context and validate media kind, status, ownership, storage descriptor, optional MIME/aspect/duration metadata and required slot policy.
+- [x] Task 4: Add server-side primary-usage lookup and compatibility checks
+  - File: `lab/status/service.py`, `lab/api/services/social_placement_preflight.py`, `lab/api/routers/assets.py`, `lab/api/models/status.py`
+  - Action: Add an owner-scoped query for active primary usages by content/placement; canonicalize publish placement aliases before persistence; make placement-scoped primary demotion include `project_id` and `user_id` in one transaction; and validate media family, lifecycle status, ownership, durable storage, MIME plus optional aspect/duration metadata against each rule. Map `image|thumbnail|video_cover|capture` to the image family, `video|render_output` to video, and `audio|music` to audio; unsupported kinds remain incompatible.
   - User story link: Prevents wrong or unsafe assets from reaching publish.
   - Depends on: Tasks 1-3.
-  - Validate with: Existing project asset service tests plus new compatibility cases.
-  - Notes: Keep generic project asset actions backward compatible where no placement context is provided, but publish preflight must use placement-aware checks.
+  - Validate with: Existing project asset service/router tests plus primary uniqueness, alias persistence, cross-user/project isolation, concurrent/stale primary, status, media family, MIME, metadata-missing warning and durable Bunny URL cases.
+  - Notes: Keep generic project asset actions backward compatible when no placement context is provided. `publish_media` and placement-scoped `set_primary` require a recognized placement; legacy non-publish values such as `editor_body` remain readable and are ignored by preflight.
 
-- [ ] Task 5: Extend publish request and payload construction
+- [x] Task 5: Extend publish request and payload construction
   - File: `lab/api/routers/publish.py`
-  - Action: Add `asset_placements` or server-side primary-usage resolution, run preflight before provider call, resolve provider media payloads from validated project assets, and record placement metadata in content publish metadata.
+  - Action: Add `media_contract_version`, run the same preflight service before the external call, resolve primary usages server-side, build Zernio `mediaItems` from durable Bunny URLs, persist/reuse one UUID `x-request-id` per logical attempt, handle `existingPost`, and record sanitized placement/preflight/provider metadata. Implement the exact legacy precedence contract above; do not send the current local `media` field to Zernio.
   - User story link: Makes actual publishing use the selected slots.
   - Depends on: Tasks 1-4.
-  - Validate with: `lab/tests/integration/test_publish_router.py` covering success, missing required media, incompatible asset, foreign asset, tombstoned asset, raw media URL legacy behavior and provider payload shape.
-  - Notes: Keep provider account authorization and duplicate publish checks before external calls. Do not expose raw storage tokens in responses.
+  - Validate with: `lab/tests/integration/test_publish_router.py` covering success, missing required media, incompatible/foreign/tombstoned asset, required provider-contract gap, `mediaItems` shape, asset/legacy conflict, legacy-only success metadata, public-URL rejection, timeout retry id reuse, `existingPost`, and zero provider calls for every blocking preflight.
+  - Notes: Keep content ownership, provider account authorization and duplicate publish checks before external calls. Never return raw storage tokens, request ids or provider secrets. Optional provider-unsupported placements remain warnings; required ones block.
 
 - [ ] Task 6: Add Flutter models/API methods for registry and preflight
   - File: `app/lib/data/models/social_placement.dart`
-  - Action: Create typed Dart models matching backend placement/preflight responses.
+  - Action: Create typed Dart models matching plan/preflight responses, including canonical ids, localized labels, slot state, stable issue codes, per-platform results, `canPublish` and `registryVersion`.
   - User story link: Gives the app typed slot data instead of hard-coded platform assumptions.
   - Depends on: Tasks 1-3 contracts.
   - Validate with: Dart model parsing tests.
@@ -336,11 +387,11 @@ Add a backend-owned social placement registry and publish preflight layer. The r
 
 - [ ] Task 7: Add Flutter API client methods
   - File: `app/lib/data/services/api_service.dart`
-  - Action: Add methods to fetch placement plans and run publish preflight; add publish request support for asset placements if publish is called from Flutter in this flow.
+  - Action: Add methods for the exact plan and preflight endpoints; change new publish calls to send `media_contract_version: asset_placements.v1`; remove `media_urls` from the new UI path while retaining deserialization/backward compatibility needed by queued legacy actions.
   - User story link: Connects editor/publish UI to backend slots.
   - Depends on: Task 6.
   - Validate with: Existing API service test pattern or mocked provider tests.
-  - Notes: Resolve local id mappings like the existing project asset methods do.
+  - Notes: Resolve local id mappings like existing project asset methods. Offline publish remains blocked as today; do not queue a new placement publish with stale registry state or unresolved ids.
 
 - [ ] Task 8: Add placement state/provider
   - File: `app/lib/providers/providers.dart`
@@ -348,11 +399,11 @@ Add a backend-owned social placement registry and publish preflight layer. The r
   - User story link: Shows current slot status in the editor and publish review.
   - Depends on: Task 7.
   - Validate with: Provider tests for project switch, stale response, missing slot, selected asset refresh and preflight warnings.
-  - Notes: Follow the revision pattern already used by `ProjectAssetLibraryNotifier`.
+  - Notes: Follow the revision pattern already used by `ProjectAssetLibraryNotifier`. A newer backend registry version invalidates the cached plan and disables the final publish action until refresh/preflight completes.
 
 - [ ] Task 9: Update project asset picker for slot-specific selection
   - File: `app/lib/presentation/widgets/project_asset_picker.dart`
-  - Action: Accept placement/platform constraints, show why assets are eligible/ineligible, and call `setPrimary` or `selectForTarget` with the placement id.
+  - Action: Accept the slot's canonical placement/platform constraints, show backend-derived eligibility or incompatibility, and persist the chosen asset as primary with `usage_action=publish_media`, `target_type=content` and the canonical placement id.
   - User story link: Lets creators attach the right asset without leaving guided flow.
   - Depends on: Tasks 6-8.
   - Validate with: Widget tests for eligible, missing, incompatible, tombstoned and primary states.
@@ -364,7 +415,7 @@ Add a backend-owned social placement registry and publish preflight layer. The r
   - User story link: Makes asset placement part of the current editor, not a separate playground.
   - Depends on: Tasks 8-9.
   - Validate with: Editor widget tests for opening placement panel and selecting a slot asset.
-  - Notes: Keep mobile layout compact; if dense editing becomes unreadable, route to a linked editor sheet/screen rather than crowding the main editor.
+  - Notes: Keep mobile layout compact; use a linked bottom sheet/screen rather than crowding the main editor. Use the canonical token JSON/generator and existing theme tokens for spacing, sizes, colors and motion.
 
 - [ ] Task 11: Update platform preview sheet
   - File: `app/lib/presentation/screens/editor/platform_preview_sheet.dart`
@@ -372,57 +423,81 @@ Add a backend-owned social placement registry and publish preflight layer. The r
   - User story link: Lets creators see what will be published per platform.
   - Depends on: Tasks 8-10.
   - Validate with: Widget tests for Twitter text-only allowed, Instagram missing media blocking, YouTube thumbnail separation and LinkedIn optional image warning.
-  - Notes: Avoid hard-coding official limits as final truth in the UI; display backend issue messages.
+  - Notes: Avoid hard-coding official limits as final truth in the UI; localize messages from stable backend issue codes and preserve the backend's required/warning severity.
 
 - [ ] Task 12: Register generation actions from placement slots
   - File: `app/lib/presentation/screens/editor/editor_screen.dart`
-  - Action: Add guided actions from empty image slots to existing Image Robot/Flux profiles where available.
+  - Action: For supported empty image slots, reuse `listImageProfiles` and `queueImageGenerationFromProfile` in the existing API client from a content/project/placement-scoped sheet. When no compatible profile exists, keep Choose available and show a localized explanation instead of inventing a free-form generator.
   - User story link: Makes missing slots actionable.
-  - Depends on: Flux/Image Robot route availability and Tasks 8-10.
-  - Validate with: Widget/provider tests that empty `social_post_image` or `video_thumbnail` slots expose generate/choose actions.
+  - Depends on: Existing `/api/images/profiles` and `/api/images/generate-from-profile` contracts plus Tasks 8-10.
+  - Validate with: Widget/provider tests that empty `PLC_SOCIAL_POST_IMAGE` or `PLC_VIDEO_THUMBNAIL` slots expose generate/choose actions.
   - Notes: Do not add a standalone playground; action must stay scoped to content/project/placement.
 
-- [ ] Task 13: Add tests for backend registry and publish validation
-  - File: `lab/tests/test_social_placement_registry.py`
-  - Action: Cover registry shape, doc provenance, required/recommended policies, content type mappings and platform-specific issue generation.
+- [x] Task 13: Add tests for backend registry and publish validation
+  - File: `lab/tests/test_placement_registry.py`, `lab/tests/test_social_placement_preflight.py`, `lab/tests/integration/test_publish_router.py`
+  - Action: Cover registry shape, rule-specific doc provenance, required/recommended policies, content mappings, issue generation, ownership boundaries, media contract transition, provider payload and idempotent retry behavior.
   - User story link: Ensures the registry stays dependable as docs/platforms evolve.
   - Depends on: Tasks 1-5.
-  - Validate with: `python -m pytest lab/tests/test_social_placement_registry.py lab/tests/integration/test_publish_router.py`.
+  - Validate with: from `lab/`, `python3 -m pytest tests/test_placement_registry.py tests/test_social_placement_preflight.py tests/integration/test_publish_router.py`.
   - Notes: Include tests proving provider HTTP client is not called on blocking preflight failure.
 
 - [ ] Task 14: Add Flutter tests
-  - File: `app/test/data/social_placement_test.dart`
-  - Action: Test model parsing, provider state and editor/preview widget states for placement slots.
+  - File: `app/test/data/social_placement_test.dart`, `app/test/providers/social_placement_provider_test.dart`, `app/test/presentation/screens/editor/editor_screen_test.dart`, `app/test/presentation/screens/editor/platform_preview_sheet_test.dart`
+  - Action: Test model parsing, request contract, stale-response protection, provider state and editor/preview widget states for placement slots.
   - User story link: Protects the guided UI behavior.
   - Depends on: Tasks 6-11.
-  - Validate with: `flutter test app/test/data/social_placement_test.dart app/test/presentation/screens/editor/editor_screen_test.dart`.
+  - Validate with: use the focused Flutter command in `Execution Notes`.
   - Notes: Add focused tests rather than broad golden coverage.
 
 - [ ] Task 15: Update docs
-  - File: `lab/README.md`
-  - Action: Document the placement registry, supported placements, preflight behavior, publish media contract and legacy `media_urls` handling.
+  - File: `lab/README.md`, `shipglows_data/technical/lab/backend-runtime-and-product-apis.md`, `shipglows_data/technical/app/architecture.md`, `CHANGELOG.md`
+  - Action: Document the placement registry, supported ids, plan/preflight endpoints, `mediaItems` provider mapping, idempotency, server-authoritative asset selection, Flutter refresh behavior and the explicit legacy `media`/`media_urls` transition.
   - User story link: Keeps future agents and operators from reintroducing raw URL publishing.
   - Depends on: Tasks 1-5.
   - Validate with: Documentation review and links to external docs in this spec.
   - Notes: Mention that exact platform rules require periodic refresh.
+  - Backend progress: `lab/README.md` and the canonical lab API contract now document registry, plan/preflight, `mediaItems`, idempotency, server authority and isolated legacy behavior. App architecture and changelog updates remain with the Flutter/end lifecycle slices.
 
 ## Acceptance Criteria
 
-- [ ] CA 1: Given an owned content item with selected platforms, when the app requests a placement plan, then the backend returns a registry version and slots for each selected platform.
-- [ ] CA 2: Given an unsupported platform is requested, when placement plan is requested, then the backend returns `422` and does not produce a fake slot.
-- [ ] CA 3: Given an X/Twitter text post has no image, when preflight runs, then publish is allowed and an optional image recommendation can be returned.
-- [ ] CA 4: Given an Instagram/TikTok vertical short has no video asset, when preflight runs, then it returns a blocking missing `vertical_short_video` issue and does not call the provider.
-- [ ] CA 5: Given a selected project image is active and compatible with `social_post_image`, when it is set primary for the content placement, then preflight includes it in the platform media plan.
-- [ ] CA 6: Given a selected asset belongs to another project, when preflight runs, then it returns `403` or a blocking issue without provider call or leaked metadata.
-- [ ] CA 7: Given a selected asset is tombstoned, local-only or degraded, when preflight runs, then it blocks publish media for that slot.
-- [ ] CA 8: Given a YouTube target has a video asset but no thumbnail, when the plan is shown, then `landscape_video` and `video_thumbnail` are represented separately.
-- [ ] CA 9: Given two assets are candidates for one placement, when the user sets one primary, then only the primary is used in preflight.
-- [ ] CA 10: Given publish succeeds, when content metadata is updated, then used `asset_id`, `placement_id`, `platform`, `registry_version` and provider result are recorded without signed URL tokens.
-- [ ] CA 11: Given provider returns a platform media error after preflight, when publish response is persisted, then normalized error metadata is visible and asset selections remain unchanged.
+- [x] CA 1: Given an owned content item with selected platforms, when the app requests a placement plan, then the backend returns a registry version and slots for each selected platform.
+- [x] CA 2: Given an unsupported platform is requested, when placement plan is requested, then the backend returns `422` and does not produce a fake slot.
+- [x] CA 3: Given an X/Twitter text post has no image, when preflight runs, then publish is allowed and an optional image recommendation can be returned.
+- [x] CA 4: Given an Instagram/TikTok vertical short has no video asset, when preflight runs, then it returns a blocking missing `PLC_VERTICAL_SHORT_VIDEO` issue and does not call the provider.
+- [x] CA 5: Given a selected project image is active and compatible with `PLC_SOCIAL_POST_IMAGE`, when it is set primary for the content placement, then preflight includes it in the platform media plan.
+- [x] CA 6: Given a selected asset belongs to another project or user, when preflight runs, then it returns a sanitized `404`/blocking issue without provider call or leaked metadata.
+- [x] CA 7: Given a selected asset is tombstoned, local-only or degraded, when preflight runs, then it blocks publish media for that slot.
+- [ ] CA 8: Given a YouTube target has a video asset but no thumbnail, when the plan is shown, then `PLC_LANDSCAPE_VIDEO` and `PLC_VIDEO_THUMBNAIL` are represented separately.
+- [x] CA 9: Given two assets are candidates for one placement, when the user sets one primary, then only the primary is used in preflight.
+- [x] CA 10: Given publish succeeds, when content metadata is updated, then used `asset_id`, `placement_id`, `platform`, `registry_version`, `mediaContract`, logical provider request id and provider result are recorded without signed URL tokens, provider secrets or raw legacy URLs.
+- [x] CA 11: Given provider returns a platform media error after preflight, when publish response is persisted, then normalized error metadata is visible and asset selections remain unchanged.
 - [ ] CA 12: Given Flutter has a stale registry version, when publish preflight returns a newer registry version, then the UI refreshes the plan before final publish action.
-- [ ] CA 13: Given legacy `media_urls` are sent by an old client, when no `asset_placements` are present, then the backend follows the documented compatibility path and never treats those URLs as validated project assets.
-- [ ] CA 14: Given the editor opens the placement picker for `blog_hero`, when the user selects a compatible active image, then the UI shows the slot as attached and the usage is persisted with that placement.
+- [x] CA 13: Given legacy `media` or `media_urls` are sent without `media_contract_version`, when publish runs, then the backend validates the public HTTP(S) inputs, uses only the isolated legacy path, records `mediaContract=legacy_raw_urls`, and never treats the URLs as project assets; declaring `asset_placements.v1` with either raw field returns `400`/`PFL_LEGACY_CONFLICT` before provider access.
+- [ ] CA 14: Given the editor opens the placement picker for `PLC_BLOG_HERO`, when the user selects a compatible active image, then the UI shows the slot as attached and the usage is persisted with that placement.
 - [ ] CA 15: Given a missing image slot supports generation, when the user chooses generate, then the action opens the guided Image Robot/Flux path scoped to project, content and placement.
+- [x] CA 16: Given English and French registry responses, when entries are compared, then immutable IDs and registry version remain identical while labels are localized; legacy aliases resolve to the same IDs and unknown IDs are rejected.
+- [x] CA 17: Given a validated primary Bunny asset, when publish reaches Zernio, then the outbound payload uses `mediaItems` with a token-free durable URL and does not use the obsolete local `media` key.
+- [x] CA 18: Given a provider timeout and a retry of the same logical publish, when the request is retried, then the same `x-request-id` is reused and an `existingPost` response is reconciled without a duplicate lifecycle transition.
+- [x] CA 19: Given two concurrent primary selections for one content/placement, when both finish, then exactly one active primary remains within the same project/user boundary.
+- [x] CA 20: Given any registry rule, when its provenance is inspected, then it names only relevant platform documentation; Instagram exact dimensions/durations remain advisory until direct Meta refresh.
+- [ ] CA 21: Given the new Flutter publish flow, when its request is inspected, then it sends `media_contract_version=asset_placements.v1`, sends neither `media` nor `media_urls`, and blocks final publish while registry refresh or blocking preflight issues remain.
+
+## Test Contract
+
+- `surface`: authenticated FastAPI registry/plan/preflight/publish endpoints, project asset usage service, Flutter editor placement sheet, picker integration and platform preview.
+- `proof_profile`: focused backend unit/router/integration tests, focused Dart model/provider/widget tests, static analysis, documentation/metadata lint and bounded manual UI QA.
+- `proof_order`:
+  1. Backend registry/model/service unit tests.
+  2. Backend router and publish integration tests with the provider client mocked.
+  3. Flutter model/provider tests.
+  4. Flutter editor/picker/preview widget tests and `flutter analyze`.
+  5. Metadata/documentation review, then manual responsive QA for the editor sheet and publish blocking/recovery states.
+- `checklist_path`: not applicable; the required scenarios are the acceptance criteria and manual QA list in this spec, and no external-device-only platform behavior is introduced.
+- `required_scenario_ids`: `CA 1` through `CA 21`, including already-proved `CA 16` as a regression.
+- `required_results`: all focused automated tests pass; backend provider mocks prove zero calls on every blocking issue; outbound payload and logs contain no storage/provider token; Flutter analyze is clean for touched code; manual QA proves required versus recommended states and usable compact layout.
+- `exception_with_proof`: if browser/device manual QA is unavailable, widget tests at compact and wide constraints plus a recorded visual-proof gap may support implementation verification, but UI closure remains partial until the missing visual proof is completed.
+- `exception_without_proof`: not allowed for ownership isolation, raw/validated media separation, provider-call blocking, token redaction, primary uniqueness, stale-registry blocking or idempotent retry.
+- Runtime diagnostics must record UTC timestamp, content id, project id, canonical platform/placement, registry version, issue code, media contract and provider result status. They must not record auth tokens, API keys, signed query strings, raw legacy URLs, content bodies or provider payload secrets.
 
 ## Test Strategy
 
@@ -446,10 +521,30 @@ Add a backend-owned social placement registry and publish preflight layer. The r
   - Generate/select a Flux image for social post image; verify it appears as attached and publish preflight uses it.
   - Tombstone an attached asset; verify the slot becomes blocked and asks for replacement.
 
+## Product Coherence Gate
+
+- Business/product alignment: the shared business promise is publishable output with predictable execution; the app product serves creators who lose continuity across disconnected content tools. Guided placement planning directly supports both without adding a separate creative product.
+- Journey/capability alignment: the critical moment is the final publish decision. Success is a visible per-platform readiness state; failure remains in the editor with a precise choose/generate/replace recovery action and no external call.
+- Architecture alignment: FastAPI remains the auth, ownership, registry and publish authority; Flutter remains a typed consumer; the existing project asset library remains the only asset governance layer; Zernio remains the external adapter.
+- Atlas: not applicable because this repository has no `shipglows_data/workflow/atlas/approved-surfaces.json`; no protection-level claim is made.
+- Cross-contract result: no conflict, material orphan or unresolved gap found. The reviewed Flux spec is sufficient only for reusing already-existing profile/generation APIs; this chantier does not expand or certify the wider Flux provider spec.
+
+## OWASP Security Gate
+
+- Risk level: high because this changes authenticated object access, persisted asset selection and an external publication side effect.
+- Top 10:2025 categories considered: `A01 Broken Access Control`, `A05 Injection`, `A06 Insecure Design`, `A08 Software or Data Integrity Failures`, `A09 Security Logging and Alerting Failures`, and `A10 Mishandling of Exceptional Conditions`.
+- Trust/data boundaries: Clerk-authenticated Flutter input -> FastAPI authorization and Pydantic boundary -> owner-scoped Turso project/content/usage rows -> durable Bunny delivery URL -> server-held Zernio credential and external create-post API.
+- Selected ASVS v5.0.0 requirements: `v5.0.0-2.2.2` trusted-layer input validation; `v5.0.0-2.3.3` transactional business operation; `v5.0.0-8.2.2` object-level authorization; `v5.0.0-8.3.1` server-side authorization enforcement; `v5.0.0-14.2.6` minimum sensitive-data response; `v5.0.0-16.3.2` failed-authorization logging; `v5.0.0-16.5.1` non-disclosing errors; `v5.0.0-16.5.3` fail-secure exceptional behavior.
+- Required proof: `401` unauthenticated tests; owner/cross-owner project-content-asset tests; canonical allowlist validation; transaction/primary concurrency test; no-provider-call assertions for every block; redaction assertions; timeout/idempotency/reconciliation tests; sanitized security-event logging assertions.
+- Residual gap and owner route: strict numeric Instagram rules remain advisory until direct Meta documentation is refreshed. This does not block V1 because media-required behavior is independently confirmed and the spec forbids strict numeric enforcement before that refresh.
+
 ## Risks
 
 - Platform rules drift quickly. Mitigation: backend-owned versioned registry, doc sources and periodic refresh; UI does not own final constraints.
-- Existing raw `media_urls` behavior can undermine asset validation if left as an uncontrolled production path. Mitigation: define a documented legacy compatibility path and route new UI through asset placements only.
+- Existing raw `media`/`media_urls` behavior can undermine asset validation if mixed into the new path. Mitigation: explicit mutually exclusive media contracts, public-URL validation and legacy telemetry; new Flutter always declares `asset_placements.v1`.
+- The current provider adapter uses the local `media` field while current Zernio docs specify `mediaItems`. Mitigation: Task 5 replaces the outbound provider field and asserts the exact mocked payload before any completion claim.
+- Timeout retries can duplicate external posts. Mitigation: persist and reuse one provider `x-request-id` per logical attempt and reconcile `existingPost` responses.
+- Concurrent primary selection can leave ambiguous media intent. Mitigation: owner-scoped transactional replacement, the existing partial unique-index invariant for non-null canonical placements, and a race-focused test.
 - Exact Instagram constraints could be wrong if inferred from cached snippets. Mitigation: block strict Instagram rule enforcement until manual official refresh.
 - Publish provider abstraction may not expose every platform-specific media field we want. Mitigation: start with internal preflight and provider-compatible media payloads; store provider errors for later refinement.
 - Media metadata may be incomplete for older assets. Mitigation: warnings for optional rules, blocking only where durability/media kind/status is required; add repair/generation actions.
@@ -459,9 +554,16 @@ Add a backend-owned social placement registry and publish preflight layer. The r
 ## Execution Notes
 
 - Read first:
+  - `lab/api/services/social_placement_registry.py`
+  - `lab/api/routers/placement_registry.py`
   - `lab/api/routers/publish.py`
   - `lab/api/routers/assets.py`
+  - `lab/api/services/project_asset_storage.py`
+  - `lab/api/routers/video_timelines.py` (`_resolve_project_asset_render_url` behavior)
   - `lab/status/service.py`
+  - `lab/tests/integration/test_publish_router.py`
+  - `app/lib/data/services/api_service.dart`
+  - `app/lib/providers/providers.dart`
   - `app/lib/presentation/screens/editor/platform_preview_sheet.dart`
   - `app/lib/presentation/widgets/project_asset_picker.dart`
 - Implementation order:
@@ -471,29 +573,43 @@ Add a backend-owned social placement registry and publish preflight layer. The r
   - Flutter models/API/provider.
   - Editor/preview UI slots.
   - Docs.
+- Validation commands:
+  - From `lab/`: `python3 -m pytest tests/test_placement_registry.py tests/test_social_placement_preflight.py tests/test_project_assets_service.py tests/test_project_assets_router.py tests/integration/test_publish_router.py`.
+  - From `app/`: `flutter test test/data/social_placement_test.dart test/providers/social_placement_provider_test.dart test/presentation/screens/editor/editor_screen_test.dart test/presentation/screens/editor/platform_preview_sheet_test.dart test/presentation/widgets/project_asset_picker_test.dart`.
+  - From `app/`: `flutter analyze`.
+  - From repo root: `node tools/design-tokens/generate_app_theme_tokens.mjs --check` and `python3 /home/claude/shipglows/tools/shipglows_metadata_lint.py shipglows_data/workflow/specs/SPEC-social-placement-format-registry-2026-05-13.md`.
 - Prefer static code-defined registry for V1, not a database table. Add persistence later only if operators need live registry edits.
 - Do not add a new asset store. Use existing `project_assets` and `project_asset_usages`.
 - Do not introduce new social provider SDKs in this spec. Keep Zernio/LATE integration boundary.
 - Do not implement automatic crop/transcode in V1; return clear issues and generation/replacement actions.
-- Stop condition: if Zernio's current API cannot accept the media payloads required by selected platforms, split a provider contract spec before shipping publish-side changes.
-- Stop condition: if strict Instagram publishing constraints are needed for launch, manually refresh Meta official docs before `/sf-ready`.
+- Stop condition: if Zernio's current API cannot represent a required V1 placement, return `PFL_PROVIDER_CONTRACT_UNSUPPORTED` with no provider call and split a provider-contract follow-up before shipping that required path; do not invent a payload field.
+- Stop condition: if strict numeric Instagram constraints become launch requirements, pause those rules and refresh direct Meta official docs. Otherwise keep current media-required behavior plus numeric hints conservative/advisory.
+- Stop condition: if primary usage lookup cannot be made tenant-safe and atomic with the current schema, route a bounded additive Turso/libSQL migration before publish integration; do not weaken ownership or uniqueness.
+- Stop condition: if raw and validated media would be mixed, fail closed with `PFL_LEGACY_CONFLICT` rather than choosing silently.
 
 ## Open Questions
 
-None blocking for this spec draft. The implementation can start with existing ContentGlows channels and conservative registry rules. Before strict Instagram enforcement, a human or agent with working Meta docs access must refresh the official Instagram Content Publishing documentation and update the registry source metadata.
+None.
 
 ## Skill Run History
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
 | 2026-05-13 03:21:04 UTC | sf-spec | GPT-5 Codex | Created social placement format registry spec from contentglows inspiration, existing asset library and official social platform docs. | Draft spec saved. | /sf-ready Social placement format registry |
+| 2026-08-08 00:05:00 UTC | 001-sg-build | GPT-5 Codex | Implemented the backend registry tranche with immutable short IDs, EN/FR labels, legacy alias resolution, validation and authenticated read-only endpoint. | Partial: focused registry tests and Python compilation pass; placement plan, preflight, publish integration and Flutter consumers remain pending. | Continue placement plan and preflight tranche. |
+| 2026-08-08 18:38:59 UTC | 101-sg-ready | gpt-5.6-sol | Reviewed remaining tasks against current backend/Flutter code, current Zernio provider docs, the conservative Instagram rule, legacy media transition and OWASP/Test Contracts. | Ready: exact routes, ownership boundaries, provider payload/idempotency, proof and stop conditions are implementation-safe. | /102-sg-start Social Placement Format Registry |
+| 2026-08-08 19:01:11 UTC | 102-sg-start | gpt-5.6-sol | Implemented Tasks 3-5 and backend portions of Tasks 13/15: typed plan/preflight routes, owner-scoped atomic primary selection, compatibility/storage validation, server-resolved Zernio mediaItems, exclusive legacy contract, idempotent retry and sanitized metadata. | Implemented backend tranche: 97 focused tests pass plus Python compilation and route registration checks; Flutter Tasks 6-12/14 and app docs remain pending. | Continue the Flutter placement consumer tranche, then combined verification. |
 
 ## Current Chantier Flow
 
-- sf-spec: done for this draft.
-- sf-ready: not launched.
-- sf-start: not launched.
-- sf-verify: not launched.
-- sf-end: not launched.
-- sf-ship: not launched.
-- Next command: `/sf-ready Social placement format registry`.
+- 100-sg-spec: complete; existing spec retained and tightened for current code/provider truth.
+- 101-sg-ready: ready on 2026-08-08.
+- 102-sg-start: in progress; backend Tasks 3-5 and 13 are implemented, with backend documentation for Task 15 complete.
+- backend registry: implemented and verified.
+- placement plan/preflight: implemented and focused tests pass.
+- publish integration: implemented and focused tests pass.
+- Flutter consumers: pending.
+- 103-sg-verify: pending.
+- 104-sg-end: pending.
+- 005-sg-ship: not authorized in this run.
+- Next step: continue Flutter Tasks 6-12/14 plus app documentation, then run combined verification.

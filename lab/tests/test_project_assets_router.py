@@ -9,6 +9,7 @@ from api.models.status import (
     AttachGlobalProjectAssetRequest,
     AssetTagModerationRequest,
     ProjectAssetRecommendationRequest,
+    ProjectAssetCategoryAssignmentRequest,
     QueueAssetUnderstandingRequest,
     RetryAssetUnderstandingRequest,
     ClearProjectAssetPrimaryRequest,
@@ -113,6 +114,47 @@ async def test_list_project_assets_returns_items(monkeypatch):
     assert response.items[0].id == "asset-1"
     assert response.items[0].storage_uri is None
     assert response.items[0].storage_descriptor["state"] == "durable_bunny"
+    assert response.items[0].suggested_export_file_name == "uncategorized-file.png"
+
+
+@pytest.mark.asyncio
+async def test_category_catalog_and_assignment_routes(monkeypatch):
+    monkeypatch.setattr(router, "require_owned_project_id", AsyncMock(return_value="project-1"))
+    captured = {}
+
+    def _assign(**kwargs):
+        captured.update(kwargs)
+        asset = _asset()
+        payload = asset.model_dump()
+        payload["category_id"] = "editorial_visual"
+        payload["subcategory_id"] = "infographic"
+        payload["original_file_name"] = "file.png"
+        asset.model_dump = lambda: payload
+        return asset
+
+    fake_service = SimpleNamespace(assign_project_asset_category=_assign)
+    monkeypatch.setattr(router, "get_status_service", lambda: fake_service)
+
+    catalog = await router.get_project_asset_category_catalog_route(
+        project_id="project-1",
+        locale="fr-FR",
+        current_user=SimpleNamespace(user_id="user-1"),
+    )
+    assigned = await router.assign_project_asset_category(
+        project_id="project-1",
+        asset_id="asset-1",
+        request=ProjectAssetCategoryAssignmentRequest(
+            category_id="editorial_visual",
+            subcategory_id="infographic",
+        ),
+        current_user=SimpleNamespace(user_id="user-1"),
+    )
+
+    assert catalog.locale == "fr"
+    assert catalog.categories[0].label == "Identité de marque"
+    assert assigned.category_id == "editorial_visual"
+    assert assigned.suggested_export_file_name == "editorial_visual-infographic-file.png"
+    assert captured["user_id"] == "user-1"
 
 
 @pytest.mark.asyncio

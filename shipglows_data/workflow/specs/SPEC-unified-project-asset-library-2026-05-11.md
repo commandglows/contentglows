@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 17:20:22 UTC"
-updated: "2026-05-11"
-updated_at: "2026-05-11 19:16:02 UTC"
+updated: "2026-08-07"
+updated_at: "2026-08-07 19:12:55 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -84,7 +84,7 @@ Unified Project Asset Library
 
 ## Status
 
-Ready. This spec defines the cross-media project asset library that sits above the visual picker, upload/reference, Image Robot, video editor, and AI audio/music specs. It does not replace those specs; it normalizes their outputs into one backend-owned inventory so project assets can be found, governed, reused and audited across content workflows.
+Ready. This spec defines the cross-media project asset library that sits above the visual picker, upload/reference, Image Robot, video editor, and AI audio/music specs. It does not replace those specs; it normalizes their outputs into one backend-owned inventory so project assets can be found, governed, reused and audited across content workflows. Contract version 1.1 adds the bounded canonical asset-category slice: stable locale-neutral IDs, localized catalog labels, original filename preservation and safe export-name suggestions are implemented without changing the broader cross-media delivery status.
 
 ## User Story
 
@@ -93,6 +93,8 @@ En tant que créatrice ContentGlows authentifiée travaillant dans un projet, je
 ## Minimal Behavior Contract
 
 For an authenticated creator inside an owned project, ContentGlows exposes a unified project asset library that lists and filters server-known assets across media types, including generated images, uploaded references, local-only captures, thumbnails, video covers, narration tracks, music beds, Remotion background configs and future render artifacts. The library returns only owned, safe metadata plus backend-approved preview/playback URLs, lets editor-linked flows pick or reuse eligible assets for a content placement or video version, and lets users tombstone assets from future reuse while preserving 30-day history and existing provenance. If ownership, eligibility, storage, source metadata, stale version, or media-kind compatibility fails, the action is rejected with a recoverable typed error and no downstream publish/render state changes. The edge case easy to miss is treating this as a public DAM or upload playground: V1 is a project-scoped, workflow-guided inventory and picker layer, not a public media browser or a generic file manager.
+
+Category metadata uses a small backend-owned, versioned ContentGlows registry rather than a broad sound-library taxonomy. `category_id` and optional `subcategory_id` are stable, locale-neutral identifiers; English and French labels are presentation data returned by the catalog endpoint. A category is one deliberate organizational assignment and is distinct from the many AI-generated semantic tags in asset understanding. The backend preserves `original_file_name`, never rewrites stored objects to enforce a naming convention, and returns a traversal-safe `suggested_export_file_name` for optional export use.
 
 ## Success Behavior
 
@@ -106,12 +108,16 @@ For an authenticated creator inside an owned project, ContentGlows exposes a uni
 - Given an asset is tombstoned, when future list/search/picker calls run, then default results hide it and new usage is blocked while existing usage/provenance remains readable for 30 days.
 - Given an existing content still uses a tombstoned asset, when the user opens its usage detail, then the system shows historical usage and requires a replacement before future publish/render if the placement needs a durable active asset.
 - Given storage metadata is durable, when previews are returned, then images use backend-approved Bunny/CDN/proxy URLs, audio uses signed or render-safe playback URLs, and procedural backgrounds use schema-validated configs rather than arbitrary code.
+- Given the category registry is requested in English or French, when the catalog is returned, then the same stable category/subcategory IDs are paired with localized labels and one explicit registry version.
+- Given a creator assigns or clears a category, when the mutation succeeds, then exact project/user-scoped category filters reflect it and AI understanding tags are unchanged.
+- Given an asset has an unsafe, accented or path-like original filename, when its API representation is returned, then the original value remains preserved while `suggested_export_file_name` is portable, contains no path traversal, and keeps only a safe extension.
 
 ## Error Behavior
 
 - Missing Clerk auth returns `401` and exposes no asset metadata.
 - A foreign, missing, archived-without-access, or cross-project asset/project/content/video id returns `403` or `404` without leaking names, prompts, storage paths, provider request ids or signed URLs.
 - Missing `project_id` or unsupported filters return `400` with supported filter names; the backend must not silently broaden the result set.
+- Unknown category IDs, a subcategory without a category, or a subcategory outside its parent category return `400` and do not mutate the asset.
 - Selecting an asset for an incompatible placement, media kind, aspect ratio, duration, source, storage state, or video version returns a typed eligibility error and makes no usage mutation.
 - Selecting a `local_only`, failed, deleted, tombstoned, foreign, provider-temporary, or stale asset for publish/render/reference use is rejected server-side.
 - If two requests race to set a primary asset for the same content placement or video placement, the backend leaves at most one primary link or returns a conflict requiring refresh.
@@ -132,6 +138,8 @@ Create a backend-owned unified project asset domain that indexes all reusable pr
 ## Scope In
 
 - Unified project asset inventory across images, uploaded references, local captures, thumbnails, video covers, audio narration, music beds, Remotion background configs and render artifacts.
+- Small versioned canonical category registry with stable category/subcategory IDs and localized English/French labels.
+- Exact category/subcategory filtering, user assignment/clearing, original filename preservation and backend-generated safe export-name suggestions.
 - Backend-owned project-level list, search, filter, detail, usage, selection, primary/candidate, tombstone, restore-within-history-window, and eligibility APIs.
 - Media kind taxonomy for `image`, `audio`, `music`, `video`, `thumbnail`, `video_cover`, `background_config`, `render_output`, `capture`, and future-safe extension.
 - Source taxonomy for `device_capture`, `image_robot`, `manual_upload`, `visual_reference`, `video_audio_ai`, `video_music_ai`, `remotion_background`, `remotion_render`, `reels_import`, and future backend-safe sources.
@@ -164,6 +172,8 @@ Create a backend-owned unified project asset domain that indexes all reusable pr
 - Every library operation is project-scoped and Clerk-authenticated.
 - Existing project ownership remains the V1 permission model unless a separate roles spec is ready before implementation.
 - `content_assets` compatibility must be preserved; existing capture metadata and content-scoped routes cannot break.
+- Existing `file_name` behavior remains compatible; `original_file_name` is preserved separately and category assignment never renames a stored object.
+- Canonical category IDs are backend-owned and versioned. Localized labels and AI semantic tags must not be persisted into `category_id` or `subcategory_id`.
 - Asset creation remains delegated to owner features; this library should not create generated image/audio/video outputs by itself.
 - Client requests pass asset ids, project ids, content ids, video ids, placement ids and guided actions, not arbitrary URLs or trusted metadata claims.
 - Storage URLs returned to Flutter must be backend-approved, redacted in diagnostics, and refreshed rather than persisted as authority.
@@ -216,6 +226,8 @@ Create a backend-owned unified project asset domain that indexes all reusable pr
 - Provider output URLs are never treated as durable library state until the backend stores or validates a durable Bunny/proxy storage descriptor.
 - Procedural background configs are assets only when schema-validated and allowlisted; they are not executable code.
 - Flutter cache and UI state are never a permission boundary.
+- Category assignment is single-valued organizational metadata; AI understanding tags remain separately many-valued, confidence-bearing suggestions.
+- Export filename suggestions are convenience metadata only. They never become a storage locator, overwrite the original filename, or grant file access.
 
 ## Links & Consequences
 
@@ -397,6 +409,14 @@ Create a backend-owned unified project asset domain that indexes all reusable pr
   - Validate with : docs review plus `rg` for stale claims such as standalone media library, public DAM, guaranteed rights or arbitrary URL import.
   - Notes : Also update feature docs for Image Robot, video editor and local capture if their asset flows use the library.
 
+- [x] Task 18: Add canonical asset category metadata slice
+  - Fichiers : `lab/status/asset_categories.py`, `lab/status/db.py`, `lab/status/schemas.py`, `lab/status/service.py`, `lab/api/models/status.py`, `lab/api/routers/assets.py`, `app/lib/data/models/project_asset.dart`, `app/lib/data/services/api_service.dart`, `app/lib/providers/providers.dart`, `app/lib/presentation/widgets/project_asset_picker.dart`
+  - Action : Add a small versioned backend registry, stable category/subcategory persistence, exact filters, localized catalog retrieval, assignment/clearing, original filename preservation and safe export suggestions; expose the supported fields and controls through the existing Flutter picker.
+  - User story link : Lets creators organize reusable media consistently across language and workflow boundaries without conflating curated organization with AI tags.
+  - Depends on : Existing unified asset backend/client/picker slice.
+  - Validate with : Focused backend registry/service/router/migration tests, Flutter model/provider/picker tests, focused analyze and design-token drift scan.
+  - Notes : No binary rename, folder automation, public DAM behavior or 550-entry sound taxonomy is introduced.
+
 ## Acceptance Criteria
 
 - [ ] CA 1: Given a user owns project A and not project B, when they list/search project A assets, then only project A assets are returned and project B ids return ownership-safe 403/404.
@@ -414,6 +434,9 @@ Create a backend-owned unified project asset domain that indexes all reusable pr
 - [ ] CA 13: Given active project changes while requests are in flight, when stale responses return, then Flutter ignores them and clears context-specific selection.
 - [ ] CA 14: Given diagnostics capture an asset error, when logs are reviewed, then no Bunny AccessKey, signed token, provider secret, raw provider payload, raw audio bytes or local device path is present.
 - [ ] CA 15: Given the feature ships, when navigating the app, then no public DAM, arbitrary URL import, or free provider playground is introduced by this chantier.
+- [x] CA 16: Given English and French category catalogs, when their entries are compared, then category/subcategory IDs and registry version are stable while labels are localized.
+- [x] CA 17: Given a valid or invalid category assignment, when the backend processes it, then exact filters and audit events update only for valid assignments and AI understanding tags remain separate.
+- [x] CA 18: Given an existing or path-like filename, when asset metadata is returned, then the original filename is preserved and the suggested export filename is portable and traversal-safe.
 
 ## Test Strategy
 
@@ -489,13 +512,14 @@ None. Product assumptions locked for this draft: "global" means unified within a
 | 2026-05-11 19:25:26 UTC | sf-verify | GPT-5 Codex | Verified the editor workflow integration against the unified project asset library contract: inspected app-bar/project-context wiring, picker bottom-sheet target parameters, editor widget tests, provider/picker tests, targeted analyze, format check and metadata lint. | Verified: targeted editor integration passes; broader Image/Video/Audio workflow integrations remain future gaps, not blockers for this editor slice. | /sf-end Unified Project Asset Library editor integration slice or /sf-start Image/Video/Audio asset workflow integrations |
 | 2026-05-11 19:45:39 UTC | sf-end | GPT-5 Codex | Closed the verified editor integration slice, updated tracker/changelog bookkeeping, and kept the broader Image/Video/Audio integrations as future non-blocking work. | Closed: backend/client/editor asset-library slice is ready to ship; full cross-media spec remains partial by design. | /sf-ship Unified Project Asset Library editor integration slice |
 | 2026-05-11 19:45:39 UTC | sf-ship | GPT-5 Codex | Prepared quick ship for the verified unified project asset library editor integration slice with targeted checks and explicit staging scope. | Shipped after targeted validation and push. | /sf-start Image/Video/Audio asset workflow integrations when ready |
+| 2026-08-07 19:15:30 UTC | 001-sg-build | GPT-5 Codex | Implemented the canonical asset category slice: versioned EN/FR registry, idempotent Turso fields/index, exact filtering, category assignment audit events, safe export-name suggestions, and Flutter picker integration. | Implemented and verified locally: 34 backend tests and 18 Flutter tests pass; focused Flutter analysis is clean; design-token scan confirms the new visual values resolve through canonical tokens. | Continue remaining Image/Video/Audio guided integrations when prioritized. |
 
 ## Current Chantier Flow
 
 - sf-spec: done
 - sf-ready: ready
-- sf-start: partial (backend/client/editor slice implemented; Image/Video/Audio guided integrations remain future work)
-- sf-verify: verified (targeted editor workflow integration)
+- sf-start: partial (backend/client/editor and canonical taxonomy slices implemented; Image/Video/Audio guided integrations remain future work)
+- sf-verify: verified (targeted editor workflow integration and canonical taxonomy slice)
 - sf-end: closed (editor integration slice)
 - sf-ship: shipped (targeted slice)
 

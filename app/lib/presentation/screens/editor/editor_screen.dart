@@ -12,6 +12,7 @@ import '../../theme/app_theme.dart';
 import '../../widgets/app_error_view.dart';
 import '../../widgets/project_asset_picker.dart';
 import 'editor_formatting.dart';
+import 'placement_panel.dart';
 import 'platform_preview_sheet.dart';
 
 class EditorScreen extends ConsumerStatefulWidget {
@@ -32,6 +33,7 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
 
   ContentItem? _item;
   Future<ContentAuditTrail>? _auditFuture;
+  String? _placementLoadKey;
 
   @override
   void initState() {
@@ -54,7 +56,33 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
       _bodyController.text = item.body;
       _hasChanges = false;
       _auditFuture = _loadAuditTrail(item.id);
+      _schedulePlacementRefresh(item);
     }
+  }
+
+  void _schedulePlacementRefresh(ContentItem item) {
+    final key = '${item.id}:${item.channels.map((channel) => channel.name).join(',')}';
+    if (_placementLoadKey == key) return;
+    _placementLoadKey = key;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _refreshPlacements(item);
+    });
+  }
+
+  Future<void> _refreshPlacements(ContentItem item) async {
+    if (item.channels.isEmpty) return;
+    final accountsState = await ref.read(publishAccountsStateProvider.future);
+    if (!mounted || _item?.id != item.id) return;
+    await ref
+        .read(socialPlacementProvider(item.id).notifier)
+        .refresh(
+          planPlatforms: item.channels.map((channel) => channel.name).toList(),
+          publishTargets: publishPlacementTargetsFor(
+            item.channels,
+            accountsState.accounts,
+          ),
+          locale: ref.read(projectAssetCategoryLocaleProvider),
+        );
   }
 
   Future<ContentAuditTrail> _loadAuditTrail(String contentId) async {
@@ -145,6 +173,12 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
             icon: const Icon(Icons.devices_rounded),
             tooltip: context.tr('Platform preview'),
             onPressed: () => _showPlatformPreview(item),
+          ),
+        if (item.channels.isNotEmpty)
+          IconButton(
+            icon: const Icon(Icons.view_module_outlined),
+            tooltip: context.tr('Publication assets'),
+            onPressed: () => _showPlacementPanel(item),
           ),
         IconButton(
           icon: const Icon(Icons.perm_media_rounded),
@@ -838,6 +872,7 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
   Widget _buildBottomBar(ContentItem item) {
     final theme = Theme.of(context);
     final palette = AppTheme.paletteOf(context);
+    final placementState = ref.watch(socialPlacementProvider(item.id));
     return Container(
       padding: EdgeInsets.fromLTRB(
         20,
@@ -877,7 +912,9 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
               onPressed: () => _publish(item),
               icon: const Icon(Icons.send_rounded),
               label: Text(
-                _hasChanges
+                placementState.hasBlockingIssues
+                    ? context.tr('Fix publication assets')
+                    : _hasChanges
                     ? context.tr('Save & Publish')
                     : context.tr('Publish'),
               ),
@@ -896,6 +933,15 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
   }
 
   Future<void> _publish(ContentItem item) async {
+    final placementState = ref.read(socialPlacementProvider(item.id));
+    if (placementState.isBusy || placementState.needsRegistryRefresh) {
+      await _refreshPlacements(item);
+      if (!mounted) return;
+    }
+    if (ref.read(socialPlacementProvider(item.id)).hasBlockingIssues) {
+      _showPlacementPanel(item);
+      return;
+    }
     if (_hasChanges) {
       try {
         final api = ref.read(apiServiceProvider);
@@ -996,10 +1042,23 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
       isScrollControlled: true,
       useSafeArea: true,
       builder: (_) => PlatformPreviewSheet(
+        contentId: item.id,
         title: _titleController.text,
         body: _bodyController.text,
         channels: item.channels,
         type: item.type,
+      ),
+    );
+  }
+
+  Future<void> _showPlacementPanel(ContentItem item) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (_) => FractionallySizedBox(
+        heightFactor: 0.9,
+        child: PlacementPanelSheet(item: item),
       ),
     );
   }

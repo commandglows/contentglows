@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: lab
 created: "2026-06-29"
-updated: "2026-06-29"
+updated: "2026-08-08"
 status: reviewed
 source_skill: sf-docs
 scope: technical
@@ -160,6 +160,24 @@ Security and retention rules:
 - Tombstoned assets keep readable provenance for the 30-day history window and are hidden from default list calls.
 - Storage descriptors redact signed query tokens and provider URLs.
 - Bunny upload, delete, and signing remain owned by upload or media-generation features.
+
+## Social Placement Registry and Publish Media Contract
+
+The backend owns the versioned format, platform, and placement vocabulary. Stable IDs are persisted and never translated or silently renamed. V1 includes `FMT_*` content formats, `PLAT_*` platforms and these placement IDs: `PLC_BLOG_HERO`, `PLC_INLINE_IMAGE`, `PLC_SOCIAL_POST_IMAGE`, `PLC_LINK_THUMBNAIL`, `PLC_VIDEO_THUMBNAIL`, `PLC_VERTICAL_SHORT_VIDEO`, `PLC_LANDSCAPE_VIDEO`, `PLC_REEL_COVER`, `PLC_CAPTION_TRACK`, and `PLC_AUDIO_TRACK`.
+
+Authenticated routes:
+
+- `GET /api/placement-registry?locale=en|fr` returns the complete localized registry and immutable registry version.
+- `GET /api/content/{content_id}/placement-plan?platform=<value>` resolves an owned content item, canonical format/platform aliases, and required or recommended slots. Repeated `platform` query values are supported.
+- `POST /api/publish/preflight` authorizes the content project and each publish account, resolves primary `project_asset_usages` server-side, and returns per-platform readiness, stable issue codes, sanitized slot summaries, and no storage URL.
+
+New publish clients send `media_contract_version="asset_placements.v1"`. In this contract, `media` and `media_urls` are rejected with `PFL_LEGACY_CONFLICT`; the backend selects only canonical primary usages for the owned content and placement. Assets must be active, owner-scoped, media-compatible, and backed by a durable Bunny delivery descriptor. Blocking issues prevent every provider call.
+
+The provider adapter sends Zernio `mediaItems`, built only from server-resolved token-free Bunny URLs. Each logical create-post attempt persists one UUID and sends it as `x-request-id`; reconciliation retries reuse it, and an `existingPost` response is treated as the original result. Publish metadata records stable asset/placement/platform IDs, registry version, media contract, sanitized media types and normalized provider results. It does not persist raw legacy URLs, signed delivery URLs, provider payloads, account IDs, auth tokens or provider error bodies.
+
+Legacy compatibility is isolated: omitting `media_contract_version` while sending `media` or `media_urls` uses the raw-URL path only. Inputs must be public HTTP(S) image/video URLs, are never mixed with asset usages, and metadata records only `mediaContract="legacy_raw_urls"` plus a count and media types. New Flutter code must not use this path.
+
+Registry rule provenance is platform-specific and versioned. Instagram numeric constraints remain advisory until direct official Meta documentation is refreshed; media-required behavior can still block when independently confirmed.
 
 ## Video Timeline and Remotion Rendering
 

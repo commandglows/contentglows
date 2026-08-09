@@ -287,6 +287,10 @@ class ProjectAssetResponse(BaseModel):
     source: str
     mime_type: Optional[str] = None
     file_name: Optional[str] = None
+    original_file_name: Optional[str] = None
+    category_id: Optional[str] = None
+    subcategory_id: Optional[str] = None
+    suggested_export_file_name: str
     storage_uri: Optional[str] = None
     storage_locator: Optional[Dict[str, Any]] = None
     storage_descriptor: Dict[str, Any] = Field(default_factory=dict)
@@ -387,6 +391,29 @@ class ProjectAssetCleanupReportResponse(BaseModel):
 class ProjectAssetListResponse(BaseModel):
     items: List[ProjectAssetResponse]
     total: int
+
+
+class ProjectAssetSubcategoryResponse(BaseModel):
+    subcategory_id: str
+    label: str
+
+
+class ProjectAssetCategoryResponse(BaseModel):
+    category_id: str
+    label: str
+    subcategories: List[ProjectAssetSubcategoryResponse] = Field(default_factory=list)
+
+
+class ProjectAssetCategoryCatalogResponse(BaseModel):
+    version: str
+    locale: str
+    supported_locales: List[str]
+    categories: List[ProjectAssetCategoryResponse]
+
+
+class ProjectAssetCategoryAssignmentRequest(BaseModel):
+    category_id: Optional[str] = Field(default=None, max_length=64)
+    subcategory_id: Optional[str] = Field(default=None, max_length=64)
 
 
 class AssetSemanticTagResponse(BaseModel):
