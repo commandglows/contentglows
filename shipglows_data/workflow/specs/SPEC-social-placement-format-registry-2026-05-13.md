@@ -5,8 +5,8 @@ artifact_version: "1.1.0"
 project: "contentglows"
 created: "2026-05-13"
 created_at: "2026-05-13 03:21:04 UTC"
-updated: "2026-08-08"
-updated_at: "2026-08-08 19:01:11 UTC"
+updated: "2026-08-09"
+updated_at: "2026-08-09 19:26:33 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -377,7 +377,7 @@ Add a backend-owned social placement registry and publish preflight layer. The r
   - Validate with: `lab/tests/integration/test_publish_router.py` covering success, missing required media, incompatible/foreign/tombstoned asset, required provider-contract gap, `mediaItems` shape, asset/legacy conflict, legacy-only success metadata, public-URL rejection, timeout retry id reuse, `existingPost`, and zero provider calls for every blocking preflight.
   - Notes: Keep content ownership, provider account authorization and duplicate publish checks before external calls. Never return raw storage tokens, request ids or provider secrets. Optional provider-unsupported placements remain warnings; required ones block.
 
-- [ ] Task 6: Add Flutter models/API methods for registry and preflight
+- [x] Task 6: Add Flutter models/API methods for registry and preflight
   - File: `app/lib/data/models/social_placement.dart`
   - Action: Create typed Dart models matching plan/preflight responses, including canonical ids, localized labels, slot state, stable issue codes, per-platform results, `canPublish` and `registryVersion`.
   - User story link: Gives the app typed slot data instead of hard-coded platform assumptions.
@@ -385,7 +385,7 @@ Add a backend-owned social placement registry and publish preflight layer. The r
   - Validate with: Dart model parsing tests.
   - Notes: Include unknown-field tolerance for registry evolution.
 
-- [ ] Task 7: Add Flutter API client methods
+- [x] Task 7: Add Flutter API client methods
   - File: `app/lib/data/services/api_service.dart`
   - Action: Add methods for the exact plan and preflight endpoints; change new publish calls to send `media_contract_version: asset_placements.v1`; remove `media_urls` from the new UI path while retaining deserialization/backward compatibility needed by queued legacy actions.
   - User story link: Connects editor/publish UI to backend slots.
@@ -393,7 +393,7 @@ Add a backend-owned social placement registry and publish preflight layer. The r
   - Validate with: Existing API service test pattern or mocked provider tests.
   - Notes: Resolve local id mappings like existing project asset methods. Offline publish remains blocked as today; do not queue a new placement publish with stale registry state or unresolved ids.
 
-- [ ] Task 8: Add placement state/provider
+- [x] Task 8: Add placement state/provider
   - File: `app/lib/providers/providers.dart`
   - Action: Add a notifier or extend existing content/editor state to load placement plans, cache registry version, track preflight issues and ignore stale project/content responses.
   - User story link: Shows current slot status in the editor and publish review.
@@ -401,7 +401,7 @@ Add a backend-owned social placement registry and publish preflight layer. The r
   - Validate with: Provider tests for project switch, stale response, missing slot, selected asset refresh and preflight warnings.
   - Notes: Follow the revision pattern already used by `ProjectAssetLibraryNotifier`. A newer backend registry version invalidates the cached plan and disables the final publish action until refresh/preflight completes.
 
-- [ ] Task 9: Update project asset picker for slot-specific selection
+- [x] Task 9: Update project asset picker for slot-specific selection
   - File: `app/lib/presentation/widgets/project_asset_picker.dart`
   - Action: Accept the slot's canonical placement/platform constraints, show backend-derived eligibility or incompatibility, and persist the chosen asset as primary with `usage_action=publish_media`, `target_type=content` and the canonical placement id.
   - User story link: Lets creators attach the right asset without leaving guided flow.
@@ -409,7 +409,7 @@ Add a backend-owned social placement registry and publish preflight layer. The r
   - Validate with: Widget tests for eligible, missing, incompatible, tombstoned and primary states.
   - Notes: Do not turn the picker into a free media library; keep the slot context visible.
 
-- [ ] Task 10: Update editor and platform preview surfaces
+- [x] Task 10: Update editor and platform preview surfaces
   - File: `app/lib/presentation/screens/editor/editor_screen.dart`
   - Action: Add a placement panel or publish-readiness section that appears from the content editor and uses `ProjectAssetPicker` per slot.
   - User story link: Makes asset placement part of the current editor, not a separate playground.
@@ -417,7 +417,7 @@ Add a backend-owned social placement registry and publish preflight layer. The r
   - Validate with: Editor widget tests for opening placement panel and selecting a slot asset.
   - Notes: Keep mobile layout compact; use a linked bottom sheet/screen rather than crowding the main editor. Use the canonical token JSON/generator and existing theme tokens for spacing, sizes, colors and motion.
 
-- [ ] Task 11: Update platform preview sheet
+- [x] Task 11: Update platform preview sheet
   - File: `app/lib/presentation/screens/editor/platform_preview_sheet.dart`
   - Action: Show selected/missing asset slots for each platform preview and surface blocking/warning issue states.
   - User story link: Lets creators see what will be published per platform.
@@ -425,7 +425,7 @@ Add a backend-owned social placement registry and publish preflight layer. The r
   - Validate with: Widget tests for Twitter text-only allowed, Instagram missing media blocking, YouTube thumbnail separation and LinkedIn optional image warning.
   - Notes: Avoid hard-coding official limits as final truth in the UI; localize messages from stable backend issue codes and preserve the backend's required/warning severity.
 
-- [ ] Task 12: Register generation actions from placement slots
+- [x] Task 12: Register generation actions from placement slots
   - File: `app/lib/presentation/screens/editor/editor_screen.dart`
   - Action: For supported empty image slots, reuse `listImageProfiles` and `queueImageGenerationFromProfile` in the existing API client from a content/project/placement-scoped sheet. When no compatible profile exists, keep Choose available and show a localized explanation instead of inventing a free-form generator.
   - User story link: Makes missing slots actionable.
@@ -449,14 +449,14 @@ Add a backend-owned social placement registry and publish preflight layer. The r
   - Validate with: use the focused Flutter command in `Execution Notes`.
   - Notes: Add focused tests rather than broad golden coverage.
 
-- [ ] Task 15: Update docs
+- [x] Task 15: Update docs
   - File: `lab/README.md`, `shipglows_data/technical/lab/backend-runtime-and-product-apis.md`, `shipglows_data/technical/app/architecture.md`, `CHANGELOG.md`
   - Action: Document the placement registry, supported ids, plan/preflight endpoints, `mediaItems` provider mapping, idempotency, server-authoritative asset selection, Flutter refresh behavior and the explicit legacy `media`/`media_urls` transition.
   - User story link: Keeps future agents and operators from reintroducing raw URL publishing.
   - Depends on: Tasks 1-5.
   - Validate with: Documentation review and links to external docs in this spec.
   - Notes: Mention that exact platform rules require periodic refresh.
-  - Backend progress: `lab/README.md` and the canonical lab API contract now document registry, plan/preflight, `mediaItems`, idempotency, server authority and isolated legacy behavior. App architecture and changelog updates remain with the Flutter/end lifecycle slices.
+  - Progress: backend documentation, Flutter architecture and changelog now document registry, plan/preflight, `mediaItems`, idempotency, server authority, stale-registry recovery and isolated legacy behavior.
 
 ## Acceptance Criteria
 
@@ -599,17 +599,19 @@ None.
 | 2026-08-08 00:05:00 UTC | 001-sg-build | GPT-5 Codex | Implemented the backend registry tranche with immutable short IDs, EN/FR labels, legacy alias resolution, validation and authenticated read-only endpoint. | Partial: focused registry tests and Python compilation pass; placement plan, preflight, publish integration and Flutter consumers remain pending. | Continue placement plan and preflight tranche. |
 | 2026-08-08 18:38:59 UTC | 101-sg-ready | gpt-5.6-sol | Reviewed remaining tasks against current backend/Flutter code, current Zernio provider docs, the conservative Instagram rule, legacy media transition and OWASP/Test Contracts. | Ready: exact routes, ownership boundaries, provider payload/idempotency, proof and stop conditions are implementation-safe. | /102-sg-start Social Placement Format Registry |
 | 2026-08-08 19:01:11 UTC | 102-sg-start | gpt-5.6-sol | Implemented Tasks 3-5 and backend portions of Tasks 13/15: typed plan/preflight routes, owner-scoped atomic primary selection, compatibility/storage validation, server-resolved Zernio mediaItems, exclusive legacy contract, idempotent retry and sanitized metadata. | Implemented backend tranche: 97 focused tests pass plus Python compilation and route registration checks; Flutter Tasks 6-12/14 and app docs remain pending. | Continue the Flutter placement consumer tranche, then combined verification. |
+| 2026-08-09 00:00:00 UTC | 102-sg-start | GPT-5 Codex | Completed Flutter Tasks 6-12: typed placement contracts, API/client state, stale-response handling, slot-aware picker, editor panel, preview readiness summary and scoped image-generation action. | Implemented; Flutter test/analyze proof is intentionally deferred by operator VM policy. | Run focused Flutter proof and combined verification on an approved machine. |
+| 2026-08-09 19:26:33 UTC | 300-sg-docs | GPT-5 Codex | Aligned Flutter architecture and changelog with the social placement registry, server-authoritative preflight and legacy media transition. | Documentation updated; runtime proof remains deferred by operator VM policy. | Run focused Flutter proof and combined verification on an approved machine. |
 
 ## Current Chantier Flow
 
 - 100-sg-spec: complete; existing spec retained and tightened for current code/provider truth.
 - 101-sg-ready: ready on 2026-08-08.
-- 102-sg-start: in progress; backend Tasks 3-5 and 13 are implemented, with backend documentation for Task 15 complete.
+- 102-sg-start: implemented; backend Tasks 3-5 and 13 plus Flutter Tasks 6-12 are implemented, and Task 15 documentation is complete.
 - backend registry: implemented and verified.
 - placement plan/preflight: implemented and focused tests pass.
 - publish integration: implemented and focused tests pass.
-- Flutter consumers: pending.
-- 103-sg-verify: pending.
+- Flutter consumers: implemented; focused test/analyze evidence deferred by operator VM policy.
+- 103-sg-verify: pending combined proof on an approved machine.
 - 104-sg-end: pending.
 - 005-sg-ship: not authorized in this run.
-- Next step: continue Flutter Tasks 6-12/14 plus app documentation, then run combined verification.
+- Next step: run focused Flutter proof for Task 14, then combined verification.

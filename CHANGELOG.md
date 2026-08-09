@@ -3,8 +3,11 @@
 ### Added
 - The Brand Profiles flow now lets creators set up an active video style before requesting a branded preview, so the required video blueprint is visible and recoverable in the app.
 - Content generated from an Angle now retains the selected persona identifier as content metadata for downstream context and preview selection.
+- Placement-aware publishing: creators can review required and recommended asset slots in the editor and platform previews before publishing.
 
 ### Changed
+- Social publishing now uses a server-authoritative placement preflight and validated primary project assets. New clients use `asset_placements.v1`; legacy raw media URLs remain isolated for compatibility and cannot mix with validated placements.
+
 - Brand profile editing uses plain-language CTA and caption-style fields instead of raw JSON input, while retaining any existing advanced values.
 
 ## [2026-07-12]

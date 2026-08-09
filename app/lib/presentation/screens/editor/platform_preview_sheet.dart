@@ -1,26 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../data/models/content_item.dart';
+import '../../../data/models/social_placement.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../providers/providers.dart';
 import '../../theme/app_theme.dart';
+import '../../theme/app_theme_tokens.dart';
 
-class PlatformPreviewSheet extends StatelessWidget {
+class PlatformPreviewSheet extends ConsumerWidget {
   const PlatformPreviewSheet({
     super.key,
+    required this.contentId,
     required this.title,
     required this.body,
     required this.channels,
     required this.type,
   });
 
+  final String contentId;
   final String title;
   final String body;
   final List<PublishingChannel> channels;
   final ContentType type;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final previews = _buildPreviews(context);
+    final placementState = ref.watch(socialPlacementProvider(contentId));
 
     return DraggableScrollableSheet(
       initialChildSize: 0.85,
@@ -46,7 +53,8 @@ class PlatformPreviewSheet extends StatelessWidget {
             child: Text(context.tr('Platform Previews'),
                 style: theme.textTheme.titleMedium),
           ),
-          const SizedBox(height: 12),
+          _PlacementReadinessSummary(state: placementState),
+          const SizedBox(height: AppThemeTokens.spacing3),
           Expanded(
             child: ListView.builder(
               controller: scrollController,
@@ -120,6 +128,86 @@ class PlatformPreviewSheet extends StatelessWidget {
         .replaceAll(RegExp(r'^\s*\d+\.\s', multiLine: true), '')
         .replaceAll(RegExp(r'\n{3,}'), '\n\n')
         .trim();
+  }
+}
+
+class _PlacementReadinessSummary extends StatelessWidget {
+  const _PlacementReadinessSummary({required this.state});
+
+  final SocialPlacementState state;
+
+  @override
+  Widget build(BuildContext context) {
+    if (state.isBusy) {
+      return const Padding(
+        padding: EdgeInsets.only(top: AppThemeTokens.spacing3),
+        child: LinearProgressIndicator(),
+      );
+    }
+    final platforms = state.displayPlatforms;
+    if (platforms.isEmpty) return const SizedBox.shrink();
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppThemeTokens.spacing4,
+        AppThemeTokens.spacing3,
+        AppThemeTokens.spacing4,
+        AppThemeTokens.spacing1,
+      ),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(AppThemeTokens.spacing3),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                context.tr('Asset readiness'),
+                style: theme.textTheme.titleSmall,
+              ),
+              for (final platform in platforms)
+                Padding(
+                  padding: const EdgeInsets.only(top: AppThemeTokens.spacing2),
+                  child: _PlacementPlatformRow(platform: platform),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PlacementPlatformRow extends StatelessWidget {
+  const _PlacementPlatformRow({required this.platform});
+
+  final PlatformPlacementPlan platform;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final blocked = !platform.canPublish;
+    final color = blocked ? theme.colorScheme.error : AppTheme.approveColor;
+    final attached = platform.slots.where((slot) => slot.isAttached).length;
+    return Row(
+      children: [
+        Icon(
+          blocked ? Icons.error_outline_rounded : Icons.check_circle_outline_rounded,
+          color: color,
+          size: AppThemeTokens.textLg,
+        ),
+        const SizedBox(width: AppThemeTokens.spacing2),
+        Expanded(
+          child: Text(
+            '${platform.label} · $attached/${platform.slots.length}',
+            style: theme.textTheme.bodyMedium,
+          ),
+        ),
+        Text(
+          blocked ? context.tr('Blocked') : context.tr('Ready'),
+          style: theme.textTheme.labelMedium?.copyWith(color: color),
+        ),
+      ],
+    );
   }
 }
 

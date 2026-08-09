@@ -133,6 +133,12 @@ The app is structured as a **single Flutter client boundary** with backend data 
   - swipe/publish affordances stay disabled unless readiness is publishable
   - publish preflight blockers are surfaced on-card before a publish attempt
   - opening `/editor/:id/video` is an explicit recovery or refinement action, not the default publish path
+- Social placement publishing is project/content scoped:
+  - the Flutter editor and platform previews render localized placement-plan and preflight hints from FastAPI; they do not own platform rules
+  - the client selects a primary project asset for a canonical `PLC_*` placement, then requests preflight with the backend registry version
+  - FastAPI remains authoritative for asset ownership, lifecycle, durable delivery and compatibility; it resolves the selected primary usages server-side
+  - new publish requests declare `media_contract_version=asset_placements.v1` and do not send `media` or `media_urls`; the isolated legacy URL path remains backend-only compatibility behavior
+  - a stale registry or blocking preflight issue disables final publish until the plan is refreshed or the required slot is repaired
 - Android local capture remains local-first:
   - screenshot PNG and recording MP4 are stored in app-scoped storage
   - every session requires fresh MediaProjection consent
