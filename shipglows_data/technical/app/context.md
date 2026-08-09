@@ -69,7 +69,10 @@ next_step: "/sf-docs update shipglows_data/technical/app/context.md"
   - Projects, workspace/settings, creator profile, personas, content pipeline, integrations, analytics-like views, feedback.
   - `Project Intelligence V1`: read project intelligence status, source inventory, extracted facts, recommendations, provider readiness, upload text-like sources, remove sources, and convert recommendations into Idea Pool items.
   - `Video Timeline V1`: online-only timeline editing and preview/final render orchestration for `/editor/:id/video`, with `lab` as the public API boundary and the Remotion worker hidden behind backend contracts. Product execution reference: `shipglows_data/workflow/specs/monorepo/SPEC-professional-video-editor-capability-roadmap-2026-08-09.md` (Filmora/PixVerse-inspired, one-canonical-timeline approach).
-  - `Brand Profiles`: project-scoped rule records loaded through `brandProfilesStateProvider` and changed through `BrandProfileController`. Settings exposes them at `/settings/branding`; saved rules can become the default for subsequent generations. Preview impact selects completed content, calls `generateBrandedVideoFromContent`, then hands off to `/editor/:id/video`. It never creates a local render model or writes timeline draft JSON.
+  - `Brand Profiles`: project-scoped rule records loaded through `brandProfilesStateProvider` and changed through `BrandProfileController`. Settings exposes them at `/settings/branding`; saved rules can become the default for subsequent generations.
+  - `Brand templates`: resolved blueprint instances generated from profiles (and optional saved blueprint selections) are immutable inputs to `generateBrandedVideoFromContent`; they drive automatic timeline assembly with format-specific derivation (reels, shorts, linkedin, youtube), and do not replace the timeline model.
+  - Preview flow: completed content selection calls canonical branded-generation then opens `/editor/:id/video` so edits remain on the same timeline object.
+  - Persona metadata in the preview content list is optional; if persona data is unavailable, selection still continues and only labels degrade.
   - Android local capture: screenshot/recording flows backed by MediaProjection and app-scoped storage.
 - **Offline domain:**
   - Read-through cache + mutation queue + temp-ID reconciliation via offline stores and queue controller.
@@ -109,6 +112,7 @@ next_step: "/sf-docs update shipglows_data/technical/app/context.md"
 - **Project Intelligence** is project-scoped and backend-constrained; offline queue does not cover file/binary uploads for this surface.
 - **Video Timeline** never calls the Remotion worker directly from Flutter; signed playback URLs are ephemeral response data and must not be persisted with their query tokens.
 - **Brand Profiles** use the authenticated project-scoped FastAPI contract. The client may request a canonical branded generation with a saved `brand_profile_id`, but it must not treat an unsaved form as render input or retroactively alter an in-flight generation.
+- **Brand template / blueprint flow** must remain rule-only: the app may choose profile/blueprint IDs and defaults, but only the backend-owned `/api/video-timelines/from-content/branded-generate` contract can create/update timeline draft content.
 
 ## Testing references
 - `test/core` validates providers, retry behavior, queue mapping, project onboarding validation, AI guards.

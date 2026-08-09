@@ -100,7 +100,12 @@ void main() {
                   {
                     'id': 'blueprint-1',
                     'status': 'active',
+                    'name': 'Default',
+                    'project_id': 'project-1',
+                    'user_id': 'user-1',
                     'brand_profile_id': 'brand-2',
+                    'created_at': '2026-07-08T12:00:00Z',
+                    'updated_at': '2026-07-08T12:00:00Z',
                   },
                 ]),
               );
@@ -111,7 +116,12 @@ void main() {
                 jsonEncode({
                   'id': 'blueprint-2',
                   'status': jsonDecode(body)['status'],
+                  'name': 'Short-form',
+                  'project_id': 'project-1',
+                  'user_id': 'user-1',
                   'brand_profile_id': jsonDecode(body)['brand_profile_id'],
+                  'created_at': '2026-07-08T12:10:00Z',
+                  'updated_at': '2026-07-08T12:10:00Z',
                 }),
               );
               break;
@@ -158,6 +168,9 @@ void main() {
         projectId: 'project-1',
         brandProfileId: 'brand-2',
       );
+      final allBlueprints = await api.fetchBrandProfilesBlueprintsForProject(
+        projectId: 'project-1',
+      );
       final blueprint = await api.createBrandVideoBlueprint(
         projectId: 'project-1',
         brandProfileId: 'brand-2',
@@ -181,8 +194,10 @@ void main() {
       expect(profiles.single.name, 'Primary');
       expect(created.id, 'brand-2');
       expect(updated.isDefault, isTrue);
-      expect(blueprints.single['status'], 'active');
-      expect(blueprint['id'], 'blueprint-2');
+      expect(blueprints.single.isActive, isTrue);
+      expect(blueprints.single.name, 'Default');
+      expect(allBlueprints.length, 1);
+      expect(blueprint.id, 'blueprint-2');
       expect(dispatch?['content_record_id'], 'content-1');
       expect(
         capturedRequests
@@ -192,6 +207,7 @@ void main() {
           'GET /api/brand-profiles',
           'POST /api/brand-profiles',
           'PATCH /api/brand-profiles/brand-2',
+          'GET /api/brand-video-blueprints',
           'GET /api/brand-video-blueprints',
           'POST /api/brand-video-blueprints',
           'POST /api/psychology/dispatch-pipeline',
@@ -204,7 +220,7 @@ void main() {
         'brandProfileId': 'brand-2',
       });
       expect(
-        jsonDecode(capturedRequests[5].body)['angle_data']['persona_id'],
+        jsonDecode(capturedRequests[6].body)['angle_data']['persona_id'],
         'persona-1',
       );
     },

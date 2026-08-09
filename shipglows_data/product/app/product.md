@@ -77,10 +77,16 @@ next_step: "/sf-docs audit shipglows_data/product/app/product.md"
 - **Video Source Intake V1 scope:** collecting and validating project-scoped sources, saving an exact ready revision, and optionally handing that revision to generation. Video generation execution, editing, rendering and publication remain separate stages.
 - **Ahead-of-time branded video scope:** the feed can request safe refreshes of branded-video candidates, consume compact readiness states, surface preflight blockers directly on the card, and keep the video editor as an explicit optional branch instead of the default path.
 - **Brand profile scope:** Settings (`/settings/branding`) owns reusable, project-scoped visual and editorial rules for future branded-video generations. A saved profile can be selected as default; a branding-impact preview first selects completed content, then uses the canonical branded-generation route and opens the resulting video in `/editor/:id/video`. The branding surface never renders locally or mutates an existing timeline draft. A persona remains associated with its content rather than the profile.
+- **Branding template scope:** brand profiles resolve into versioned blueprint objects (brand + format + archetype rules) that drive draft assembly. A blueprint defines reusable motion presets, scene grammar, caption style, transitions, CTA behavior, and export constraints; the branding screen now exposes a format-derivation preview (Reels, Shorts, LinkedIn, YouTube) to validate archetype behavior by channel. Changing the template does not rewrite in-flight drafts, it changes the rule input for next generation/regeneration runs.
 - **Android-only V1 scope:** local device screenshot and screen-recording capture with Android consent, app-scoped storage, preview, discard, and share/export.
 - **Partially in scope / not finished:** end-to-end external publish execution by channel.
   - Route and UX for publish actions exists in some paths, but full channel-account linking and feedback loop are not fully closed yet.
 - **Explicitly out of scope in this repo:** marketing site, public SEO/landing content, pricing mechanics, and full AI orchestration decisions (owned by surrounding repos and services).
+
+## Competitors and inspirations
+
+- Filmora and PixVerse are explicit inspiration buckets for editing ergonomics and AI-assisted rough-cut workflows.
+- The canonical constraint remains unchanged: no second rendering engine; branding must stay a rule layer and the timeline remains the single editable content object.
 
 ## Proven functional domains
 - Entry and access control (`/entry`, `/auth`, `/onboarding`, route guards).

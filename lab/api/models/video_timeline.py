@@ -349,6 +349,21 @@ class VideoTimelineResponse(BaseModel):
 
 
 class BrandedVideoGenerationResponse(BaseModel):
+    brand_profile_id: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("brandProfileId", "brand_profile_id"),
+        serialization_alias="brandProfileId",
+    )
+    brand_template_id: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("brandTemplateId", "brand_template_id"),
+        serialization_alias="brandTemplateId",
+    )
+    brand_template_revision: int | None = Field(
+        default=None,
+        validation_alias=AliasChoices("brandTemplateRevision", "brand_template_revision"),
+        serialization_alias="brandTemplateRevision",
+    )
     timeline: VideoTimelineResponse
     version: VideoTimelineVersionResponse
     preview_job: VideoTimelineRenderJobResponse
@@ -389,6 +404,21 @@ class BrandedVideoFeedCandidateResponse(BaseModel):
 
     content_id: str = Field(serialization_alias="contentId")
     project_id: str = Field(serialization_alias="projectId")
+    brand_profile_id: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("brandProfileId", "brand_profile_id"),
+        serialization_alias="brandProfileId",
+    )
+    brand_template_id: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("brandTemplateId", "brand_template_id"),
+        serialization_alias="brandTemplateId",
+    )
+    brand_template_revision: int | None = Field(
+        default=None,
+        validation_alias=AliasChoices("brandTemplateRevision", "brand_template_revision"),
+        serialization_alias="brandTemplateRevision",
+    )
     format_preset: FormatPreset = Field(serialization_alias="formatPreset")
     readiness: BrandedFeedReadiness
     status: str

@@ -37,6 +37,7 @@ from status.service import ContentNotFoundError, ProjectAssetEligibilityError
 
 
 ACTIVE_RENDER_STATUSES = {"queued", "in_progress"}
+RUN_IN_PROGRESS_STATUSES = {"queued", "preview_render", "final_render", "waiting_capacity"}
 ELIGIBLE_VIDEO_CONTENT_TYPES = {"video_script", "reel", "short"}
 READY_TO_PUBLISH = "ready_to_publish"
 PREPARING = "preparing"
@@ -57,6 +58,9 @@ CLIP_ASSET_MEDIA_KINDS: dict[str, set[str]] = {
 class BrandedVideoFeedCandidate:
     content_id: str
     project_id: str
+    brand_profile_id: str | None
+    brand_template_id: str | None
+    brand_template_revision: int | None
     format_preset: str
     readiness: str
     status: str
@@ -94,6 +98,7 @@ class BrandedVideoGenerationService:
             brand_profile_id=brand_profile_id,
             blueprint_id=blueprint_id,
         )
+        blueprint_revision: int | None = None
         try:
             if not self._is_eligible_video_content(content_record):
                 return await self._set_run_state(
@@ -104,6 +109,7 @@ class BrandedVideoGenerationService:
                     blocker_code="video_content_required",
                     blocker_summary="Only video-compatible content can be prepared ahead of time.",
                     blockers=["video_content_required"],
+                    brand_template_revision=blueprint_revision,
                 )
             if not self._is_content_complete(content_record):
                 return await self._set_run_state(
@@ -113,22 +119,36 @@ class BrandedVideoGenerationService:
                     readiness=BLOCKED,
                     blocker_code="content_completion_required",
                     blocker_summary="Complete the content body before preparing a branded video.",
-                    blockers=["content_completion_required"],
-                )
+                blockers=["content_completion_required"],
+                brand_template_revision=blueprint_revision,
+            )
 
-            brand_profile, blueprint = await self._resolve_generation_inputs(
-                project_id=content_record.project_id,
-                current_user=current_user,
-                brand_profile_id=brand_profile_id,
-                blueprint_id=blueprint_id,
-            )
-            run = await branded_video_generation_store.update_run(
-                run_id=run["id"],
-                user_id=current_user.user_id,
-                brand_profile_id=brand_profile["id"],
-                blueprint_id=blueprint["id"],
-                trigger_source=trigger_source,
-            )
+            lock_existing_inputs = self._is_run_in_progress(run) and not _created and bool(run.get("blueprint_id"))
+
+            if lock_existing_inputs:
+                brand_profile, blueprint = await self._resolve_generation_inputs_for_in_progress_run(
+                    run=run,
+                    project_id=content_record.project_id,
+                    current_user=current_user,
+                )
+            else:
+                brand_profile, blueprint = await self._resolve_generation_inputs(
+                    project_id=content_record.project_id,
+                    current_user=current_user,
+                    brand_profile_id=brand_profile_id,
+                    blueprint_id=blueprint_id,
+                )
+                run = await branded_video_generation_store.update_run(
+                    run_id=run["id"],
+                    user_id=current_user.user_id,
+                    brand_profile_id=brand_profile["id"],
+                    blueprint_id=blueprint["id"],
+                    trigger_source=trigger_source,
+                )
+            if isinstance(blueprint.get("revision"), int):
+                blueprint_revision = int(blueprint["revision"])
+            elif isinstance(blueprint.get("revision"), str) and str(blueprint["revision"]).isdigit():
+                blueprint_revision = int(blueprint["revision"])
 
             project_assets = status_service.list_project_assets(
                 project_id=content_record.project_id,
@@ -188,6 +208,7 @@ class BrandedVideoGenerationService:
                     blocker_code=None,
                     blocker_summary=None,
                     blockers=[],
+                    brand_template_revision=blueprint_revision,
                 )
             if preview_job["status"] == "failed" or preview_job.get("stale"):
                 return await self._set_run_state(
@@ -198,6 +219,7 @@ class BrandedVideoGenerationService:
                     blocker_code="preview_render_failed",
                     blocker_summary=preview_job.get("message") or "Preview render failed.",
                     blockers=["preview_render_failed"],
+                    brand_template_revision=blueprint_revision,
                 )
 
             if not version.get("approved_preview_job_id"):
@@ -227,6 +249,7 @@ class BrandedVideoGenerationService:
                     blocker_code=None,
                     blocker_summary=None,
                     blockers=[],
+                    brand_template_revision=blueprint_revision,
                 )
             if final_job["status"] == "failed" or final_job.get("stale"):
                 return await self._set_run_state(
@@ -237,6 +260,7 @@ class BrandedVideoGenerationService:
                     blocker_code="final_render_failed",
                     blocker_summary=final_job.get("message") or "Final render failed.",
                     blockers=["final_render_failed"],
+                    brand_template_revision=blueprint_revision,
                 )
 
             ready, blockers, summary = await self._publish_prerequisites(
@@ -252,6 +276,7 @@ class BrandedVideoGenerationService:
                     blocker_code=blockers[0] if blockers else "publish_prerequisites_required",
                     blocker_summary=summary,
                     blockers=blockers or ["publish_prerequisites_required"],
+                    brand_template_revision=blueprint_revision,
                 )
 
             return await self._set_run_state(
@@ -262,6 +287,7 @@ class BrandedVideoGenerationService:
                 blocker_code=None,
                 blocker_summary=None,
                 blockers=[],
+                brand_template_revision=blueprint_revision,
             )
         except HTTPException as exc:
             detail = exc.detail if isinstance(exc.detail, dict) else {"code": "generation_blocked", "message": str(exc.detail)}
@@ -278,6 +304,7 @@ class BrandedVideoGenerationService:
                 blocker_summary=message if readiness == BLOCKED else None,
                 blockers=[] if readiness == PREPARING else [code],
                 last_error=message if readiness == BLOCKED else None,
+                brand_template_revision=blueprint_revision,
             )
         except (
             ContentNotFoundError,
@@ -297,6 +324,7 @@ class BrandedVideoGenerationService:
                 blocker_summary=str(exc),
                 blockers=["generation_failed"],
                 last_error=str(exc),
+                brand_template_revision=blueprint_revision,
             )
 
     async def list_candidates(
@@ -313,7 +341,12 @@ class BrandedVideoGenerationService:
             content_ids=content_ids,
             limit=limit,
         )
-        return [self._candidate_from_run(run) for run in runs]
+        candidates: list[BrandedVideoFeedCandidate] = []
+        for run in runs:
+            candidates.append(
+                await self._candidate_from_run(run, user_id=current_user.user_id)
+            )
+        return candidates
 
     async def _resolve_generation_inputs(
         self,
@@ -368,6 +401,68 @@ class BrandedVideoGenerationService:
                     detail={"code": "brand_blueprint_required", "message": "Create a brand video blueprint before preparing a branded video."},
                 )
         return brand_profile, blueprint
+
+    async def _resolve_generation_inputs_for_in_progress_run(
+        self,
+        *,
+        run: dict[str, Any],
+        project_id: str,
+        current_user: CurrentUser,
+    ) -> tuple[dict[str, Any], dict[str, Any]]:
+        blueprint_id = run.get("blueprint_id")
+        brand_profile_id = run.get("brand_profile_id")
+
+        if not blueprint_id:
+            return await self._resolve_generation_inputs(
+                project_id=project_id,
+                current_user=current_user,
+                brand_profile_id=brand_profile_id,
+                blueprint_id=None,
+            )
+
+        blueprint = await brand_video_blueprint_store.get_brand_video_blueprint(
+            blueprint_id=blueprint_id,
+            user_id=current_user.user_id,
+        )
+        if not blueprint or blueprint.get("project_id") != project_id:
+            raise HTTPException(
+                status_code=404,
+                detail={
+                    "code": "brand_blueprint_required",
+                    "message": "Brand video blueprint used for this in-progress run is not available anymore.",
+                },
+            )
+        if brand_profile_id and blueprint.get("brand_profile_id") and blueprint["brand_profile_id"] != brand_profile_id:
+            raise HTTPException(
+                status_code=409,
+                detail={"code": "brand_setup_required", "message": "Brand profile changed for active in-progress run."},
+            )
+
+        if brand_profile_id:
+            brand_profile = await brand_profile_store.get_brand_profile(
+                brand_profile_id=brand_profile_id,
+                user_id=current_user.user_id,
+            )
+            if not brand_profile or brand_profile.get("project_id") != project_id:
+                raise HTTPException(
+                    status_code=404,
+                    detail={"code": "brand_setup_required", "message": "Brand profile used for this in-progress run is not available anymore."},
+                )
+        else:
+            brand_profile = await brand_profile_store.get_brand_profile(
+                brand_profile_id=blueprint.get("brand_profile_id"),
+                user_id=current_user.user_id,
+            )
+            if not brand_profile or brand_profile.get("project_id") != project_id:
+                raise HTTPException(
+                    status_code=404,
+                    detail={"code": "brand_setup_required", "message": "Brand profile used for this in-progress run is not available anymore."},
+                )
+
+        return brand_profile, blueprint
+
+    def _is_run_in_progress(self, run: dict[str, Any]) -> bool:
+        return run.get("status") in RUN_IN_PROGRESS_STATUSES
 
     async def _create_or_refresh_timeline(
         self,
@@ -626,6 +721,7 @@ class BrandedVideoGenerationService:
         blocker_summary: str | None,
         blockers: list[str],
         last_error: str | None = None,
+        brand_template_revision: int | None = None,
     ) -> BrandedVideoFeedCandidate:
         updated = await branded_video_generation_store.update_run(
             run_id=run["id"],
@@ -638,12 +734,41 @@ class BrandedVideoGenerationService:
             completed_at=datetime.now(UTC).isoformat() if readiness == READY_TO_PUBLISH else None,
             last_error=last_error,
         )
-        return self._candidate_from_run(updated)
+        return await self._candidate_from_run(
+            updated,
+            user_id=current_user.user_id,
+            brand_template_revision=brand_template_revision,
+        )
 
-    def _candidate_from_run(self, run: dict[str, Any]) -> BrandedVideoFeedCandidate:
+    async def _candidate_from_run(
+        self,
+        run: dict[str, Any],
+        *,
+        user_id: str,
+        brand_template_revision: int | None = None,
+    ) -> BrandedVideoFeedCandidate:
+        brand_template_id = run.get("blueprint_id")
+        blueprint_revision: int | None = brand_template_revision
+        if blueprint_revision is None and isinstance(brand_template_id, str) and brand_template_id:
+            try:
+                blueprint = await brand_video_blueprint_store.get_brand_video_blueprint(
+                    blueprint_id=brand_template_id,
+                    user_id=user_id,
+                )
+            except Exception:
+                blueprint = None
+            if blueprint:
+                blueprint_value = blueprint.get("revision")
+                if isinstance(blueprint_value, int):
+                    blueprint_revision = blueprint_value
+                elif isinstance(blueprint_value, str) and blueprint_value.isdigit():
+                    blueprint_revision = int(blueprint_value)
         return BrandedVideoFeedCandidate(
             content_id=run["content_id"],
             project_id=run["project_id"],
+            brand_profile_id=run.get("brand_profile_id"),
+            brand_template_id=brand_template_id,
+            brand_template_revision=blueprint_revision,
             format_preset=run["format_preset"],
             readiness=run["readiness"],
             status=run["status"],

@@ -176,6 +176,29 @@ Si tu veux la lire autrement :
 - la génération remplit la timeline canonique ;
 - la preview et la publication partent toujours de cette timeline.
 
+## C'est quoi un "template de branding" concrètement ?
+
+Le template de branding est la **traduction opérationnelle** de ton profil de marque en règles vidéo réutilisables :
+
+- structure de scènes par format (vertical, carré, horizontal) ;
+- typographie, couleurs et hiérarchie visuelle ;
+- palette de transitions ;
+- style des textes (CTA, captions, lower thirds, intros/outros) ;
+- rythme de montage (cuts, durée cible par bloc, type de hook) ;
+- règles de sécurité de style (par ex. style agressif refusé sur certains canaux).
+
+Il se compose de 2 couches :
+
+- **Profil de marque projet** : ce que l'utilisateur renseigne (palette, logo, ton, CTA, préférences globales).
+- **Blueprint résolu** : la version prête pour la génération, qui fixe les choix finaux en fonction du format, du type de vidéo et des règles globales.
+
+Les 2 points clés :
+
+- le template n'est **pas** un montage déjà rendu ;
+- il pilote la génération, mais l'unique résultat éditable reste la timeline canonique.
+
+Résultat : un même branding peut déclencher des drafts différents selon le format (IG Reels, LinkedIn, YouTube Short), sans casser la cohérence du système.
+
 ## Pourquoi ce modèle est plus solide qu'un simple générateur
 
 Un bon produit vidéo IA ne doit pas juste "sortir une vidéo".

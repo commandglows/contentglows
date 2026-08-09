@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../data/models/brand_profile.dart';
 import '../../../data/models/content_item.dart';
+import '../../../data/models/persona.dart';
 import '../../../data/models/project_asset.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../providers/providers.dart';
@@ -22,6 +23,7 @@ class BrandProfilesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final activeProjectId = ref.watch(activeProjectIdProvider);
     final profilesState = ref.watch(brandProfilesStateProvider);
+    final blueprintsState = ref.watch(brandProfileBlueprintsStateProvider);
     final groupGap = settingsGroupGap(context);
 
     return Scaffold(
@@ -45,6 +47,7 @@ class BrandProfilesScreen extends ConsumerWidget {
         child: RefreshIndicator(
           onRefresh: () async {
             ref.invalidate(brandProfilesStateProvider);
+            ref.invalidate(brandProfileBlueprintsStateProvider);
             await ref.read(brandProfilesStateProvider.future);
           },
           child: ListView(
@@ -74,10 +77,22 @@ class BrandProfilesScreen extends ConsumerWidget {
                     );
                   }
 
+                  final blueprintState =
+                      blueprintsState.value ??
+                      const BrandProfileBlueprintsState();
                   return Column(
                     children: [
-                      if (state.isDegraded) ...[
-                        _DegradedNotice(message: state.message),
+                      if (state.isDegraded || blueprintState.isDegraded) ...[
+                        _DegradedNotice(
+                          message: state.isDegraded
+                              ? state.message
+                              : blueprintState.message,
+                        ),
+                        SizedBox(height: groupGap),
+                      ],
+                      if (blueprintsState.isLoading) ...[
+                        const SizedBox(height: AppSpacing.sm),
+                        const _LoadingState(),
                         SizedBox(height: groupGap),
                       ],
                       SettingsGroup(
@@ -88,6 +103,10 @@ class BrandProfilesScreen extends ConsumerWidget {
                           for (var i = 0; i < state.items.length; i++)
                             _BrandProfileCard(
                               profile: state.items[i],
+                              blueprints: _blueprintsForProfile(
+                                profileId: state.items[i].id,
+                                blueprints: blueprintState.items,
+                              ),
                               onEdit: () => _openEditor(
                                 context,
                                 ref,
@@ -97,6 +116,10 @@ class BrandProfilesScreen extends ConsumerWidget {
                                 context,
                                 ref,
                                 profile: state.items[i],
+                                blueprints: _blueprintsForProfile(
+                                  profileId: state.items[i].id,
+                                  blueprints: blueprintState.items,
+                                ),
                               ),
                               onSetDefault: state.items[i].isDefault
                                   ? null
@@ -242,16 +265,11 @@ class BrandProfilesScreen extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref, {
     required BrandProfile profile,
+    required List<BrandVideoBlueprint> blueprints,
   }) async {
     try {
-      final blueprints = await ref
-          .read(apiServiceProvider)
-          .fetchBrandVideoBlueprints(
-            projectId: profile.projectId,
-            brandProfileId: profile.id,
-          );
       final hasActiveBlueprint = blueprints.any(
-        (blueprint) => blueprint['status'] == 'active',
+        (blueprint) => blueprint.isActive,
       );
       if (!hasActiveBlueprint) {
         if (!context.mounted) return;
@@ -317,6 +335,7 @@ class BrandProfilesScreen extends ConsumerWidget {
             name: draft.name,
             defaultArchetype: draft.archetype,
           );
+      ref.invalidate(brandProfileBlueprintsStateProvider);
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -362,25 +381,33 @@ class BrandProfilesScreen extends ConsumerWidget {
       return null;
     }
 
-    Map<String, String> personaNames = const {};
-    try {
-      final personas = await ref.read(personasProvider.future);
-      personaNames = {
-        for (final persona in personas)
-          if (persona.id != null) persona.id!: persona.name,
-      };
-    } catch (_) {
-      // Persona context is supplementary for historical content. A temporary
-      // persona lookup failure must not block a safe branded-preview choice.
-    }
+    final personasState = ref.read(personasProvider);
+    final personas = personasState is AsyncData<List<Persona>>
+        ? personasState.value
+        : const <Persona>[];
+    final personaNames = <String, String>{
+      for (final persona in personas)
+        if (persona.id != null) persona.id!: persona.name,
+    };
+
     if (!context.mounted) return null;
-    return showModalBottomSheet<ContentItem>(
+    final result = await showModalBottomSheet<ContentItem>(
       context: context,
       showDragHandle: true,
       builder: (_) =>
           _BrandPreviewContentSheet(items: items, personaNames: personaNames),
     );
+    return result;
   }
+}
+
+List<BrandVideoBlueprint> _blueprintsForProfile({
+  required String profileId,
+  required List<BrandVideoBlueprint> blueprints,
+}) {
+  return blueprints
+      .where((blueprint) => blueprint.brandProfileId == profileId)
+      .toList();
 }
 
 class _HeroCard extends StatelessWidget {
@@ -549,6 +576,7 @@ class _DegradedNotice extends StatelessWidget {
 class _BrandProfileCard extends StatelessWidget {
   const _BrandProfileCard({
     required this.profile,
+    required this.blueprints,
     required this.onEdit,
     required this.onPreview,
     required this.onSetDefault,
@@ -556,6 +584,7 @@ class _BrandProfileCard extends StatelessWidget {
   });
 
   final BrandProfile profile;
+  final List<BrandVideoBlueprint> blueprints;
   final VoidCallback onEdit;
   final VoidCallback onPreview;
   final VoidCallback? onSetDefault;
@@ -567,6 +596,18 @@ class _BrandProfileCard extends StatelessWidget {
     final chipColor = profile.isDefault
         ? AppTheme.approveColor
         : AppTheme.infoColor;
+    final activeBlueprint = _activeBlueprint(blueprints);
+    final formatPresets = deriveBrandTemplatePreviews(
+      profile: profile,
+      activeBlueprint: activeBlueprint,
+      formats: const <BrandVideoTemplateFormat>[
+        BrandVideoTemplateFormat.reels,
+        BrandVideoTemplateFormat.shorts,
+        BrandVideoTemplateFormat.linkedin,
+        BrandVideoTemplateFormat.youtube,
+      ],
+    );
+    final isBlueprintReady = blueprints.any((blueprint) => blueprint.isActive);
 
     return SettingsBlock(
       child: Container(
@@ -645,6 +686,12 @@ class _BrandProfileCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: AppSpacing.sm),
+            _BlueprintTemplateSection(
+              presets: formatPresets,
+              isBlueprintReady: isBlueprintReady,
+              activeBlueprintArchetype: activeBlueprint?.archetypeLabel(),
+            ),
+            const SizedBox(height: AppSpacing.sm),
             Wrap(
               spacing: AppSpacing.xs,
               runSpacing: AppSpacing.xs,
@@ -681,6 +728,113 @@ class _BrandProfileCard extends StatelessWidget {
             ],
           ],
         ),
+      ),
+    );
+  }
+
+  BrandVideoBlueprint? _activeBlueprint(List<BrandVideoBlueprint> blueprints) {
+    for (final blueprint in blueprints) {
+      if (blueprint.isActive) {
+        return blueprint;
+      }
+    }
+    return null;
+  }
+}
+
+class _BlueprintTemplateSection extends StatelessWidget {
+  const _BlueprintTemplateSection({
+    required this.presets,
+    required this.isBlueprintReady,
+    this.activeBlueprintArchetype,
+  });
+
+  final List<BrandVideoTemplatePreview> presets;
+  final bool isBlueprintReady;
+  final String? activeBlueprintArchetype;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AppTheme.paletteOf(context);
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.sm),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppRadii.md),
+        color: palette.elevatedSurface,
+        border: Border.all(color: palette.borderSubtle),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  context.tr('Template by format'),
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              if (!isBlueprintReady)
+                _MiniChip(
+                  label: context.tr('No active template'),
+                  color: AppTheme.warningColor,
+                ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          if (activeBlueprintArchetype != null)
+            Text(
+              context.tr('Archetype: {name}', {
+                'name': activeBlueprintArchetype!,
+              }),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+                height: 1.4,
+              ),
+            ),
+          const SizedBox(height: AppSpacing.xs),
+          for (final preset in presets)
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 92,
+                    child: Text(
+                      preset.format.label,
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.xs),
+                  Expanded(
+                    child: Text(
+                      context.tr(
+                        '{transitions} · {motion} · {cta} · {captions} · {scene}',
+                        {
+                          'transitions': preset.transitionFamily,
+                          'motion': preset.motionIntensity,
+                          'cta': preset.ctaStyle,
+                          'captions': preset.captionStyle,
+                          'scene': preset.scenePacing,
+                        },
+                      ),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                        height: 1.4,
+                      ),
+                    ),
+                  ),
+                  if (!isBlueprintReady) const SizedBox(width: AppSpacing.xs),
+                ],
+              ),
+            ),
+        ],
       ),
     );
   }

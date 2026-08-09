@@ -188,17 +188,19 @@ The canonical roadmap for advanced visual editing is `shipglows_data/workflow/sp
 ## Brand Profiles and Canonical Branded Generation
 
 Brand profiles are authenticated, project-scoped rule records. They provide saved visual and editorial defaults for future branded-video generation; they are not timelines, renderer props, or a second render engine.
+For execution, a profile is resolved into a versioned brand template (blueprint) before assembly.
 
 Authenticated routes live under `/api/brand-profiles`:
 
 - `GET /api/brand-profiles?projectId=<id>` lists profiles only after project ownership succeeds.
 - `POST /api/brand-profiles` creates a profile for an owned project.
 - `GET`, `PATCH`, and `DELETE /api/brand-profiles/{brand_profile_id}` read or mutate only an owned profile.
+- `GET /api/brand-video-blueprints` accepts `projectId` and optional `brandProfileId` to return active/resolved blueprints for the same project scope.
 - A profile includes its `revision`, `is_default` state, and saved colors, font, logo, tone, CTA, caption, motion, transition, and intro/outro rule values.
 
 One project can have multiple profiles but only one default. Deleting the current default is rejected with `409`; clients must explicitly set another profile as default first. A save changes later generation inputs only: it must not rewrite a timeline draft or requalify a generation already in progress.
 
-The only brand-impact preview route is `POST /api/video-timelines/from-content/branded-generate`. It accepts an owned `content_id` with optional saved `brand_profile_id`, `blueprint_id`, `format_preset`, `trigger_source`, and `client_request_id`, and returns the canonical generation/timeline response. Flutter uses this route from Branding after choosing completed content, then navigates to the canonical video editor for optional review. Neither Flutter nor the branding API creates a local render model.
+The only brand-impact preview route is `POST /api/video-timelines/from-content/branded-generate`. It accepts an owned `content_id` with optional saved `brand_profile_id`, `blueprint_id`, `format_preset`, `trigger_source`, and `client_request_id`, and returns the canonical generation/timeline response with template provenance (`brand_profile_id`, blueprint identity/revision, resolved template fields used). Flutter uses this route from Branding after choosing completed content, then navigates to the canonical video editor for optional review. Neither Flutter nor the branding API creates a local render model.
 
 The canonical video timeline lives in `lab`, not in Remotion or Flutter. The backend owns validation, immutable versions, asset eligibility, preview/final job gates, and signed artifact URLs. Remotion is an internal renderer adapter behind `worker`.
 

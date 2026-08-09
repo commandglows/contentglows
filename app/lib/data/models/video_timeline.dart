@@ -750,6 +750,9 @@ class VideoTimelineResponse {
 
 class BrandedVideoGenerationResponse {
   const BrandedVideoGenerationResponse({
+    this.brandProfileId,
+    this.brandTemplateId,
+    this.brandTemplateRevision,
     required this.timeline,
     required this.version,
     required this.previewJob,
@@ -757,6 +760,9 @@ class BrandedVideoGenerationResponse {
     required this.blockers,
   });
 
+  final String? brandProfileId;
+  final String? brandTemplateId;
+  final int? brandTemplateRevision;
   final VideoTimelineResponse timeline;
   final VideoTimelineVersion version;
   final VideoTimelineRenderJob previewJob;
@@ -765,6 +771,15 @@ class BrandedVideoGenerationResponse {
 
   factory BrandedVideoGenerationResponse.fromJson(Map<String, dynamic> json) {
     return BrandedVideoGenerationResponse(
+      brandProfileId: _asStringOrNull(
+        json['brand_profile_id'] ?? json['brandProfileId'],
+      ),
+      brandTemplateId: _asStringOrNull(
+        json['brand_template_id'] ?? json['brandTemplateId'],
+      ),
+      brandTemplateRevision: _asIntOrNull(
+        json['brand_template_revision'] ?? json['brandTemplateRevision'],
+      ),
       timeline: VideoTimelineResponse.fromJson(_asMap(json['timeline'])),
       version: VideoTimelineVersion.fromJson(_asMap(json['version'])),
       previewJob: VideoTimelineRenderJob.fromJson(

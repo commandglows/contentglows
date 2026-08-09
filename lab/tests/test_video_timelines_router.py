@@ -533,6 +533,7 @@ async def test_create_branded_video_preview_generation_creates_version_and_previ
             "default_archetype": "ugc_ad",
             "scene_rules_json": {"sceneDurationFrames": 84},
             "cta_rules_json": {"durationFrames": 36},
+            "revision": 7,
         }
 
     monkeypatch.setattr(router.brand_profile_store, "get_brand_profile", _brand_profile)
@@ -555,6 +556,9 @@ async def test_create_branded_video_preview_generation_creates_version_and_previ
     assert generation.readiness == "preview_ready"
     assert generation.preview_job.status == "completed"
     assert generation.preview_job.artifact is not None
+    assert generation.brand_template_id == "blueprint-1"
+    assert generation.brand_template_revision == 7
+    assert generation.brand_profile_id == "brand-1"
     assert generation.version.timeline_id == generation.timeline.timeline_id
     assert any(clip.asset_id == asset.id for clip in generation.timeline.draft.clips if clip.asset_id)
 
@@ -603,6 +607,7 @@ async def test_create_branded_video_preview_generation_is_idempotent_per_client_
             "default_archetype": "ugc_ad",
             "scene_rules_json": {"sceneDurationFrames": 84},
             "cta_rules_json": {"durationFrames": 36},
+            "revision": 4,
         }
 
     monkeypatch.setattr(router.brand_profile_store, "get_brand_profile", _brand_profile)
@@ -694,6 +699,7 @@ async def test_generate_branded_video_from_content_uses_project_defaults(timelin
                 "default_archetype": "ugc_ad",
                 "scene_rules_json": {"sceneDurationFrames": 84},
                 "cta_rules_json": {"durationFrames": 36},
+                "revision": 4,
             }
         ]
 
@@ -719,6 +725,9 @@ async def test_generate_branded_video_from_content_uses_project_defaults(timelin
     assert response.status_code == 201
     assert generation.readiness == "preview_ready"
     assert generation.preview_job.status == "completed"
+    assert generation.brand_template_id == "blueprint-1"
+    assert generation.brand_template_revision == 4
+    assert generation.brand_profile_id == "brand-1"
     assert generation.version.timeline_id == generation.timeline.timeline_id
     assert any(clip.asset_id == asset.id for clip in generation.timeline.draft.clips if clip.asset_id)
 
@@ -813,14 +822,30 @@ async def test_refresh_branded_video_feed_candidates_returns_ready_to_publish_ca
                 "default_archetype": "ugc_ad",
                 "scene_rules_json": {"sceneDurationFrames": 84},
                 "cta_rules_json": {"durationFrames": 36},
+                "revision": 9,
             }
         ]
+
+    async def _get_brand_video_blueprint(*, blueprint_id: str, user_id: str):
+        if blueprint_id == "blueprint-1":
+            return {
+                "id": "blueprint-1",
+                "project_id": "project-1",
+                "brand_profile_id": "brand-1",
+                "revision": 9,
+            }
+        return None
 
     async def _list_publish_accounts(user_id: str, project_id: str, *, provider: str = "zernio", include_inactive: bool = False):
         return [{"id": "acct-1", "platform": "youtube", "status": "active"}]
 
     monkeypatch.setattr(router.brand_profile_store, "list_brand_profiles", _list_brand_profiles)
     monkeypatch.setattr(router.brand_video_blueprint_store, "list_brand_video_blueprints", _list_brand_video_blueprints)
+    monkeypatch.setattr(router.brand_video_blueprint_store, "get_brand_video_blueprint", _get_brand_video_blueprint)
+    monkeypatch.setattr(
+        "api.services.branded_video_generation_service.brand_video_blueprint_store.get_brand_video_blueprint",
+        _get_brand_video_blueprint,
+    )
     monkeypatch.setattr("api.services.branded_video_generation_service.user_data_store.list_publish_accounts", _list_publish_accounts)
 
     response = await router.refresh_branded_video_feed_candidates(
@@ -839,6 +864,9 @@ async def test_refresh_branded_video_feed_candidates_returns_ready_to_publish_ca
     assert candidate.timeline_id is not None
     assert candidate.version_id is not None
     assert candidate.final_job_id is not None
+    assert candidate.brand_profile_id == "brand-1"
+    assert candidate.brand_template_id == "blueprint-1"
+    assert candidate.brand_template_revision == 9
 
 
 @pytest.mark.asyncio
@@ -901,11 +929,27 @@ async def test_completed_content_branded_feed_preview_and_publish_share_one_cano
                 "default_archetype": "ugc_ad",
                 "scene_rules_json": {"sceneDurationFrames": 84},
                 "cta_rules_json": {"durationFrames": 36},
+                "revision": 5,
             }
         ]
 
+    async def _get_blueprint(*, blueprint_id: str, user_id: str):
+        if blueprint_id == "blueprint-1":
+            return {
+                "id": "blueprint-1",
+                "project_id": project_id,
+                "brand_profile_id": "brand-1",
+                "revision": 5,
+            }
+        return None
+
     monkeypatch.setattr(router.brand_profile_store, "list_brand_profiles", _profiles)
     monkeypatch.setattr(router.brand_video_blueprint_store, "list_brand_video_blueprints", _blueprints)
+    monkeypatch.setattr(router.brand_video_blueprint_store, "get_brand_video_blueprint", _get_blueprint)
+    monkeypatch.setattr(
+        "api.services.branded_video_generation_service.brand_video_blueprint_store.get_brand_video_blueprint",
+        _get_blueprint,
+    )
     monkeypatch.setattr(
         "api.services.branded_video_generation_service.user_data_store.list_publish_accounts",
         AsyncMock(return_value=[{"id": "acct-1", "platform": "youtube", "status": "active"}]),
@@ -919,6 +963,9 @@ async def test_completed_content_branded_feed_preview_and_publish_share_one_cano
     assert candidate.readiness == "ready_to_publish"
     assert candidate.timeline_id and candidate.version_id
     assert candidate.preview_job_id and candidate.final_job_id
+    assert candidate.brand_profile_id == "brand-1"
+    assert candidate.brand_template_id == "blueprint-1"
+    assert candidate.brand_template_revision == 5
 
     version = await ctx.store.get_version(version_id=candidate.version_id, user_id=ctx.user.user_id)
     assert version["approved_preview_job_id"] == candidate.preview_job_id
@@ -948,6 +995,174 @@ async def test_completed_content_branded_feed_preview_and_publish_share_one_cano
     assert published.state == "published"
     assert published.final_job is not None and published.final_job.status == "completed"
     assert published.publish_result["post_id"] == "test-post-1"
+
+
+@pytest.mark.asyncio
+async def test_refresh_branded_video_feed_candidates_keeps_existing_template_while_in_progress(
+    timeline_context, monkeypatch
+):
+    ctx = timeline_context
+    _create_project_asset(ctx)
+    monkeypatch.setattr(
+        router,
+        "require_owned_content_record",
+        AsyncMock(
+            return_value=SimpleNamespace(
+                id="content-1",
+                title="Launch faster",
+                project_id="project-1",
+                content_type="video_script",
+                content_preview="A short summary.",
+                tags=["youtube"],
+                metadata={"content_complete_at": "2026-07-08T00:00:00+00:00"},
+                user_id="user-1",
+            )
+        ),
+    )
+
+    async def _list_brand_profiles(*, user_id: str, project_id: str):
+        return [
+            {
+                "id": "brand-1",
+                "project_id": "project-1",
+                "is_default": True,
+                "primary_colors": ["#FFFFFF"],
+                "secondary_colors": ["#FF4F00"],
+                "font_heading": "Space Grotesk",
+                "font_body": "Manrope",
+                "motion_intensity": "medium",
+                "transition_family": "swipe",
+                "caption_style_defaults": {"textColor": "#FFFFFF"},
+                "cta_defaults": {"primaryText": "Try it now"},
+                "intro_module_enabled": True,
+                "outro_module_enabled": True,
+                "tone_keywords": ["clean"],
+            }
+        ]
+
+    blueprints_call_count = {"n": 0}
+
+    async def _list_brand_video_blueprints(*, user_id: str, project_id: str, brand_profile_id: str | None = None):
+        blueprints_call_count["n"] += 1
+        if blueprints_call_count["n"] >= 2:
+            return [
+                {
+                    "id": "blueprint-2",
+                    "project_id": "project-1",
+                    "brand_profile_id": "brand-1",
+                    "status": "active",
+                    "default_archetype": "ugc_ad",
+                    "scene_rules_json": {"sceneDurationFrames": 84},
+                    "cta_rules_json": {"durationFrames": 36},
+                    "revision": 2,
+                }
+            ]
+        return [
+            {
+                "id": "blueprint-1",
+                "project_id": "project-1",
+                "brand_profile_id": "brand-1",
+                "status": "active",
+                "default_archetype": "ugc_ad",
+                "scene_rules_json": {"sceneDurationFrames": 84},
+                "cta_rules_json": {"durationFrames": 36},
+                "revision": 1,
+            }
+        ]
+
+    async def _brand_profile(*, brand_profile_id: str, user_id: str):
+        assert brand_profile_id == "brand-1"
+        return {
+            "id": "brand-1",
+            "project_id": "project-1",
+            "is_default": True,
+            "primary_colors": ["#FFFFFF"],
+            "secondary_colors": ["#FF4F00"],
+            "font_heading": "Space Grotesk",
+            "font_body": "Manrope",
+            "motion_intensity": "medium",
+            "transition_family": "swipe",
+            "caption_style_defaults": {"textColor": "#FFFFFF"},
+            "cta_defaults": {"primaryText": "Try it now"},
+            "intro_module_enabled": True,
+            "outro_module_enabled": True,
+            "tone_keywords": ["clean"],
+        }
+
+    async def _get_brand_video_blueprint(*, blueprint_id: str, user_id: str):
+        if blueprint_id == "blueprint-1":
+            return {
+                "id": "blueprint-1",
+                "project_id": "project-1",
+                "brand_profile_id": "brand-1",
+                "status": "active",
+                "default_archetype": "ugc_ad",
+                "scene_rules_json": {"sceneDurationFrames": 84},
+                "cta_rules_json": {"durationFrames": 36},
+                "layout_rules_json": {},
+                "motion_rules_json": {},
+                "caption_rules_json": {},
+                "audio_rules_json": {},
+                "export_rules_json": {},
+                "revision": 1,
+            }
+        if blueprint_id == "blueprint-2":
+            return {
+                "id": "blueprint-2",
+                "project_id": "project-1",
+                "brand_profile_id": "brand-1",
+                "status": "active",
+                "default_archetype": "ugc_ad",
+                "scene_rules_json": {"sceneDurationFrames": 84},
+                "cta_rules_json": {"durationFrames": 36},
+                "layout_rules_json": {},
+                "motion_rules_json": {},
+                "caption_rules_json": {},
+                "audio_rules_json": {},
+                "export_rules_json": {},
+                "revision": 2,
+            }
+        return None
+
+    monkeypatch.setattr(router.brand_profile_store, "list_brand_profiles", _list_brand_profiles)
+    monkeypatch.setattr(router.brand_profile_store, "get_brand_profile", _brand_profile)
+    monkeypatch.setattr(router.brand_video_blueprint_store, "list_brand_video_blueprints", _list_brand_video_blueprints)
+    monkeypatch.setattr(router.brand_video_blueprint_store, "get_brand_video_blueprint", _get_brand_video_blueprint)
+    monkeypatch.setattr(
+        "api.services.branded_video_generation_service.brand_video_blueprint_store.get_brand_video_blueprint",
+        _get_brand_video_blueprint,
+    )
+
+    set_video_renderer_adapter_for_tests(_FakeRenderer(completed=False))
+    first = await router.refresh_branded_video_feed_candidates(
+        BrandedVideoFeedCandidateRequest(
+            projectId="project-1",
+            contentIds=["content-1"],
+            triggerSource="feed_refresh",
+        ),
+        current_user=ctx.user,
+    )
+    assert len(first.items) == 1
+    first_item = first.items[0]
+    assert first_item.status == "preview_render"
+    assert first_item.brand_template_id == "blueprint-1"
+    assert first_item.brand_template_revision == 1
+
+    second = await router.refresh_branded_video_feed_candidates(
+        BrandedVideoFeedCandidateRequest(
+            projectId="project-1",
+            contentIds=["content-1"],
+            triggerSource="feed_refresh",
+        ),
+        current_user=ctx.user,
+    )
+    assert len(second.items) == 1
+    second_item = second.items[0]
+    assert second_item.status == "preview_render"
+    assert second_item.brand_template_id == "blueprint-1"
+    assert second_item.brand_template_revision == 1
+    assert second_item.timeline_id == first_item.timeline_id
+    assert second_item.version_id == first_item.version_id
 
 
 @pytest.mark.asyncio

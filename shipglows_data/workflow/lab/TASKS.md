@@ -86,6 +86,39 @@ Spec source: `shipglows_data/workflow/specs/monorepo/SPEC-ai-first-branded-video
 - [x] Review product/docs promise alignment because current docs still frame ContentGlows as human-in-the-loop and not fully automated; update canonical product language if this AI-first direction is adopted.
 - [x] Persist ahead-of-time branded-video generation runs and expose feed readiness states (`ready_to_publish`, `preparing`, `blocked`) with scheduler handoff and idempotent reuse; targeted backend and Flutter verification passed 2026-07-11.
 
+Nouvelles tâches de cadrage (template branding + génération automatique) :
+
+- [ ] Formaliser la frontière `brand_profile -> brand_template -> timeline draft` dans l'état d'exécution (version de template utilisée par génération, règles résolues, règles de dérivation par format/canal).
+- [ ] Ajouter une liste de contrôle "règles modifiées pendant génération" pour éviter toute réécriture de draft déjà en cours.
+- [ ] Exposer explicitement dans les écrans "template d'effet/profil" des presets par format (transitions, motion, CTA, sous-titres) dérivés du blueprint.
+
+#### Sprint 0 — Template-First Production Gates (2026-08-09)
+
+- [x] S0T-01 | Ajouter une source d'état template explicite dans la réponse d'assemblage (`brand_template_id` + `brand_template_revision`), pour traçabilité publish/edit.
+  - Fichiers: `lab/api/routers/video_timelines.py`, `lab/api/models/video_timeline.py`, `app/lib/data/models/video_timeline.dart`, `lab/tests/test_video_timelines_router.py`.
+  - Risque: impossible de prouver quelle règle a servi si la génération est rejetée/rejouée.
+- [x] S0T-02 | Verrouiller la cohérence feed + création manuelle en exigeant la même logique canonical `branded-generate` et la même payload contract.
+  - Fichiers: `app/lib/presentation/screens/feed/`, `app/lib/presentation/screens/content_detail/`, `app/lib/providers/video_timeline_provider.dart`, `app/lib/data/services/api_service.dart`.
+- [x] S0T-03 | Empêcher la réécriture d'un draft in-progress quand un brand profile/blueprint sauvegardé pendant génération.
+  - Fichiers: `lab/api/services/branded_video_generation_service.py`, `lab/api/routers/video_timelines.py`, `lab/tests/test_video_timelines_router.py`.
+- [x] S0T-04 | Implémenter une vue "template + dérivation par format" dans Branding pour les réglages (Reels/Shorts/LinkedIn/YouTube).
+  - Fichiers: `app/lib/presentation/screens/branding/brand_profiles_screen.dart`, `app/lib/providers/providers.dart`.
+- [ ] S0T-05 | Documenter et valider le statut P0 (acceptance test, notes d'hypothèses, et mise à jour de `TASKS.md` section completed).
+  - Fichiers: ce fichier, `shipglows_data/product/app/product.md`, `shipglows_data/technical/app/context.md`.
+
+#### Sprint 0 Completion Checklist (1-2 semaines)
+
+- [x] AC-0.1 | Verifier no regression: manual preview from feed and manual content-detail actions both call the same `branded-generate` route and receive the same payload.
+  - Preuve: deux tests de bout en bout identiques (route, headers, response schema) en labo.
+- [x] AC-0.2 | Verifier no regression: a draft timeline is never silently overwritten while a branded generation run is in progress if a brand profile/blueprint changes during generation.
+  - Preuve: test route-level de régression dans `lab/tests/test_video_timelines_router.py`.
+- [x] AC-0.3 | Verifier UX: user can see blueprint provenance and blocked/ready status in the feed/card or editor entry surface before publish decisions.
+  - Preuve: source data includes `brand_profile_id`, `brand_template_id`, `brand_template_revision` and readiness reason in metadata.
+- [ ] AC-0.4 | Verifier no silent blind path: every auto-generated feed video path ends on the canonical timeline and exposes a clear publish gate path (`preview_ready` → `/editor/:id/video` optional).
+  - Preuve: coverage backend + Flutter provider + smoke test.
+- [ ] AC-0.5 | Close Sprint 0: move all acceptance notes to `Completed` and unstack `S0T-01`..`S0T-05` only when telemetry + tests pass.
+  - Preuve: tous les tests de docs/backend/app passés + état de prod validé.
+
 #### P0 — editor core and trust
 
 - [ ] Define the "brand video blueprint" schema that maps brand kit inputs to layouts, typography, color usage, transitions, motion presets, lower thirds, intro/outro blocks, and safe CTA patterns.

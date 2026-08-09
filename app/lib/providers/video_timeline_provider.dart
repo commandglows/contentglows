@@ -112,6 +112,12 @@ class VideoTimelineController extends StateNotifier<VideoTimelineState> {
   final ApiService _apiService;
   final String contentId;
   static const int _maxDurationSeconds = 180;
+  static const int _maxUndoSteps = 30;
+  final List<_TimelineDraftSnapshot> _undoStack = [];
+  final List<_TimelineDraftSnapshot> _redoStack = [];
+
+  bool get canUndo => _undoStack.isNotEmpty;
+  bool get canRedo => _redoStack.isNotEmpty;
 
   Future<void> loadFromContentId() async {
     state = state.copyWith(isLoading: true, clearLastError: true);
@@ -129,6 +135,7 @@ class VideoTimelineController extends StateNotifier<VideoTimelineState> {
         clearFinalJob: true,
         isLoading: false,
       );
+      _clearHistory();
     } catch (error) {
       state = state.copyWith(isLoading: false, lastError: _formatError(error));
     }
@@ -157,6 +164,7 @@ class VideoTimelineController extends StateNotifier<VideoTimelineState> {
         clearFinalJob: true,
         isSavingVersion: false,
       );
+      _clearHistory();
       return version;
     } catch (error) {
       state = state.copyWith(
@@ -281,6 +289,62 @@ class VideoTimelineController extends StateNotifier<VideoTimelineState> {
     }
   }
 
+  void undoDraft() {
+    final timeline = state.timeline;
+    final document = timeline?.draft;
+    if (timeline == null || document == null || !canUndo) {
+      return;
+    }
+    final current = _createSnapshot(document);
+    _redoStack.add(current);
+    if (_redoStack.length > _maxUndoSteps) {
+      _redoStack.removeAt(0);
+    }
+
+    final snapshot = _undoStack.removeLast();
+    _restoreSnapshot(snapshot, timeline.timelineId);
+  }
+
+  void redoDraft() {
+    final timeline = state.timeline;
+    final document = timeline?.draft;
+    if (timeline == null || document == null || !canRedo) {
+      return;
+    }
+    final current = _createSnapshot(document);
+    _undoStack.add(current);
+    if (_undoStack.length > _maxUndoSteps) {
+      _undoStack.removeAt(0);
+    }
+
+    final snapshot = _redoStack.removeLast();
+    _restoreSnapshot(snapshot, timeline.timelineId);
+  }
+
+  void toggleTrackMute(String trackId) {
+    final document = state.activeDocument;
+    if (document == null) {
+      return;
+    }
+    _replaceTrack(
+      document,
+      trackId,
+      (track) => track.copyWith(muted: !track.muted),
+    );
+  }
+
+  void toggleTrackLock(String trackId) {
+    final document = state.activeDocument;
+    if (document == null) {
+      return;
+    }
+    _replaceTrack(
+      document,
+      trackId,
+      (track) => track.copyWith(locked: !track.locked),
+    );
+  }
+
   void selectClip(String clipId) {
     state = state.copyWith(selectedClipId: clipId, clearLastError: true);
   }
@@ -292,6 +356,12 @@ class VideoTimelineController extends StateNotifier<VideoTimelineState> {
     }
     final document = _ensureTrack(timeline.draft, 'text');
     final track = _preferredTrack(document, 'text');
+    if (track.locked) {
+      state = state.copyWith(
+        lastError: 'Unlock the text track before adding clips.',
+      );
+      return;
+    }
     final fps = _fps(document);
     final duration = fps * 3;
     final startFrame = _nextStartFrame(document, duration);
@@ -327,6 +397,12 @@ class VideoTimelineController extends StateNotifier<VideoTimelineState> {
     };
     final document = _ensureTrack(timeline.draft, normalizedType);
     final track = _preferredTrack(document, normalizedType);
+    if (track.locked) {
+      state = state.copyWith(
+        lastError: 'Unlock the ${track.type} track before adding clips.',
+      );
+      return;
+    }
     final fps = _fps(document);
     final duration = normalizedType == 'audio' || normalizedType == 'music'
         ? fps * 10
@@ -361,6 +437,10 @@ class VideoTimelineController extends StateNotifier<VideoTimelineState> {
     if (document == null) {
       return;
     }
+    if (_isTrackLocked(document, clipId)) {
+      state = state.copyWith(lastError: 'Unlock the track to edit this clip.');
+      return;
+    }
     final clipped = text.trim().length > 2000
         ? text.trim().substring(0, 2000)
         : text.trim();
@@ -377,6 +457,10 @@ class VideoTimelineController extends StateNotifier<VideoTimelineState> {
     if (document == null) {
       return;
     }
+    if (_isTrackLocked(document, clipId)) {
+      state = state.copyWith(lastError: 'Unlock the track to move this clip.');
+      return;
+    }
     _replaceClip(document, clipId, (clip) {
       final maxStart = (_maxFrames(document) - clip.durationFrames).clamp(
         0,
@@ -390,6 +474,12 @@ class VideoTimelineController extends StateNotifier<VideoTimelineState> {
   void resizeClipFrames(String clipId, int deltaFrames) {
     final document = state.activeDocument;
     if (document == null) {
+      return;
+    }
+    if (_isTrackLocked(document, clipId)) {
+      state = state.copyWith(
+        lastError: 'Unlock the track to resize this clip.',
+      );
       return;
     }
     _replaceClip(document, clipId, (clip) {
@@ -411,6 +501,12 @@ class VideoTimelineController extends StateNotifier<VideoTimelineState> {
     if (document == null || document.clips.length <= 1) {
       state = state.copyWith(
         lastError: 'Keep at least one clip in the timeline.',
+      );
+      return;
+    }
+    if (_isTrackLocked(document, clipId)) {
+      state = state.copyWith(
+        lastError: 'Unlock the track to delete this clip.',
       );
       return;
     }
@@ -497,6 +593,11 @@ class VideoTimelineController extends StateNotifier<VideoTimelineState> {
     if (timeline == null) {
       return;
     }
+    if (document == timeline.draft && selectedClipId == state.selectedClipId) {
+      return;
+    }
+    _pushUndo(document: timeline.draft, selectedClipId: state.selectedClipId);
+    _redoStack.clear();
     final normalizedDocument = _withDerivedVisibleDuration(document);
     state = state.copyWith(
       timeline: timeline.copyWith(
@@ -510,6 +611,98 @@ class VideoTimelineController extends StateNotifier<VideoTimelineState> {
       clearPreviewJob: true,
       clearFinalJob: true,
       clearLastError: true,
+    );
+  }
+
+  void _replaceTrack(
+    VideoTimelineDocument document,
+    String trackId,
+    VideoTimelineTrack Function(VideoTimelineTrack track) update,
+  ) {
+    var trackFound = false;
+    final updatedTracks = document.tracks.map((track) {
+      if (track.id == trackId) {
+        trackFound = true;
+        return update(track);
+      }
+      return track;
+    }).toList();
+    if (!trackFound) {
+      return;
+    }
+    _replaceDraft(
+      document.copyWith(tracks: updatedTracks),
+      selectedClipId: state.selectedClipId,
+    );
+  }
+
+  void _restoreSnapshot(_TimelineDraftSnapshot snapshot, String timelineId) {
+    final timeline = state.timeline;
+    if (timeline == null || snapshot.timelineId != timelineId) {
+      return;
+    }
+    final normalized = _withDerivedVisibleDuration(snapshot.document);
+    state = state.copyWith(
+      timeline: timeline.copyWith(
+        draft: normalized,
+        previewStatus: _staleStatus(timeline.previewStatus),
+        finalStatus: _staleStatus(timeline.finalStatus),
+        updatedAt: DateTime.now().toUtc(),
+      ),
+      selectedClipId: snapshot.selectedClipId,
+      hasUnsavedChanges: true,
+      clearPreviewJob: true,
+      clearFinalJob: true,
+      clearLastError: true,
+    );
+  }
+
+  void _pushUndo({
+    required VideoTimelineDocument document,
+    String? selectedClipId,
+  }) {
+    _undoStack.add(
+      _TimelineDraftSnapshot(
+        timelineId: state.timeline?.timelineId,
+        document: _cloneDocument(document),
+        selectedClipId: selectedClipId,
+      ),
+    );
+    if (_undoStack.length > _maxUndoSteps) {
+      _undoStack.removeAt(0);
+    }
+  }
+
+  void _clearHistory() {
+    _undoStack.clear();
+    _redoStack.clear();
+  }
+
+  _TimelineDraftSnapshot _createSnapshot(VideoTimelineDocument document) {
+    return _TimelineDraftSnapshot(
+      timelineId: state.timeline?.timelineId,
+      document: _cloneDocument(document),
+      selectedClipId: state.selectedClipId,
+    );
+  }
+
+  VideoTimelineDocument _cloneDocument(VideoTimelineDocument document) {
+    return document.copyWith(
+      tracks: [
+        for (final track in document.tracks)
+          track.copyWith(
+            exclusive: track.exclusive,
+            muted: track.muted,
+            locked: track.locked,
+          ),
+      ],
+      clips: [
+        for (final clip in document.clips)
+          clip.copyWith(
+            style: Map<String, dynamic>.from(clip.style),
+            metadata: Map<String, dynamic>.from(clip.metadata),
+          ),
+      ],
     );
   }
 
@@ -652,6 +845,46 @@ class VideoTimelineController extends StateNotifier<VideoTimelineState> {
       _ => false,
     };
   }
+
+  VideoTimelineTrack? _trackForClip(
+    VideoTimelineDocument document,
+    String clipId,
+  ) {
+    final clip = document.clips.firstWhere(
+      (candidate) => candidate.id == clipId,
+      orElse: () => const VideoTimelineClip(
+        id: '',
+        trackId: '',
+        clipType: '',
+        startFrame: 0,
+        durationFrames: 1,
+      ),
+    );
+    if (clip.id.isEmpty) {
+      return null;
+    }
+    return document.tracks.firstWhere(
+      (track) => track.id == clip.trackId,
+      orElse: () => const VideoTimelineTrack(id: '', type: '', order: 0),
+    );
+  }
+
+  bool _isTrackLocked(VideoTimelineDocument document, String clipId) {
+    final track = _trackForClip(document, clipId);
+    return track != null && track.id.isNotEmpty && track.locked;
+  }
+}
+
+class _TimelineDraftSnapshot {
+  const _TimelineDraftSnapshot({
+    this.timelineId,
+    required this.document,
+    this.selectedClipId,
+  });
+
+  final String? timelineId;
+  final VideoTimelineDocument document;
+  final String? selectedClipId;
 }
 
 final videoTimelineProvider = StateNotifierProvider.autoDispose

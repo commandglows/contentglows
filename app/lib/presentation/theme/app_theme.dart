@@ -209,7 +209,7 @@ class AppTheme {
 
 class AppSpacing {
   static const double xxs = AppThemeTokens.spacing1;
-  static const double xs2 = AppThemeTokens.spacing1b;
+  static const double xs2 = AppThemeTokens.spacing2;
   static const double xs = AppThemeTokens.spacing2;
   static const double sm = AppThemeTokens.spacing3;
   static const double md = AppThemeTokens.spacing4;
@@ -280,15 +280,13 @@ class AppText {
   static double get xxl => AppThemeTokens.text20;
   static double get xxxl => AppThemeTokens.text24;
 
-  @Deprecated('Use tight')
-  static double get xs11 => tight;
   @Deprecated('Use compact')
   static double get sm1 => compact;
   @Deprecated('Use medium')
   static double get sm2 => medium;
   @Deprecated('Use body')
   static double get md5 => body;
-  static double compact(BuildContext context, double value) {
+  static double compactWithScale(BuildContext context, double value) {
     return value * AppSpacing.scale(context);
   }
 }

@@ -17,6 +17,8 @@ class VideoTimelineScreen extends ConsumerWidget {
     final notifier = ref.read(videoTimelineProvider(contentId).notifier);
     final timeline = state.timeline;
     final document = timeline?.draft;
+    final canUndo = notifier.canUndo;
+    final canRedo = notifier.canRedo;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Timeline video')),
@@ -29,7 +31,11 @@ class VideoTimelineScreen extends ConsumerWidget {
                 children: [
                   _TimelineSummary(
                     state: state,
+                    canUndo: canUndo,
+                    canRedo: canRedo,
                     onSaveVersion: () => notifier.saveVersion(),
+                    onUndo: notifier.undoDraft,
+                    onRedo: notifier.redoDraft,
                     onRequestPreview: () => notifier.requestPreview(),
                     onApprovePreview: () => notifier.approvePreview(),
                     onRequestFinal: () => notifier.requestFinalRender(),
@@ -64,6 +70,8 @@ class VideoTimelineScreen extends ConsumerWidget {
                       onMoveClip: notifier.moveClipFrames,
                       onResizeClip: notifier.resizeClipFrames,
                       onDeleteClip: notifier.deleteClip,
+                      onToggleTrackMute: notifier.toggleTrackMute,
+                      onToggleTrackLock: notifier.toggleTrackLock,
                       onEditText: (clip) =>
                           _showTextEditor(context, clip, notifier),
                     ),
@@ -242,7 +250,11 @@ class _TextClipEditorDialogState extends State<_TextClipEditorDialog> {
 class _TimelineSummary extends StatelessWidget {
   const _TimelineSummary({
     required this.state,
+    required this.canUndo,
+    required this.canRedo,
     required this.onSaveVersion,
+    required this.onUndo,
+    required this.onRedo,
     required this.onRequestPreview,
     required this.onApprovePreview,
     required this.onRequestFinal,
@@ -251,7 +263,11 @@ class _TimelineSummary extends StatelessWidget {
   });
 
   final VideoTimelineState state;
+  final bool canUndo;
+  final bool canRedo;
   final VoidCallback onSaveVersion;
+  final VoidCallback onUndo;
+  final VoidCallback onRedo;
   final VoidCallback onRequestPreview;
   final VoidCallback onApprovePreview;
   final VoidCallback onRequestFinal;
@@ -309,6 +325,17 @@ class _TimelineSummary extends StatelessWidget {
           runSpacing: 8,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
+            IconButton(
+              onPressed: canUndo ? onUndo : null,
+              tooltip: 'Undo draft change',
+              icon: const Icon(Icons.undo_rounded),
+            ),
+            IconButton(
+              onPressed: canRedo ? onRedo : null,
+              tooltip: 'Redo draft change',
+              icon: const Icon(Icons.redo_rounded),
+            ),
+            const SizedBox(width: 4),
             FilledButton.icon(
               onPressed: canSave ? onSaveVersion : null,
               icon: const Icon(Icons.save_rounded),
@@ -421,6 +448,8 @@ class _TimelineEditor extends StatelessWidget {
     required this.onResizeClip,
     required this.onDeleteClip,
     required this.onEditText,
+    required this.onToggleTrackMute,
+    required this.onToggleTrackLock,
   });
 
   final VideoTimelineDocument document;
@@ -430,6 +459,8 @@ class _TimelineEditor extends StatelessWidget {
   final void Function(String clipId, int deltaFrames) onResizeClip;
   final void Function(String clipId) onDeleteClip;
   final void Function(VideoTimelineClip clip) onEditText;
+  final void Function(String trackId) onToggleTrackMute;
+  final void Function(String trackId) onToggleTrackLock;
 
   @override
   Widget build(BuildContext context) {
@@ -463,6 +494,8 @@ class _TimelineEditor extends StatelessWidget {
             onResizeClip: onResizeClip,
             onDeleteClip: onDeleteClip,
             onEditText: onEditText,
+            onToggleTrackMute: onToggleTrackMute,
+            onToggleTrackLock: onToggleTrackLock,
           ),
         if (tracks.isEmpty) const _EmptyTimeline(),
       ],
@@ -481,6 +514,8 @@ class _TrackLane extends StatelessWidget {
     required this.onResizeClip,
     required this.onDeleteClip,
     required this.onEditText,
+    required this.onToggleTrackMute,
+    required this.onToggleTrackLock,
   });
 
   final VideoTimelineTrack track;
@@ -492,6 +527,8 @@ class _TrackLane extends StatelessWidget {
   final void Function(String clipId, int deltaFrames) onResizeClip;
   final void Function(String clipId) onDeleteClip;
   final void Function(VideoTimelineClip clip) onEditText;
+  final void Function(String trackId) onToggleTrackMute;
+  final void Function(String trackId) onToggleTrackLock;
 
   @override
   Widget build(BuildContext context) {
@@ -515,14 +552,44 @@ class _TrackLane extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text('${clips.length} clip(s)'),
+              const Spacer(),
+              Icon(track.muted ? Icons.volume_off : Icons.volume_up, size: 16),
+              const SizedBox(width: 4),
+              Icon(
+                track.locked ? Icons.lock_rounded : Icons.lock_open_rounded,
+                size: 16,
+              ),
             ],
           ),
           const SizedBox(height: 8),
           _TrackStrip(
             clips: clips,
+            isMuted: track.muted,
+            isLocked: track.locked,
             selectedClipId: selectedClipId,
             totalFrames: totalFrames,
             onSelectClip: onSelectClip,
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 4,
+            runSpacing: 4,
+            children: [
+              IconButton(
+                tooltip: track.muted
+                    ? 'Unmute ${track.type} track'
+                    : 'Mute ${track.type} track',
+                onPressed: () => onToggleTrackMute(track.id),
+                icon: Icon(track.muted ? Icons.volume_off : Icons.volume_up),
+              ),
+              IconButton(
+                tooltip: track.locked
+                    ? 'Unlock ${track.type} track'
+                    : 'Lock ${track.type} track',
+                onPressed: () => onToggleTrackLock(track.id),
+                icon: Icon(track.locked ? Icons.lock : Icons.lock_open_rounded),
+              ),
+            ],
           ),
           const SizedBox(height: 8),
           if (clips.isEmpty)
@@ -535,12 +602,20 @@ class _TrackLane extends StatelessWidget {
                 fps: document.fps,
                 selected: clip.id == selectedClipId,
                 canDelete: document.clips.length > 1,
+                isTrackLocked: track.locked,
+                isTrackMuted: track.muted,
                 onSelect: () => onSelectClip(clip.id),
-                onMove: (frames) => onMoveClip(clip.id, frames),
-                onResize: (frames) => onResizeClip(clip.id, frames),
-                onDelete: () => onDeleteClip(clip.id),
+                onMove: track.locked
+                    ? null
+                    : (frames) => onMoveClip(clip.id, frames),
+                onResize: track.locked
+                    ? null
+                    : (frames) => onResizeClip(clip.id, frames),
+                onDelete: (document.clips.length > 1 && !track.locked)
+                    ? () => onDeleteClip(clip.id)
+                    : null,
                 onEditText: clip.clipType == 'text'
-                    ? () => onEditText(clip)
+                    ? (track.locked ? null : () => onEditText(clip))
                     : null,
               ),
         ],
@@ -552,12 +627,16 @@ class _TrackLane extends StatelessWidget {
 class _TrackStrip extends StatelessWidget {
   const _TrackStrip({
     required this.clips,
+    required this.isMuted,
+    required this.isLocked,
     required this.selectedClipId,
     required this.totalFrames,
     required this.onSelectClip,
   });
 
   final List<VideoTimelineClip> clips;
+  final bool isMuted;
+  final bool isLocked;
   final String? selectedClipId;
   final int totalFrames;
   final void Function(String clipId) onSelectClip;
@@ -584,6 +663,8 @@ class _TrackStrip extends StatelessWidget {
                   top: 8,
                   bottom: 8,
                   child: _ClipBlock(
+                    isMuted: isMuted,
+                    isTrackLocked: isLocked,
                     clip: clip,
                     selected: clip.id == selectedClipId,
                     onTap: () => onSelectClip(clip.id),
@@ -601,31 +682,52 @@ class _ClipBlock extends StatelessWidget {
   const _ClipBlock({
     required this.clip,
     required this.selected,
+    required this.isMuted,
+    required this.isTrackLocked,
     required this.onTap,
   });
 
   final VideoTimelineClip clip;
   final bool selected;
+  final bool isMuted;
+  final bool isTrackLocked;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Material(
-      color: selected ? scheme.primary : _clipColor(context, clip.clipType),
-      borderRadius: BorderRadius.circular(6),
-      child: InkWell(
-        onTap: onTap,
+    final opacity = isTrackLocked || isMuted ? 0.55 : 1.0;
+    return Opacity(
+      opacity: opacity,
+      child: Material(
+        color: selected ? scheme.primary : _clipColor(context, clip.clipType),
         borderRadius: BorderRadius.circular(6),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-          child: Text(
-            _clipLabel(clip),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: selected ? scheme.onPrimary : scheme.onSecondaryContainer,
-              fontWeight: FontWeight.w700,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(6),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    _clipLabel(clip),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: selected
+                          ? scheme.onPrimary
+                          : scheme.onSecondaryContainer,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                if (isTrackLocked) const Icon(Icons.lock_rounded, size: 12),
+                if (isMuted) ...[
+                  const SizedBox(width: 4),
+                  const Icon(Icons.volume_off, size: 12),
+                ],
+              ],
             ),
           ),
         ),
@@ -641,10 +743,12 @@ class _ClipControls extends StatelessWidget {
     required this.fps,
     required this.selected,
     required this.canDelete,
+    required this.isTrackLocked,
+    required this.isTrackMuted,
     required this.onSelect,
-    required this.onMove,
-    required this.onResize,
-    required this.onDelete,
+    this.onMove,
+    this.onResize,
+    this.onDelete,
     required this.onEditText,
   });
 
@@ -652,10 +756,12 @@ class _ClipControls extends StatelessWidget {
   final int fps;
   final bool selected;
   final bool canDelete;
+  final bool isTrackLocked;
+  final bool isTrackMuted;
   final VoidCallback onSelect;
-  final void Function(int frames) onMove;
-  final void Function(int frames) onResize;
-  final VoidCallback onDelete;
+  final void Function(int frames)? onMove;
+  final void Function(int frames)? onResize;
+  final VoidCallback? onDelete;
   final VoidCallback? onEditText;
 
   @override
@@ -712,32 +818,32 @@ class _ClipControls extends StatelessWidget {
             children: [
               IconButton.filledTonal(
                 tooltip: 'Move back 1 second',
-                onPressed: () => onMove(-fps),
+                onPressed: onMove == null ? null : () => onMove!(-fps),
                 icon: const Icon(Icons.keyboard_double_arrow_left_rounded),
               ),
               IconButton(
                 tooltip: 'Move back 1 frame',
-                onPressed: () => onMove(-1),
+                onPressed: onMove == null ? null : () => onMove!(-1),
                 icon: const Icon(Icons.chevron_left_rounded),
               ),
               IconButton(
                 tooltip: 'Move forward 1 frame',
-                onPressed: () => onMove(1),
+                onPressed: onMove == null ? null : () => onMove!(1),
                 icon: const Icon(Icons.chevron_right_rounded),
               ),
               IconButton.filledTonal(
                 tooltip: 'Move forward 1 second',
-                onPressed: () => onMove(fps),
+                onPressed: onMove == null ? null : () => onMove!(fps),
                 icon: const Icon(Icons.keyboard_double_arrow_right_rounded),
               ),
               IconButton(
                 tooltip: 'Shorten by 1 second',
-                onPressed: () => onResize(-fps),
+                onPressed: onResize == null ? null : () => onResize!(-fps),
                 icon: const Icon(Icons.compress_rounded),
               ),
               IconButton(
                 tooltip: 'Lengthen by 1 second',
-                onPressed: () => onResize(fps),
+                onPressed: onResize == null ? null : () => onResize!(fps),
                 icon: const Icon(Icons.expand_rounded),
               ),
               if (onEditText != null)
@@ -751,6 +857,10 @@ class _ClipControls extends StatelessWidget {
                 onPressed: canDelete ? onDelete : null,
                 icon: const Icon(Icons.delete_outline_rounded),
               ),
+              if (isTrackLocked)
+                const Icon(Icons.lock_rounded, size: 16, color: Colors.orange),
+              if (isTrackMuted)
+                const Icon(Icons.volume_off, size: 16, color: Colors.orange),
             ],
           ),
         ],
@@ -858,6 +968,7 @@ Set<String> _allowedMediaKinds(String clipType) {
 IconData _trackIcon(String type) {
   return switch (type) {
     'text' => Icons.title_rounded,
+    'overlay' => Icons.title_rounded,
     'video' => Icons.videocam_outlined,
     'audio' => Icons.graphic_eq_rounded,
     'music' => Icons.music_note_rounded,

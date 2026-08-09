@@ -1409,6 +1409,18 @@ class BrandProfilesState {
   final bool isDegraded;
 }
 
+class BrandProfileBlueprintsState {
+  const BrandProfileBlueprintsState({
+    this.items = const <BrandVideoBlueprint>[],
+    this.message,
+    this.isDegraded = false,
+  });
+
+  final List<BrandVideoBlueprint> items;
+  final String? message;
+  final bool isDegraded;
+}
+
 final brandProfilesStateProvider = FutureProvider<BrandProfilesState>((
   ref,
 ) async {
@@ -1442,6 +1454,43 @@ final brandProfilesStateProvider = FutureProvider<BrandProfilesState>((
   }
 });
 
+final brandProfileBlueprintsStateProvider =
+    FutureProvider<BrandProfileBlueprintsState>((ref) async {
+  final accessState = ref.watch(appAccessStateProvider).value;
+  if (accessState?.canUseWorkspaceData != true) {
+    return const BrandProfileBlueprintsState();
+  }
+
+  final activeProjectId = ref.watch(activeProjectIdProvider);
+  if (activeProjectId == null) {
+    return const BrandProfileBlueprintsState();
+  }
+
+  final api = ref.watch(apiServiceProvider);
+  try {
+    final blueprints = await api.fetchBrandProfilesBlueprintsForProject(
+      projectId: activeProjectId,
+    );
+    return BrandProfileBlueprintsState(items: blueprints);
+  } catch (error, stackTrace) {
+    if (!_isNonCriticalReadFailure(error)) {
+      rethrow;
+    }
+    _logDegradedRead(
+      ref,
+      scope: 'brand_profile_blueprints.read.degraded',
+      message:
+          'Brand blueprint list fetch failed; profile screens keep a best-effort list.',
+      error: error,
+      stackTrace: stackTrace,
+    );
+    return BrandProfileBlueprintsState(
+      message: error.toString(),
+      isDegraded: true,
+    );
+  }
+});
+
 final brandProfilesProvider = FutureProvider<List<BrandProfile>>((ref) async {
   final state = await ref.watch(brandProfilesStateProvider.future);
   return state.items;
@@ -1467,6 +1516,7 @@ class BrandProfileController extends AsyncNotifier<void> {
       await api.createBrandProfile(projectId: projectId, draft: draft);
       ref.invalidate(brandProfilesStateProvider);
       ref.invalidate(brandProfilesProvider);
+      ref.invalidate(brandProfileBlueprintsStateProvider);
     });
     if (state.hasError) {
       throw state.error!;
@@ -1486,6 +1536,7 @@ class BrandProfileController extends AsyncNotifier<void> {
       );
       ref.invalidate(brandProfilesStateProvider);
       ref.invalidate(brandProfilesProvider);
+      ref.invalidate(brandProfileBlueprintsStateProvider);
     });
     if (state.hasError) {
       throw state.error!;
@@ -1499,6 +1550,7 @@ class BrandProfileController extends AsyncNotifier<void> {
       await api.setDefaultBrandProfile(brandProfileId: brandProfileId);
       ref.invalidate(brandProfilesStateProvider);
       ref.invalidate(brandProfilesProvider);
+      ref.invalidate(brandProfileBlueprintsStateProvider);
     });
     if (state.hasError) {
       throw state.error!;
@@ -1512,6 +1564,7 @@ class BrandProfileController extends AsyncNotifier<void> {
       await api.deleteBrandProfile(brandProfileId: brandProfileId);
       ref.invalidate(brandProfilesStateProvider);
       ref.invalidate(brandProfilesProvider);
+      ref.invalidate(brandProfileBlueprintsStateProvider);
     });
     if (state.hasError) {
       throw state.error!;
@@ -3408,6 +3461,13 @@ class PendingContentNotifier extends AsyncNotifier<List<ContentItem>> {
                     refreshed['preview_job_id'] ?? refreshed['previewJobId'],
                 'video_generation_final_job_id':
                     refreshed['final_job_id'] ?? refreshed['finalJobId'],
+                'video_generation_brand_profile_id':
+                    refreshed['brand_profile_id'] ?? refreshed['brandProfileId'],
+                'video_generation_brand_template_id':
+                    refreshed['brand_template_id'] ?? refreshed['brandTemplateId'],
+                'video_generation_brand_template_revision':
+                    refreshed['brand_template_revision'] ??
+                        refreshed['brandTemplateRevision'],
               },
             );
           }

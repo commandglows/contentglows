@@ -846,12 +846,12 @@ class ApiService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> fetchBrandVideoBlueprints({
+  Future<List<BrandVideoBlueprint>> fetchBrandVideoBlueprints({
     required String projectId,
     required String brandProfileId,
   }) async {
     if (allowDemoData) {
-      return const <Map<String, dynamic>>[];
+      return const <BrandVideoBlueprint>[];
     }
     try {
       final response = await _dio.get(
@@ -868,13 +868,43 @@ class ApiService {
           'Invalid brand video blueprints response from FastAPI.',
         );
       }
-      return data.whereType<Map>().map((item) => _asMap(item)).toList();
+      return data
+          .whereType<Map<dynamic, dynamic>>()
+          .map((item) => BrandVideoBlueprint.fromJson(_asMap(item)))
+          .toList();
     } on DioException catch (error) {
       throw _mapDioException(error);
     }
   }
 
-  Future<Map<String, dynamic>> createBrandVideoBlueprint({
+  Future<List<BrandVideoBlueprint>> fetchBrandProfilesBlueprintsForProject({
+    required String projectId,
+  }) async {
+    if (allowDemoData) {
+      return const <BrandVideoBlueprint>[];
+    }
+    try {
+      final response = await _dio.get(
+        '/api/brand-video-blueprints',
+        queryParameters: {'projectId': projectId},
+      );
+      final data = response.data;
+      if (data is! List) {
+        throw const ApiException(
+          ApiErrorType.invalidResponse,
+          'Invalid brand video blueprints response from FastAPI.',
+        );
+      }
+      return data
+          .whereType<Map<dynamic, dynamic>>()
+          .map((item) => BrandVideoBlueprint.fromJson(_asMap(item)))
+          .toList();
+    } on DioException catch (error) {
+      throw _mapDioException(error);
+    }
+  }
+
+  Future<BrandVideoBlueprint> createBrandVideoBlueprint({
     required String projectId,
     required String brandProfileId,
     required String name,
@@ -891,7 +921,7 @@ class ApiService {
           'default_archetype': defaultArchetype,
         },
       );
-      return _asMap(response.data);
+      return BrandVideoBlueprint.fromJson(_asMap(response.data));
     } on DioException catch (error) {
       throw _mapDioException(error);
     }
@@ -5951,6 +5981,12 @@ class ApiService {
             candidate['preview_job_id'] ?? candidate['previewJobId'],
         'video_generation_final_job_id':
             candidate['final_job_id'] ?? candidate['finalJobId'],
+        'video_generation_brand_profile_id':
+            candidate['brand_profile_id'] ?? candidate['brandProfileId'],
+        'video_generation_brand_template_id':
+            candidate['brand_template_id'] ?? candidate['brandTemplateId'],
+        'video_generation_brand_template_revision':
+            candidate['brand_template_revision'] ?? candidate['brandTemplateRevision'],
         'video_generation_updated_at':
             candidate['updated_at'] ?? candidate['updatedAt'],
         'video_generation_ready_at':

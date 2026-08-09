@@ -506,6 +506,9 @@ def _feed_candidate_response(candidate: Any) -> BrandedVideoFeedCandidateRespons
     return BrandedVideoFeedCandidateResponse(
         content_id=candidate.content_id,
         project_id=candidate.project_id,
+        brand_profile_id=candidate.brand_profile_id,
+        brand_template_id=candidate.brand_template_id,
+        brand_template_revision=candidate.brand_template_revision,
         format_preset=candidate.format_preset,
         readiness=candidate.readiness,
         status=candidate.status,
@@ -1008,8 +1011,17 @@ async def _generate_branded_video_preview(
         preview_job = _job_response(job, raw_request)
 
     readiness, blockers = _branded_generation_readiness(preview_job)
+    blueprint_revision: int | None = None
+    blueprint_value = blueprint.get("revision")
+    if isinstance(blueprint_value, int):
+        blueprint_revision = blueprint_value
+    elif isinstance(blueprint_value, str) and blueprint_value.isdigit():
+        blueprint_revision = int(blueprint_value)
     response.status_code = status.HTTP_201_CREATED if created else status.HTTP_200_OK
     return BrandedVideoGenerationResponse(
+        brand_profile_id=brand_profile["id"],
+        brand_template_id=blueprint.get("id"),
+        brand_template_revision=blueprint_revision,
         timeline=await _timeline_response(
             await video_timeline_store.get_timeline(
                 timeline_id=timeline["id"],
@@ -1109,6 +1121,9 @@ async def refresh_branded_video_feed_candidates(
                 "video_generation_version_id": candidate.version_id,
                 "video_generation_preview_job_id": candidate.preview_job_id,
                 "video_generation_final_job_id": candidate.final_job_id,
+                "video_generation_brand_profile_id": candidate.brand_profile_id,
+                "video_generation_brand_template_id": candidate.brand_template_id,
+                "video_generation_brand_template_revision": candidate.brand_template_revision,
                 "video_generation_updated_at": _as_datetime(candidate.updated_at).isoformat(),
                 "video_generation_ready_at": _as_datetime(candidate.completed_at).isoformat()
                 if candidate.completed_at

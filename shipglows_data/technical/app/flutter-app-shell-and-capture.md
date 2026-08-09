@@ -51,8 +51,10 @@ This module covers the ContentGlows Flutter app shell, guarded routing, shared p
 | `lib/main.dart` | App bootstrap | Keep diagnostics and provider initialization explicit. |
 | `lib/router.dart` | Route graph and guards | Preserve auth, onboarding, demo, and resume behavior. |
 | `lib/providers/providers.dart` | Shared Riverpod state | Avoid broad provider rewrites without focused regression tests. Brand profile mutations must invalidate the project-scoped profile state. |
+| `lib/providers/video_timeline_provider.dart` | Timeline editor state/undo stack and render lifecycle state transitions | Keep draft history (undo/redo), edit guardrails, and publish gating behavior aligned with `/api/video-timelines/*` contract. |
 | `lib/data/services/api_service.dart` | FastAPI client and offline queue | Keep auth, retry, payload, and cache semantics aligned with backend contracts. Canonical branded generation remains the only branding preview request. |
 | `lib/data/models/brand_profile.dart` | Brand profile transport model and saved-rule draft | Keep revision/default fields and partial visual/editorial rules aligned with the API contract. |
+| `lib/presentation/screens/editor/video_timeline_screen.dart` | Timeline correction surface | Keep controls deterministic: clip transforms, track semantics (lock/mute), and optional draft actions must never bypass the canonical timeline state model. |
 | `lib/presentation/screens/branding/brand_profiles_screen.dart` | Settings-based brand-rule editor | Keep profile editing separate from timeline instance editing; preview only uses saved profiles and completed content. |
 | `lib/data/services/capture_local_store.dart` | Local capture and content link storage | Do not treat local Android paths as durable backend truth. |
 | `android/app/src/main/kotlin/**` | Android native bridge | Keep MediaProjection consent, foreground-service behavior, and platform-channel failures observable. |
@@ -80,6 +82,11 @@ branding preview
   -> select completed content and confirm an active blueprint
   -> api_service.dart canonical branded-generation request
   -> /editor/:id/video optional edit/review
+
+editor correction surface
+  -> /editor/:id/video loads canonical timeline draft
+  -> edit actions (undo/redo, trim, move, resize, track lock/mute)
+  -> preview/final publish gates remain controlled by lab contracts
 ```
 
 ## Invariants
@@ -92,6 +99,8 @@ branding preview
 - Android screen capture requires explicit system consent and must stop cleanly when consent, policy, or projection state changes.
 - Brand profile edits are project-scoped saved rules for subsequent generations; they must not mutate a timeline draft or requalify an already-started generation.
 - Branding preview calls the backend's canonical branded-generation route. The Flutter screen must not add a local renderer or a second video-creation route.
+- Persona enrichment in branding-preview sheets is optional context. If persona reads fail or are still loading, the preview flow remains available and should continue with non-branded metadata labels.
+- Timeline edit actions are non-authoritative refinements on top of the canonical draft and cannot trigger alternate generation paths.
 
 ## Failure Modes
 

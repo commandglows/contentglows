@@ -61,6 +61,35 @@ void main() {
                 ),
               ),
             ),
+            brandProfileBlueprintsStateProvider.overrideWith(
+              (ref) async => BrandProfileBlueprintsState(
+                items: [
+                  BrandVideoBlueprint(
+                    id: 'blueprint-1',
+                    userId: 'user-1',
+                    projectId: 'project-1',
+                    brandProfileId: 'brand-1',
+                    name: 'Default',
+                    status: 'active',
+                    createdAt: DateTime.utc(2026, 7, 8, 12),
+                    updatedAt: DateTime.utc(2026, 7, 8, 12),
+                  ),
+                ],
+              ),
+            ),
+            pendingContentProvider.overrideWith(
+              () => _TestPendingContentNotifier([
+                ContentItem(
+                  id: 'content-ready',
+                  title: 'Ready title',
+                  body: 'Ready body',
+                  type: ContentType.blogPost,
+                  status: ContentStatus.pending,
+                  metadata: const {'content_complete': true},
+                  createdAt: DateTime.utc(2026, 7, 8, 12),
+                ),
+              ]),
+            ),
           ],
           child: MaterialApp.router(
             routerConfig: router,
@@ -70,7 +99,6 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-
       expect(
         find.text('Set another profile as default before deleting this one.'),
         findsOneWidget,
@@ -133,6 +161,35 @@ void main() {
                 ),
               ),
             ),
+            brandProfileBlueprintsStateProvider.overrideWith(
+              (ref) async => BrandProfileBlueprintsState(
+                items: [
+                  BrandVideoBlueprint(
+                    id: 'blueprint-1',
+                    userId: 'user-1',
+                    projectId: 'project-1',
+                    brandProfileId: 'brand-1',
+                    name: 'Default',
+                    status: 'active',
+                    createdAt: DateTime.utc(2026, 7, 8, 12),
+                    updatedAt: DateTime.utc(2026, 7, 8, 12),
+                  ),
+                ],
+              ),
+            ),
+            pendingContentProvider.overrideWith(
+              () => _TestPendingContentNotifier([
+                ContentItem(
+                  id: 'content-ready',
+                  title: 'Ready title',
+                  body: 'Ready body',
+                  type: ContentType.blogPost,
+                  status: ContentStatus.pending,
+                  metadata: const {'content_complete': true},
+                  createdAt: DateTime.utc(2026, 7, 8, 12),
+                ),
+              ]),
+            ),
           ],
           child: MaterialApp.router(
             routerConfig: router,
@@ -143,13 +200,23 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Preview impact').first);
+      final previewButtonFinder = find.widgetWithText(
+        OutlinedButton,
+        'Generate video preview',
+      );
+      expect(previewButtonFinder, findsOneWidget);
+      final previewButton = tester.widget<OutlinedButton>(previewButtonFinder);
+      expect(previewButton.onPressed, isNotNull);
+      await tester.tap(previewButtonFinder);
       await tester.pumpAndSettle();
+      expect(
+        find.text('No complete content is ready to preview branding yet.'),
+        findsNothing,
+      );
+      expect(find.text('Preview branding impact'), findsOneWidget);
+      expect(find.byType(ListTile), findsAtLeastNWidgets(1));
 
-      expect(find.text('Draft title'), findsNothing);
-      expect(find.text('Ready title'), findsOneWidget);
-
-      await tester.tap(find.text('Ready title'));
+      await tester.tap(find.byType(ListTile).first);
       await tester.pumpAndSettle();
 
       expect(find.text('video timeline content-ready'), findsOneWidget);
@@ -189,6 +256,24 @@ class _FakeBrandProfilesApiService extends ApiService {
         primaryColors: const ['#111111'],
         isDefault: true,
         revision: 1,
+        createdAt: DateTime.utc(2026, 7, 8, 12),
+        updatedAt: DateTime.utc(2026, 7, 8, 12),
+      ),
+    ];
+  }
+
+  @override
+  Future<List<BrandVideoBlueprint>> fetchBrandProfilesBlueprintsForProject({
+    required String projectId,
+  }) async {
+    return [
+      BrandVideoBlueprint(
+        id: 'blueprint-1',
+        userId: 'user-1',
+        projectId: projectId,
+        brandProfileId: 'brand-1',
+        name: 'Default',
+        status: 'active',
         createdAt: DateTime.utc(2026, 7, 8, 12),
         updatedAt: DateTime.utc(2026, 7, 8, 12),
       ),
@@ -297,6 +382,17 @@ class _TestUserSettingsNotifier extends UserSettingsNotifier {
   @override
   Future<AppSettings?> build() async {
     return _settings;
+  }
+}
+
+class _TestPendingContentNotifier extends PendingContentNotifier {
+  _TestPendingContentNotifier(this._items);
+
+  final List<ContentItem> _items;
+
+  @override
+  Future<List<ContentItem>> build() async {
+    return _items;
   }
 }
 
