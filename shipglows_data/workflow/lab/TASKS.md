@@ -64,6 +64,16 @@ Research source: fresh official PixVerse product/docs pages checked 2026-06-30.
 - [ ] Support API/CLI-friendly generation paths for automation, batch creation, and agent-driven media workflows.
 - [ ] Connect generation outputs to the editor timeline so AI clips can become governed project assets instead of isolated exports.
 
+### Visual Editing Canonical Spec (Filmora + PixVerse)
+
+Source: `shipglows_data/workflow/specs/monorepo/SPEC-professional-video-editor-capability-roadmap-2026-08-09.md`.
+Ces roadmaps restent la référence d’inspiration; l’exécution doit suivre les tranches P0/P1/P2 de la spec canonique et pas un second moteur.
+
+| Pri | Task | Status |
+|-----|------|--------|
+| 🔴 | Aligner la roadmap lab sur `SPEC-professional-video-editor-capability-roadmap-2026-08-09.md` (schéma vidéo/propriétés/versions/capabilities) | 📋 todo |
+| 🟠 | Dédier les tâches d’exécution à des tranches P0/P1/P2 et marquer ici chaque dépendance backend (timeline schema, versions, endpoints, validation) | 📋 todo |
+
 ### Priority Slices
 
 Direction produit retenue le 2026-07-04:

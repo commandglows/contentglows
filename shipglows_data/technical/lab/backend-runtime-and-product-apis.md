@@ -183,6 +183,8 @@ Registry rule provenance is platform-specific and versioned. Instagram numeric c
 
 ## Video Timeline and Remotion Rendering
 
+The canonical roadmap for advanced visual editing is `shipglows_data/workflow/specs/monorepo/SPEC-professional-video-editor-capability-roadmap-2026-08-09.md` (Filmora/PixVerse-inspired, one-canonical-timeline stack, no second rendering engine).
+
 ## Brand Profiles and Canonical Branded Generation
 
 Brand profiles are authenticated, project-scoped rule records. They provide saved visual and editorial defaults for future branded-video generation; they are not timelines, renderer props, or a second render engine.

@@ -19,6 +19,18 @@
 
 ---
 
+### Filmora / PixVerse Visual Editing (canonical)
+
+Concurrent sources: Filmora, PixVerse. Canonical execution spec: `shipglows_data/workflow/specs/monorepo/SPEC-professional-video-editor-capability-roadmap-2026-08-09.md`. Layer should be implemented as an extension of `/editor/:id/video`, not a separate studio.
+
+| Pri | Task | Status |
+|-----|------|--------|
+| 🔴 | Ajouter l’ergonomie pro du player timeline (split, ripple trim, duplication, snap, undo/redo, verrouillage/mute, scrubbing) sans changement de route | 📋 todo |
+| 🔴 | Ajouter le modèle `keyframes` et le mini éditeur d’animation (transform/opacity/scale/rotation/volume + easing basic) côté app + persistance immutable | 📋 todo |
+| 🟠 | Ajouter pipeline transcript/captions côté app avec preview-gated edits et alignement des timings sur versioning | 📋 todo |
+| 🟠 | Ajouter audio-mix controls (fades, niveaux, ducking, normalization helpers) dans l’éditeur de révision vidéo | 📋 todo |
+| 🟡 | Ajouter couche d’assistance IA read-only pour hook/séquençage/B-roll/CTA et option d’application explicite | 📋 todo |
+
 ## Phase 1 — Scaffold & Core Screens ✅
 
 | Pri | Task | Status |

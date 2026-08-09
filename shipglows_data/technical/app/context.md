@@ -68,7 +68,7 @@ next_step: "/sf-docs update shipglows_data/technical/app/context.md"
 - **Feature domains:**
   - Projects, workspace/settings, creator profile, personas, content pipeline, integrations, analytics-like views, feedback.
   - `Project Intelligence V1`: read project intelligence status, source inventory, extracted facts, recommendations, provider readiness, upload text-like sources, remove sources, and convert recommendations into Idea Pool items.
-  - `Video Timeline V1`: online-only timeline editing and preview/final render orchestration for `/editor/:id/video`, with `lab` as the public API boundary and the Remotion worker hidden behind backend contracts.
+  - `Video Timeline V1`: online-only timeline editing and preview/final render orchestration for `/editor/:id/video`, with `lab` as the public API boundary and the Remotion worker hidden behind backend contracts. Product execution reference: `shipglows_data/workflow/specs/monorepo/SPEC-professional-video-editor-capability-roadmap-2026-08-09.md` (Filmora/PixVerse-inspired, one-canonical-timeline approach).
   - `Brand Profiles`: project-scoped rule records loaded through `brandProfilesStateProvider` and changed through `BrandProfileController`. Settings exposes them at `/settings/branding`; saved rules can become the default for subsequent generations. Preview impact selects completed content, calls `generateBrandedVideoFromContent`, then hands off to `/editor/:id/video`. It never creates a local render model or writes timeline draft JSON.
   - Android local capture: screenshot/recording flows backed by MediaProjection and app-scoped storage.
 - **Offline domain:**
