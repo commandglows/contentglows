@@ -45,6 +45,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
   final CardSwiperController _swiperController = CardSwiperController();
   String? _swipeOverlay;
   int _activeCardIndex = 0;
+  bool _isCreatingSourceDraft = false;
   late AnimationController _overlayAnimation;
 
   @override
@@ -106,6 +107,20 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
               icon: const Icon(Icons.playlist_add_rounded),
               onPressed: _seedTestBatch,
             ),
+          IconButton(
+            tooltip: context.tr('Prepare video sources'),
+            onPressed: _isCreatingSourceDraft ? null : _createSourceDraft,
+            icon: _isCreatingSourceDraft
+                ? const SizedBox(
+                    width: 22,
+                    height: 22,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.2,
+                      color: AppTheme.approveColor,
+                    ),
+                  )
+                : const Icon(Icons.video_library_rounded),
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () =>
@@ -588,6 +603,43 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
       context.tr('{count} test content items generated', {'count': count}),
       AppTheme.approveColor,
     );
+  }
+
+  Future<void> _createSourceDraft() async {
+    final projectId = ref.read(activeProjectIdProvider);
+    if (projectId == null || projectId.isEmpty) {
+      _showSnackBar(
+        context.tr('Select an active project before creating content.'),
+        AppTheme.warningColor,
+      );
+      return;
+    }
+
+    setState(() {
+      _isCreatingSourceDraft = true;
+    });
+
+    try {
+      final api = ref.read(apiServiceProvider);
+      final item = await api.createVideoSourceDraft(
+        projectId: projectId,
+        title: context.tr('Source upload draft'),
+      );
+      ref.invalidate(pendingContentProvider);
+      if (!mounted) return;
+      context.push('/editor/${item.id}/video/sources');
+    } catch (error) {
+      _showSnackBar(
+        'Could not create source draft.',
+        AppTheme.warningColor,
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isCreatingSourceDraft = false;
+        });
+      }
+    }
   }
 }
 

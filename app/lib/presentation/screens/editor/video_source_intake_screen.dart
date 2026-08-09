@@ -32,6 +32,7 @@ class VideoSourceIntakeScreen extends ConsumerStatefulWidget {
 class _VideoSourceIntakeScreenState
     extends ConsumerState<VideoSourceIntakeScreen> {
   _SourceFilter _filter = _SourceFilter.all;
+  bool _deleteUploadedFromDevice = false;
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +85,9 @@ class _VideoSourceIntakeScreenState
         controller: controller,
         intakeKey: intakeKey,
         deviceMediaStore: deviceMediaStore,
+        deleteUploadedFromDevice: _deleteUploadedFromDevice,
+        onDeleteUploadedFromDeviceChanged: (value) =>
+            setState(() => _deleteUploadedFromDevice = value),
       ),
       bottomNavigationBar: state.folder == null
           ? null
@@ -101,6 +105,8 @@ class _VideoSourceIntakeScreenState
     required VideoSourceIntakeController controller,
     required VideoSourceIntakeKey intakeKey,
     required VideoSourceDeviceMediaStore deviceMediaStore,
+    required bool deleteUploadedFromDevice,
+    required ValueChanged<bool> onDeleteUploadedFromDeviceChanged,
   }) {
     if (state.isLoading && state.folder == null) {
       return const Center(child: CircularProgressIndicator());
@@ -130,13 +136,25 @@ class _VideoSourceIntakeScreenState
       child: ListView(
         padding: AppSpacing.page(context),
         children: [
-          _IntakeHeader(folder: folder),
+          _IntakeHeader(
+            folder: folder,
+            isAutoDeleteEnabled: deleteUploadedFromDevice,
+            showAutoDeleteToggle:
+                deviceMediaStore.isAndroidMediaLibraryAvailable,
+            onAutoDeleteChanged: onDeleteUploadedFromDeviceChanged,
+          ),
           const SizedBox(height: AppSpacing.lg),
           _AddSourcePanel(
             busy: state.isBusy,
-            onFiles: () => _pickFiles(controller),
+            onFiles: () => _pickFiles(
+              controller,
+              deleteUploadedFromDevice: deleteUploadedFromDevice,
+            ),
             onDeviceMedia: deviceMediaStore.isAndroidMediaLibraryAvailable
-                ? () => _pickDeviceMedia(controller)
+                ? () => _pickDeviceMedia(
+                    controller,
+                    deleteUploadedFromDevice: deleteUploadedFromDevice,
+                  )
                 : null,
             onText: () => _showTextSheet(controller),
             onScript: () => _pasteScript(controller),
@@ -209,15 +227,24 @@ class _VideoSourceIntakeScreenState
     };
   }
 
-  Future<void> _pickFiles(VideoSourceIntakeController controller) async {
+  Future<void> _pickFiles(
+    VideoSourceIntakeController controller, {
+    bool deleteUploadedFromDevice = false,
+  }) async {
     final files = await ref
         .read(videoSourceFilePickerProvider)
         .pickMediaFiles();
     if (files.isEmpty) return;
-    await controller.addFiles(files);
+    await controller.addFiles(
+      files,
+      deleteUploadedFromDevice: deleteUploadedFromDevice,
+    );
   }
 
-  Future<void> _pickDeviceMedia(VideoSourceIntakeController controller) async {
+  Future<void> _pickDeviceMedia(
+    VideoSourceIntakeController controller, {
+    bool deleteUploadedFromDevice = false,
+  }) async {
     final selected = await ref
         .read(androidMediaLibraryProvider)
         .pickPhotoAndVideoFiles();
@@ -237,6 +264,7 @@ class _VideoSourceIntakeScreenState
             ),
           )
           .toList(growable: false),
+      deleteUploadedFromDevice: deleteUploadedFromDevice,
     );
   }
 
@@ -378,8 +406,16 @@ class _VideoSourceIntakeScreenState
 }
 
 class _IntakeHeader extends StatelessWidget {
-  const _IntakeHeader({required this.folder});
+  const _IntakeHeader({
+    required this.folder,
+    required this.isAutoDeleteEnabled,
+    required this.showAutoDeleteToggle,
+    required this.onAutoDeleteChanged,
+  });
   final VideoSourceFolder folder;
+  final bool isAutoDeleteEnabled;
+  final bool showAutoDeleteToggle;
+  final ValueChanged<bool> onAutoDeleteChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -439,6 +475,48 @@ class _IntakeHeader extends StatelessWidget {
                 color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
+            if (showAutoDeleteToggle) ...[
+              const SizedBox(height: AppSpacing.sm),
+              SwitchListTile.adaptive(
+                value: isAutoDeleteEnabled,
+                onChanged: onAutoDeleteChanged,
+                contentPadding: EdgeInsets.zero,
+                title: Text(
+                  context.tr('Delete uploaded media files from device'),
+                ),
+                subtitle: Text(
+                  context.tr(
+                    'When enabled, files selected from Android media library are removed after upload succeeds.',
+                  ),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+            ] else ...[
+              const SizedBox(height: AppSpacing.sm),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    Icons.info_outline_rounded,
+                    size: 18,
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: Text(
+                      context.tr(
+                        'Auto-delete from device is available only on Android.',
+                      ),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),

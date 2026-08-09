@@ -1914,6 +1914,120 @@ class ApiService {
     }
   }
 
+  Future<ContentItem> createVideoSourceDraft({
+    required String projectId,
+    String title = 'Source upload draft',
+    String? body,
+  }) async {
+    if (allowDemoData) {
+      return ContentItem.fromJson({
+        'id': 'demo-video-source-draft-${DateTime.now().microsecondsSinceEpoch}',
+        'title': title,
+        'body': body ?? '',
+        'content_type': 'video_script',
+        'status': 'pending_review',
+        'project_id': projectId,
+        'source_robot': 'manual',
+        'created_at': DateTime.now().toIso8601String(),
+        'metadata': {
+          'created_from': 'feed_source_quick_entry',
+        },
+      });
+    }
+
+    final idMappings = await _loadIdMappings();
+    final resolvedProjectId = _resolveEntityId(projectId, idMappings);
+    final draftBody = body?.trim() ?? '';
+    final draftTitle = title.trim().isEmpty
+        ? 'Source upload draft'
+        : title.trim();
+    final payload = _compactMap({
+      'title': draftTitle,
+      'content_type': 'video_script',
+      'source_robot': 'manual',
+      'status': 'pending_review',
+      'project_id': resolvedProjectId,
+      'content_preview':
+          draftBody.isNotEmpty ? draftBody : 'Sources draft for video generation',
+      'priority': 3,
+      'tags': const ['video_source_upload'],
+      'metadata': {
+        'created_from': 'feed_source_quick_entry',
+      },
+    });
+
+    try {
+      final response = await _dio.post('/api/status/content', data: payload);
+      final data = _asMap(response.data);
+      final contentId = data['id']?.toString();
+      if (contentId == null || contentId.isEmpty) {
+        throw const ApiException(
+          ApiErrorType.invalidResponse,
+          'Backend did not return a content id.',
+        );
+      }
+
+      if (draftBody.isNotEmpty) {
+        await saveContentBody(
+          contentId,
+          draftBody,
+          editNote: 'Created from source upload entrypoint',
+        );
+      }
+
+      final item = ContentItem.fromJson({
+        ...payload,
+        ...data,
+        'id': contentId,
+        'body': data['body'] ?? draftBody,
+        'status': data['status'] ?? 'pending_review',
+      });
+      await _upsertCachedPendingContentItem(item);
+      return item;
+    } on DioException catch (error) {
+      final mapped = _mapDioException(error);
+      if (!mapped.isOffline) {
+        throw mapped;
+      }
+
+      final tempId = _newOfflineTempId('content');
+      final optimistic = ContentItem.fromJson({
+        'id': tempId,
+        'title': draftTitle,
+        'body': draftBody,
+        'content_type': 'video_script',
+        'status': 'pending_review',
+        'project_id': resolvedProjectId,
+        'source_robot': 'manual',
+        'created_at': DateTime.now().toIso8601String(),
+        'priority': 3,
+        'tags': ['video_source_upload'],
+        'metadata': payload['metadata'] as Map<String, dynamic>,
+      });
+      if (draftBody.isNotEmpty) {
+        await _writeCachedData('content.body.$tempId', {'body': draftBody});
+      }
+      final dependsOnTempIds = _dependsOnTempIdsForIds([projectId], idMappings);
+      await _enqueueOfflineAction(
+        resourceType: 'content',
+        actionType: 'create',
+        label: 'Create quick video source draft',
+        method: 'POST',
+        path: '/api/status/content',
+        dedupeKey: 'content:create:$tempId',
+        payload: payload,
+        meta: _offlineActionMeta(
+          entityType: 'content',
+          entityId: tempId,
+          tempId: tempId,
+          dependsOnTempIds: dependsOnTempIds,
+        ),
+        mergePayload: false,
+      );
+      return optimistic;
+    }
+  }
+
   Future<Map<String, dynamic>?> attachCaptureAssetToContent({
     required String contentId,
     required CaptureAsset asset,

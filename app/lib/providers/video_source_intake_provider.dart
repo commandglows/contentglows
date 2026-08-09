@@ -116,6 +116,14 @@ class FilePickerVideoSourceFilePicker implements VideoSourceFilePicker {
         'png',
         'webp',
         'mp4',
+        'mov',
+        'm4v',
+        'avi',
+        'webm',
+        'mkv',
+        'mpeg',
+        'mpg',
+        '3gp',
         'mp3',
         'm4a',
         'wav',
@@ -225,12 +233,16 @@ class VideoSourceIntakeController
     }
   }
 
-  Future<void> addFiles(List<VideoSourceUploadFile> files) async {
+  Future<void> addFiles(
+    List<VideoSourceUploadFile> files, {
+    bool deleteUploadedFromDevice = false,
+  }) async {
     final folder = state.folder;
     if (folder == null || files.isEmpty || state.isUploading) return;
     final epoch = _contextEpoch;
     var currentFolder = folder;
     var failures = 0;
+    final uploadedSourceIds = <String>{};
     final progress = <String, double>{
       for (final file in files) file.clientFileId: 0,
     };
@@ -263,6 +275,13 @@ class VideoSourceIntakeController
           },
         );
         if (!_isCurrent(epoch)) return;
+        final newSourceIds = currentFolder.sources
+            .where((source) => !previousSourceIds.contains(source.id))
+            .map((source) => source.id)
+            .toSet();
+        if (deleteUploadedFromDevice) {
+          uploadedSourceIds.addAll(newSourceIds);
+        }
         await _storeDeviceMediaMappingIfReady(
           file: file,
           previousSourceIds: previousSourceIds,
@@ -296,6 +315,16 @@ class VideoSourceIntakeController
         clearNotice: failures != 0,
       ),
     );
+
+    if (deleteUploadedFromDevice && _isCurrent(epoch)) {
+      final deletableSourceIds = await _deletableSourceIds(currentFolder);
+      final toDelete = uploadedSourceIds
+          .where((sourceId) => deletableSourceIds.contains(sourceId))
+          .toSet();
+      if (toDelete.isNotEmpty) {
+        await deleteSourcesFromDevice(sourceIds: toDelete, requireIdle: false);
+      }
+    }
   }
 
   Future<void> addText({required String text, String? label}) async {
@@ -397,6 +426,31 @@ class VideoSourceIntakeController
         state.isDeletingDeviceMedia) {
       return;
     }
+    await deleteSourcesFromDevice(sourceIds: {source.id}, requireIdle: true);
+  }
+
+  Future<void> deleteSourcesFromDevice({
+    required Set<String> sourceIds,
+    bool requireIdle = true,
+  }) async {
+    final folder = state.folder;
+    final candidateIds = Set<String>.from(sourceIds);
+    if (folder == null || candidateIds.isEmpty || state.isDeletingDeviceMedia) {
+      return;
+    }
+
+    final deletableIds = folder.activeSources
+        .where(
+          (source) =>
+              candidateIds.contains(source.id) &&
+              source.status == VideoSourceStatus.ready &&
+              state.deletableSourceIds.contains(source.id),
+        )
+        .map((source) => source.id)
+        .toSet();
+    if (deletableIds.isEmpty) return;
+    if (requireIdle && state.isBusy) return;
+
     final epoch = _contextEpoch;
     _setState(
       state.copyWith(
@@ -406,18 +460,31 @@ class VideoSourceIntakeController
       ),
     );
     try {
-      final deleted =
-          await _deviceMediaStore?.deleteFromDevice(source.id) ?? false;
-      if (!_isCurrent(epoch)) return;
+      var deletedCount = 0;
+      var cancelledCount = 0;
       final nextIds = Set<String>.from(state.deletableSourceIds);
-      if (deleted) nextIds.remove(source.id);
+      for (final sourceId in deletableIds) {
+        if (!_isCurrent(epoch)) return;
+        final deleted =
+            await _deviceMediaStore?.deleteFromDevice(sourceId) ?? false;
+        if (!_isCurrent(epoch)) return;
+        if (deleted) {
+          deletedCount++;
+          nextIds.remove(sourceId);
+        } else {
+          cancelledCount++;
+        }
+      }
+      if (!_isCurrent(epoch)) return;
       _setState(
         state.copyWith(
           isDeletingDeviceMedia: false,
           deletableSourceIds: nextIds,
-          notice: deleted
-              ? 'Media deleted from this device.'
-              : 'Device deletion was cancelled.',
+          notice: _deleteFromDeviceNotice(
+            deletedCount: deletedCount,
+            cancelledCount: cancelledCount,
+            total: deletableIds.length,
+          ),
         ),
       );
     } catch (_) {
@@ -429,6 +496,26 @@ class VideoSourceIntakeController
         ),
       );
     }
+  }
+
+  String _deleteFromDeviceNotice({
+    required int deletedCount,
+    required int cancelledCount,
+    required int total,
+  }) {
+    if (deletedCount == 0 && cancelledCount == 0) {
+      return 'Device deletion skipped.';
+    }
+    if (deletedCount > 0 && cancelledCount == 0) {
+      return total == 1
+          ? 'Media deleted from this device.'
+          : '$deletedCount media files deleted from this device.';
+    }
+    if (deletedCount > 0 && cancelledCount > 0) {
+      return '$deletedCount media file(s) deleted from this device. '
+          '$cancelledCount deletion request(s) were cancelled.';
+    }
+    return 'Device deletion was cancelled.';
   }
 
   Future<void> retrySource(String sourceId) async {
