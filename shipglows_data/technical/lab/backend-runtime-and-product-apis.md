@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.1.0"
+artifact_version: "1.2.0"
 project: lab
 created: "2026-06-29"
-updated: "2026-08-08"
+updated: "2026-08-09"
 status: reviewed
 source_skill: sf-docs
 scope: technical
@@ -25,6 +25,8 @@ evidence:
   - lab/README.md
   - api/routers/
   - api/services/
+  - api/routers/brand_profiles.py
+  - api/models/brand_profile.py
   - api/migrations/005_video_timelines.sql
   - shipglows_data/technical/lab/architecture.md
 depends_on:
@@ -181,6 +183,21 @@ Registry rule provenance is platform-specific and versioned. Instagram numeric c
 
 ## Video Timeline and Remotion Rendering
 
+## Brand Profiles and Canonical Branded Generation
+
+Brand profiles are authenticated, project-scoped rule records. They provide saved visual and editorial defaults for future branded-video generation; they are not timelines, renderer props, or a second render engine.
+
+Authenticated routes live under `/api/brand-profiles`:
+
+- `GET /api/brand-profiles?projectId=<id>` lists profiles only after project ownership succeeds.
+- `POST /api/brand-profiles` creates a profile for an owned project.
+- `GET`, `PATCH`, and `DELETE /api/brand-profiles/{brand_profile_id}` read or mutate only an owned profile.
+- A profile includes its `revision`, `is_default` state, and saved colors, font, logo, tone, CTA, caption, motion, transition, and intro/outro rule values.
+
+One project can have multiple profiles but only one default. Deleting the current default is rejected with `409`; clients must explicitly set another profile as default first. A save changes later generation inputs only: it must not rewrite a timeline draft or requalify a generation already in progress.
+
+The only brand-impact preview route is `POST /api/video-timelines/from-content/branded-generate`. It accepts an owned `content_id` with optional saved `brand_profile_id`, `blueprint_id`, `format_preset`, `trigger_source`, and `client_request_id`, and returns the canonical generation/timeline response. Flutter uses this route from Branding after choosing completed content, then navigates to the canonical video editor for optional review. Neither Flutter nor the branding API creates a local render model.
+
 The canonical video timeline lives in `lab`, not in Remotion or Flutter. The backend owns validation, immutable versions, asset eligibility, preview/final job gates, and signed artifact URLs. Remotion is an internal renderer adapter behind `worker`.
 
 Timeline API routes live under `/api/video-timelines`:
@@ -312,7 +329,7 @@ Signed GCS playback URLs are bearer-like secrets. Do not copy query strings such
 
 ## Reader Checklist
 
-- Read this file before changing project intelligence, project assets, video timeline, render artifact, image generation, GSC OAuth, or project-selection behavior.
+- Read this file before changing project intelligence, project assets, brand profiles, branded generation, video timeline, render artifact, image generation, GSC OAuth, or project-selection behavior.
 - Cross-check worker render behavior with `shipglows_data/technical/worker/architecture.md`.
 - Update this file when a README-local backend contract would otherwise be reintroduced.
 

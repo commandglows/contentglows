@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "0.2.0"
 project: app
 created: "2026-05-06"
-updated: "2026-05-06"
+updated: "2026-08-09"
 status: draft
 source_skill: sf-docs
 scope: flutter-app-shell-and-capture
@@ -19,6 +19,8 @@ linked_systems:
   - lib/providers/providers.dart
   - lib/data/services/api_service.dart
   - lib/data/services/capture_local_store.dart
+  - lib/data/models/brand_profile.dart
+  - lib/presentation/screens/branding/brand_profiles_screen.dart
   - android/app/src/main/kotlin/
   - test/
 depends_on:
@@ -32,7 +34,7 @@ supersedes: []
 evidence:
   - "Flutter source and Android native capture paths are present in app."
   - "Recent specs cover Android screen capture, local capture assets, offline sync, and content editing."
-next_review: "2026-06-06"
+next_review: "2026-09-09"
 next_step: "/sf-docs technical audit app"
 ---
 
@@ -48,8 +50,10 @@ This module covers the ContentGlows Flutter app shell, guarded routing, shared p
 | --- | --- | --- |
 | `lib/main.dart` | App bootstrap | Keep diagnostics and provider initialization explicit. |
 | `lib/router.dart` | Route graph and guards | Preserve auth, onboarding, demo, and resume behavior. |
-| `lib/providers/providers.dart` | Shared Riverpod state | Avoid broad provider rewrites without focused regression tests. |
-| `lib/data/services/api_service.dart` | FastAPI client and offline queue | Keep auth, retry, payload, and cache semantics aligned with backend contracts. |
+| `lib/providers/providers.dart` | Shared Riverpod state | Avoid broad provider rewrites without focused regression tests. Brand profile mutations must invalidate the project-scoped profile state. |
+| `lib/data/services/api_service.dart` | FastAPI client and offline queue | Keep auth, retry, payload, and cache semantics aligned with backend contracts. Canonical branded generation remains the only branding preview request. |
+| `lib/data/models/brand_profile.dart` | Brand profile transport model and saved-rule draft | Keep revision/default fields and partial visual/editorial rules aligned with the API contract. |
+| `lib/presentation/screens/branding/brand_profiles_screen.dart` | Settings-based brand-rule editor | Keep profile editing separate from timeline instance editing; preview only uses saved profiles and completed content. |
 | `lib/data/services/capture_local_store.dart` | Local capture and content link storage | Do not treat local Android paths as durable backend truth. |
 | `android/app/src/main/kotlin/**` | Android native bridge | Keep MediaProjection consent, foreground-service behavior, and platform-channel failures observable. |
 | `test/**` | Regression coverage | Add focused tests when changing navigation, providers, offline sync, or capture state. |
@@ -70,6 +74,12 @@ app start
   -> providers.dart state graph
   -> api_service.dart backend/offline operations
   -> capture_local_store.dart local capture metadata when capture flows are used
+
+branding preview
+  -> /settings/branding saved project profile
+  -> select completed content and confirm an active blueprint
+  -> api_service.dart canonical branded-generation request
+  -> /editor/:id/video optional edit/review
 ```
 
 ## Invariants
@@ -80,6 +90,8 @@ app start
 - Local capture files remain device-local unless the user explicitly shares/exports or a future upload contract is implemented.
 - Backend records must not store raw Android local filesystem paths as durable server truth.
 - Android screen capture requires explicit system consent and must stop cleanly when consent, policy, or projection state changes.
+- Brand profile edits are project-scoped saved rules for subsequent generations; they must not mutate a timeline draft or requalify an already-started generation.
+- Branding preview calls the backend's canonical branded-generation route. The Flutter screen must not add a local renderer or a second video-creation route.
 
 ## Failure Modes
 
@@ -109,6 +121,7 @@ For Android capture changes, add or request real-device QA for MediaProjection c
 - `lib/router.dart` changed -> review route/resume invariants and navigation tests.
 - `lib/providers/providers.dart` changed -> review provider state, offline sync, and cache invalidation.
 - `lib/data/services/api_service.dart` changed -> review backend payloads, auth behavior, and offline queue semantics.
+- Brand profile model, provider, Settings route, or branding screen changed -> review project ownership, default-profile protection, saved-versus-unsaved state, completed-content filtering, and canonical-generation handoff tests.
 - `capture` or `android/` paths changed -> review screen-capture specs and require Android QA evidence.
 
 ## Maintenance Rule

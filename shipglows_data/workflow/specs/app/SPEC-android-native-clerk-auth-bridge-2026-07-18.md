@@ -42,7 +42,7 @@ supersedes: []
 evidence:
   - "app/lib/data/services/clerk_auth_service_stub.dart returns no Android session and rejects the retired Flutter beta path."
   - "app/android/app/src/main/AndroidManifest.xml has no Clerk callback intent filter."
-  - "app/android/app/src/main/kotlin/com/contentglows/app/MainActivity.kt does not pass incoming callback URIs to Clerk."
+  - "At spec creation, app/android/app/src/main/AndroidManifest.xml had no project-owned Clerk callback handler; the SDK-owned receiver remains outside Flutter callback handling."
   - "The existing web implementation uses a ClerkJS bridge and must remain the web-only implementation."
   - "FastAPI already accepts Clerk bearer JWTs through lab/api/auth/clerk.py and lab/api/dependencies/auth.py."
   - "Clerk Android docs checked 2026-07-18: Native API, API-only SDK, Application initialization, Activity deep-link handling, session getToken/signOut, and Google native sign-in."
@@ -191,7 +191,7 @@ Exception-with-proof: le test OAuth réel ne peut pas être automatisé de bout 
 
 # Implementation Tasks
 
-- [ ] Task 1: Valider et pinner le contrat SDK/configuration Android Clerk.
+- [x] Task 1: Valider et pinner le contrat SDK/configuration Android Clerk.
   - Fichier : `app/android/app/build.gradle.kts`, `app/android/app/src/main/AndroidManifest.xml`, configuration Clerk/Google hors Git.
   - Action : Vérifier minSdk effectif; le fixer à >=24 si Flutter le fournit plus bas; injecter `CLERK_PUBLISHABLE_KEY` depuis l’environnement/CI Gradle dans `BuildConfig` et faire échouer tout build auth-enabled si elle est absente; ajouter l’API-only SDK Clerk à une version stable précise; activer Native API Clerk; configurer Google Android+Web clients et l’allowlist callback pour `clerk://com.contentglows.app.callback` sans enregistrer de secret.
   - User story link : permet une session Android officielle et un retour contrôlé.
@@ -199,15 +199,15 @@ Exception-with-proof: le test OAuth réel ne peut pas être automatisé de bout 
   - Validate with : Gradle dependency insight/build, manifest merger, revue dashboard redacted et preuve de package/signature testée.
   - Notes : Ne pas utiliser `clerk-android-ui` ni `clerk_flutter`.
 
-- [ ] Task 2: Créer le propriétaire Kotlin de Clerk et le bridge Flutter.
-  - Fichier : `app/android/app/src/main/kotlin/com/contentglows/app/ContentGlowsApplication.kt`, `app/android/app/src/main/kotlin/com/contentglows/app/auth/ClerkAuthChannel.kt`, `app/android/app/src/main/kotlin/com/contentglows/app/MainActivity.kt`.
+- [x] Task 2: Créer le propriétaire Kotlin de Clerk et le bridge Flutter.
+  - Fichier : `app/android/app/src/main/kotlin/com/contentglows/contentglows_app/ContentGlowsApplication.kt`, `app/android/app/src/main/kotlin/com/contentglows/contentglows_app/auth/ClerkAuthChannel.kt`, `app/android/app/src/main/kotlin/com/contentglows/contentglows_app/MainActivity.kt`.
   - Action : Initialiser Clerk une fois dans `Application`; créer un channel injecté/testable exposant `initialize`, `signInWithGoogle`, `restoreSession`, `getFreshToken`, `signOut`; laisser `SSOReceiverActivity` du SDK traiter son callback allowlisté et annuler les opérations en cours à la destruction.
   - User story link : orchestre Google, callback et session native sans quitter définitivement l’APK.
   - Depends on : Task 1.
   - Validate with : tests Kotlin fakes + lint/compile Android; inspection que les channels capture/media existants restent routés.
   - Notes : Les payloads MethodChannel ne contiennent jamais token dans les logs; le token ne traverse Dart qu’en valeur mémoire de retour.
 
-- [ ] Task 3: Ajouter le service Dart Android et le contrat d’erreur de plateforme.
+- [x] Task 3: Ajouter le service Dart Android et le contrat d’erreur de plateforme.
   - Fichier : `app/lib/data/services/clerk_auth_service_android.dart` (nouveau), `app/lib/data/services/clerk_auth_service.dart`, `app/lib/data/services/clerk_auth_service_stub.dart`.
   - Action : Sélectionner une implémentation Android dédiée; mapper les résultats Kotlin vers `ClerkAuthResult`; ajouter `signInWithGoogle` et exceptions typées; garder le stub pour plateformes non web/non Android et le service web inchangé.
   - User story link : rend la session native consommable par Flutter sans changer l’expérience web.
@@ -215,7 +215,7 @@ Exception-with-proof: le test OAuth réel ne peut pas être automatisé de bout 
   - Validate with : tests Dart de codec, résultat vide, annulation, erreur native et absence de stockage/payload de token.
   - Notes : Ne pas ajouter de persistance custom de session; Clerk Android en est propriétaire.
 
-- [ ] Task 4: Relier l’état Flutter, l’UI et FastAPI au bridge Android.
+- [x] Task 4: Relier l’état Flutter, l’UI et FastAPI au bridge Android.
   - Fichier : `app/lib/providers/providers.dart`, `app/lib/presentation/screens/entry/entry_screen.dart`, l10n associée et tests ciblés.
   - Action : Ajouter l’action Google Android, restaurer/refresh/signOut via le nouveau service, préserver les transitions Riverpod et la récupération 401; remplacer la copy Android web-only par les états natifs réels et diagnostics redacted.
   - User story link : termine le parcours par l’ouverture du workspace authentifié.
@@ -223,7 +223,7 @@ Exception-with-proof: le test OAuth réel ne peut pas être automatisé de bout 
   - Validate with : Flutter unit/widget tests, simulation de session obtenue/annulée/expirée, et assertion que `ApiService` porte un bearer frais seulement en mémoire.
   - Notes : Le chemin web et son texte restent ClerkJS; ne pas faire ouvrir `/sign-in` depuis Android pour Google natif.
 
-- [ ] Task 5: Ajouter les preuves de non-régression, observabilité et documentation.
+- [x] Task 5: Ajouter les preuves de non-régression, observabilité et documentation.
   - Fichier : `app/test/**` ciblés, `app/android/app/src/test/**` et/ou `src/androidTest/**`, `shipglows_data/workflow/test-checklists/android-native-clerk-auth-bridge.md`, `shipglows_data/technical/app/platforms/clerk.md`, `shipglows_data/technical/app/architecture.md`, `shipglows_data/technical/app/context-function-tree.md` si impacté.
   - Action : Écrire les tests/checklist, conserver les diagnostics build Paris/UTC, documenter la configuration sans secrets et le rollback; exécuter la preuve device/Google et la validation web.
   - User story link : assure que l’auth retourne durablement à l’app sans dégrader web ou sécurité.

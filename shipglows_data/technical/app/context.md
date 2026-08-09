@@ -1,10 +1,10 @@
 ---
 artifact: technical_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: app
 created: "2026-04-26"
-updated: "2026-04-27"
+updated: "2026-08-09"
 status: reviewed
 source_skill: sf-docs
 scope: technical
@@ -21,6 +21,8 @@ evidence:
   - "lib/providers/providers.dart"
   - "lib/data/services/api_service.dart"
   - "lib/data/services/offline_storage_service.dart"
+  - "lib/data/models/brand_profile.dart"
+  - "lib/presentation/screens/branding/brand_profiles_screen.dart"
   - "shipglows_data/workflow/specs/app/architecture-cible-fastapi-clerk-flutter.md"
   - "shipglows_data/workflow/specs/app/SPEC-offline-sync-v2.md"
 depends_on:
@@ -34,7 +36,7 @@ supersedes: []
 linked_systems:
   - "lab FastAPI"
   - "Clerk"
-next_review: "2026-07-26"
+next_review: "2026-09-09"
 next_step: "/sf-docs update shipglows_data/technical/app/context.md"
 ---
 
@@ -67,6 +69,7 @@ next_step: "/sf-docs update shipglows_data/technical/app/context.md"
   - Projects, workspace/settings, creator profile, personas, content pipeline, integrations, analytics-like views, feedback.
   - `Project Intelligence V1`: read project intelligence status, source inventory, extracted facts, recommendations, provider readiness, upload text-like sources, remove sources, and convert recommendations into Idea Pool items.
   - `Video Timeline V1`: online-only timeline editing and preview/final render orchestration for `/editor/:id/video`, with `lab` as the public API boundary and the Remotion worker hidden behind backend contracts.
+  - `Brand Profiles`: project-scoped rule records loaded through `brandProfilesStateProvider` and changed through `BrandProfileController`. Settings exposes them at `/settings/branding`; saved rules can become the default for subsequent generations. Preview impact selects completed content, calls `generateBrandedVideoFromContent`, then hands off to `/editor/:id/video`. It never creates a local render model or writes timeline draft JSON.
   - Android local capture: screenshot/recording flows backed by MediaProjection and app-scoped storage.
 - **Offline domain:**
   - Read-through cache + mutation queue + temp-ID reconciliation via offline stores and queue controller.
@@ -105,6 +108,7 @@ next_step: "/sf-docs update shipglows_data/technical/app/context.md"
 - **Feedback admin** uses backend endpoints with optional local draft/submission cache.
 - **Project Intelligence** is project-scoped and backend-constrained; offline queue does not cover file/binary uploads for this surface.
 - **Video Timeline** never calls the Remotion worker directly from Flutter; signed playback URLs are ephemeral response data and must not be persisted with their query tokens.
+- **Brand Profiles** use the authenticated project-scoped FastAPI contract. The client may request a canonical branded generation with a saved `brand_profile_id`, but it must not treat an unsaved form as render input or retroactively alter an in-flight generation.
 
 ## Testing references
 - `test/core` validates providers, retry behavior, queue mapping, project onboarding validation, AI guards.

@@ -1,10 +1,10 @@
 ---
 artifact: product_context
 metadata_schema_version: "1.0"
-artifact_version: "1.3.0"
+artifact_version: "1.4.0"
 project: "app"
 created: "2026-04-26"
-updated: "2026-08-05"
+updated: "2026-08-09"
 status: "reviewed"
 source_skill: sf-docs
 scope: product
@@ -22,6 +22,7 @@ evidence:
   - "lib/router.dart"
   - "lib/data/services/"
   - "lib/presentation/screens/"
+  - "lib/presentation/screens/branding/brand_profiles_screen.dart"
   - "shipglows_data/workflow/specs/app/SPEC-offline-sync-v2.md"
   - "shipglows_data/workflow/specs/app/SPEC-project-flows-selection-onboarding-archive.md"
   - "shipglows_data/workflow/specs/app/late-integration-finalization.md"
@@ -75,7 +76,7 @@ next_step: "/sf-docs audit shipglows_data/product/app/product.md"
 - **Video Timeline V1 scope:** timeline editing plus preview/final render orchestration through backend contracts, without direct Flutter-to-worker calls.
 - **Video Source Intake V1 scope:** collecting and validating project-scoped sources, saving an exact ready revision, and optionally handing that revision to generation. Video generation execution, editing, rendering and publication remain separate stages.
 - **Ahead-of-time branded video scope:** the feed can request safe refreshes of branded-video candidates, consume compact readiness states, surface preflight blockers directly on the card, and keep the video editor as an explicit optional branch instead of the default path.
-- **Brand profile scope:** reusable visual and editorial defaults apply to branded video generation; the app requests an explicit active video style before it starts a preview render, and a persona remains associated with its content rather than the profile.
+- **Brand profile scope:** Settings (`/settings/branding`) owns reusable, project-scoped visual and editorial rules for future branded-video generations. A saved profile can be selected as default; a branding-impact preview first selects completed content, then uses the canonical branded-generation route and opens the resulting video in `/editor/:id/video`. The branding surface never renders locally or mutates an existing timeline draft. A persona remains associated with its content rather than the profile.
 - **Android-only V1 scope:** local device screenshot and screen-recording capture with Android consent, app-scoped storage, preview, discard, and share/export.
 - **Partially in scope / not finished:** end-to-end external publish execution by channel.
   - Route and UX for publish actions exists in some paths, but full channel-account linking and feedback loop are not fully closed yet.

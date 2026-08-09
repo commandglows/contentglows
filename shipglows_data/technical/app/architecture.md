@@ -1,10 +1,10 @@
 ---
 artifact: architecture_context
 metadata_schema_version: "1.0"
-artifact_version: "1.2.0"
+artifact_version: "1.3.0"
 project: app
 created: "2026-04-26"
-updated: "2026-07-13"
+updated: "2026-08-09"
 status: reviewed
 source_skill: sf-docs
 scope: architecture
@@ -21,6 +21,9 @@ evidence:
   - "lib/providers/providers.dart"
   - "lib/data/services/api_service.dart"
   - "lib/data/services/offline_storage_service.dart"
+  - "app/android/app/src/main/kotlin/com/contentglows/contentglows_app/ContentGlowsApplication.kt"
+  - "app/android/app/src/main/kotlin/com/contentglows/contentglows_app/auth/ClerkAuthChannel.kt"
+  - "app/lib/data/services/clerk_auth_service_android.dart"
   - "shipglows_data/workflow/specs/app/architecture-cible-fastapi-clerk-flutter.md"
   - "shipglows_data/workflow/specs/app/SPEC-offline-sync-v2.md"
 depends_on:
@@ -38,6 +41,7 @@ linked_systems:
   - "lab FastAPI services"
   - "site marketing surface"
   - "ClerkJS auth"
+  - "Clerk Android native bridge"
 external_dependencies:
   - "Flutter SDK 3.11+"
   - "GoRouter"
@@ -142,7 +146,8 @@ The app is structured as a **single Flutter client boundary** with backend data 
 ## 3) Auth architecture: Flutter + Clerk + FastAPI
 
 1. Flutter app restores session from ClerkJS on web or from the Kotlin Clerk
-   Android bridge on Android (when configured).
+   Android bridge on Android. Auth-enabled Android builds fail closed when the
+   publishable key is missing; the app does not silently switch to web auth.
 2. Auth state (`AuthSession`) decides whether session is demo, signed out, or authenticated.
 3. Authenticated state triggers backend access resolve in `AppAccessNotifier`:
    - `GET /api/health`-like check
@@ -156,11 +161,14 @@ The app is structured as a **single Flutter client boundary** with backend data 
 Notes:
 - Native password auth methods are present in type definitions but are intentionally not production enabled (web path is canonical).
 - `CLERK_PUBLISHABLE_KEY` must be present for normal auth-enabled builds.
-- Android Clerk initializes in `ContentGlowsApplication`; Clerk Android's
+- Android Clerk initializes in `ContentGlowsApplication`; the Kotlin
+  `ClerkAuthChannel` exposes Google sign-in, restore, fresh-token, and sign-out
+  operations to Flutter. Clerk Android's
   manifest-registered `SSOReceiverActivity` handles its exact
   `clerk://com.contentglows.app.callback` OAuth callback, while the
-  MethodChannel exposes session operations to Flutter. JWTs stay in memory and
-  FastAPI remains the authorization authority.
+  MethodChannel keeps the JWT in memory and FastAPI remains the authorization
+  authority. Device/provider OAuth and hosted-web checks are still required
+  before claiming end-to-end verification.
 - Settings > Integrations lets an authenticated user connect an IMAP email source by choosing the mailbox folder and processed folder. The app saves the active project with the integration; backend scheduling then checks the folder every 6 hours, so the app does not expose a manual "send emails to Idea Pool" action.
 
 ## 4) Offline architecture and queue model

@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "0.2.0"
 project: app
 created: "2026-05-24"
-updated: "2026-05-24"
+updated: "2026-08-09"
 status: draft
 source_skill: sf-docs
 scope: platform-usage-vercel
@@ -14,9 +14,9 @@ risk_level: high
 security_impact: yes
 docs_impact: yes
 linked_systems:
-  - shipglows_data/technical/code-docs-map.md
+  - shipglows_data/technical/app/code-docs-map.md
   - shipglows_data/technical/app/architecture.md
-  - shipglows_data/technical/platforms/clerk.md
+  - shipglows_data/technical/app/platforms/clerk.md
   - vercel.json
   - scripts/vercel-install.sh
   - scripts/vercel-build.sh

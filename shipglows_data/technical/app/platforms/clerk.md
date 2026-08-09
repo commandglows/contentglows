@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "0.2.0"
 project: app
 created: "2026-05-24"
-updated: "2026-05-24"
+updated: "2026-08-09"
 status: draft
 source_skill: sf-docs
 scope: platform-usage-clerk
@@ -16,9 +16,13 @@ docs_impact: yes
 linked_systems:
   - shipglows_data/technical/code-docs-map.md
   - shipglows_data/technical/app/architecture.md
-  - shipglows_data/technical/flutter-app-shell-and-capture.md
-  - web_auth/
-  - lib/data/services/clerk_auth_service_web.dart
+  - shipglows_data/technical/app/flutter-app-shell-and-capture.md
+  - app/android/app/src/main/kotlin/com/contentglows/contentglows_app/ContentGlowsApplication.kt
+  - app/android/app/src/main/kotlin/com/contentglows/contentglows_app/auth/ClerkAuthChannel.kt
+  - app/lib/data/services/clerk_auth_service_android.dart
+  - app/lib/data/services/clerk_auth_service_web.dart
+  - app/lib/providers/providers.dart
+  - app/web_auth/
   - scripts/install-web-auth.sh
   - scripts/validate-clerk-runtime.sh
   - vercel.json
@@ -28,9 +32,9 @@ depends_on:
     required_status: "draft"
 supersedes: []
 evidence:
-  - "ContentGlows App uses a dedicated ClerkJS web runtime instead of the removed Flutter beta SDK path."
-  - "Local auth routes and SPA rewrites are project-specific enough to justify a project usage note."
-next_review: "2026-06-24"
+  - "ContentGlows App uses a dedicated ClerkJS web runtime and a Kotlin-owned Clerk Android bridge instead of the removed Flutter beta SDK path."
+  - "Local auth routes, Android native session handling, and SPA rewrites are project-specific enough to justify a project usage note."
+next_review: "2026-09-09"
 next_step: "/sf-docs technical audit app"
 ---
 
@@ -46,10 +50,12 @@ links and SDK behavior.
 
 - Provider role: session authority for authenticated Flutter app access.
 - Environments used: local validation, Vercel preview, Vercel production.
-- Validation surface: ClerkJS route runtime, Flutter session restore, FastAPI
-  bearer-token calls, SPA/auth rewrites.
+- Validation surface: ClerkJS route runtime, Android Kotlin bridge, Flutter
+  session restore, FastAPI bearer-token calls, SPA/auth rewrites, and Android
+  device/provider proof.
 - Owner: Diane.
-- Last verified: 2026-05-24 by documentation audit, without live auth retest.
+- Last verified: 2026-07-30 by code/configuration review and local checks.
+  Android provider/device OAuth and hosted web proof remain pending.
 
 ## Local Configuration
 
@@ -77,13 +83,12 @@ links and SDK behavior.
   `/sso-callback` before the catch-all SPA rewrite.
 - Password auth through the old Flutter beta SDK is intentionally disabled on
   web production; use the dedicated ClerkJS auth routes.
-- Android initializes Clerk once in `ContentGlowsApplication`. Its Kotlin
-  MethodChannel owns Clerk's native OAuth launch in the system browser, session
-  restore, fresh token retrieval, and sign-out. Clerk Android's own registered
+- Android initializes Clerk once in `ContentGlowsApplication`. The Kotlin
+  `ClerkAuthChannel` owns Clerk's native Google OAuth launch, session restore,
+  fresh token retrieval, and sign-out. Clerk Android's dependency-registered
   `SSOReceiverActivity` owns the `clerk://com.contentglows.app.callback`
-  callback handling;
-  `clerk_auth_service_android.dart`
-  only transports the active token in memory to Flutter.
+  callback handling. `clerk_auth_service_android.dart` transports the active
+  token to Flutter in memory; Flutter does not persist the token.
 - Google OAuth configuration is external: enable Clerk Native API, register
   the Android package in Clerk, allowlist `clerk://com.contentglows.app.callback`,
   and enable the Google connection for sign-up and sign-in. Record neither
@@ -115,6 +120,9 @@ links and SDK behavior.
   and duplicate app-access refreshes.
 - Token rejected by FastAPI -> validate backend Clerk/JWT settings before
   changing frontend auth state.
+- Missing Android publishable key or incomplete native initialization -> the
+  auth-enabled Gradle build or bridge fails closed; do not fall back silently to
+  the web route on Android.
 
 ## Security Notes
 
@@ -140,15 +148,19 @@ For hosted validation, use the Vercel preview/production URL and verify:
 
 For Android, build with `-PcontentglowsAuthEnabled=true` and the key supplied
 through CI/environment, then prove Google sign-in, cancellation, restart,
-sign-out and FastAPI bootstrap on a configured physical device. Roll back by
-shipping a build with the Android action disabled; never fall back to a token
-or code in a browser URL.
+sign-out and FastAPI bootstrap on a configured physical device. Local static
+and unit checks do not replace provider/device proof. Release builds also
+require the configured release signing variables. Roll back by shipping a
+build with the Android action disabled; never fall back to a token or code in a
+browser URL.
 
 ## Reader Checklist
 
 - `web_auth/**` changed -> review route assets, runtime bridge, and this note.
-- `lib/data/services/clerk_auth_service*.dart` changed -> review token/session
-  invariants and FastAPI bearer-token behavior.
+- `lib/data/services/clerk_auth_service*.dart`, `lib/providers/providers.dart`,
+  or `android/app/src/main/kotlin/com/contentglows/contentglows_app/auth/**`
+  changed -> review token/session invariants, channel error mapping, and
+  FastAPI bearer-token behavior.
 - `vercel.json` rewrites changed -> verify auth route precedence before SPA
   fallback.
 - Build scripts changed -> verify `CLERK_PUBLISHABLE_KEY`, `APP_WEB_URL`, and

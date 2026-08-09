@@ -272,6 +272,7 @@ None. The user direction is explicit: first expose brand profiles as reusable ru
 | 2026-07-08 20:51:49 UTC | 102-sg-start | GPT-5 Codex | Implemented the branding preview entrypoint from Settings, routed preview impact through canonical branded generation, and added regression coverage for the editor handoff and content-complete filtering. | implemented | /103-sg-verify brand profiles preview-through-generation and token cleanup |
 | 2026-07-11 19:05:00 UTC | 103-sg-verify | GPT-5 Codex | Verified brand profile models/API, project-scoped provider state, Settings entrypoint, editor, default protection, canonical preview handoff, targeted Flutter/backend tests, Flutter analyze, and design-token drift. | verified | /104-sg-end branding editor and canonical branded generation |
 | 2026-07-11 19:12:00 UTC | 104-sg-end | gpt-5.5 | Closed the verified brand-profile editor and canonical preview slice with hosted/device proof explicitly remaining. | closed | /005-sg-ship branding editor and canonical branded generation |
+| 2026-08-09 00:00:00 UTC | sg-docs | GPT-5 Codex | Updated the internal product and technical contracts for Settings-based brand profiles, canonical preview handoff, backend ownership/default behavior, and corrected stale app technical-map and platform-note targets. | documented | /005-sg-ship branding editor and canonical branded generation |
 
 ## Current Chantier Flow
 
