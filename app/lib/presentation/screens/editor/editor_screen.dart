@@ -521,7 +521,12 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
                           size: 18,
                           color: Theme.of(context).colorScheme.primary,
                         ),
-                        onTap: () => Navigator.of(context).pop(link.url),
+                        onTap: () {
+                          final url = link.slug != null && link.slug!.isNotEmpty
+                              ? '/r/${link.slug}'
+                              : link.url;
+                          Navigator.of(context).pop(url);
+                        },
                       );
                     }),
                     const SizedBox(height: 16),

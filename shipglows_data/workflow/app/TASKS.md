@@ -262,15 +262,15 @@ Concurrent sources: Filmora, PixVerse. Canonical execution spec: `shipglows_data
 
 > Brancher les affiliate links dans les flux de création de contenu qui les consomment.
 
-### Quick Wins
+### Quick Wins ✅
 
 | Pri | Task | Impact | Effort | Status | Notes |
 |-----|------|--------|--------|--------|-------|
-| 🟠 | Editeur : picker d'affiliate links dans "Insert link" au lieu du dialogue URL brut | High | Medium | 📋 todo | Lire affiliationsProvider, afficher la liste, insérer le slug ou l'URL |
-| 🟠 | Pipeline : passer les affiliations à dispatchPipeline → _run_pipeline_task | High | Medium | 📋 todo | Ajouter champ affiliations à PipelineDispatchRequest, fetch dans api_service.dart |
-| 🟡 | Contexte génération : inclure les affiliations actives dans build_generation_context() | Medium | Medium | 📋 todo | Fetch via user_data_store, ajouter comme items de contexte |
-| 🟡 | Prompts agents : ajouter instructions de matching/insertion d'affiliate links dans SEO, short, social, newsletter | Medium | Low | 📋 todo | YAML prompts + crew input enrichment |
-| 🟡 | Matching keywords : logique simple AffiliateLink.keywords ↔ angle.topic/content keywords | Medium | Low | 📋 todo | Côté backend ou Flutter selon flux |
+| 🟠 | Editeur : picker d'affiliate links dans "Insert link" au lieu du dialogue URL brut | High | Medium | ✅ done | Bottom sheet avec liste des liens actifs/non expirés, insertion du slug court si dispo |
+| 🟠 | Pipeline : passer les affiliations à dispatchPipeline → _run_pipeline_task | High | Medium | ✅ done | `PipelineDispatchRequest.affiliations` ajouté, fetch côté Flutter + fallback backend |
+| 🟡 | Contexte génération : inclure les affiliations actives dans build_generation_context() | Medium | Medium | ✅ done | Section `## Active Affiliate Links` ajoutée au prompt_text, tronquée si budget dépassé |
+| 🟡 | Prompts agents : ajouter instructions de matching/insertion d'affiliate links dans SEO, short, social, newsletter | Medium | Low | ✅ done | Backstories YAML mises à jour pour copywriter, short_form_writer, platform_adapter, content_writer |
+| 🟡 | Matching keywords : logique simple AffiliateLink.keywords ↔ angle.topic/content keywords | Medium | Low | 📋 todo | Champ keywords exposé dans le payload affiliations ; matching IA côté prompt reste à affiner |
 
 ### 🟡 P2 — Polish & Engagement
 

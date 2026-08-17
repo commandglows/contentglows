@@ -51,7 +51,12 @@ class _AffiliationsScreenState extends ConsumerState<AffiliationsScreen> {
         data: (affiliations) {
           final filtered = _statusFilter == 'all'
               ? affiliations
-              : affiliations.where((a) => a.status == _statusFilter).toList();
+              : affiliations.where((a) {
+                  if (_statusFilter == 'expired') {
+                    return a.isExpired || a.status == 'expired';
+                  }
+                  return a.status == _statusFilter;
+                }).toList();
 
           return RefreshIndicator(
             onRefresh: () async => ref.invalidate(affiliationsProvider),
@@ -198,9 +203,9 @@ class _StatsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final palette = AppTheme.paletteOf(context);
-    final active = affiliations.where((a) => a.status == 'active').length;
+    final active = affiliations.where((a) => a.status == 'active' && !a.isExpired).length;
     final paused = affiliations.where((a) => a.status == 'paused').length;
-    final expired = affiliations.where((a) => a.status == 'expired').length;
+    final expired = affiliations.where((a) => a.isExpired || a.status == 'expired').length;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
