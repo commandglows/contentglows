@@ -84,6 +84,7 @@ next_step: "/sf-docs update shipglows_data/technical/app/context-function-tree.m
   - Content: `pendingContentProvider`, `contentHistoryProvider`.
   - Creators: `creatorProfileProvider`.
   - Personas/Affiliations/Ideas: `personasProvider`, `affiliationsProvider`, `ideasProvider`.
+  - Link management: `linkClicksProvider` (planned), `linkVariantsProvider` (planned).
   - Drip: `dripPlansProvider`, `dripStatsProvider`.
 - Mutation controllers/notifiers
   - `CurrentUserSettings` update and theme/language sync
@@ -108,7 +109,7 @@ next_step: "/sf-docs update shipglows_data/technical/app/context-function-tree.m
   - `ApiException` + `ApiErrorType`
   - transport helpers, cache helpers (`_getCachedData`, `_writeCachedData`)
   - offline helpers (`_enqueueOfflineAction`, replay helpers, id mapping, queue status transitions)
-  - Domain APIs: bootstrap, projects, settings, creator profile, content, personas, affiliations, ideas, drip, integrations, feedback.
+  - Domain APIs: bootstrap, projects, settings, creator profile, content, personas, affiliations, link management (clicks, variants), ideas, drip, integrations, feedback.
 - `offline_storage_service.dart`
   - `OfflineCacheStore`, `OfflineQueueStore`, `OfflineIdMappingStore`
   - cache store read/write/rewrite semantics by scope.

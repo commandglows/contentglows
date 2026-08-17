@@ -18,6 +18,9 @@ class AffiliateLink {
     this.expiresAt,
     this.createdAt,
     this.updatedAt,
+    this.slug,
+    this.clickCount = 0,
+    this.variants = const [],
   });
 
   final String? id;
@@ -38,6 +41,19 @@ class AffiliateLink {
   final DateTime? expiresAt;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final String? slug;
+  final int clickCount;
+  final List<Map<String, dynamic>> variants;
+
+  bool get isExpired {
+    if (expiresAt == null) return false;
+    return DateTime.now().toUtc().isAfter(expiresAt!.toUtc());
+  }
+
+  String get shortLink {
+    if (slug == null || slug!.isEmpty) return url;
+    return '/r/$slug';
+  }
 
   factory AffiliateLink.fromJson(Map<String, dynamic> json) {
     return AffiliateLink(
@@ -62,6 +78,12 @@ class AffiliateLink {
       expiresAt: _parseDateTime(json['expiresAt']),
       createdAt: _parseDateTime(json['createdAt']),
       updatedAt: _parseDateTime(json['updatedAt']),
+      slug: json['slug'] as String?,
+      clickCount: (json['clickCount'] as int?) ?? 0,
+      variants: (json['variants'] as List<dynamic>?)
+              ?.map((e) => Map<String, dynamic>.from(e as Map))
+              .toList() ??
+          const [],
     );
   }
 
@@ -79,6 +101,7 @@ class AffiliateLink {
         'status': status,
         if (notes != null) 'notes': notes,
         if (expiresAt != null) 'expiresAt': expiresAt!.toIso8601String(),
+        if (slug != null) 'slug': slug,
       };
 
   AffiliateLink copyWith({
@@ -100,6 +123,9 @@ class AffiliateLink {
     DateTime? expiresAt,
     DateTime? createdAt,
     DateTime? updatedAt,
+    String? slug,
+    int? clickCount,
+    List<Map<String, dynamic>>? variants,
   }) {
     return AffiliateLink(
       id: id ?? this.id,
@@ -120,6 +146,9 @@ class AffiliateLink {
       expiresAt: expiresAt ?? this.expiresAt,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      slug: slug ?? this.slug,
+      clickCount: clickCount ?? this.clickCount,
+      variants: variants ?? this.variants,
     );
   }
 

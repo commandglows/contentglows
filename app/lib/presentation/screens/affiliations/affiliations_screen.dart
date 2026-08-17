@@ -299,7 +299,9 @@ class _AffiliationCard extends ConsumerWidget {
             ),
           );
 
-    final statusColor = switch (affiliation.status) {
+    final isExpired = affiliation.isExpired;
+    final displayStatus = isExpired ? 'expired' : affiliation.status;
+    final statusColor = switch (displayStatus) {
       'active' => AppTheme.approveColor,
       'paused' => AppTheme.warningColor,
       'expired' => AppTheme.rejectColor,
@@ -309,7 +311,7 @@ class _AffiliationCard extends ConsumerWidget {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: InkWell(
-        onTap: onTap,
+        onTap: isExpired ? null : onTap,
         onLongPress: onDelete,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
@@ -341,7 +343,7 @@ class _AffiliationCard extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      affiliation.status,
+                      displayStatus,
                       style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
@@ -350,6 +352,16 @@ class _AffiliationCard extends ConsumerWidget {
                   ),
                 ],
               ),
+              if (isExpired) ...[
+                const SizedBox(height: 4),
+                Text(
+                  'Expires: ${affiliation.expiresAt?.toLocal().toString().split(' ')[0] ?? ''}',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: AppTheme.rejectColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
               if (affiliation.description != null) ...[
                 const SizedBox(height: 4),
                 Text(
@@ -378,6 +390,14 @@ class _AffiliationCard extends ConsumerWidget {
                     _MetaChip(
                         icon: Icons.label_outline,
                         text: affiliation.keywords.take(3).join(', ')),
+                  if (affiliation.slug != null && affiliation.slug!.isNotEmpty)
+                    _MetaChip(
+                        icon: Icons.link,
+                        text: '/r/${affiliation.slug}'),
+                  if (affiliation.clickCount > 0)
+                    _MetaChip(
+                        icon: Icons.bar_chart_outlined,
+                        text: '${affiliation.clickCount} clicks'),
                 ],
               ),
             ],

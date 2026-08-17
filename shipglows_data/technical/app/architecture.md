@@ -201,6 +201,7 @@ Notes:
 - creator profile save
 - personas create/update
 - affiliations create/update
+- link variants create/update/delete
 - content create from angle fallback, updates, scheduling transitions
 - drip plan create/update/activate/pause/resume/cancel
 

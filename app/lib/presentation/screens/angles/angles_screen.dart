@@ -574,12 +574,14 @@ class _AnglesScreenState extends ConsumerState<AnglesScreen> {
 
     final api = ref.read(apiServiceProvider);
     final creatorProfile = ref.read(creatorProfileProvider).value;
+    final activeProjectId = ref.read(activeProjectIdProvider);
 
     try {
       final result = await api.dispatchPipeline(
         angle: angle,
         creatorVoice: creatorProfile?.voice,
         personaId: _selectedPersona?.id,
+        projectId: activeProjectId,
       );
 
       if (!mounted) return;

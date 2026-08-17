@@ -1263,7 +1263,7 @@ class UserDataStore:
     # ─── Affiliate Links ───────────────────────────────────────
 
     async def ensure_affiliate_table(self) -> None:
-        """Create AffiliateLink table if it doesn't exist (idempotent)."""
+        """Create AffiliateLink table and link management tables if they don't exist (idempotent)."""
         self._ensure_connected()
         await self.db_client.execute(
             """
@@ -1273,6 +1273,7 @@ class UserDataStore:
                 projectId TEXT,
                 name TEXT NOT NULL,
                 url TEXT NOT NULL,
+                slug TEXT,
                 description TEXT,
                 contactUrl TEXT,
                 loginUrl TEXT,
@@ -1289,6 +1290,66 @@ class UserDataStore:
             )
             """
         )
+        try:
+            await self.db_client.execute("ALTER TABLE AffiliateLink ADD COLUMN slug TEXT")
+        except Exception:
+            pass
+        try:
+            await self.db_client.execute(
+                """
+                CREATE UNIQUE INDEX IF NOT EXISTS idx_affiliate_slug_user
+                ON AffiliateLink(userId, slug)
+                WHERE slug IS NOT NULL
+                """
+            )
+        except Exception:
+            pass
+        await self.db_client.execute(
+            """
+            CREATE TABLE IF NOT EXISTS LinkClick (
+                id TEXT PRIMARY KEY NOT NULL,
+                linkId TEXT NOT NULL,
+                userId TEXT NOT NULL,
+                projectId TEXT,
+                slug TEXT NOT NULL,
+                destinationUrl TEXT NOT NULL,
+                variantIndex INTEGER DEFAULT 0,
+                country TEXT,
+                device TEXT,
+                referrer TEXT,
+                userAgent TEXT,
+                createdAt INTEGER NOT NULL
+            )
+            """
+        )
+        try:
+            await self.db_client.execute(
+                "CREATE INDEX IF NOT EXISTS idx_link_click_link ON LinkClick(linkId, createdAt)"
+            )
+        except Exception:
+            pass
+        await self.db_client.execute(
+            """
+            CREATE TABLE IF NOT EXISTS LinkVariant (
+                id TEXT PRIMARY KEY NOT NULL,
+                linkId TEXT NOT NULL,
+                userId TEXT NOT NULL,
+                url TEXT NOT NULL,
+                weight INTEGER NOT NULL DEFAULT 1,
+                country TEXT,
+                device TEXT,
+                language TEXT,
+                createdAt INTEGER NOT NULL,
+                updatedAt INTEGER NOT NULL
+            )
+            """
+        )
+        try:
+            await self.db_client.execute(
+                "CREATE INDEX IF NOT EXISTS idx_link_variant_link ON LinkVariant(linkId)"
+            )
+        except Exception:
+            pass
 
     def _affiliate_from_row(self, row: tuple[Any, ...]) -> dict[str, Any]:
         return {
@@ -1297,25 +1358,36 @@ class UserDataStore:
             "projectId": row[2],
             "name": row[3],
             "url": row[4],
-            "description": row[5],
-            "contactUrl": row[6],
-            "loginUrl": row[7],
-            "researchSummary": row[8],
-            "researchedAt": _ts(row[9]) if row[9] else None,
-            "category": row[10],
-            "commission": row[11],
-            "keywords": _json_load(row[12], []),
-            "status": row[13] or "active",
-            "notes": row[14],
-            "expiresAt": _ts(row[15]) if row[15] else None,
-            "createdAt": _ts(row[16]),
-            "updatedAt": _ts(row[17]),
+            "slug": row[5],
+            "description": row[6],
+            "contactUrl": row[7],
+            "loginUrl": row[8],
+            "researchSummary": row[9],
+            "researchedAt": _ts(row[10]) if row[10] else None,
+            "category": row[11],
+            "commission": row[12],
+            "keywords": _json_load(row[13], []),
+            "status": row[14] or "active",
+            "notes": row[15],
+            "expiresAt": _ts(row[16]) if row[16] else None,
+            "createdAt": _ts(row[17]),
+            "updatedAt": _ts(row[18]),
         }
+
+    async def _get_click_counts(self, user_id: str, link_ids: list[str]) -> dict[str, int]:
+        if not link_ids:
+            return {}
+        placeholders = ",".join(["?"] * len(link_ids))
+        rs = await self.db_client.execute(
+            f"SELECT linkId, COUNT(*) FROM LinkClick WHERE userId = ? AND linkId IN ({placeholders}) GROUP BY linkId",
+            [user_id, *link_ids],
+        )
+        return {row[0]: row[1] for row in rs.rows}
 
     async def list_affiliations(self, user_id: str, project_id: str | None = None) -> list[dict[str, Any]]:
         self._ensure_connected()
         query = """
-            SELECT id, userId, projectId, name, url, description,
+            SELECT id, userId, projectId, name, url, slug, description,
                    contactUrl, loginUrl, researchSummary, researchedAt,
                    category, commission, keywords, status, notes,
                    expiresAt, createdAt, updatedAt
@@ -1328,13 +1400,17 @@ class UserDataStore:
             params.append(project_id)
         query += " ORDER BY createdAt DESC"
         rs = await self.db_client.execute(query, params)
-        return [self._affiliate_from_row(row) for row in rs.rows]
+        affiliations = [self._affiliate_from_row(row) for row in rs.rows]
+        click_counts = await self._get_click_counts(user_id, [a["id"] for a in affiliations])
+        for affiliation in affiliations:
+            affiliation["clickCount"] = click_counts.get(affiliation["id"], 0)
+        return affiliations
 
     async def get_affiliation(self, user_id: str, affiliation_id: str) -> dict[str, Any] | None:
         self._ensure_connected()
         rs = await self.db_client.execute(
             """
-            SELECT id, userId, projectId, name, url, description,
+            SELECT id, userId, projectId, name, url, slug, description,
                    contactUrl, loginUrl, researchSummary, researchedAt,
                    category, commission, keywords, status, notes,
                    expiresAt, createdAt, updatedAt
@@ -1346,7 +1422,10 @@ class UserDataStore:
         )
         if not rs.rows:
             return None
-        return self._affiliate_from_row(rs.rows[0])
+        affiliation = self._affiliate_from_row(rs.rows[0])
+        click_counts = await self._get_click_counts(user_id, [affiliation_id])
+        affiliation["clickCount"] = click_counts.get(affiliation_id, 0)
+        return affiliation
 
     async def create_affiliation(self, user_id: str, payload: dict[str, Any]) -> dict[str, Any]:
         self._ensure_connected()
@@ -1358,10 +1437,15 @@ class UserDataStore:
                 expires_at = int(datetime.fromisoformat(payload["expiresAt"]).timestamp())
             except (ValueError, TypeError):
                 pass
+        slug = payload.get("slug")
+        if slug:
+            slug = slug.strip().lower()
+            if not slug:
+                slug = None
         await self.db_client.execute(
             """
             INSERT INTO AffiliateLink (
-                id, userId, projectId, name, url, description,
+                id, userId, projectId, name, url, slug, description,
                 contactUrl, loginUrl, category, commission,
                 keywords, status, notes, expiresAt, createdAt, updatedAt
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -1372,6 +1456,7 @@ class UserDataStore:
                 payload.get("projectId"),
                 payload["name"],
                 payload["url"],
+                slug,
                 payload.get("description"),
                 payload.get("contactUrl"),
                 payload.get("loginUrl"),
@@ -1395,11 +1480,25 @@ class UserDataStore:
         existing = await self.get_affiliation(user_id, affiliation_id)
         if not existing:
             return None
+        if "slug" in payload:
+            new_slug = payload["slug"]
+            if new_slug:
+                new_slug = new_slug.strip().lower()
+                if not new_slug:
+                    new_slug = None
+            if new_slug != existing.get("slug"):
+                rs = await self.db_client.execute(
+                    "SELECT id FROM AffiliateLink WHERE userId = ? AND slug = ? AND id != ? LIMIT 1",
+                    [user_id, new_slug, affiliation_id],
+                )
+                if rs.rows:
+                    raise ValueError(f"Slug '{new_slug}' is already used")
         update_fields: list[str] = ["updatedAt = ?"]
         params: list[Any] = [int(datetime.now().timestamp())]
         scalar_fields = {
             "name": "name",
             "url": "url",
+            "slug": "slug",
             "description": "description",
             "contactUrl": "contactUrl",
             "loginUrl": "loginUrl",
@@ -1411,7 +1510,12 @@ class UserDataStore:
         for key, column in scalar_fields.items():
             if key in payload:
                 update_fields.append(f"{column} = ?")
-                params.append(payload[key])
+                value = payload[key]
+                if key == "slug" and value:
+                    value = value.strip().lower()
+                    if not value:
+                        value = None
+                params.append(value)
         if "keywords" in payload:
             update_fields.append("keywords = ?")
             params.append(_json_dump(payload["keywords"]))
@@ -1441,6 +1545,222 @@ class UserDataStore:
             [affiliation_id, user_id],
         )
         return True
+
+    async def get_affiliation_by_slug(self, slug: str) -> dict[str, Any] | None:
+        self._ensure_connected()
+        rs = await self.db_client.execute(
+            """
+            SELECT id, userId, projectId, name, url, slug, description,
+                   contactUrl, loginUrl, researchSummary, researchedAt,
+                   category, commission, keywords, status, notes,
+                   expiresAt, createdAt, updatedAt
+            FROM AffiliateLink
+            WHERE slug = ? AND status = 'active'
+            LIMIT 1
+            """,
+            [slug],
+        )
+        if not rs.rows:
+            return None
+        affiliation = self._affiliate_from_row(rs.rows[0])
+        click_counts = await self._get_click_counts(affiliation["userId"], [affiliation["id"]])
+        affiliation["clickCount"] = click_counts.get(affiliation["id"], 0)
+        return affiliation
+
+    async def create_link_click(self, payload: dict[str, Any]) -> dict[str, Any]:
+        self._ensure_connected()
+        now = int(datetime.now().timestamp())
+        click_id = str(uuid.uuid4())
+        await self.db_client.execute(
+            """
+            INSERT INTO LinkClick (
+                id, linkId, userId, projectId, slug, destinationUrl,
+                variantIndex, country, device, referrer, userAgent, createdAt
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            [
+                click_id,
+                payload.get("linkId"),
+                payload.get("userId", ""),
+                payload.get("projectId"),
+                payload.get("slug", ""),
+                payload.get("destinationUrl", ""),
+                payload.get("variantIndex", 0),
+                payload.get("country"),
+                payload.get("device"),
+                payload.get("referrer"),
+                payload.get("userAgent"),
+                now,
+            ],
+        )
+        return {"id": click_id, "createdAt": _ts(now)}
+
+    async def list_link_clicks(self, user_id: str, link_id: str, limit: int = 100, offset: int = 0) -> list[dict[str, Any]]:
+        self._ensure_connected()
+        rs = await self.db_client.execute(
+            """
+            SELECT id, linkId, userId, projectId, slug, destinationUrl,
+                   variantIndex, country, device, referrer, userAgent, createdAt
+            FROM LinkClick
+            WHERE linkId = ? AND userId = ?
+            ORDER BY createdAt DESC
+            LIMIT ? OFFSET ?
+            """,
+            [link_id, user_id, limit, offset],
+        )
+        return [self._link_click_from_row(row) for row in rs.rows]
+
+    async def get_link_click_summary(self, user_id: str, link_id: str) -> dict[str, Any]:
+        self._ensure_connected()
+        total = await self.db_client.execute(
+            "SELECT COUNT(*) FROM LinkClick WHERE linkId = ? AND userId = ?",
+            [link_id, user_id],
+        )
+        total_count = total.rows[0][0] if total.rows else 0
+        countries = await self.db_client.execute(
+            """
+            SELECT country, COUNT(*) as cnt FROM LinkClick
+            WHERE linkId = ? AND userId = ? AND country IS NOT NULL
+            GROUP BY country ORDER BY cnt DESC LIMIT 10
+            """,
+            [link_id, user_id],
+        )
+        devices = await self.db_client.execute(
+            """
+            SELECT device, COUNT(*) as cnt FROM LinkClick
+            WHERE linkId = ? AND userId = ? AND device IS NOT NULL
+            GROUP BY device ORDER BY cnt DESC LIMIT 10
+            """,
+            [link_id, user_id],
+        )
+        referrers = await self.db_client.execute(
+            """
+            SELECT referrer, COUNT(*) as cnt FROM LinkClick
+            WHERE linkId = ? AND userId = ? AND referrer IS NOT NULL
+            GROUP BY referrer ORDER BY cnt DESC LIMIT 10
+            """,
+            [link_id, user_id],
+        )
+        daily = await self.db_client.execute(
+            """
+            SELECT DATE(createdAt, 'unixepoch') as day, COUNT(*) as cnt
+            FROM LinkClick WHERE linkId = ? AND userId = ?
+            GROUP BY day ORDER BY day DESC LIMIT 30
+            """,
+            [link_id, user_id],
+        )
+        return {
+            "totalClicks": total_count,
+            "countries": [{"country": r[0], "count": r[1]} for r in countries.rows],
+            "devices": [{"device": r[0], "count": r[1]} for r in devices.rows],
+            "referrers": [{"referrer": r[0], "count": r[1]} for r in referrers.rows],
+            "daily": [{"day": r[0], "count": r[1]} for r in daily.rows],
+        }
+
+    def _link_click_from_row(self, row: tuple[Any, ...]) -> dict[str, Any]:
+        return {
+            "id": row[0],
+            "linkId": row[1],
+            "userId": row[2],
+            "projectId": row[3],
+            "slug": row[4],
+            "destinationUrl": row[5],
+            "variantIndex": row[6] or 0,
+            "country": row[7],
+            "device": row[8],
+            "referrer": row[9],
+            "userAgent": row[10],
+            "createdAt": _ts(row[11]),
+        }
+
+    async def create_link_variant(self, user_id: str, link_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+        self._ensure_connected()
+        now = int(datetime.now().timestamp())
+        variant_id = str(uuid.uuid4())
+        await self.db_client.execute(
+            """
+            INSERT INTO LinkVariant (id, linkId, userId, url, weight, country, device, language, createdAt, updatedAt)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            [
+                variant_id,
+                link_id,
+                user_id,
+                payload["url"],
+                payload.get("weight") or 1,
+                payload.get("country"),
+                payload.get("device"),
+                payload.get("language"),
+                now,
+                now,
+            ],
+        )
+        return await self.get_link_variant(user_id, variant_id)
+
+    async def get_link_variant(self, user_id: str, variant_id: str) -> dict[str, Any] | None:
+        self._ensure_connected()
+        rs = await self.db_client.execute(
+            """
+            SELECT id, linkId, userId, url, weight, country, device, language, createdAt, updatedAt
+            FROM LinkVariant WHERE id = ? AND userId = ? LIMIT 1
+            """,
+            [variant_id, user_id],
+        )
+        if not rs.rows:
+            return None
+        return self._link_variant_from_row(rs.rows[0])
+
+    async def list_link_variants(self, user_id: str, link_id: str) -> list[dict[str, Any]]:
+        self._ensure_connected()
+        rs = await self.db_client.execute(
+            """
+            SELECT id, linkId, userId, url, weight, country, device, language, createdAt, updatedAt
+            FROM LinkVariant WHERE linkId = ? AND userId = ?
+            """,
+            [link_id, user_id],
+        )
+        return [self._link_variant_from_row(row) for row in rs.rows]
+
+    async def update_link_variant(self, user_id: str, variant_id: str, payload: dict[str, Any]) -> dict[str, Any] | None:
+        self._ensure_connected()
+        existing = await self.get_link_variant(user_id, variant_id)
+        if not existing:
+            return None
+        now = int(datetime.now().timestamp())
+        fields: list[str] = ["updatedAt = ?"]
+        params: list[Any] = [now]
+        for key, column in (("url", "url"), ("weight", "weight"), ("country", "country"), ("device", "device"), ("language", "language")):
+            if key in payload:
+                fields.append(f"{column} = ?")
+                params.append(payload[key])
+        params.extend([variant_id, user_id])
+        await self.db_client.execute(
+            f"UPDATE LinkVariant SET {', '.join(fields)} WHERE id = ? AND userId = ?",
+            params,
+        )
+        return await self.get_link_variant(user_id, variant_id)
+
+    async def delete_link_variant(self, user_id: str, variant_id: str) -> bool:
+        self._ensure_connected()
+        rs = await self.db_client.execute(
+            "DELETE FROM LinkVariant WHERE id = ? AND userId = ?",
+            [variant_id, user_id],
+        )
+        return rs.rows_affected > 0
+
+    def _link_variant_from_row(self, row: tuple[Any, ...]) -> dict[str, Any]:
+        return {
+            "id": row[0],
+            "linkId": row[1],
+            "userId": row[2],
+            "url": row[3],
+            "weight": row[4] or 1,
+            "country": row[5],
+            "device": row[6],
+            "language": row[7],
+            "createdAt": _ts(row[8]),
+            "updatedAt": _ts(row[9]),
+        }
 
     # ─── Activity Log ──────────────────────────────────────────
 

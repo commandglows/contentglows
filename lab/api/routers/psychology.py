@@ -11,6 +11,7 @@ from api.services.job_store import job_store
 from api.services.ai_runtime_service import AIRuntimeServiceError, ai_runtime_service
 from api.services.project_generation_context import ProjectGenerationContextStoreError
 from api.services.project_intelligence_service import project_intelligence_service
+from api.services.user_data_store import user_data_store
 from api.services.user_llm_service import (
     DEFAULT_OPENROUTER_MODEL,
     NEWSLETTER_OPENROUTER_MODEL,
@@ -393,6 +394,17 @@ async def _run_pipeline_task(
         )
         angle = request.angle_data
         voice = request.creator_voice or {}
+        affiliations = request.affiliations
+        if affiliations is None and request.project_id:
+            try:
+                affiliations = await user_data_store.list_affiliations(
+                    user_id=user_id,
+                    project_id=request.project_id,
+                )
+            except Exception:
+                affiliations = []
+        if affiliations:
+            voice = {**voice, "affiliate_links": affiliations}
         body = ""
         context_result = await project_intelligence_service.build_generation_context(
             user_id=user_id,

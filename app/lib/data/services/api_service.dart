@@ -22,6 +22,7 @@ import '../models/drip_plan.dart';
 import '../models/email_source.dart';
 import '../models/feedback_entry.dart';
 import '../models/idea.dart';
+import '../models/link_click.dart';
 import '../models/offline_sync.dart';
 import '../models/openrouter_credential.dart';
 import '../models/persona.dart';
@@ -3507,34 +3508,72 @@ class ApiService {
       };
     }
 
-    // Map angle content_type to pipeline format
-    final targetFormat = switch (angle.contentType) {
-      'blog_post' => 'article',
-      'social_post' => 'social_post',
-      'newsletter' => 'newsletter',
-      'short' || 'reel' => 'short',
-      'video_script' => 'article',
-      _ => angle.contentType,
+    List<dynamic>? affiliations;
+    if (projectId != null) {
+      try {
+        affiliations = (await fetchAffiliations(projectId: projectId))
+            .map((link) {
+              final payload = <String, dynamic>{
+                'id': link.id,
+                'name': link.name,
+                'url': link.url,
+                'status': link.status,
+              };
+              if (link.slug != null) payload['slug'] = link.slug;
+              if (link.keywords.isNotEmpty) payload['keywords'] = link.keywords;
+              if (link.commission != null) payload['commission'] = link.commission;
+              if (link.category != null) payload['category'] = link.category;
+              return payload;
+            })
+            .toList();
+      } on Exception {
+        affiliations = null;
+      }
+    }
+
+    String targetFormat;
+    switch (angle.contentType) {
+      case 'blog_post':
+        targetFormat = 'article';
+        break;
+      case 'social_post':
+        targetFormat = 'social_post';
+        break;
+      case 'newsletter':
+        targetFormat = 'newsletter';
+        break;
+      case 'short':
+      case 'reel':
+        targetFormat = 'short';
+        break;
+      case 'video_script':
+        targetFormat = 'article';
+        break;
+      default:
+        targetFormat = angle.contentType;
+    }
+
+    final payload = <String, dynamic>{
+      'angle_data': {
+        'title': angle.title,
+        'hook': angle.hook,
+        'angle': angle.angle,
+        'content_type': angle.contentType,
+        'narrative_thread': angle.narrativeThread,
+        'pain_point_addressed': angle.painPointAddressed,
+        'confidence': angle.confidence,
+        'persona_id': personaId,
+      },
+      'target_format': targetFormat,
+      'creator_voice': creatorVoice,
+      'project_id': projectId,
+      if (affiliations != null) 'affiliations': affiliations,
     };
 
     try {
       final response = await _dio.post(
         '/api/psychology/dispatch-pipeline',
-        data: _compactMap({
-          'angle_data': {
-            'title': angle.title,
-            'hook': angle.hook,
-            'angle': angle.angle,
-            'content_type': angle.contentType,
-            'narrative_thread': angle.narrativeThread,
-            'pain_point_addressed': angle.painPointAddressed,
-            'confidence': angle.confidence,
-            'persona_id': personaId,
-          },
-          'target_format': targetFormat,
-          'creator_voice': creatorVoice,
-          'project_id': projectId,
-        }),
+        data: _compactMap(payload),
       );
       return _asMap(response.data);
     } on DioException catch (error) {
@@ -5637,6 +5676,7 @@ class ApiService {
         loginUrl: resolvedData['loginUrl']?.toString(),
         category: resolvedData['category']?.toString(),
         commission: resolvedData['commission']?.toString(),
+        slug: resolvedData['slug']?.toString(),
         keywords:
             (resolvedData['keywords'] as List?)
                 ?.map((entry) => entry.toString())
@@ -5719,6 +5759,7 @@ class ApiService {
                     loginUrl: resolvedData['loginUrl']?.toString(),
                     category: resolvedData['category']?.toString(),
                     commission: resolvedData['commission']?.toString(),
+                    slug: resolvedData['slug']?.toString(),
                     keywords: (resolvedData['keywords'] as List?)
                         ?.cast<String>(),
                     status: resolvedData['status']?.toString(),
@@ -5782,6 +5823,105 @@ class ApiService {
             'Deleting an affiliation is unavailable until FastAPI is back.',
       );
     }
+  }
+
+  Future<List<LinkClick>> fetchLinkClicks({
+    required String linkId,
+    int limit = 100,
+    int offset = 0,
+  }) async {
+    final response = await _dio.get(
+      '/api/links/clicks',
+      queryParameters: {
+        'linkId': linkId,
+        'limit': limit,
+        'offset': offset,
+      },
+    );
+    final data = response.data;
+    if (data is! List) {
+      throw const ApiException(
+        ApiErrorType.invalidResponse,
+        'Invalid link clicks response from FastAPI.',
+      );
+    }
+    return data
+        .map((json) => LinkClick.fromJson(json as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<LinkClickSummary> fetchLinkClickSummary(String linkId) async {
+    final response = await _dio.get(
+      '/api/links/clicks/summary',
+      queryParameters: {'linkId': linkId},
+    );
+    final data = response.data;
+    if (data is! Map<String, dynamic>) {
+      throw const ApiException(
+        ApiErrorType.invalidResponse,
+        'Invalid link click summary response from FastAPI.',
+      );
+    }
+    return LinkClickSummary.fromJson(data);
+  }
+
+  Future<LinkVariant> createLinkVariant({
+    required String linkId,
+    required String url,
+    int weight = 1,
+    String? country,
+    String? device,
+    String? language,
+  }) async {
+    final response = await _dio.post(
+      '/api/links/variants',
+      queryParameters: {'linkId': linkId},
+      data: {
+        'url': url,
+        'weight': weight,
+        if (country != null) 'country': country,
+        if (device != null) 'device': device,
+        if (language != null) 'language': language,
+      },
+    );
+    return LinkVariant.fromJson(_asMap(response.data));
+  }
+
+  Future<List<LinkVariant>> fetchLinkVariants(String linkId) async {
+    final response = await _dio.get(
+      '/api/links/variants',
+      queryParameters: {'linkId': linkId},
+    );
+    final data = response.data;
+    if (data is! List) {
+      throw const ApiException(
+        ApiErrorType.invalidResponse,
+        'Invalid link variants response from FastAPI.',
+      );
+    }
+    return data
+        .map((json) => LinkVariant.fromJson(json as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<LinkVariant> updateLinkVariant(
+    String variantId,
+    Map<String, dynamic> data,
+  ) async {
+    final response = await _dio.put(
+      '/api/links/variants/$variantId',
+      data: data,
+    );
+    return LinkVariant.fromJson(_asMap(response.data));
+  }
+
+  Future<bool> deleteLinkVariant(String variantId) async {
+    final response = await _dio.delete('/api/links/variants/$variantId');
+    final data = response.data;
+    if (data is Map && data['success'] == true) {
+      return true;
+    }
+    return false;
   }
 
   // ─── Idea Pool ─────────────────────────────────────────────

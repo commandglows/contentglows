@@ -188,6 +188,7 @@ class PipelineDispatchRequest(BaseModel):
     creator_voice: Optional[dict] = Field(None, description="Creator's voice profile")
     seo_keyword: Optional[str] = Field(None, description="Primary SEO keyword for blog articles")
     project_id: Optional[str] = Field(None, description="Associated project ID")
+    affiliations: Optional[list[dict]] = Field(None, description="Active affiliate links for this user/project")
 
 
 class PipelineDispatchResult(BaseModel):

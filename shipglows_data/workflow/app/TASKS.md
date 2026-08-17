@@ -230,6 +230,48 @@ Concurrent sources: Filmora, PixVerse. Canonical execution spec: `shipglows_data
 | ✅ | Badges `Pending sync` / `Sync failed` sur les listes principales supportées | ✅ done |
 | ✅ | Docs mises à jour (`README`, `CHANGELOG`, `TASKS`, `SPEC-offline-sync-v2`) | ✅ done |
 
+## Link Management — Shortener & Affiliate Enhancement
+
+> Transformer le CRM d'affiliate links passif en infrastructure de link management active.
+> Inspiration: QuitURL (shortener + targeting + A/B + overlays).
+
+### Quick Wins ✅
+
+| Pri | Task | Impact | Effort | Status | Notes |
+|-----|------|--------|--------|--------|-------|
+| 🟠 | Enforcer `expiresAt` dans le CRM affiliations : badge "Expiré", blocage à l'édition, filtres | High | Low | ✅ done | Badge automatique, `isExpired` getter, tap bloqué si expiré |
+| 🟠 | Ajouter alias custom + slug generator : champ `slug` sur `AffiliateLink`, endpoint `GET /r/{slug}` (redirect + log click) | High | Medium | ✅ done | Migration 008, store, router public `/r/{slug}` 302 + log click |
+| 🟠 | Click tracking minimal : table `LinkClick` (linkId, timestamp, country, device, referrer), premier endpoint analytics | High | Medium | ✅ done | Migration 008, store, router `/api/links/clicks` + `/api/links/clicks/summary` |
+
+### Moyen terme
+
+| Pri | Task | Impact | Effort | Status | Notes |
+|-----|------|--------|--------|--------|-------|
+| 🟡 | A/B rotator : modèle `LinkVariant` (url, weight), endpoint `/r/{slug}` sert une variante selon weight, log de variante | Medium | Medium | ✅ done | Migration 008, store, router `/api/links/variants`, sélection par weight dans `/r/{slug}` |
+| 🟡 | Geo/device targeting : middleware redirect qui lit country/IP et choisit la destination ciblée | Medium | High | 📋 todo | `LinkVariant` supporte `country`, `device`, `language` ; la sélection ciblée est prête dans `/r/{slug}` |
+| 🟡 | CTA overlays : page de redirect intermédiaire avec bannière branding + CTA, puis forward destination | Medium | Medium | 📋 todo | Non démarré |
+
+### Long terme
+
+| Pri | Task | Impact | Effort | Status | Notes |
+|-----|------|--------|--------|--------|-------|
+| 🟢 | Password protection sur les liens | Low | Low | 📋 todo | Gate par mot de passe avant redirect |
+| 🟢 | Branded domains : gestion DNS + wildcard SSL pour servir les redirects sur domaine custom | Medium | High | 📋 todo | Infrastructure lourde, dépend de la croissance |
+
+## Link Management — Consumer Connections
+
+> Brancher les affiliate links dans les flux de création de contenu qui les consomment.
+
+### Quick Wins
+
+| Pri | Task | Impact | Effort | Status | Notes |
+|-----|------|--------|--------|--------|-------|
+| 🟠 | Editeur : picker d'affiliate links dans "Insert link" au lieu du dialogue URL brut | High | Medium | 📋 todo | Lire affiliationsProvider, afficher la liste, insérer le slug ou l'URL |
+| 🟠 | Pipeline : passer les affiliations à dispatchPipeline → _run_pipeline_task | High | Medium | 📋 todo | Ajouter champ affiliations à PipelineDispatchRequest, fetch dans api_service.dart |
+| 🟡 | Contexte génération : inclure les affiliations actives dans build_generation_context() | Medium | Medium | 📋 todo | Fetch via user_data_store, ajouter comme items de contexte |
+| 🟡 | Prompts agents : ajouter instructions de matching/insertion d'affiliate links dans SEO, short, social, newsletter | Medium | Low | 📋 todo | YAML prompts + crew input enrichment |
+| 🟡 | Matching keywords : logique simple AffiliateLink.keywords ↔ angle.topic/content keywords | Medium | Low | 📋 todo | Côté backend ou Flutter selon flux |
+
 ### 🟡 P2 — Polish & Engagement
 
 | Pri | Task | Status |

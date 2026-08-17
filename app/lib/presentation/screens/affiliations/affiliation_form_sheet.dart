@@ -35,6 +35,7 @@ class _AffiliationFormSheetState extends ConsumerState<AffiliationFormSheet> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameCtrl;
   late final TextEditingController _urlCtrl;
+  late final TextEditingController _slugCtrl;
   late final TextEditingController _descriptionCtrl;
   late final TextEditingController _contactUrlCtrl;
   late final TextEditingController _loginUrlCtrl;
@@ -54,6 +55,7 @@ class _AffiliationFormSheetState extends ConsumerState<AffiliationFormSheet> {
     final a = widget.affiliation;
     _nameCtrl = TextEditingController(text: a?.name ?? '');
     _urlCtrl = TextEditingController(text: a?.url ?? '');
+    _slugCtrl = TextEditingController(text: a?.slug ?? '');
     _descriptionCtrl = TextEditingController(text: a?.description ?? '');
     _contactUrlCtrl = TextEditingController(text: a?.contactUrl ?? '');
     _loginUrlCtrl = TextEditingController(text: a?.loginUrl ?? '');
@@ -70,6 +72,7 @@ class _AffiliationFormSheetState extends ConsumerState<AffiliationFormSheet> {
   void dispose() {
     _nameCtrl.dispose();
     _urlCtrl.dispose();
+    _slugCtrl.dispose();
     _descriptionCtrl.dispose();
     _contactUrlCtrl.dispose();
     _loginUrlCtrl.dispose();
@@ -138,6 +141,18 @@ class _AffiliationFormSheetState extends ConsumerState<AffiliationFormSheet> {
                 keyboardType: TextInputType.url,
                 validator: (v) =>
                     (v == null || v.trim().isEmpty) ? context.tr('Required') : null,
+              ),
+              const SizedBox(height: 12),
+
+              // Slug
+              TextFormField(
+                controller: _slugCtrl,
+                decoration: InputDecoration(
+                  labelText: context.tr('Short link slug'),
+                  hintText: context.tr('my-affiliate-offer'),
+                  helperText: context.tr('Optional: /r/your-slug'),
+                ),
+                textCapitalization: TextCapitalization.none,
               ),
               const SizedBox(height: 12),
 
@@ -329,6 +344,8 @@ class _AffiliationFormSheetState extends ConsumerState<AffiliationFormSheet> {
     final data = <String, dynamic>{
       'name': _nameCtrl.text.trim(),
       'url': _urlCtrl.text.trim(),
+      if (_slugCtrl.text.trim().isNotEmpty)
+        'slug': _slugCtrl.text.trim(),
       if (_descriptionCtrl.text.trim().isNotEmpty)
         'description': _descriptionCtrl.text.trim(),
       if (_category.isNotEmpty) 'category': _category,

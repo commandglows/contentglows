@@ -54,8 +54,12 @@ This module covers the ContentGlows Flutter app shell, guarded routing, shared p
 | `lib/providers/video_timeline_provider.dart` | Timeline editor state/undo stack and render lifecycle state transitions | Keep draft history (undo/redo), edit guardrails, and publish gating behavior aligned with `/api/video-timelines/*` contract. |
 | `lib/data/services/api_service.dart` | FastAPI client and offline queue | Keep auth, retry, payload, and cache semantics aligned with backend contracts. Canonical branded generation remains the only branding preview request. |
 | `lib/data/models/brand_profile.dart` | Brand profile transport model and saved-rule draft | Keep revision/default fields and partial visual/editorial rules aligned with the API contract. |
+| `lib/data/models/affiliate_link.dart` | Affiliate link transport model | Keep `slug`, `clickCount`, `variants`, `isExpired`, and `shortLink` aligned with backend contract. |
+| `lib/data/models/link_click.dart` | Link click, variant, and summary transport models | Keep parsing aligned with `/api/links/clicks` and `/api/links/variants` responses. |
 | `lib/presentation/screens/editor/video_timeline_screen.dart` | Timeline correction surface | Keep controls deterministic: clip transforms, track semantics (lock/mute), and optional draft actions must never bypass the canonical timeline state model. |
 | `lib/presentation/screens/branding/brand_profiles_screen.dart` | Settings-based brand-rule editor | Keep profile editing separate from timeline instance editing; preview only uses saved profiles and completed content. |
+| `lib/presentation/screens/affiliations/affiliations_screen.dart` | Affiliations list with expired badge, slug display, and click/variant metadata | Keep offline sync behavior and `isExpired` tap-blocking aligned with backend `expiresAt` semantics. |
+| `lib/presentation/screens/affiliations/affiliation_form_sheet.dart` | Affiliation create/edit form with slug input | Keep slug normalization lowercase and offline queue payload aligned with backend uniqueness rules. |
 | `lib/data/services/capture_local_store.dart` | Local capture and content link storage | Do not treat local Android paths as durable backend truth. |
 | `android/app/src/main/kotlin/**` | Android native bridge | Keep MediaProjection consent, foreground-service behavior, and platform-channel failures observable. |
 | `test/**` | Regression coverage | Add focused tests when changing navigation, providers, offline sync, or capture state. |
@@ -83,6 +87,12 @@ branding preview
   -> api_service.dart canonical branded-generation request
   -> /editor/:id/video optional edit/review
 
+link management
+  -> affiliations list reads /api/affiliations with slug, clickCount, variants
+  -> affiliation form saves slug, expiresAt, status through /api/affiliations
+  -> public short links /r/{slug} are served by lab (not the app shell)
+  -> click analytics and variant CRUD are authenticated /api/links/* routes
+
 editor correction surface
   -> /editor/:id/video loads canonical timeline draft
   -> edit actions (undo/redo, trim, move, resize, track lock/mute)
@@ -101,6 +111,9 @@ editor correction surface
 - Branding preview calls the backend's canonical branded-generation route. The Flutter screen must not add a local renderer or a second video-creation route.
 - Persona enrichment in branding-preview sheets is optional context. If persona reads fail or are still loading, the preview flow remains available and should continue with non-branded metadata labels.
 - Timeline edit actions are non-authoritative refinements on top of the canonical draft and cannot trigger alternate generation paths.
+- `AffiliateLink.slug` must be unique per user; the app should normalize to lowercase before save and display the canonical `/r/{slug}` short link when present.
+- `expiresAt` is enforced by the public redirect endpoint; the app must treat an expired link as non-tappable and surface an expired badge.
+- Public link redirects (`/r/{slug}`) are browser-facing and not gated by the app shell; click logging and variant selection are backend-only.
 
 ## Failure Modes
 
@@ -130,6 +143,7 @@ For Android capture changes, add or request real-device QA for MediaProjection c
 - `lib/router.dart` changed -> review route/resume invariants and navigation tests.
 - `lib/providers/providers.dart` changed -> review provider state, offline sync, and cache invalidation.
 - `lib/data/services/api_service.dart` changed -> review backend payloads, auth behavior, and offline queue semantics.
+- `lib/data/models/affiliate_link.dart`, `lib/data/models/link_click.dart`, `lib/presentation/screens/affiliations/*` changed -> review slug normalization, expired-link tap blocking, click/variant payload parsing, and offline queue alignment with backend uniqueness/redirect rules.
 - Brand profile model, provider, Settings route, or branding screen changed -> review project ownership, default-profile protection, saved-versus-unsaved state, completed-content filtering, and canonical-generation handoff tests.
 - `capture` or `android/` paths changed -> review screen-capture specs and require Android QA evidence.
 

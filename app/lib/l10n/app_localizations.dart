@@ -211,6 +211,8 @@ class AppLocalizations {
     'Bulleted list': 'Liste à puces',
     'Quote': 'Citation',
     'Insert link': 'Insérer un lien',
+    'Affiliate links': 'Liens d\'affiliation',
+    'Custom URL': 'URL personnalisée',
     'Clear formatting': 'Effacer le formatage',
     'Delete paragraph': 'Supprimer le paragraphe',
     'Label (optional)': 'Libellé (optionnel)',
@@ -1083,6 +1085,7 @@ class AppLocalizations {
     'Experience level': 'Niveau d experience',
     'Expired': 'Expire',
     'Expires': 'Expire le',
+    'Expires: {date}': 'Expire le : {date}',
     'Failed to create content. Check backend connection.':
         'Impossible de creer le contenu. Verifiez la connexion backend.',
     'Failed to delete: {error}': 'Suppression impossible : {error}',
@@ -1124,6 +1127,9 @@ class AppLocalizations {
     'No personas yet': 'Aucun persona pour le moment',
     'No role defined': 'Aucun role defini',
     'Notes for AI': 'Notes pour l IA',
+    'Optional: /r/your-slug': 'Optionnel : /r/votre-slug',
+    'Short link slug': 'Slug du lien court',
+    'my-affiliate-offer': 'mon-offre-affiliation',
     'Objection': 'Objection',
     'Objections': 'Objections',
     'Once Clerk ships a stable Flutter SDK, the archived beta branch can be revisited. Until then, production auth stays on the official ClerkJS web path.':

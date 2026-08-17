@@ -285,3 +285,77 @@ git show e096383:chatbot/components/dashboard/affiliations-tab.tsx   # Tab UI
 git show e096383:chatbot/components/dashboard/affiliations-table.tsx # Table
 git show e096383:chatbot/components/dashboard/affiliation-form-modal.tsx  # Form
 ```
+
+## Link Management Extension (2026-08)
+
+Extension du domaine affiliations en infrastructure de link management active.
+
+### Schema
+
+`AffiliateLink` gagne `slug TEXT` avec index unique partial `(userId, slug)`.
+
+Nouvelles tables :
+
+```sql
+CREATE TABLE IF NOT EXISTS LinkClick (
+    id TEXT PRIMARY KEY NOT NULL,
+    linkId TEXT NOT NULL,
+    userId TEXT NOT NULL,
+    projectId TEXT,
+    slug TEXT NOT NULL,
+    destinationUrl TEXT NOT NULL,
+    variantIndex INTEGER DEFAULT 0,
+    country TEXT,
+    device TEXT,
+    referrer TEXT,
+    userAgent TEXT,
+    createdAt INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS LinkVariant (
+    id TEXT PRIMARY KEY NOT NULL,
+    linkId TEXT NOT NULL,
+    userId TEXT NOT NULL,
+    url TEXT NOT NULL,
+    weight INTEGER NOT NULL DEFAULT 1,
+    country TEXT,
+    device TEXT,
+    language TEXT,
+    createdAt INTEGER NOT NULL,
+    updatedAt INTEGER NOT NULL
+);
+```
+
+### Endpoints Lab
+
+- `GET /r/{slug}` — public, 302 redirect + log click + variante selection
+- `GET /api/links/clicks?linkId=...` — liste clics
+- `GET /api/links/clicks/summary?linkId=...` — resume analytics
+- `POST /api/links/variants?linkId=...` — creer variante
+- `GET /api/links/variants?linkId=...` — lister variantes
+- `PUT /api/links/variants/{variant_id}` — modifier variante
+- `DELETE /api/links/variants/{variant_id}` — supprimer variante
+
+### Models Flutter
+
+- `AffiliateLink` : champs `slug`, `clickCount`, `variants` ; getters `isExpired`, `shortLink`
+- `LinkClick` : modele transport pour un clic
+- `LinkVariant` : modele transport pour une variante A/B
+- `LinkClickSummary` : resume agrège (total, top countries, devices, referrers, daily)
+
+### UI
+
+- `affiliations_screen.dart` : badge "Expired", tap bloque si expire, affichage slug `/r/...` et compteur clics
+- `affiliation_form_sheet.dart` : champ `slug` ajoute
+
+### Fichiers implements
+
+- `lab/api/migrations/008_link_management.sql`
+- `lab/api/models/affiliations.py`
+- `lab/api/routers/links.py`
+- `lab/api/services/user_data_store.py`
+- `app/lib/data/models/affiliate_link.dart`
+- `app/lib/data/models/link_click.dart`
+- `app/lib/data/services/api_service.dart`
+- `app/lib/presentation/screens/affiliations/affiliations_screen.dart`
+- `app/lib/presentation/screens/affiliations/affiliation_form_sheet.dart`

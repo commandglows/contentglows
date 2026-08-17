@@ -1,3 +1,7 @@
+https://crate.design
+
+
+
 https://octopus.do/
 
 ---
@@ -17,4 +21,4 @@ https://octopus.do/
 **À benchmarker plus tard :**
 - Architecture des skills et subagents vs nos agents recherche/SEO.
 - Gestion de la sortie structurée, du streaming et de la reprise d'exécution.
-- Surface sécurité : validation URL, limites d'actions web, permissions, rétention et intégration Firecrawl Lockdown.
+- Surface sécurité : validati on URL, limites d'actions web, permissions, rétention et intégration Firecrawl Lockdown.

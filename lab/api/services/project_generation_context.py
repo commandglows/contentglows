@@ -12,6 +12,7 @@ from api.models.project_intelligence import (
     ProjectGenerationContextResult,
 )
 from api.services.project_intelligence_store import ProjectIntelligenceStore, project_intelligence_store
+from api.services.user_data_store import user_data_store
 
 
 def _estimate_tokens(text: str) -> int:
@@ -222,6 +223,37 @@ class ProjectGenerationContextBuilder:
             empty_reason=empty_reason,
             retriever_explanation=self.retriever.explain(),
         )
+
+        try:
+            affiliations = await user_data_store.list_affiliations(
+                user_id=user_id,
+                project_id=project_id,
+            )
+        except Exception:
+            affiliations = []
+
+        active_affiliations = [
+            link for link in affiliations if link.get("status") == "active" and link.get("url")
+        ]
+
+        if active_affiliations:
+            lines = ["", "## Active Affiliate Links", ""]
+            for link in active_affiliations[:20]:
+                name = link.get("name") or "Unnamed link"
+                url = link.get("url") or ""
+                slug = link.get("slug")
+                keywords = link.get("keywords") or []
+                category = link.get("category")
+                parts = [f"- {name}: {url}"]
+                if slug:
+                    parts.append(f"  short slug: /r/{slug}")
+                if keywords:
+                    parts.append(f"  keywords: {', '.join(keywords)}")
+                if category:
+                    parts.append(f"  category: {category}")
+                lines.append("\n".join(parts))
+            prompt_text = prompt_text.rstrip() + "\n\n" + "\n".join(lines)
+
         prompt_hash = _hash_text(prompt_text)
         token_estimate = _estimate_tokens(prompt_text)
 

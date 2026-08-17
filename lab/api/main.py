@@ -54,6 +54,8 @@ from api.routers import (
     personas_router,
     idea_pool_router,
     affiliations_router,
+    public_links_router,
+    links_router,
     activity_router,
     work_domains_router,
     preview_router,
@@ -485,6 +487,7 @@ async def global_exception_handler(request, exc):
 
 # Health & monitoring (no prefix)
 app.include_router(health_router)
+app.include_router(public_links_router)
 
 # Domain routers (with /api prefix)
 app.include_router(me_router)
@@ -509,6 +512,7 @@ app.include_router(content_router)
 app.include_router(publish_router)
 app.include_router(idea_pool_router)
 app.include_router(affiliations_router)
+app.include_router(links_router)
 app.include_router(activity_router)
 app.include_router(work_domains_router)
 app.include_router(preview_router)

@@ -37,7 +37,7 @@ Start with `code-docs-map.md`. Load only the mapped module context for the files
 
 - `ai-runtime-and-url-safety.md`: PydanticAI adapter, BYOK OpenRouter key resolution, repo understanding synthesis, and URL safety for Exa/Firecrawl.
 - `agent-pipelines.md`: durable boundary for historical `agents/*` local READMEs and current pipeline documentation ownership.
-- `backend-runtime-and-product-apis.md`: backend runtime notes, public/product API contracts, project intelligence, asset library, video timeline, render artifacts, GSC OAuth, image generation, and project selection.
+- `backend-runtime-and-product-apis.md`: backend runtime notes, public/product API contracts, project intelligence, asset library, video timeline, render artifacts, GSC OAuth, image generation, project selection, link management, and affiliate redirects.
 - `testing.md`: stable backend testing contract and migration target for stale local test-framework prose.
 - `../platforms/crewai.md`: CrewAI version policy, request-scoped LLM routing, agent/tool boundaries, structured outputs, and migration risks for `lab`.
 

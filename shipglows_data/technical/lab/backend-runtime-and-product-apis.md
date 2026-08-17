@@ -314,6 +314,45 @@ Supported project routes used by the app:
 
 `DELETE /api/projects/{id}` marks rows as deleted with `deletedAt`; it does not physically remove rows.
 
+## Link Management and Affiliate Redirects
+
+Link management expands the affiliations CRM into an active shortener, click telemetry, and A/B destination rotation surface.
+
+### Schema
+
+`AffiliateLink` gains a `slug TEXT` column with a unique `(userId, slug)` partial index. Slugs are stored lowercase and must be unique per user.
+
+Two new tables are introduced by `api/migrations/008_link_management.sql`:
+
+- `LinkClick` — one row per public redirect: `id`, `linkId`, `userId`, `projectId`, `slug`, `destinationUrl`, `variantIndex`, `country`, `device`, `referrer`, `userAgent`, `createdAt`.
+- `LinkVariant` — A/B rotation and targeting rules per link: `id`, `linkId`, `userId`, `url`, `weight`, `country`, `device`, `language`, `createdAt`, `updatedAt`.
+
+### Public redirect
+
+- `GET /r/{slug}` — unauthenticated.
+- Returns `302` to the active `AffiliateLink.url`.
+- If `LinkVariant` rows exist for the link, one is selected by weight, then by `country`/`device` targeting when headers match; otherwise falls back to weighted random.
+- Logs one `LinkClick` row with `country` from `cf-ipcountry`/`x-country`, `device` parsed from `user-agent`, and `referer`.
+- Returns `404` when the slug is missing, the link is not `active`, or `expiresAt` is in the past.
+
+### Authenticated analytics and variants
+
+Routes live under `/api/links` and require Clerk auth plus ownership checks:
+
+- `GET /api/links/clicks?linkId=...&limit=...&offset=...` — raw click events for an owned link.
+- `GET /api/links/clicks/summary?linkId=...` — aggregated totals plus top `countries`, `devices`, `referrers`, and 30-day `daily` series.
+- `POST /api/links/variants?linkId=...` — create a variant with `url`, `weight`, optional `country`/`device`/`language`.
+- `GET /api/links/variants?linkId=...` — list variants for an owned link.
+- `PUT /api/links/variants/{variant_id}` — update variant fields.
+- `DELETE /api/links/variants/{variant_id}` — remove a variant.
+
+### Flutter surface
+
+- `AffiliateLink` gains `slug`, `clickCount`, `variants`, `isExpired`, and `shortLink`.
+- `affiliation_form_sheet.dart` exposes a `slug` input.
+- `affiliations_screen.dart` shows an expired badge, disables tap when expired, and displays `slug` plus click count.
+- New API methods: `fetchLinkClicks`, `fetchLinkClickSummary`, `createLinkVariant`, `fetchLinkVariants`, `updateLinkVariant`, `deleteLinkVariant`.
+
 ## Remotion Render Artifacts
 
 `lab` remains the authenticated boundary for video preview/final renders. Flutter polls backend render jobs and receives `artifact.playback_url`; it never calls the Remotion worker, Cloud Run, or GCS directly.
@@ -333,7 +372,7 @@ Signed GCS playback URLs are bearer-like secrets. Do not copy query strings such
 
 ## Reader Checklist
 
-- Read this file before changing project intelligence, project assets, brand profiles, branded generation, video timeline, render artifact, image generation, GSC OAuth, or project-selection behavior.
+- Read this file before changing project intelligence, project assets, brand profiles, branded generation, video timeline, render artifact, image generation, GSC OAuth, project-selection, link management, or affiliate redirect behavior.
 - Cross-check worker render behavior with `shipglows_data/technical/worker/architecture.md`.
 - Update this file when a README-local backend contract would otherwise be reintroduced.
 

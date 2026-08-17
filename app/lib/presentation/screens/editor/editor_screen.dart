@@ -456,21 +456,103 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
   }
 
   Future<void> _showInsertLinkDialog() async {
-    final urlController = TextEditingController();
+    final affiliations = ref.read(affiliationsProvider).value ?? const [];
+    final selectedUrl = await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => Container(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.7,
+        ),
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 12),
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.outlineVariant,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              context.tr('Insert link'),
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 12),
+            Flexible(
+              child: ListView(
+                shrinkWrap: true,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                children: [
+                  if (affiliations.isNotEmpty) ...[
+                    Text(
+                      context.tr('Affiliate links'),
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    const SizedBox(height: 8),
+                    ...affiliations.map((link) {
+                      final display = link.slug != null && link.slug!.isNotEmpty
+                          ? '/r/${link.slug}'
+                          : link.url;
+                      return ListTile(
+                        title: Text(link.name),
+                        subtitle: Text(
+                          display,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        trailing: Icon(
+                          Icons.link_rounded,
+                          size: 18,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        onTap: () => Navigator.of(context).pop(link.url),
+                      );
+                    }),
+                    const SizedBox(height: 16),
+                  ],
+                  Text(
+                    context.tr('Custom URL'),
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  const SizedBox(height: 8),
+                  TextField(
+                    autofocus: true,
+                    decoration: InputDecoration(
+                      hintText: context.tr('https://example.com'),
+                    ),
+                    keyboardType: TextInputType.url,
+                    onSubmitted: (value) {
+                      if (value.trim().isNotEmpty) {
+                        Navigator.of(context).pop(value.trim());
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (selectedUrl == null || selectedUrl.isEmpty) return;
+
     final labelController = TextEditingController();
-    final accepted = await showDialog<bool>(
+    final labelAccepted = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(context.tr('Insert link')),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(
-              controller: urlController,
-              autofocus: true,
-              decoration: InputDecoration(hintText: context.tr('URL')),
-            ),
-            const SizedBox(height: 8),
             TextField(
               controller: labelController,
               decoration: InputDecoration(
@@ -492,25 +574,7 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
       ),
     );
 
-    if (accepted != true) {
-      urlController.dispose();
-      labelController.dispose();
-      return;
-    }
-    final url = urlController.text.trim();
-    if (url.isEmpty) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.tr('URL is required')),
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-        );
-      }
-      urlController.dispose();
+    if (labelAccepted != true) {
       labelController.dispose();
       return;
     }
@@ -519,7 +583,7 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
     final result = EditorFormatting.insertLink(
       current.text,
       current.selection,
-      url: url,
+      url: selectedUrl,
       label: labelController.text.trim().isEmpty
           ? null
           : labelController.text.trim(),
@@ -530,7 +594,6 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
       composing: TextRange.empty,
     );
     setState(() => _hasChanges = true);
-    urlController.dispose();
     labelController.dispose();
   }
 
