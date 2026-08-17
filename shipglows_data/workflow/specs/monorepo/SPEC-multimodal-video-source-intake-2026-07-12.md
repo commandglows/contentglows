@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.0.1"
 project: "contentglows"
 created: "2026-07-12"
 created_at: "2026-07-12 23:47:13 UTC"
-updated: "2026-07-13"
-updated_at: "2026-07-13 08:38:00 UTC"
+updated: "2026-08-18"
+updated_at: "2026-08-17 23:35:12 UTC"
 status: ready
 source_skill: 100-sg-spec
 source_model: "GPT-5 Codex"
@@ -476,6 +476,15 @@ Ajouter un domaine `video_source_folder` backend-owned, rattache a un projet et 
 
 None.
 
+## Upload Session Reliability Invariants
+
+- Media eligibility is declared once per binary source type through a backend-owned policy containing the accepted MIME types and byte limits; request metadata never grants eligibility by itself.
+- An upload session moves from `created` to exactly one terminal or owned-processing path. Completion, expiration and cancellation use conditional database transitions so concurrent workers cannot both own media or asset side effects.
+- `processing` is an exclusive completion claim. A second completion receives a recoverable conflict before validation, canonical upload or asset attachment begins.
+- Cancellation is authenticated, folder-scoped and idempotent. It aborts provider work when possible, persists `aborted`, and leaves the source failed but explicitly retryable.
+- Expiry is durable rather than inferred forever from a timestamp: first observation claims `expired` and marks the source retryable, preventing stale sessions from remaining apparently active.
+- Provider failures retain stable redacted error codes at the HTTP boundary. Bucket names, object keys, signatures, checksums and private payloads remain outside client-facing diagnostics.
+
 ## Skill Run History
 
 | Date UTC | Skill | Model | Action | Result | Next step |
@@ -490,6 +499,7 @@ None.
 | 2026-07-13 09:34:41 UTC | 405-sg-prod | GPT-5 Codex | Correlated commit 9b62d80 with GitHub/Vercel/Blacksmith and live health evidence; collected the complete Android CI log and checked the API/app endpoints | Partial: Blacksmith checks pass, Vercel skipped both builds, and the live API still serves d5fb4d0 | Identify and trigger the matching API deployment, then rerun /405-sg-prod ContentGlows |
 | 2026-07-13 09:41:19 UTC | 002-sg-maintain | GPT-5 Codex | Removed the stale deployment-provider blueprint, active CORS allowance and related technical documentation after the operator clarified that the provider is not used | Verified locally; historical public articles intentionally left for an editorial decision | /005-sg-ship Remove stale provider references |
 | 2026-07-13 09:41:19 UTC | 005-sg-ship | GPT-5 Codex | Published the verified operational cleanup and corrected deployment trace wording | Shipped; no hosted behavior claim | Choose whether to remove or rewrite historical public provider references |
+| 2026-08-17 23:35:12 UTC | sg-development | GPT-5 Codex | Hardened upload-session lifecycle with declarative media policies, atomic completion ownership, durable abort/expiry states, consistent storage errors and focused regression coverage | Implemented locally; 27 focused tests pass and changed modules compile | No push authorized; hosted/provider proof remains a separate lifecycle concern |
 
 ## Current Chantier Flow
 
@@ -502,4 +512,5 @@ None.
 - `405-sg-prod`: partial; Android CI is green for `9b62d80`, Vercel skipped the app/site builds, and `api.contentglows.com` still reports `d5fb4d0`; the API deployment provider is not documented.
 - `002-sg-maintain`: done; obsolete operational provider configuration and terminology removed.
 - `005-sg-ship`: shipped the maintenance cleanup; public historical provider references remain outside this bounded change.
+- `sg-development`: verified locally; upload-session policy, concurrency, abort, expiry and error normalization hardened without changing the canonical S3 provider; 27 focused tests pass.
 - Prochaine commande: choose whether to remove or rewrite the historical public provider references; independently, identify and trigger matching app/API deployments before rerunning `/405-sg-prod ContentGlows`.

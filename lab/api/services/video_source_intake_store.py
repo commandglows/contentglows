@@ -452,6 +452,31 @@ class VideoSourceIntakeStore:
             raise IntakeNotFoundError("Upload session not found")
         return record
 
+    async def transition_upload_session(
+        self,
+        *,
+        session_id: str,
+        folder_id: str,
+        user_id: str,
+        from_status: str,
+        to_status: str,
+        locator: dict[str, Any] | None = None,
+    ) -> bool:
+        """Atomically claim one upload-session transition.
+
+        Completion and cancellation can race across workers. The conditional
+        update ensures that exactly one worker owns the next side effects.
+        """
+        result = await self.db_client.execute(
+            """UPDATE video_source_upload_sessions
+               SET status=?,locator_json=COALESCE(?,locator_json),updated_at=?
+               WHERE id=? AND folder_id=? AND user_id=? AND status=?
+               RETURNING id""",
+            [to_status, _json_dump(locator) if locator is not None else None, _now_iso(),
+             session_id, folder_id, user_id, from_status],
+        )
+        return bool(result.rows)
+
     async def update_source(
         self, *, folder_id: str, source_id: str, user_id: str, status: str,
         asset_id: str | None = None, safe_metadata: dict[str, Any] | None = None,

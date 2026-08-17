@@ -181,7 +181,7 @@ async def create_binary_upload_session(
             idempotency_key=request.idempotency_key,
             replace_source_id=request.replace_source_id,
         )
-    except (IntakeNotFoundError, IntakeConflictError, VideoSourceMediaError, RuntimeError) as exc:
+    except (IntakeNotFoundError, IntakeConflictError, VideoSourceMediaError, ObjectStorageError, RuntimeError) as exc:
         _raise_media_error(exc)
 
 
@@ -210,7 +210,29 @@ async def upload_small_binary_source(
             user_id=current_user.user_id,
             payload=bytes(payload),
         )
-    except (IntakeNotFoundError, IntakeConflictError, VideoSourceMediaError, RuntimeError) as exc:
+    except (IntakeNotFoundError, IntakeConflictError, VideoSourceMediaError, ObjectStorageError, RuntimeError) as exc:
+        _raise_media_error(exc)
+
+
+@router.delete(
+    "/folder/{folder_id}/uploads/{session_id}",
+    response_model=VideoSourceFolderResponse,
+)
+async def abort_binary_upload(
+    project_id: str,
+    content_id: str,
+    folder_id: str,
+    session_id: str,
+    current_user: CurrentUser = Depends(require_current_user),
+) -> VideoSourceFolderResponse:
+    await _require_context(project_id=project_id, content_id=content_id, current_user=current_user)
+    try:
+        return await get_video_source_media_service().abort_upload(
+            folder_id=folder_id,
+            session_id=session_id,
+            user_id=current_user.user_id,
+        )
+    except (IntakeNotFoundError, IntakeConflictError, VideoSourceMediaError, ObjectStorageError, RuntimeError) as exc:
         _raise_media_error(exc)
 
 
@@ -242,7 +264,7 @@ async def sign_binary_upload_part(
             checksum_sha256=request.checksum_sha256,
             size_bytes=request.size_bytes,
         )
-    except (IntakeNotFoundError, IntakeConflictError, VideoSourceMediaError, RuntimeError) as exc:
+    except (IntakeNotFoundError, IntakeConflictError, VideoSourceMediaError, ObjectStorageError, RuntimeError) as exc:
         _raise_media_error(exc)
 
 
@@ -263,7 +285,7 @@ async def complete_binary_multipart_upload(
             user_id=current_user.user_id,
             parts=request.parts,
         )
-    except (IntakeNotFoundError, IntakeConflictError, VideoSourceMediaError, RuntimeError) as exc:
+    except (IntakeNotFoundError, IntakeConflictError, VideoSourceMediaError, ObjectStorageError, RuntimeError) as exc:
         _raise_media_error(exc)
 
 

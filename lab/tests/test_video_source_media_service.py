@@ -8,7 +8,11 @@ from PIL import Image
 
 import api.services.video_source_media_service as media_module
 from api.services.object_storage import FakeObjectStorageProvider
-from api.services.video_source_intake_store import IntakeNotFoundError, VideoSourceIntakeStore
+from api.services.video_source_intake_store import (
+    IntakeConflictError,
+    IntakeNotFoundError,
+    VideoSourceIntakeStore,
+)
 from api.services.video_source_media_service import VideoSourceMediaError, VideoSourceMediaService
 from utils.libsql_async import create_client
 
@@ -122,6 +126,90 @@ async def test_upload_session_is_bound_to_owner_and_folder():
             user_id="user-2",
             payload=payload,
         )
+
+
+@pytest.mark.asyncio
+async def test_abort_upload_is_idempotent_and_makes_source_retryable():
+    service, store, storage, _writer, folder = await _context()
+    payload = _png_bytes()
+    session = await service.create_upload_session(
+        folder_id=folder["id"], user_id="user-1", source_type="binary_image",
+        file_name="campaign.png", mime_type="image/png", byte_size=len(payload),
+        checksum_sha256=hashlib.sha256(payload).hexdigest(), expected_revision=0,
+        idempotency_key="abort-image-1",
+    )
+
+    first = await service.abort_upload(
+        folder_id=folder["id"], session_id=session.session_id, user_id="user-1"
+    )
+    second = await service.abort_upload(
+        folder_id=folder["id"], session_id=session.session_id, user_id="user-1"
+    )
+
+    persisted = await store.get_upload_session(
+        session_id=session.session_id, folder_id=folder["id"], user_id="user-1"
+    )
+    assert persisted["status"] == "aborted"
+    assert first.sources[0].error.code == "upload_aborted"
+    assert first.sources[0].error.retryable is True
+    assert second.sources[0].error.code == "upload_aborted"
+    assert len(storage._objects) == 0
+
+
+@pytest.mark.asyncio
+async def test_processing_session_rejects_second_completion_before_asset_side_effects():
+    service, store, _storage, writer, folder = await _context()
+    payload = _png_bytes()
+    session = await service.create_upload_session(
+        folder_id=folder["id"], user_id="user-1", source_type="binary_image",
+        file_name="campaign.png", mime_type="image/png", byte_size=len(payload),
+        checksum_sha256=hashlib.sha256(payload).hexdigest(), expected_revision=0,
+        idempotency_key="concurrent-image-1",
+    )
+    await store.update_upload_session(
+        session_id=session.session_id, folder_id=folder["id"], user_id="user-1",
+        status="processing",
+    )
+
+    with pytest.raises(IntakeConflictError) as error:
+        await service.upload_proxy(
+            folder_id=folder["id"], session_id=session.session_id,
+            user_id="user-1", payload=payload,
+        )
+
+    assert error.value.code == "upload_completion_in_progress"
+    assert writer.calls == []
+
+
+@pytest.mark.asyncio
+async def test_expired_session_is_persisted_and_source_becomes_retryable():
+    service, store, _storage, _writer, folder = await _context()
+    payload = _png_bytes()
+    session = await service.create_upload_session(
+        folder_id=folder["id"], user_id="user-1", source_type="binary_image",
+        file_name="campaign.png", mime_type="image/png", byte_size=len(payload),
+        checksum_sha256=hashlib.sha256(payload).hexdigest(), expected_revision=0,
+        idempotency_key="expired-image-1",
+    )
+    await store.db_client.execute(
+        "UPDATE video_source_upload_sessions SET expires_at=? WHERE id=?",
+        ["2000-01-01T00:00:00+00:00", session.session_id],
+    )
+
+    with pytest.raises(IntakeConflictError) as error:
+        await service.upload_proxy(
+            folder_id=folder["id"], session_id=session.session_id,
+            user_id="user-1", payload=payload,
+        )
+
+    persisted = await store.get_upload_session(
+        session_id=session.session_id, folder_id=folder["id"], user_id="user-1"
+    )
+    source = (await store.list_sources(folder_id=folder["id"], user_id="user-1"))[0]
+    assert error.value.code == "upload_session_expired"
+    assert persisted["status"] == "expired"
+    assert source["error_code"] == "upload_session_expired"
+    assert source["retryable"] is True
 
 
 @pytest.mark.asyncio

@@ -13,7 +13,7 @@ import tempfile
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Protocol, Sequence
+from typing import Any, Mapping, Protocol, Sequence
 
 from PIL import Image, UnidentifiedImageError
 
@@ -56,15 +56,38 @@ MULTIPART_PART_BYTES = 8 * MIB
 MAX_DIMENSION = 4096
 MAX_IMAGE_PIXELS = 16_000_000
 MAX_DURATION_SECONDS = 180.0
-ALLOWED_MEDIA: dict[str, dict[str, int]] = {
-    "binary_image": {"image/jpeg": 10 * MIB, "image/png": 10 * MIB, "image/webp": 10 * MIB},
-    "binary_video": {"video/mp4": 200 * MIB},
-    "binary_audio": {
-        "audio/mpeg": 50 * MIB,
-        "audio/mp4": 50 * MIB,
-        "audio/wav": 50 * MIB,
-        "audio/x-wav": 50 * MIB,
-    },
+
+
+@dataclass(frozen=True, slots=True)
+class MediaUploadPolicy:
+    source_type: str
+    mime_limits: Mapping[str, int]
+    max_duration_seconds: float | None = None
+    max_dimension: int | None = None
+
+
+MEDIA_UPLOAD_POLICIES: dict[str, MediaUploadPolicy] = {
+    "binary_image": MediaUploadPolicy(
+        source_type="binary_image",
+        mime_limits={"image/jpeg": 10 * MIB, "image/png": 10 * MIB, "image/webp": 10 * MIB},
+        max_dimension=MAX_DIMENSION,
+    ),
+    "binary_video": MediaUploadPolicy(
+        source_type="binary_video",
+        mime_limits={"video/mp4": 200 * MIB},
+        max_duration_seconds=MAX_DURATION_SECONDS,
+        max_dimension=MAX_DIMENSION,
+    ),
+    "binary_audio": MediaUploadPolicy(
+        source_type="binary_audio",
+        mime_limits={
+            "audio/mpeg": 50 * MIB,
+            "audio/mp4": 50 * MIB,
+            "audio/wav": 50 * MIB,
+            "audio/x-wav": 50 * MIB,
+        },
+        max_duration_seconds=MAX_DURATION_SECONDS,
+    ),
 }
 
 
@@ -302,8 +325,8 @@ class MediaValidator:
     def validate_and_sanitize(
         self, *, raw_path: Path, source_type: str, declared_mime: str
     ) -> ValidatedMedia:
-        limits = ALLOWED_MEDIA.get(source_type)
-        max_bytes = limits.get(declared_mime) if limits else None
+        policy = MEDIA_UPLOAD_POLICIES.get(source_type)
+        max_bytes = policy.mime_limits.get(declared_mime) if policy else None
         size = raw_path.stat().st_size
         if max_bytes is None:
             raise VideoSourceMediaError("unsupported_media_type", "This file type is not supported.")
@@ -521,6 +544,53 @@ class VideoSourceMediaService:
         locator = await asyncio.to_thread(self.storage.upload_proxy, session=session, source=payload)
         return await self._finalize_locator(record=record, session=session, raw_locator=locator)
 
+    async def abort_upload(
+        self, *, folder_id: str, session_id: str, user_id: str
+    ) -> VideoSourceFolderResponse:
+        record = await self.store.get_upload_session(
+            session_id=session_id, folder_id=folder_id, user_id=user_id
+        )
+        if record is None:
+            raise IntakeNotFoundError("Upload session not found")
+        if record["status"] == "aborted":
+            return await self._folder_response(record)
+        if record["status"] in {"processing", "completed"}:
+            raise IntakeConflictError(
+                "upload_cannot_be_aborted", "This upload can no longer be aborted."
+            )
+        session = self._restore_public_session(record)
+        try:
+            await self._restore_provider_session(session, record["provider_state"])
+            await asyncio.to_thread(self.storage.abort_upload, session)
+        except ObjectStorageError as exc:
+            if exc.code not in {"upload_aborted", "upload_expired"}:
+                raise
+        claimed = await self.store.transition_upload_session(
+            session_id=session_id,
+            folder_id=folder_id,
+            user_id=user_id,
+            from_status="created",
+            to_status="aborted",
+        )
+        if not claimed:
+            current = await self.store.get_upload_session(
+                session_id=session_id, folder_id=folder_id, user_id=user_id
+            )
+            if current and current["status"] == "aborted":
+                return await self._folder_response(current)
+            raise IntakeConflictError(
+                "upload_state_changed", "This upload changed while it was being aborted."
+            )
+        await self.store.update_source(
+            folder_id=folder_id,
+            source_id=record["source_id"],
+            user_id=user_id,
+            status="failed",
+            error_code="upload_aborted",
+            retryable=True,
+        )
+        return await self._folder_response(record)
+
     async def complete_multipart(
         self,
         *,
@@ -599,7 +669,31 @@ class VideoSourceMediaService:
             raise IntakeNotFoundError("Upload session not found")
         if record["status"] == "completed" and record["locator"]:
             raise IntakeConflictError("upload_already_completed", "This upload is already complete.")
+        if record["status"] == "processing":
+            raise IntakeConflictError(
+                "upload_completion_in_progress", "This upload is already being completed."
+            )
+        if record["status"] in {"aborted", "failed", "orphan_cleanup_needed", "expired"}:
+            raise IntakeConflictError(
+                f"upload_{record['status']}", "This upload session is no longer active."
+            )
         if datetime.fromisoformat(record["expires_at"]) <= datetime.now(UTC):
+            claimed = await self.store.transition_upload_session(
+                session_id=session_id,
+                folder_id=folder_id,
+                user_id=user_id,
+                from_status="created",
+                to_status="expired",
+            )
+            if claimed:
+                await self.store.update_source(
+                    folder_id=folder_id,
+                    source_id=record["source_id"],
+                    user_id=user_id,
+                    status="failed",
+                    error_code="upload_session_expired",
+                    retryable=True,
+                )
             raise IntakeConflictError("upload_session_expired", "This upload session has expired.")
         session = self._restore_public_session(record)
         if session.mode is not expected_mode:
@@ -610,10 +704,26 @@ class VideoSourceMediaService:
     async def _finalize_locator(
         self, *, record: dict[str, Any], session: UploadSession, raw_locator: StorageLocator
     ) -> VideoSourceFolderResponse:
-        await self.store.update_upload_session(
-            session_id=record["id"], folder_id=record["folder_id"], user_id=record["user_id"],
-            status="processing", locator=_locator_dict(raw_locator),
+        claimed = await self.store.transition_upload_session(
+            session_id=record["id"],
+            folder_id=record["folder_id"],
+            user_id=record["user_id"],
+            from_status="created",
+            to_status="processing",
+            locator=_locator_dict(raw_locator),
         )
+        if not claimed:
+            current = await self.store.get_upload_session(
+                session_id=record["id"],
+                folder_id=record["folder_id"],
+                user_id=record["user_id"],
+            )
+            if current and current["status"] == "completed":
+                return await self._folder_response(current)
+            raise IntakeConflictError(
+                "upload_completion_in_progress",
+                "This upload is already being completed.",
+            )
         await self.store.update_source(
             folder_id=record["folder_id"], source_id=record["source_id"], user_id=record["user_id"],
             status="processing",
@@ -766,6 +876,14 @@ class VideoSourceMediaService:
             raise RuntimeError("Source folder disappeared after upload finalization")
         return response
 
+    async def _folder_response(self, record: dict[str, Any]) -> VideoSourceFolderResponse:
+        response = await VideoSourceIntakeService(store=self.store).get_folder(
+            folder_id=record["folder_id"], user_id=record["user_id"]
+        )
+        if response is None:
+            raise RuntimeError("Source folder disappeared during upload transition")
+        return response
+
     async def _compensate(
         self, *, record: dict[str, Any], raw_locator: StorageLocator,
         canonical: StorageLocator | None, preview_locator: StorageLocator | None,
@@ -893,7 +1011,8 @@ class VideoSourceMediaService:
 
 
 def _validate_declared_media(*, source_type: str, mime_type: str, byte_size: int) -> None:
-    max_bytes = ALLOWED_MEDIA.get(source_type, {}).get(mime_type)
+    policy = MEDIA_UPLOAD_POLICIES.get(source_type)
+    max_bytes = policy.mime_limits.get(mime_type) if policy else None
     if max_bytes is None:
         raise VideoSourceMediaError("unsupported_media_type", "This file type is not supported.")
     if byte_size <= 0:
