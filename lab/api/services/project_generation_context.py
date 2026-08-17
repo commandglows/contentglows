@@ -252,10 +252,16 @@ class ProjectGenerationContextBuilder:
                 if category:
                     parts.append(f"  category: {category}")
                 lines.append("\n".join(parts))
-            prompt_text = prompt_text.rstrip() + "\n\n" + "\n".join(lines)
+            affiliations_section = "\n\n" + "\n".join(lines)
+            prompt_text = prompt_text.rstrip() + affiliations_section
 
         prompt_hash = _hash_text(prompt_text)
         token_estimate = _estimate_tokens(prompt_text)
+        if token_estimate > budget.max_tokens:
+            truncate_point = prompt_text.rfind("\n\n## Active Affiliate Links")
+            if truncate_point != -1:
+                prompt_text = prompt_text[:truncate_point].rstrip()
+                token_estimate = _estimate_tokens(prompt_text)
 
         try:
             log = await self.store.write_generation_context_log(

@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../data/models/content_audit.dart';
 import '../../../data/models/content_item.dart';
+import '../../../data/models/affiliate_link.dart';
 import '../../../providers/providers.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/app_error_view.dart';
@@ -456,7 +457,15 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
   }
 
   Future<void> _showInsertLinkDialog() async {
-    final affiliations = ref.read(affiliationsProvider).value ?? const [];
+    final affiliationsAsync = ref.read(affiliationsProvider);
+    final List<AffiliateLink> affiliations;
+    if (affiliationsAsync.hasValue) {
+      affiliations = (affiliationsAsync.value ?? const [])
+          .where((link) => link.status == 'active' && !link.isExpired)
+          .toList();
+    } else {
+      affiliations = const [];
+    }
     final selectedUrl = await showModalBottomSheet<String>(
       context: context,
       isScrollControlled: true,
