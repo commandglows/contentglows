@@ -279,6 +279,14 @@ class ObjectStorageProvider(Protocol):
         """Restore a server-owned upload session after a process restart."""
         ...
 
+    def restore_session_for_cleanup(
+        self,
+        session: UploadSession,
+        state: Mapping[str, str],
+    ) -> None:
+        """Restore verified private state only so an expired upload can be aborted."""
+        ...
+
     def stat(self, locator: StorageLocator) -> ObjectStat:
         ...
 
@@ -529,6 +537,16 @@ class FakeObjectStorageProvider:
         )
 
     def restore_session(self, session: UploadSession, state: Mapping[str, str]) -> None:
+        self._restore_session(session=session, state=state, require_active=True)
+
+    def restore_session_for_cleanup(
+        self, session: UploadSession, state: Mapping[str, str]
+    ) -> None:
+        self._restore_session(session=session, state=state, require_active=False)
+
+    def _restore_session(
+        self, *, session: UploadSession, state: Mapping[str, str], require_active: bool
+    ) -> None:
         values = _validate_private_state_shape(state)
         expected_prefix = f"fake/{session.namespace}/object-"
         valid = (
@@ -541,7 +559,7 @@ class FakeObjectStorageProvider:
                 values["session_fingerprint"],
                 _session_fingerprint(session),
             )
-            and self._clock() < session.expires_at
+            and (not require_active or self._clock() < session.expires_at)
         )
         if not valid:
             raise ObjectStorageError(

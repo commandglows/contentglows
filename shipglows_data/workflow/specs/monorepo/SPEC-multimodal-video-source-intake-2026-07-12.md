@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.1"
+artifact_version: "1.0.2"
 project: "contentglows"
 created: "2026-07-12"
 created_at: "2026-07-12 23:47:13 UTC"
 updated: "2026-08-18"
-updated_at: "2026-08-17 23:35:12 UTC"
+updated_at: "2026-08-17 23:51:24 UTC"
 status: ready
 source_skill: 100-sg-spec
 source_model: "GPT-5 Codex"
@@ -485,6 +485,15 @@ None.
 - Expiry is durable rather than inferred forever from a timestamp: first observation claims `expired` and marks the source retryable, preventing stale sessions from remaining apparently active.
 - Provider failures retain stable redacted error codes at the HTTP boundary. Bucket names, object keys, signatures, checksums and private payloads remain outside client-facing diagnostics.
 
+## Media Reconciliation Invariants
+
+- Reconciliation is database-leased and batch-bounded. A conditional lease permits only one runtime instance to own a candidate, while expired leases are recoverable by another instance.
+- Failed compensation persists only exact provider-neutral locators and exact asset IDs already owned by the failed session. The reconciler never derives, scans or guesses storage keys.
+- Expired unstarted sessions are aborted and made retryable. Known orphan plans are retried with bounded exponential backoff and become `reconciliation_failed` after the configured attempt ceiling.
+- A stale `processing` session is contained as `reconciliation_required`; it is not automatically replayed or deleted because the non-transactional asset side effects cannot prove that the original worker will never resume.
+- Operational events expose only event, result, stable error code, attempt count and bounded totals. User IDs, project IDs, storage paths, signed URLs, checksums, file names and private content are excluded.
+- Health diagnostics expose aggregate counts for processing, cleanup pending, manual review and exhausted cleanup only. They are not evidence that provider storage itself is reachable.
+
 ## Skill Run History
 
 | Date UTC | Skill | Model | Action | Result | Next step |
@@ -500,6 +509,7 @@ None.
 | 2026-07-13 09:41:19 UTC | 002-sg-maintain | GPT-5 Codex | Removed the stale deployment-provider blueprint, active CORS allowance and related technical documentation after the operator clarified that the provider is not used | Verified locally; historical public articles intentionally left for an editorial decision | /005-sg-ship Remove stale provider references |
 | 2026-07-13 09:41:19 UTC | 005-sg-ship | GPT-5 Codex | Published the verified operational cleanup and corrected deployment trace wording | Shipped; no hosted behavior claim | Choose whether to remove or rewrite historical public provider references |
 | 2026-08-17 23:35:12 UTC | sg-development | GPT-5 Codex | Hardened upload-session lifecycle with declarative media policies, atomic completion ownership, durable abort/expiry states, consistent storage errors and focused regression coverage | Implemented locally; 27 focused tests pass and changed modules compile | No push authorized; hosted/provider proof remains a separate lifecycle concern |
+| 2026-08-17 23:51:24 UTC | sg-development | GPT-5 Codex | Added additive reconciliation state, exact cleanup plans, multi-instance leases, bounded retries, stalled-processing containment, scheduler integration, redacted events and aggregate health | Implemented locally; 38 focused tests pass and changed modules compile | No push authorized; provider and hosted behavior remain unclaimed |
 
 ## Current Chantier Flow
 
@@ -513,4 +523,5 @@ None.
 - `002-sg-maintain`: done; obsolete operational provider configuration and terminology removed.
 - `005-sg-ship`: shipped the maintenance cleanup; public historical provider references remain outside this bounded change.
 - `sg-development`: verified locally; upload-session policy, concurrency, abort, expiry and error normalization hardened without changing the canonical S3 provider; 27 focused tests pass.
+- `sg-development`: verified locally; media reconciliation, leases, cleanup plans, bounded retries, scheduler execution and redacted health evidence added; 38 focused tests pass.
 - Prochaine commande: choose whether to remove or rewrite the historical public provider references; independently, identify and trigger matching app/API deployments before rerunning `/405-sg-prod ContentGlows`.

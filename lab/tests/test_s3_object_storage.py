@@ -129,14 +129,14 @@ class RecordingS3Client:
         return {"VersionId": kwargs.get("VersionId")}
 
 
-def _provider(client: RecordingS3Client) -> S3ObjectStorageProvider:
+def _provider(client: RecordingS3Client, *, clock=None) -> S3ObjectStorageProvider:
     ids = iter(("object-a", "object-b", "object-c", "object-d"))
     return S3ObjectStorageProvider(
         client=client,
         bucket="canonical-private-bucket",
         key_prefix="contentglows",
         id_factory=lambda: next(ids),
-        clock=lambda: datetime(2026, 7, 13, tzinfo=timezone.utc),
+        clock=clock or (lambda: datetime(2026, 7, 13, tzinfo=timezone.utc)),
         min_part_bytes=1,
         max_part_bytes=16,
         max_proxy_bytes=32,
@@ -270,6 +270,32 @@ def test_s3_restore_rejects_tampered_private_state_without_disclosure() -> None:
 
     assert exc_info.value.code == "invalid_private_session_state"
     assert "another-prefix" not in str(exc_info.value)
+
+
+def test_s3_expired_session_restores_only_for_verified_cleanup() -> None:
+    client = RecordingS3Client()
+    created_at = datetime(2026, 7, 13, tzinfo=timezone.utc)
+    first = _provider(client, clock=lambda: created_at)
+    session = first.create_upload_session(
+        namespace="quarantine",
+        content_type="video/mp4",
+        expected_size=3,
+        checksum_sha256=_sha256(b"abc"),
+        mode=UploadMode.MULTIPART,
+    )
+    private_state = first.export_session_state(session)
+    restarted = _provider(
+        client, clock=lambda: created_at.replace(minute=created_at.minute + 20)
+    )
+
+    with pytest.raises(ObjectStorageError) as exc_info:
+        restarted.restore_session(session, private_state)
+    assert exc_info.value.code == "invalid_private_session_state"
+
+    restarted.restore_session_for_cleanup(session, private_state)
+    restarted.abort_upload(session)
+
+    assert any(name == "abort_multipart_upload" for name, _ in client.calls)
 
 
 def test_s3_promote_copies_then_optionally_deletes_exact_version() -> None:

@@ -315,6 +315,40 @@ async def test_asset_persistence_failure_compensates_canonical_and_raw_objects()
 
 
 @pytest.mark.asyncio
+async def test_failed_compensation_persists_exact_reconciliation_plan():
+    writer = _AssetWriter(fail=True)
+    service, store, storage, _writer, folder = await _context(writer=writer)
+    payload = _png_bytes()
+    session = await service.create_upload_session(
+        folder_id=folder["id"], user_id="user-1", source_type="binary_image",
+        file_name="campaign.png", mime_type="image/png", byte_size=len(payload),
+        checksum_sha256=hashlib.sha256(payload).hexdigest(), expected_revision=0,
+        idempotency_key="cleanup-plan-1",
+    )
+
+    def fail_delete(_locator):
+        raise RuntimeError("provider unavailable")
+
+    storage.delete_version = fail_delete
+    with pytest.raises(VideoSourceMediaError):
+        await service.upload_proxy(
+            folder_id=folder["id"], session_id=session.session_id,
+            user_id="user-1", payload=payload,
+        )
+
+    persisted = await store.get_upload_session(
+        session_id=session.session_id, folder_id=folder["id"], user_id="user-1"
+    )
+    source = (await store.list_sources(folder_id=folder["id"], user_id="user-1"))[0]
+    assert persisted["status"] == "orphan_cleanup_needed"
+    assert len(persisted["cleanup_locators"]) == 2
+    assert {item["namespace"] for item in persisted["cleanup_locators"]} == {
+        "assets", "quarantine"
+    }
+    assert source["status"] == "orphan_cleanup_needed"
+
+
+@pytest.mark.asyncio
 async def test_source_persistence_failure_rolls_back_assets_and_all_object_versions():
     service, store, storage, writer, folder = await _context()
     payload = _png_bytes()

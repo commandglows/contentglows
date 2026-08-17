@@ -23,6 +23,12 @@ VIDEO_TIMELINE_MIGRATION_PATH = (
 VIDEO_SOURCE_INTAKE_MIGRATION_PATH = (
     Path(__file__).resolve().parent.parent / "api" / "migrations" / "007_video_source_intake.sql"
 )
+MEDIA_UPLOAD_RECONCILIATION_MIGRATION_PATH = (
+    Path(__file__).resolve().parent.parent
+    / "api"
+    / "migrations"
+    / "009_media_upload_reconciliation.sql"
+)
 
 
 def get_connection(db_path: Optional[str] = None) -> Connection:
@@ -47,8 +53,23 @@ def init_db(conn: Connection) -> None:
         conn.executescript(VIDEO_TIMELINE_MIGRATION_PATH.read_text(encoding="utf-8"))
     if VIDEO_SOURCE_INTAKE_MIGRATION_PATH.exists():
         conn.executescript(VIDEO_SOURCE_INTAKE_MIGRATION_PATH.read_text(encoding="utf-8"))
+    if MEDIA_UPLOAD_RECONCILIATION_MIGRATION_PATH.exists():
+        _run_additive_script(conn, MEDIA_UPLOAD_RECONCILIATION_MIGRATION_PATH)
     conn.commit()
     _run_migrations(conn)
+
+
+def _run_additive_script(conn: Connection, path: Path) -> None:
+    """Apply additive statements independently so repeated startup is safe."""
+    for statement in path.read_text(encoding="utf-8").split(";"):
+        statement = statement.strip()
+        if not statement:
+            continue
+        try:
+            conn.execute(statement)
+        except (sqlite3.OperationalError, ValueError) as exc:
+            if "duplicate column name" not in str(exc).lower():
+                raise
 
 
 def _run_migrations(conn: Connection) -> None:

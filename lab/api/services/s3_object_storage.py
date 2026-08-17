@@ -462,6 +462,16 @@ class S3ObjectStorageProvider:
         )
 
     def restore_session(self, session: UploadSession, state: Mapping[str, str]) -> None:
+        self._restore_session(session=session, state=state, require_active=True)
+
+    def restore_session_for_cleanup(
+        self, session: UploadSession, state: Mapping[str, str]
+    ) -> None:
+        self._restore_session(session=session, state=state, require_active=False)
+
+    def _restore_session(
+        self, *, session: UploadSession, state: Mapping[str, str], require_active: bool
+    ) -> None:
         values = _contract._validate_private_state_shape(state)
         key_prefix = f"{self._key_prefix}/{session.namespace}/"
         server_id = values["object_key"][len(key_prefix) :] if values["object_key"].startswith(key_prefix) else ""
@@ -479,7 +489,7 @@ class S3ObjectStorageProvider:
                 values["session_fingerprint"],
                 _contract._session_fingerprint(session),
             )
-            and self._clock() < session.expires_at
+            and (not require_active or self._clock() < session.expires_at)
         )
         if not valid:
             raise ObjectStorageError(

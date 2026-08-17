@@ -105,6 +105,7 @@ async def health_check():
             agents_status[name] = f"error: {str(e)[:120]}"
     
     database_status = await _check_db()
+    media_uploads = await _media_upload_health()
     core_available = database_status in {"operational", "not_configured"}
     
     return {
@@ -120,6 +121,7 @@ async def health_check():
         },
         "observability": {
             "sentry": sentry_status(),
+            "media_uploads": media_uploads,
         },
     }
 
@@ -134,6 +136,17 @@ async def _check_db() -> str:
         return "operational"
     except Exception:
         return "unreachable"
+
+
+async def _media_upload_health() -> dict[str, int] | dict[str, str]:
+    try:
+        from api.services.video_source_intake_store import video_source_intake_store
+
+        if not video_source_intake_store.db_client:
+            return {"status": "not_configured"}
+        return await video_source_intake_store.upload_reconciliation_health()
+    except Exception:
+        return {"status": "unavailable"}
 
 
 @router.get(

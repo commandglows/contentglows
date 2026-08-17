@@ -827,6 +827,7 @@ class VideoSourceMediaService:
                 preview_locator=preview_locator,
                 error=exc,
                 cleanup_failed=rollback_failed,
+                cleanup_asset_ids=asset_ids if rollback_failed else (),
             )
             raise
         except Exception as exc:
@@ -838,6 +839,7 @@ class VideoSourceMediaService:
                 preview_locator=preview_locator,
                 error=exc,
                 cleanup_failed=rollback_failed,
+                cleanup_asset_ids=asset_ids if rollback_failed else (),
             )
             raise VideoSourceMediaError(
                 "asset_persistence_failed", "The file could not be attached. It is safe to retry.", retryable=True
@@ -888,7 +890,9 @@ class VideoSourceMediaService:
         self, *, record: dict[str, Any], raw_locator: StorageLocator,
         canonical: StorageLocator | None, preview_locator: StorageLocator | None,
         error: Exception, cleanup_failed: bool = False,
+        cleanup_asset_ids: Sequence[str] = (),
     ) -> None:
+        cleanup_locators: list[dict[str, str]] = []
         for locator in [preview_locator, canonical, raw_locator]:
             if locator is None:
                 continue
@@ -896,11 +900,19 @@ class VideoSourceMediaService:
                 await asyncio.to_thread(self.storage.delete_version, locator)
             except Exception:
                 cleanup_failed = True
+                cleanup_locators.append(_locator_dict(locator))
         code = getattr(error, "code", "media_processing_failed")
-        await self.store.update_upload_session(
-            session_id=record["id"], folder_id=record["folder_id"], user_id=record["user_id"],
-            status="orphan_cleanup_needed" if cleanup_failed else "failed",
-        )
+        if cleanup_failed:
+            await self.store.mark_upload_cleanup_needed(
+                session_id=record["id"], folder_id=record["folder_id"],
+                user_id=record["user_id"], cleanup_locators=cleanup_locators,
+                cleanup_asset_ids=list(cleanup_asset_ids), error_code=str(code),
+            )
+        else:
+            await self.store.update_upload_session(
+                session_id=record["id"], folder_id=record["folder_id"],
+                user_id=record["user_id"], status="failed",
+            )
         await self.store.update_source(
             folder_id=record["folder_id"], source_id=record["source_id"], user_id=record["user_id"],
             status="orphan_cleanup_needed" if cleanup_failed else "failed",

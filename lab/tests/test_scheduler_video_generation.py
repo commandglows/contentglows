@@ -71,6 +71,24 @@ async def test_reconcile_frequency_creates_auto_video_job(monkeypatch):
 
 
 @pytest.mark.asyncio
+async def test_scheduler_runs_bounded_media_reconciliation(monkeypatch):
+    calls = []
+
+    class _Reconciler:
+        async def run_batch(self):
+            calls.append("run")
+
+    monkeypatch.setattr(
+        "api.services.video_source_media_reconciliation.get_video_source_media_reconciliation_service",
+        lambda: _Reconciler(),
+    )
+
+    await SchedulerService()._reconcile_media_uploads()
+
+    assert calls == ["run"]
+
+
+@pytest.mark.asyncio
 async def test_auto_video_job_consumes_complete_content(monkeypatch):
     fake_svc = _FakeStatusService()
     fake_svc.contents = [

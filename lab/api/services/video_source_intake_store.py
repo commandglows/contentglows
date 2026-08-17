@@ -114,10 +114,16 @@ class VideoSourceIntakeStore:
                 mode TEXT NOT NULL,
                 provider_state_json TEXT NOT NULL DEFAULT '{}', status TEXT NOT NULL,
                 idempotency_key TEXT NOT NULL, locator_json TEXT, expires_at TEXT NOT NULL,
-                created_at TEXT NOT NULL, updated_at TEXT NOT NULL
+                created_at TEXT NOT NULL, updated_at TEXT NOT NULL,
+                cleanup_locators_json TEXT NOT NULL DEFAULT '[]',
+                cleanup_asset_ids_json TEXT NOT NULL DEFAULT '[]',
+                reconcile_attempts INTEGER NOT NULL DEFAULT 0, reconcile_after TEXT,
+                lease_token TEXT, lease_expires_at TEXT, last_reconcile_error TEXT
             )
             """,
             "CREATE UNIQUE INDEX IF NOT EXISTS idx_video_source_upload_idempotency ON video_source_upload_sessions(folder_id, idempotency_key)",
+            """CREATE INDEX IF NOT EXISTS idx_video_source_upload_reconciliation
+               ON video_source_upload_sessions(status,reconcile_after,lease_expires_at,updated_at)""",
             """
             CREATE TABLE IF NOT EXISTS video_source_generation_handoffs (
                 id TEXT PRIMARY KEY, folder_id TEXT NOT NULL, user_id TEXT NOT NULL,
@@ -400,7 +406,9 @@ class VideoSourceIntakeStore:
             """SELECT id,source_id,folder_id,user_id,project_id,content_id,expected_revision,
                       source_type,file_name,mime_type,byte_size,checksum_sha256,provider_namespace,
                       mode,provider_state_json,status,idempotency_key,
-                      locator_json,expires_at,created_at,updated_at
+                      locator_json,expires_at,created_at,updated_at,
+                      cleanup_locators_json,cleanup_asset_ids_json,reconcile_attempts,
+                      reconcile_after,lease_token,lease_expires_at,last_reconcile_error
                FROM video_source_upload_sessions
                WHERE id=? AND folder_id=? AND user_id=? LIMIT 1""",
             [session_id, folder_id, user_id],
@@ -417,6 +425,11 @@ class VideoSourceIntakeStore:
             "provider_state": _json_load(row[14], {}), "status": row[15],
             "idempotency_key": row[16], "locator": _json_load(row[17], None),
             "expires_at": row[18], "created_at": row[19], "updated_at": row[20],
+            "cleanup_locators": _json_load(row[21], []),
+            "cleanup_asset_ids": _json_load(row[22], []),
+            "reconcile_attempts": int(row[23]), "reconcile_after": row[24],
+            "lease_token": row[25], "lease_expires_at": row[26],
+            "last_reconcile_error": row[27],
         }
 
     async def find_upload_session_by_idempotency(
@@ -476,6 +489,121 @@ class VideoSourceIntakeStore:
              session_id, folder_id, user_id, from_status],
         )
         return bool(result.rows)
+
+    async def mark_upload_cleanup_needed(
+        self,
+        *,
+        session_id: str,
+        folder_id: str,
+        user_id: str,
+        cleanup_locators: list[dict[str, Any]],
+        cleanup_asset_ids: list[str],
+        error_code: str,
+    ) -> None:
+        await self.db_client.execute(
+            """UPDATE video_source_upload_sessions
+               SET status='orphan_cleanup_needed',cleanup_locators_json=?,
+                   cleanup_asset_ids_json=?,reconcile_after=?,last_reconcile_error=?,updated_at=?
+               WHERE id=? AND folder_id=? AND user_id=?""",
+            [_json_dump(cleanup_locators), _json_dump(cleanup_asset_ids), _now_iso(),
+             error_code, _now_iso(), session_id, folder_id, user_id],
+        )
+
+    async def list_upload_reconciliation_candidates(
+        self, *, now: datetime, stale_before: datetime, limit: int
+    ) -> list[dict[str, Any]]:
+        now_iso = now.astimezone(UTC).isoformat()
+        rs = await self.db_client.execute(
+            """SELECT id,folder_id,user_id FROM video_source_upload_sessions
+               WHERE (
+                   (status='created' AND expires_at<=?) OR
+                   (status='processing' AND updated_at<=?) OR
+                   (status='orphan_cleanup_needed' AND (reconcile_after IS NULL OR reconcile_after<=?))
+               ) AND (lease_expires_at IS NULL OR lease_expires_at<=?)
+               ORDER BY updated_at ASC LIMIT ?""",
+            [now_iso, stale_before.astimezone(UTC).isoformat(), now_iso, now_iso, limit],
+        )
+        records: list[dict[str, Any]] = []
+        for session_id, folder_id, user_id in rs.rows:
+            record = await self.get_upload_session(
+                session_id=session_id, folder_id=folder_id, user_id=user_id
+            )
+            if record is not None:
+                records.append(record)
+        return records
+
+    async def claim_upload_reconciliation(
+        self,
+        *,
+        session_id: str,
+        expected_status: str,
+        lease_token: str,
+        lease_expires_at: datetime,
+        now: datetime,
+    ) -> bool:
+        result = await self.db_client.execute(
+            """UPDATE video_source_upload_sessions
+               SET lease_token=?,lease_expires_at=?,reconcile_attempts=reconcile_attempts+1,
+                   updated_at=?
+               WHERE id=? AND status=? AND (lease_expires_at IS NULL OR lease_expires_at<=?)
+               RETURNING id""",
+            [lease_token, lease_expires_at.astimezone(UTC).isoformat(),
+             now.astimezone(UTC).isoformat(), session_id, expected_status,
+             now.astimezone(UTC).isoformat()],
+        )
+        return bool(result.rows)
+
+    async def finish_upload_reconciliation(
+        self,
+        *,
+        session_id: str,
+        lease_token: str,
+        status: str,
+        error_code: str | None,
+    ) -> bool:
+        result = await self.db_client.execute(
+            """UPDATE video_source_upload_sessions
+               SET status=?,cleanup_locators_json='[]',cleanup_asset_ids_json='[]',
+                   reconcile_after=NULL,lease_token=NULL,lease_expires_at=NULL,
+                   last_reconcile_error=?,updated_at=?
+               WHERE id=? AND lease_token=? RETURNING id""",
+            [status, error_code, _now_iso(), session_id, lease_token],
+        )
+        return bool(result.rows)
+
+    async def defer_upload_reconciliation(
+        self,
+        *,
+        session_id: str,
+        lease_token: str,
+        reconcile_after: datetime,
+        error_code: str,
+        terminal: bool,
+    ) -> bool:
+        result = await self.db_client.execute(
+            """UPDATE video_source_upload_sessions
+               SET status=?,reconcile_after=?,lease_token=NULL,lease_expires_at=NULL,
+                   last_reconcile_error=?,updated_at=?
+               WHERE id=? AND lease_token=? RETURNING id""",
+            ["reconciliation_failed" if terminal else "orphan_cleanup_needed",
+             None if terminal else reconcile_after.astimezone(UTC).isoformat(),
+             error_code, _now_iso(), session_id, lease_token],
+        )
+        return bool(result.rows)
+
+    async def upload_reconciliation_health(self) -> dict[str, int]:
+        rs = await self.db_client.execute(
+            """SELECT status,COUNT(*) FROM video_source_upload_sessions
+               WHERE status IN ('processing','orphan_cleanup_needed','reconciliation_required',
+                                'reconciliation_failed') GROUP BY status"""
+        )
+        counts = {str(status): int(count) for status, count in rs.rows}
+        return {
+            "processing": counts.get("processing", 0),
+            "cleanup_pending": counts.get("orphan_cleanup_needed", 0),
+            "manual_review": counts.get("reconciliation_required", 0),
+            "cleanup_failed": counts.get("reconciliation_failed", 0),
+        }
 
     async def update_source(
         self, *, folder_id: str, source_id: str, user_id: str, status: str,
