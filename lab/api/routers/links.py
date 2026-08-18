@@ -13,8 +13,6 @@ from api.models.affiliations import (
     AffiliateLinkCreateRequest,
     AffiliateLinkResponse,
     AffiliateLinkUpdateRequest,
-)
-from api.models.links import (
     LinkClickResponse,
     LinkClickSummary,
     LinkVariantCreateRequest,
