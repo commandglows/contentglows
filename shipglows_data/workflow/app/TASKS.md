@@ -234,6 +234,7 @@ Concurrent sources: Filmora, PixVerse. Canonical execution spec: `shipglows_data
 
 > Transformer le CRM d'affiliate links passif en infrastructure de link management active.
 > Inspiration: QuitURL (shortener + targeting + A/B + overlays).
+> **Architecture choisie: Option B — self-hosted + inspiration Dub.co** (webhooks, conversion tracking, UTM builder, deep links, cloaking, previews). Pas d'intégration vendor lock-in.
 
 ### Quick Wins ✅
 
@@ -257,6 +258,36 @@ Concurrent sources: Filmora, PixVerse. Canonical execution spec: `shipglows_data
 |-----|------|--------|--------|--------|-------|
 | 🟢 | Password protection sur les liens | Low | Low | 📋 todo | Gate par mot de passe avant redirect |
 | 🟢 | Branded domains : gestion DNS + wildcard SSL pour servir les redirects sur domaine custom | Medium | High | 📋 todo | Infrastructure lourde, dépend de la croissance |
+
+## Link Management — Dub.co-inspired Features
+
+> Features inspirées de Dub.co pour enrichir le shortener self-hosté.
+> Priorisation : webhooks d'abord (débloque crews temps réel), puis conversion funnel, puis UX/attribution avancée.
+
+### Quick Wins
+
+| Pri | Task | Impact | Effort | Status | Notes |
+|-----|------|--------|--------|--------|-------|
+| 🟠 | Webhooks : endpoint `POST /api/links/webhooks` + stockage `LinkWebhook`, events `link.created`, `link.clicked`, `conversion.created` | High | Medium | ✅ done | Migration 009, store, router `/api/webhooks/links` + public `/r/webhooks/public/{id}` |
+| 🟠 | Conversion tracking : table `LinkConversion` (linkId, type=lead/sale, revenue, currency, partnerId), endpoint `/api/links/conversions` | High | Medium | ✅ done | Migration 009, store, router `/api/links/conversions` + summary |
+| 🟡 | UTM builder + templates : modèle `UtmTemplate` (name, params), UI dans affiliations screen, auto-apply au créer un lien | Medium | Low | ✅ done | Migration 009, store, router `/api/utm`, modèles Flutter + API service |
+
+### Moyen terme
+
+| Pri | Task | Impact | Effort | Status | Notes |
+|-----|------|--------|--------|--------|-------|
+| 🟡 | Deep links deferred : stockage `deeplink`/`fallback_url` sur `AffiliateLink`, routing dans `/r/{slug}` iOS/Android | Medium | High | 📋 todo | Si on vise mobile natif |
+| 🟡 | Link cloaking : option `cloak=true` sur `AffiliateLink`, redirect via page intermédiaire sans référer | Medium | Low | 📋 todo | Améliore CTR, masque destination |
+| 🟡 | Custom link previews : stockage `previewTitle`/`previewImage` sur `AffiliateLink`, meta tags dans redirect HTML | Medium | Low | 📋 todo | OG tags pour social sharing |
+| 🟡 | Folders + tags : modèle `LinkFolder`, tag many-to-many sur `AffiliateLink`, filtres UI | Medium | Medium | 📋 todo | Organisation à grande échelle |
+
+### Long terme
+
+| Pri | Task | Impact | Effort | Status | Notes |
+|-----|------|--------|--------|--------|-------|
+| 🟢 | Analytics sharing : token de partage, endpoint public `/api/links/{id}/shared-analytics` | Low | Low | 📋 todo | Dashboards partageables avec partenaires |
+| 🟢 | Bulk operations : endpoints `/api/links/bulk-create`, `/bulk-update`, `/bulk-delete` | Medium | Medium | 📋 todo | Pour programmes partenaires massifs |
+| 🟢 | Séparation modèle : `PartnerProgram` + `Partner` + `PayoutRule` distincts de `AffiliateLink` | High | High | 📋 todo | Refonte schema si on scale les programmes |
 
 ## Link Management — Consumer Connections
 

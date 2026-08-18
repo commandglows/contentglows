@@ -359,3 +359,57 @@ CREATE TABLE IF NOT EXISTS LinkVariant (
 - `app/lib/data/services/api_service.dart`
 - `app/lib/presentation/screens/affiliations/affiliations_screen.dart`
 - `app/lib/presentation/screens/affiliations/affiliation_form_sheet.dart`
+
+## Link Management Extension — Dub.co-inspired (2026-08)
+
+Extension additionnelle inspirée de Dub.co pour le link management self-hosté.
+
+### Schema
+
+Nouvelles tables ajoutées par `api/migrations/009_link_webhooks_conversions_utm.sql` :
+
+- `LinkWebhook` — webhooks utilisateur : `id`, `userId`, `projectId`, `url`, `secret`, `events`, `enabled`, `createdAt`, `updatedAt`
+- `LinkWebhookDelivery` — historisation des livraisons : `id`, `webhookId`, `eventType`, `url`, `statusCode`, `requestBody`, `responseBody`, `error`, `deliveredAt`, `createdAt`
+- `LinkConversion` — conversion tracking : `id`, `linkId`, `userId`, `projectId`, `type`, `revenue`, `currency`, `partnerId`, `metadata`, `createdAt`
+- `UtmTemplate` — templates UTM : `id`, `userId`, `projectId`, `name`, `utmSource`, `utmMedium`, `utmCampaign`, `utmTerm`, `utmContent`, `createdAt`, `updatedAt`
+
+### Endpoints Lab
+
+Webhooks :
+- `POST /api/webhooks/links` — creer webhook
+- `GET /api/webhooks/links` — lister webhooks
+- `GET /api/webhooks/links/{id}` — detail webhook
+- `PATCH /api/webhooks/links/{id}` — modifier webhook
+- `DELETE /api/webhooks/links/{id}` — supprimer webhook
+- `GET /api/webhooks/links/{id}/deliveries` — livraisons webhook
+- `POST /r/webhooks/public/{id}` — receiver public webhook (forward + log)
+
+Conversions :
+- `POST /api/links/conversions` — creer conversion
+- `GET /api/links/conversions?linkId=...` — lister conversions
+- `GET /api/links/conversions/summary?linkId=...` — resume conversion
+
+UTM Templates :
+- `POST /api/utm` — creer template
+- `GET /api/utm` — lister templates
+- `PATCH /api/utm/{id}` — modifier template
+- `DELETE /api/utm/{id}` — supprimer template
+
+### Models Flutter
+
+- `LinkWebhook` — modele transport webhook
+- `LinkWebhookDelivery` — modele transport livraison webhook
+- `LinkConversion` — modele transport conversion
+- `UtmTemplate` — modele transport template UTM
+
+### Fichiers implements
+
+- `lab/api/migrations/009_link_webhooks_conversions_utm.sql`
+- `lab/api/models/link_webhooks.py`
+- `lab/api/routers/link_extras.py`
+- `lab/api/routers/__init__.py`
+- `lab/api/main.py`
+- `lab/api/services/user_data_store.py`
+- `app/lib/data/models/link_webhook.dart`
+- `app/lib/data/services/api_service.dart`
+- `app/lib/providers/providers.dart`

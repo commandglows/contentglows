@@ -66,7 +66,7 @@ next_step: "/sf-docs update shipglows_data/technical/app/context.md"
 - **Bootstrap/access domain:**
   - `AppAccessNotifier` computes stages (`restoringSession`, `signedOut`, `demo`, `apiUnavailable`, `bootstrapFailed`, `needsOnboarding`, `ready`).
 - **Feature domains:**
-  - Projects, workspace/settings, creator profile, personas, content pipeline, integrations, analytics-like views, feedback, affiliations/link management.
+  - Projects, workspace/settings, creator profile, personas, content pipeline, integrations, analytics-like views, feedback, affiliations/link management, webhooks, conversions, UTM templates.
   - `Affiliations / Link Management`: CRUD for affiliate links, slug-based public short links (`/r/{slug}`), click telemetry, and A/B destination rotation via `LinkVariant`. The public redirect endpoint is unauthenticated; analytics and variant management require Clerk auth.
   - `Project Intelligence V1`: read project intelligence status, source inventory, extracted facts, recommendations, provider readiness, upload text-like sources, remove sources, and convert recommendations into Idea Pool items.
   - `Video Timeline V1`: online-only timeline editing and preview/final render orchestration for `/editor/:id/video`, with `lab` as the public API boundary and the Remotion worker hidden behind backend contracts. Product execution reference: `shipglows_data/workflow/specs/monorepo/SPEC-professional-video-editor-capability-roadmap-2026-08-09.md` (Filmora/PixVerse-inspired, one-canonical-timeline approach).

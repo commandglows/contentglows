@@ -56,6 +56,7 @@ from api.routers import (
     affiliations_router,
     public_links_router,
     links_router,
+    link_extras_router,
     activity_router,
     work_domains_router,
     preview_router,
@@ -143,13 +144,16 @@ async def lifespan(app: FastAPI):
             await user_data_store.ensure_affiliate_table()
             await user_data_store.ensure_activity_table()
             await user_data_store.ensure_work_domain_table()
+            await user_data_store.ensure_link_webhooks_table()
+            await user_data_store.ensure_link_conversions_table()
+            await user_data_store.ensure_utm_template_table()
             await user_data_store.ensure_github_integration_table()
             await user_data_store.ensure_github_oauth_state_table()
             await user_data_store.ensure_publish_integration_tables()
             rotation = await user_data_store.rotate_legacy_github_tokens()
             print(
                 "✅ UserSettings + CreatorProfile + CustomerPersona + "
-                "AffiliateLink + ActivityLog + WorkDomain + Publish integration tables ensured"
+                "AffiliateLink + ActivityLog + WorkDomain + LinkWebhooks + LinkConversions + UTM + Publish integration tables ensured"
             )
             if bool(rotation.get("key_configured")):
                 print(
@@ -513,6 +517,7 @@ app.include_router(publish_router)
 app.include_router(idea_pool_router)
 app.include_router(affiliations_router)
 app.include_router(links_router)
+app.include_router(link_extras_router)
 app.include_router(activity_router)
 app.include_router(work_domains_router)
 app.include_router(preview_router)

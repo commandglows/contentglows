@@ -53,6 +53,7 @@ next_step: "/sf-docs audit shipglows_data/product/app/product.md"
 - provides authenticated onboarding and workspace bootstrap via Clerk + FastAPI session flow;
 - supports multi-project workspace management with an explicit active-project selection model;
 - runs content workflows (feed, ideas, angles, editor, personas, scheduling, drip plans, affiliation/link management domains);
+- link management is self-hosted with Dub.co-inspired features (webhooks, conversion funnel, UTM builder, deep links, cloaking, previews, folders/tags), no vendor lock-in;
 - preserves the selected Angle persona as content-scoped metadata, so one brand can serve several audiences without duplicating persona records;
 - exposes `Project Intelligence V1` for project-scoped source ingestion, recommendations, and Idea Pool conversion;
 - exposes `Video Timeline V1` for backend-orchestrated preview/final render preparation from existing content items;
@@ -91,7 +92,7 @@ next_step: "/sf-docs audit shipglows_data/product/app/product.md"
 ## Proven functional domains
 - Entry and access control (`/entry`, `/auth`, `/onboarding`, route guards).
 - Structured workflows: `Projects`, `Feed`, `Editor`, `Persona`, `Ideas`, `Angles`, `Drip`, `Research`, `Ritual`.
-- Operational domains: `Affiliations / Link Management` (CRUD, custom-slug shortener, click telemetry, A/B destination rotation), `SEO`, `Runs`, `Newsletter`, `Templates`, `Content Tools`, `Calendar`, `History`, `Activity`.
+- Operational domains: `Affiliations / Link Management` (CRUD, custom-slug shortener, click telemetry, A/B destination rotation, webhooks, conversion tracking, UTM builder, deep links, cloaking, custom previews, folders/tags), `SEO`, `Runs`, `Newsletter`, `Templates`, `Content Tools`, `Calendar`, `History`, `Activity`.
 - Settings and integrations surfaces (`/settings`, `/settings/integrations`).
 
 ## Non-goals (explicitly maintained)

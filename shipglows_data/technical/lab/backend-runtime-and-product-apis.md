@@ -353,6 +353,42 @@ Routes live under `/api/links` and require Clerk auth plus ownership checks:
 - `affiliations_screen.dart` shows an expired badge, disables tap when expired, and displays `slug` plus click count.
 - New API methods: `fetchLinkClicks`, `fetchLinkClickSummary`, `createLinkVariant`, `fetchLinkVariants`, `updateLinkVariant`, `deleteLinkVariant`.
 
+## Link Webhooks, Conversions, and UTM Templates
+
+### Webhooks
+
+Authenticated routes under `/api/webhooks/links`:
+
+- `POST /` creates a webhook with `url`, optional `secret`, `events` list, and `enabled` flag. Default events: `["link.clicked"]`.
+- `GET /` lists webhooks for the authenticated user, optionally filtered by `projectId`.
+- `GET /{webhook_id}` returns one owned webhook.
+- `PATCH /{webhook_id}` updates `url`, `secret`, `events`, or `enabled`.
+- `DELETE /{webhook_id}` removes a webhook.
+- `GET /{webhook_id}/deliveries` returns recent delivery attempts with status code, request/response bodies, and errors.
+
+Public receiver:
+
+- `POST /r/webhooks/public/{webhook_id}` accepts inbound webhook payloads, validates the webhook exists and is enabled, forwards the request to the stored `url`, and records the delivery result in `LinkWebhookDelivery`.
+
+### Conversions
+
+Authenticated routes under `/api/links/conversions`:
+
+- `POST /` records a conversion event for an owned link. Payload includes `linkId`, `type` (`lead`/`sale`/`custom`), optional `revenue`, `currency`, `partnerId`, and arbitrary `metadata`.
+- `GET /?linkId=...` lists conversions for an owned link.
+- `GET /summary?linkId=...` returns aggregated totals: `totalConversions`, `totalRevenue`, and breakdown `byType`.
+
+### UTM Templates
+
+Authenticated routes under `/api/utm`:
+
+- `POST /` creates a named UTM template with optional `utmSource`, `utmMedium`, `utmCampaign`, `utmTerm`, `utmContent`.
+- `GET /` lists templates for the authenticated user, optionally filtered by `projectId`.
+- `PATCH /{template_id}` updates template fields.
+- `DELETE /{template_id}` removes a template.
+
+UTM templates are intended for campaign standardization; they do not automatically mutate existing links unless explicitly applied during link creation or update flows.
+
 ## Remotion Render Artifacts
 
 `lab` remains the authenticated boundary for video preview/final renders. Flutter polls backend render jobs and receives `artifact.playback_url`; it never calls the Remotion worker, Cloud Run, or GCS directly.
@@ -372,7 +408,7 @@ Signed GCS playback URLs are bearer-like secrets. Do not copy query strings such
 
 ## Reader Checklist
 
-- Read this file before changing project intelligence, project assets, brand profiles, branded generation, video timeline, render artifact, image generation, GSC OAuth, project-selection, link management, or affiliate redirect behavior.
+- Read this file before changing project intelligence, project assets, brand profiles, branded generation, video timeline, render artifact, image generation, GSC OAuth, project-selection, link management, affiliate redirects, webhooks, conversion tracking, UTM templates, or link behavior.
 - Cross-check worker render behavior with `shipglows_data/technical/worker/architecture.md`.
 - Update this file when a README-local backend contract would otherwise be reintroduced.
 

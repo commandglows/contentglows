@@ -1946,5 +1946,443 @@ class UserDataStore:
         )
         return await self.get_work_domain(user_id, domain_id)
 
+    # ─── Link Webhooks ─────────────────────────────────────────
+
+    async def ensure_link_webhooks_table(self) -> None:
+        self._ensure_connected()
+        await self.db_client.execute(
+            """
+            CREATE TABLE IF NOT EXISTS LinkWebhook (
+                id TEXT PRIMARY KEY NOT NULL,
+                userId TEXT NOT NULL,
+                projectId TEXT,
+                url TEXT NOT NULL,
+                secret TEXT,
+                events TEXT NOT NULL DEFAULT '[]',
+                enabled INTEGER NOT NULL DEFAULT 1,
+                createdAt INTEGER NOT NULL,
+                updatedAt INTEGER NOT NULL
+            )
+            """
+        )
+        await self.db_client.execute(
+            """
+            CREATE TABLE IF NOT EXISTS LinkWebhookDelivery (
+                id TEXT PRIMARY KEY NOT NULL,
+                webhookId TEXT NOT NULL,
+                eventType TEXT NOT NULL,
+                url TEXT NOT NULL,
+                statusCode INTEGER,
+                requestBody TEXT,
+                responseBody TEXT,
+                error TEXT,
+                deliveredAt INTEGER,
+                createdAt INTEGER NOT NULL
+            )
+            """
+        )
+        try:
+            await self.db_client.execute(
+                "CREATE INDEX IF NOT EXISTS idx_link_webhook_user ON LinkWebhook(userId)"
+            )
+        except Exception:
+            pass
+        try:
+            await self.db_client.execute(
+                "CREATE INDEX IF NOT EXISTS idx_link_webhook_delivery_webhook ON LinkWebhookDelivery(webhookId, createdAt)"
+            )
+        except Exception:
+            pass
+
+    def _webhook_from_row(self, row: tuple[Any, ...]) -> dict[str, Any]:
+        return {
+            "id": row[0],
+            "userId": row[1],
+            "projectId": row[2],
+            "url": row[3],
+            "secret": row[4],
+            "events": _json_load(row[5], []),
+            "enabled": bool(row[6]),
+            "createdAt": _ts(row[7]),
+            "updatedAt": _ts(row[8]),
+        }
+
+    async def list_link_webhooks(self, user_id: str, project_id: str | None = None) -> list[dict[str, Any]]:
+        self._ensure_connected()
+        query = "SELECT id, userId, projectId, url, secret, events, enabled, createdAt, updatedAt FROM LinkWebhook WHERE userId = ?"
+        params: list[Any] = [user_id]
+        if project_id is not None:
+            query += " AND projectId = ?"
+            params.append(project_id)
+        query += " ORDER BY createdAt DESC"
+        rs = await self.db_client.execute(query, params)
+        return [self._webhook_from_row(row) for row in rs.rows]
+
+    async def get_link_webhook(self, user_id: str, webhook_id: str) -> dict[str, Any] | None:
+        self._ensure_connected()
+        rs = await self.db_client.execute(
+            "SELECT id, userId, projectId, url, secret, events, enabled, createdAt, updatedAt FROM LinkWebhook WHERE id = ? AND userId = ? LIMIT 1",
+            [webhook_id, user_id],
+        )
+        if not rs.rows:
+            return None
+        return self._webhook_from_row(rs.rows[0])
+
+    async def get_link_webhook_by_public_id(self, webhook_id: str) -> dict[str, Any] | None:
+        self._ensure_connected()
+        rs = await self.db_client.execute(
+            "SELECT id, userId, projectId, url, secret, events, enabled, createdAt, updatedAt FROM LinkWebhook WHERE id = ? LIMIT 1",
+            [webhook_id],
+        )
+        if not rs.rows:
+            return None
+        return self._webhook_from_row(rs.rows[0])
+
+    async def create_link_webhook(self, user_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+        self._ensure_connected()
+        now = int(datetime.now().timestamp())
+        webhook_id = str(uuid.uuid4())
+        events = payload.get("events") or ["link.clicked"]
+        await self.db_client.execute(
+            """
+            INSERT INTO LinkWebhook (id, userId, projectId, url, secret, events, enabled, createdAt, updatedAt)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            [
+                webhook_id,
+                user_id,
+                payload.get("projectId"),
+                payload["url"],
+                payload.get("secret"),
+                _json_dump(events),
+                1 if payload.get("enabled") is not False else 0,
+                now,
+                now,
+            ],
+        )
+        webhook = await self.get_link_webhook(user_id, webhook_id)
+        if not webhook:
+            raise RuntimeError("Failed to create link webhook")
+        return webhook
+
+    async def update_link_webhook(self, user_id: str, webhook_id: str, payload: dict[str, Any]) -> dict[str, Any] | None:
+        self._ensure_connected()
+        existing = await self.get_link_webhook(user_id, webhook_id)
+        if not existing:
+            return None
+        now = int(datetime.now().timestamp())
+        fields: list[str] = ["updatedAt = ?"]
+        params: list[Any] = [now]
+        for key, column in (("url", "url"), ("secret", "secret"), ("enabled", "enabled")):
+            if key in payload:
+                fields.append(f"{column} = ?")
+                params.append(payload[key] if key != "enabled" else (1 if payload[key] else 0))
+        if "events" in payload:
+            fields.append("events = ?")
+            params.append(_json_dump(payload["events"]))
+        params.extend([webhook_id, user_id])
+        await self.db_client.execute(
+            f"UPDATE LinkWebhook SET {', '.join(fields)} WHERE id = ? AND userId = ?",
+            params,
+        )
+        return await self.get_link_webhook(user_id, webhook_id)
+
+    async def delete_link_webhook(self, user_id: str, webhook_id: str) -> bool:
+        self._ensure_connected()
+        rs = await self.db_client.execute(
+            "DELETE FROM LinkWebhook WHERE id = ? AND userId = ?",
+            [webhook_id, user_id],
+        )
+        return rs.rows_affected > 0
+
+    async def create_link_webhook_delivery(self, payload: dict[str, Any]) -> dict[str, Any]:
+        self._ensure_connected()
+        now = int(datetime.now().timestamp())
+        delivery_id = str(uuid.uuid4())
+        await self.db_client.execute(
+            """
+            INSERT INTO LinkWebhookDelivery (id, webhookId, eventType, url, statusCode, requestBody, responseBody, error, deliveredAt, createdAt)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            [
+                delivery_id,
+                payload["webhookId"],
+                payload["eventType"],
+                payload["url"],
+                payload.get("statusCode"),
+                payload.get("requestBody"),
+                payload.get("responseBody"),
+                payload.get("error"),
+                payload.get("deliveredAt"),
+                now,
+            ],
+        )
+        return {"id": delivery_id, "createdAt": _ts(now)}
+
+    async def list_link_webhook_deliveries(self, user_id: str, webhook_id: str, limit: int = 100, offset: int = 0) -> list[dict[str, Any]]:
+        self._ensure_connected()
+        rs = await self.db_client.execute(
+            """
+            SELECT id, webhookId, eventType, url, statusCode, requestBody, responseBody, error, deliveredAt, createdAt
+            FROM LinkWebhookDelivery
+            WHERE webhookId = ? AND webhookId IN (SELECT id FROM LinkWebhook WHERE userId = ?)
+            ORDER BY createdAt DESC
+            LIMIT ? OFFSET ?
+            """,
+            [webhook_id, user_id, limit, offset],
+        )
+        return [self._webhook_delivery_from_row(row) for row in rs.rows]
+
+    def _webhook_delivery_from_row(self, row: tuple[Any, ...]) -> dict[str, Any]:
+        return {
+            "id": row[0],
+            "webhookId": row[1],
+            "eventType": row[2],
+            "url": row[3],
+            "statusCode": row[4],
+            "requestBody": row[5],
+            "responseBody": row[6],
+            "error": row[7],
+            "deliveredAt": _ts(row[8]) if row[8] else None,
+            "createdAt": _ts(row[9]),
+        }
+
+    # ─── Link Conversions ──────────────────────────────────────
+
+    async def ensure_link_conversions_table(self) -> None:
+        self._ensure_connected()
+        await self.db_client.execute(
+            """
+            CREATE TABLE IF NOT EXISTS LinkConversion (
+                id TEXT PRIMARY KEY NOT NULL,
+                linkId TEXT NOT NULL,
+                userId TEXT NOT NULL,
+                projectId TEXT,
+                type TEXT NOT NULL,
+                revenue REAL,
+                currency TEXT,
+                partnerId TEXT,
+                metadata TEXT,
+                createdAt INTEGER NOT NULL
+            )
+            """
+        )
+        try:
+            await self.db_client.execute(
+                "CREATE INDEX IF NOT EXISTS idx_link_conversion_link ON LinkConversion(linkId, createdAt)"
+            )
+        except Exception:
+            pass
+
+    def _conversion_from_row(self, row: tuple[Any, ...]) -> dict[str, Any]:
+        return {
+            "id": row[0],
+            "linkId": row[1],
+            "userId": row[2],
+            "projectId": row[3],
+            "type": row[4],
+            "revenue": row[5],
+            "currency": row[6],
+            "partnerId": row[7],
+            "metadata": _json_load(row[8], None),
+            "createdAt": _ts(row[9]),
+        }
+
+    async def create_link_conversion(self, user_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+        self._ensure_connected()
+        now = int(datetime.now().timestamp())
+        conversion_id = str(uuid.uuid4())
+        await self.db_client.execute(
+            """
+            INSERT INTO LinkConversion (id, linkId, userId, projectId, type, revenue, currency, partnerId, metadata, createdAt)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            [
+                conversion_id,
+                payload["linkId"],
+                user_id,
+                payload.get("projectId"),
+                payload["type"],
+                payload.get("revenue"),
+                payload.get("currency"),
+                payload.get("partnerId"),
+                _json_dump(payload.get("metadata")),
+                now,
+            ],
+        )
+        return await self.get_link_conversion(user_id, conversion_id)
+
+    async def get_link_conversion(self, user_id: str, conversion_id: str) -> dict[str, Any] | None:
+        self._ensure_connected()
+        rs = await self.db_client.execute(
+            "SELECT id, linkId, userId, projectId, type, revenue, currency, partnerId, metadata, createdAt FROM LinkConversion WHERE id = ? AND userId = ? LIMIT 1",
+            [conversion_id, user_id],
+        )
+        if not rs.rows:
+            return None
+        return self._conversion_from_row(rs.rows[0])
+
+    async def list_link_conversions(self, user_id: str, link_id: str, limit: int = 100, offset: int = 0) -> list[dict[str, Any]]:
+        self._ensure_connected()
+        rs = await self.db_client.execute(
+            """
+            SELECT id, linkId, userId, projectId, type, revenue, currency, partnerId, metadata, createdAt
+            FROM LinkConversion
+            WHERE linkId = ? AND userId = ?
+            ORDER BY createdAt DESC
+            LIMIT ? OFFSET ?
+            """,
+            [link_id, user_id, limit, offset],
+        )
+        return [self._conversion_from_row(row) for row in rs.rows]
+
+    async def get_link_conversion_summary(self, user_id: str, link_id: str) -> dict[str, Any]:
+        self._ensure_connected()
+        total = await self.db_client.execute(
+            "SELECT COUNT(*) FROM LinkConversion WHERE linkId = ? AND userId = ?",
+            [link_id, user_id],
+        )
+        total_count = total.rows[0][0] if total.rows else 0
+        revenue = await self.db_client.execute(
+            "SELECT COALESCE(SUM(revenue), 0) FROM LinkConversion WHERE linkId = ? AND userId = ?",
+            [link_id, user_id],
+        )
+        total_revenue = revenue.rows[0][0] if revenue.rows else 0
+        by_type = await self.db_client.execute(
+            "SELECT type, COUNT(*) as cnt, COALESCE(SUM(revenue), 0) as rev FROM LinkConversion WHERE linkId = ? AND userId = ? GROUP BY type",
+            [link_id, user_id],
+        )
+        return {
+            "totalConversions": total_count,
+            "totalRevenue": total_revenue or 0,
+            "byType": [{"type": r[0], "count": r[1], "revenue": r[2] or 0} for r in by_type.rows],
+        }
+
+    # ─── UTM Templates ─────────────────────────────────────────
+
+    async def ensure_utm_template_table(self) -> None:
+        self._ensure_connected()
+        await self.db_client.execute(
+            """
+            CREATE TABLE IF NOT EXISTS UtmTemplate (
+                id TEXT PRIMARY KEY NOT NULL,
+                userId TEXT NOT NULL,
+                projectId TEXT,
+                name TEXT NOT NULL,
+                utmSource TEXT,
+                utmMedium TEXT,
+                utmCampaign TEXT,
+                utmTerm TEXT,
+                utmContent TEXT,
+                createdAt INTEGER NOT NULL,
+                updatedAt INTEGER NOT NULL
+            )
+            """
+        )
+        try:
+            await self.db_client.execute(
+                "CREATE INDEX IF NOT EXISTS idx_utm_template_user ON UtmTemplate(userId)"
+            )
+        except Exception:
+            pass
+
+    def _utm_template_from_row(self, row: tuple[Any, ...]) -> dict[str, Any]:
+        return {
+            "id": row[0],
+            "userId": row[1],
+            "projectId": row[2],
+            "name": row[3],
+            "utmSource": row[4],
+            "utmMedium": row[5],
+            "utmCampaign": row[6],
+            "utmTerm": row[7],
+            "utmContent": row[8],
+            "createdAt": _ts(row[9]),
+            "updatedAt": _ts(row[10]),
+        }
+
+    async def list_utm_templates(self, user_id: str, project_id: str | None = None) -> list[dict[str, Any]]:
+        self._ensure_connected()
+        query = "SELECT id, userId, projectId, name, utmSource, utmMedium, utmCampaign, utmTerm, utmContent, createdAt, updatedAt FROM UtmTemplate WHERE userId = ?"
+        params: list[Any] = [user_id]
+        if project_id is not None:
+            query += " AND projectId = ?"
+            params.append(project_id)
+        query += " ORDER BY createdAt DESC"
+        rs = await self.db_client.execute(query, params)
+        return [self._utm_template_from_row(row) for row in rs.rows]
+
+    async def get_utm_template(self, user_id: str, template_id: str) -> dict[str, Any] | None:
+        self._ensure_connected()
+        rs = await self.db_client.execute(
+            "SELECT id, userId, projectId, name, utmSource, utmMedium, utmCampaign, utmTerm, utmContent, createdAt, updatedAt FROM UtmTemplate WHERE id = ? AND userId = ? LIMIT 1",
+            [template_id, user_id],
+        )
+        if not rs.rows:
+            return None
+        return self._utm_template_from_row(rs.rows[0])
+
+    async def create_utm_template(self, user_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+        self._ensure_connected()
+        now = int(datetime.now().timestamp())
+        template_id = str(uuid.uuid4())
+        await self.db_client.execute(
+            """
+            INSERT INTO UtmTemplate (id, userId, projectId, name, utmSource, utmMedium, utmCampaign, utmTerm, utmContent, createdAt, updatedAt)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            [
+                template_id,
+                user_id,
+                payload.get("projectId"),
+                payload["name"],
+                payload.get("utmSource"),
+                payload.get("utmMedium"),
+                payload.get("utmCampaign"),
+                payload.get("utmTerm"),
+                payload.get("utmContent"),
+                now,
+                now,
+            ],
+        )
+        template = await self.get_utm_template(user_id, template_id)
+        if not template:
+            raise RuntimeError("Failed to create UTM template")
+        return template
+
+    async def update_utm_template(self, user_id: str, template_id: str, payload: dict[str, Any]) -> dict[str, Any] | None:
+        self._ensure_connected()
+        existing = await self.get_utm_template(user_id, template_id)
+        if not existing:
+            return None
+        now = int(datetime.now().timestamp())
+        fields: list[str] = ["updatedAt = ?"]
+        params: list[Any] = [now]
+        for key, column in (
+            ("name", "name"),
+            ("utmSource", "utmSource"),
+            ("utmMedium", "utmMedium"),
+            ("utmCampaign", "utmCampaign"),
+            ("utmTerm", "utmTerm"),
+            ("utmContent", "utmContent"),
+        ):
+            if key in payload:
+                fields.append(f"{column} = ?")
+                params.append(payload[key])
+        params.extend([template_id, user_id])
+        await self.db_client.execute(
+            f"UPDATE UtmTemplate SET {', '.join(fields)} WHERE id = ? AND userId = ?",
+            params,
+        )
+        return await self.get_utm_template(user_id, template_id)
+
+    async def delete_utm_template(self, user_id: str, template_id: str) -> bool:
+        self._ensure_connected()
+        rs = await self.db_client.execute(
+            "DELETE FROM UtmTemplate WHERE id = ? AND userId = ?",
+            [template_id, user_id],
+        )
+        return rs.rows_affected > 0
+
 
 user_data_store = UserDataStore()

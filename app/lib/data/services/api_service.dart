@@ -23,6 +23,8 @@ import '../models/email_source.dart';
 import '../models/feedback_entry.dart';
 import '../models/idea.dart';
 import '../models/link_click.dart';
+import '../models/link_webhook.dart';
+import '../models/utm_template.dart';
 import '../models/offline_sync.dart';
 import '../models/openrouter_credential.dart';
 import '../models/persona.dart';
@@ -5917,6 +5919,206 @@ class ApiService {
 
   Future<bool> deleteLinkVariant(String variantId) async {
     final response = await _dio.delete('/api/links/variants/$variantId');
+    final data = response.data;
+    if (data is Map && data['success'] == true) {
+      return true;
+    }
+    return false;
+  }
+
+  // ─── Link Webhooks ─────────────────────────────────────────
+
+  Future<List<LinkWebhook>> fetchLinkWebhooks({String? projectId}) async {
+    final response = await _dio.get(
+      '/api/webhooks/links',
+      queryParameters: _compactMap({'projectId': projectId}),
+    );
+    final data = response.data;
+    if (data is! List) {
+      throw const ApiException(
+        ApiErrorType.invalidResponse,
+        'Invalid link webhooks response from FastAPI.',
+      );
+    }
+    return data
+        .map((json) => LinkWebhook.fromJson(json as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<LinkWebhook> createLinkWebhook({
+    required String url,
+    String? projectId,
+    List<String> events = const ['link.clicked'],
+    bool enabled = true,
+    String? secret,
+  }) async {
+    final response = await _dio.post(
+      '/api/webhooks/links',
+      data: _compactMap({
+        'url': url,
+        'projectId': projectId,
+        'events': events,
+        'enabled': enabled,
+        if (secret != null) 'secret': secret,
+      }),
+    );
+    return LinkWebhook.fromJson(_asMap(response.data));
+  }
+
+  Future<LinkWebhook> updateLinkWebhook(
+    String webhookId,
+    Map<String, dynamic> data,
+  ) async {
+    final response = await _dio.patch(
+      '/api/webhooks/links/$webhookId',
+      data: data,
+    );
+    return LinkWebhook.fromJson(_asMap(response.data));
+  }
+
+  Future<bool> deleteLinkWebhook(String webhookId) async {
+    final response = await _dio.delete('/api/webhooks/links/$webhookId');
+    final data = response.data;
+    if (data is Map && data['success'] == true) {
+      return true;
+    }
+    return false;
+  }
+
+  Future<List<LinkWebhookDelivery>> fetchLinkWebhookDeliveries(
+    String webhookId, {
+    int limit = 100,
+    int offset = 0,
+  }) async {
+    final response = await _dio.get(
+      '/api/webhooks/links/$webhookId/deliveries',
+      queryParameters: _compactMap({'limit': limit, 'offset': offset}),
+    );
+    final data = response.data;
+    if (data is! List) {
+      throw const ApiException(
+        ApiErrorType.invalidResponse,
+        'Invalid webhook deliveries response from FastAPI.',
+      );
+    }
+    return data
+        .map((json) => LinkWebhookDelivery.fromJson(json as Map<String, dynamic>))
+        .toList();
+  }
+
+  // ─── Link Conversions ──────────────────────────────────────
+
+  Future<LinkConversion> createLinkConversion({
+    required String linkId,
+    required String type,
+    double? revenue,
+    String? currency,
+    String? partnerId,
+    Map<String, dynamic>? metadata,
+  }) async {
+    final response = await _dio.post(
+      '/api/links/conversions',
+      data: _compactMap({
+        'linkId': linkId,
+        'type': type,
+        'revenue': revenue,
+        'currency': currency,
+        'partnerId': partnerId,
+        'metadata': metadata,
+      }),
+    );
+    return LinkConversion.fromJson(_asMap(response.data));
+  }
+
+  Future<List<LinkConversion>> fetchLinkConversions(
+    String linkId, {
+    int limit = 100,
+    int offset = 0,
+  }) async {
+    final response = await _dio.get(
+      '/api/links/conversions',
+      queryParameters: _compactMap({
+        'linkId': linkId,
+        'limit': limit,
+        'offset': offset,
+      }),
+    );
+    final data = response.data;
+    if (data is! List) {
+      throw const ApiException(
+        ApiErrorType.invalidResponse,
+        'Invalid link conversions response from FastAPI.',
+      );
+    }
+    return data
+        .map((json) => LinkConversion.fromJson(json as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<Map<String, dynamic>> fetchLinkConversionSummary(String linkId) async {
+    final response = await _dio.get(
+      '/api/links/conversions/summary',
+      queryParameters: {'linkId': linkId},
+    );
+    return _asMap(response.data);
+  }
+
+  // ─── UTM Templates ────────────────────────────────────────
+
+  Future<List<UtmTemplate>> fetchUtmTemplates({String? projectId}) async {
+    final response = await _dio.get(
+      '/api/utm',
+      queryParameters: _compactMap({'projectId': projectId}),
+    );
+    final data = response.data;
+    if (data is! List) {
+      throw const ApiException(
+        ApiErrorType.invalidResponse,
+        'Invalid UTM templates response from FastAPI.',
+      );
+    }
+    return data
+        .map((json) => UtmTemplate.fromJson(json as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<UtmTemplate> createUtmTemplate({
+    required String name,
+    String? projectId,
+    String? utmSource,
+    String? utmMedium,
+    String? utmCampaign,
+    String? utmTerm,
+    String? utmContent,
+  }) async {
+    final response = await _dio.post(
+      '/api/utm',
+      data: _compactMap({
+        'name': name,
+        'projectId': projectId,
+        'utmSource': utmSource,
+        'utmMedium': utmMedium,
+        'utmCampaign': utmCampaign,
+        'utmTerm': utmTerm,
+        'utmContent': utmContent,
+      }),
+    );
+    return UtmTemplate.fromJson(_asMap(response.data));
+  }
+
+  Future<UtmTemplate> updateUtmTemplate(
+    String templateId,
+    Map<String, dynamic> data,
+  ) async {
+    final response = await _dio.patch(
+      '/api/utm/$templateId',
+      data: data,
+    );
+    return UtmTemplate.fromJson(_asMap(response.data));
+  }
+
+  Future<bool> deleteUtmTemplate(String templateId) async {
+    final response = await _dio.delete('/api/utm/$templateId');
     final data = response.data;
     if (data is Map && data['success'] == true) {
       return true;

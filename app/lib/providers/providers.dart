@@ -26,6 +26,8 @@ import '../data/models/creator_profile.dart';
 import '../data/models/feedback_entry.dart';
 import '../data/models/email_source.dart';
 import '../data/models/idea.dart';
+import '../data/models/link_webhook.dart';
+import '../data/models/utm_template.dart';
 import '../data/models/offline_sync.dart';
 import '../data/models/openrouter_credential.dart';
 import '../data/models/persona.dart';
@@ -4169,6 +4171,36 @@ final affiliationsProvider = FutureProvider<List<AffiliateLink>>((ref) async {
     return const <AffiliateLink>[];
   }
   return api.fetchAffiliations(projectId: activeProjectId);
+});
+
+final linkWebhooksProvider = FutureProvider<List<LinkWebhook>>((ref) async {
+  final api = ref.read(apiServiceProvider);
+  final activeProjectId = ref.watch(activeProjectIdProvider);
+  if (activeProjectId == null) {
+    return const <LinkWebhook>[];
+  }
+  return api.fetchLinkWebhooks(projectId: activeProjectId);
+});
+
+final linkWebhookDeliveriesProvider =
+    FutureProvider.family<List<LinkWebhookDelivery>, String>((ref, webhookId) async {
+  final api = ref.read(apiServiceProvider);
+  return api.fetchLinkWebhookDeliveries(webhookId);
+});
+
+final utmTemplatesProvider = FutureProvider<List<UtmTemplate>>((ref) async {
+  final api = ref.read(apiServiceProvider);
+  final activeProjectId = ref.watch(activeProjectIdProvider);
+  if (activeProjectId == null) {
+    return const <UtmTemplate>[];
+  }
+  return api.fetchUtmTemplates(projectId: activeProjectId);
+});
+
+final linkConversionsProvider =
+    FutureProvider.family<List<LinkConversion>, String>((ref, linkId) async {
+  final api = ref.read(apiServiceProvider);
+  return api.fetchLinkConversions(linkId);
 });
 
 final lastNarrativeProvider = StateProvider<NarrativeSynthesisResult?>(

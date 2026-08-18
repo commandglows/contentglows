@@ -92,6 +92,9 @@ link management
   -> affiliation form saves slug, expiresAt, status through /api/affiliations
   -> public short links /r/{slug} are served by lab (not the app shell)
   -> click analytics and variant CRUD are authenticated /api/links/* routes
+  -> webhook CRUD is available through /api/webhooks/links
+  -> conversions are recorded through /api/links/conversions
+  -> UTM templates are managed through /api/utm
 
 editor correction surface
   -> /editor/:id/video loads canonical timeline draft
@@ -114,6 +117,9 @@ editor correction surface
 - `AffiliateLink.slug` must be unique per user; the app should normalize to lowercase before save and display the canonical `/r/{slug}` short link when present.
 - `expiresAt` is enforced by the public redirect endpoint; the app must treat an expired link as non-tappable and surface an expired badge.
 - Public link redirects (`/r/{slug}`) are browser-facing and not gated by the app shell; click logging and variant selection are backend-only.
+- Webhook deliveries are backend-only; the app should not bypass `/api/webhooks/links` to mutate delivery records.
+- Conversion events are backend-authoritative for revenue attribution; the app can create them but must not recalculate totals locally.
+- UTM templates are optional campaign helpers; they do not automatically rewrite existing link destinations unless explicitly applied.
 
 ## Failure Modes
 
