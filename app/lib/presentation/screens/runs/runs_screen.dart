@@ -118,7 +118,7 @@ class _RunCard extends StatelessWidget {
             vertical: AppSpacing.xxs,
           ),
           decoration: BoxDecoration(
-            color: statusColor.withValues(alpha: 0.15),
+            color: statusColor.withValues(alpha: AppOpacity.medium),
             borderRadius: BorderRadius.circular(AppRadii.sm),
           ),
           child: Text(status,

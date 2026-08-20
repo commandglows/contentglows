@@ -68,6 +68,6 @@
 
 | Pri | Task | Status |
 |-----|------|--------|
-| 🔴 | Migrer les 223 valeurs CSS site hardcodées de typographie, spacing, radius et motion vers les variables générées depuis `tools/design-tokens/contentglows_theme.json` | 🔄 in progress |
-| 🟠 | Remplacer les couleurs directes restantes (`white`, `rgba`, hex affichés hors cas de documentation) par variables sémantiques | 📋 todo |
-| 🟠 | Ajouter des variables CSS mobile-first compactes pour sections, cards, listes, CTA et pages article/blog | 📋 todo |
+| 🔴 | Migrer la baseline historique de 223 valeurs CSS de typographie, spacing, radius et motion vers la source partagée | ✅ implementation authored — unverified (2026-08-20); timings de chorégraphie centralisés |
+| 🟠 | Remplacer les couleurs UI directes restantes par variables sémantiques; garder les valeurs brutes affichées par la page design comme documentation | ✅ implementation authored — unverified (2026-08-20) |
+| 🟠 | Consommer les variables CSS mobile-first compactes pour sections, cards, listes, CTA et pages article/blog | ✅ implementation authored — unverified; preuve responsive différée |

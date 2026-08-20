@@ -145,22 +145,25 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.compact,
+              vertical: AppSpacing.xxs,
+            ),
             decoration: BoxDecoration(
-              color: typeColor.withAlpha(40),
-              borderRadius: BorderRadius.circular(12),
+              color: typeColor.withAlpha(AppAlpha.tint),
+              borderRadius: BorderRadius.circular(AppRadii.md),
             ),
             child: Text(
               item.typeLabel,
-              style: TextStyle(color: typeColor, fontSize: 13),
+              style: TextStyle(color: typeColor, fontSize: AppText.compact),
             ),
           ),
           if (item.projectName != null) ...[
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.xs),
             Text(
               item.projectName!,
               style: TextStyle(
-                fontSize: 13,
+                fontSize: AppText.compact,
                 color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
@@ -222,12 +225,17 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
       children: [
         // Title
         Padding(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.lg,
+            AppSpacing.md,
+            AppSpacing.lg,
+            AppSpacing.xs,
+          ),
           child: _isEditing
               ? TextField(
                   controller: _titleController,
                   style: TextStyle(
-                    fontSize: 22,
+                    fontSize: AppText.heading,
                     fontWeight: FontWeight.bold,
                     color: theme.colorScheme.onSurface,
                   ),
@@ -241,7 +249,7 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
               : Text(
                   _titleController.text,
                   style: TextStyle(
-                    fontSize: 22,
+                    fontSize: AppText.heading,
                     fontWeight: FontWeight.bold,
                     color: theme.colorScheme.onSurface,
                   ),
@@ -249,30 +257,32 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
         ),
         // Channels
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           child: Row(
             children: [
               Icon(
                 Icons.send_rounded,
-                size: 14,
+                size: AppSizes.iconSm,
                 color: theme.colorScheme.onSurfaceVariant,
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.xs),
               ...item.channels.map(
                 (ch) => Container(
-                  margin: const EdgeInsets.only(right: 6),
+                  margin: const EdgeInsets.only(right: AppSpacing.xxs2),
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 3,
+                    horizontal: AppSpacing.xs,
+                    vertical: AppSpacing.micro,
                   ),
                   decoration: BoxDecoration(
-                    color: palette.surface.withValues(alpha: 0.75),
-                    borderRadius: BorderRadius.circular(8),
+                    color: palette.surface.withValues(
+                      alpha: AppOpacity.threeQuarter,
+                    ),
+                    borderRadius: BorderRadius.circular(AppRadii.sm),
                   ),
                   child: Text(
                     ch.name,
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: AppText.xs11,
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
@@ -284,22 +294,22 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
         // Format-specific metadata bar
         if (_item != null) _buildFormatMetaBar(_item!),
         if (_auditFuture != null) _buildAuditPanel(),
-        const SizedBox(height: 12),
-        Divider(height: 1, color: theme.colorScheme.outlineVariant),
+        const SizedBox(height: AppSpacing.sm),
+        Divider(height: AppSpacing.thin, color: theme.colorScheme.outlineVariant),
         if (_isEditing) _buildToolbar(),
         // Body content
         Expanded(
           child: _isEditing
               ? Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(AppSpacing.lg),
                   child: TextField(
                     controller: _bodyController,
                     maxLines: null,
                     expands: true,
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: AppText.medium,
                       color: theme.colorScheme.onSurface,
-                      height: 1.7,
+                      height: AppLineHeight.spacious,
                     ),
                     decoration: InputDecoration(
                       hintText: context.tr('Content body...'),
@@ -310,45 +320,49 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
                   ),
                 )
               : Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(AppSpacing.lg),
                   child: Markdown(
                     data: _bodyController.text,
                     selectable: true,
                     styleSheet: MarkdownStyleSheet(
                       p: TextStyle(
-                        fontSize: 15,
+                        fontSize: AppText.medium,
                         color: theme.colorScheme.onSurface,
-                        height: 1.7,
+                        height: AppLineHeight.spacious,
                       ),
                       h1: TextStyle(
-                        fontSize: 24,
+                        fontSize: AppText.xxxl,
                         fontWeight: FontWeight.bold,
                         color: theme.colorScheme.onSurface,
                       ),
                       h2: TextStyle(
-                        fontSize: 20,
+                        fontSize: AppText.xxl,
                         fontWeight: FontWeight.bold,
                         color: theme.colorScheme.onSurface,
                       ),
                       h3: TextStyle(
-                        fontSize: 17,
+                        fontSize: AppText.tall,
                         fontWeight: FontWeight.w600,
                         color: theme.colorScheme.onSurface,
                       ),
                       code: TextStyle(
-                        backgroundColor: palette.surface.withValues(alpha: 0.8),
+                        backgroundColor: palette.surface.withValues(
+                          alpha: AppOpacity.prominent,
+                        ),
                         color: AppTheme.colorForContentType('Article'),
-                        fontSize: 14,
+                        fontSize: AppText.sm,
                       ),
                       codeblockDecoration: BoxDecoration(
-                        color: palette.surface.withValues(alpha: 0.75),
-                        borderRadius: BorderRadius.circular(8),
+                        color: palette.surface.withValues(
+                          alpha: AppOpacity.threeQuarter,
+                        ),
+                        borderRadius: BorderRadius.circular(AppRadii.sm),
                       ),
                       blockquoteDecoration: BoxDecoration(
                         border: Border(
                           left: BorderSide(
                             color: theme.colorScheme.outlineVariant,
-                            width: 3,
+                            width: AppStroke.strong,
                           ),
                         ),
                       ),
@@ -366,9 +380,12 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
     final palette = AppTheme.paletteOf(context);
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
+      ),
       decoration: BoxDecoration(
-        color: palette.surface.withValues(alpha: 0.75),
+        color: palette.surface.withValues(alpha: AppOpacity.threeQuarter),
         border: Border(
           bottom: BorderSide(color: theme.colorScheme.outlineVariant),
         ),
@@ -432,11 +449,11 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
     required VoidCallback onTap,
   }) {
     return Padding(
-      padding: const EdgeInsets.only(right: 6),
+      padding: const EdgeInsets.only(right: AppSpacing.xxs2),
       child: IconButton(
         tooltip: tooltip,
         visualDensity: VisualDensity.compact,
-        icon: Icon(icon, size: 20),
+        icon: Icon(icon, size: AppSizes.iconXl),
         onPressed: onTap,
       ),
     );
@@ -479,32 +496,32 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm),
             Container(
-              width: 40,
-              height: 4,
+              width: AppSizes.handle,
+              height: AppSpacing.xxs,
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.outlineVariant,
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(AppRadii.xxs),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               context.tr('Insert link'),
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm),
             Flexible(
               child: ListView(
                 shrinkWrap: true,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                 children: [
                   if (affiliations.isNotEmpty) ...[
                     Text(
                       context.tr('Affiliate links'),
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.xs),
                     ...affiliations.map((link) {
                       final display = link.slug != null && link.slug!.isNotEmpty
                           ? '/r/${link.slug}'
@@ -518,7 +535,7 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
                         ),
                         trailing: Icon(
                           Icons.link_rounded,
-                          size: 18,
+                          size: AppSizes.iconLarge,
                           color: Theme.of(context).colorScheme.primary,
                         ),
                         onTap: () {
@@ -529,13 +546,13 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
                         },
                       );
                     }),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.md),
                   ],
                   Text(
                     context.tr('Custom URL'),
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.xs),
                   TextField(
                     autofocus: true,
                     decoration: InputDecoration(
@@ -548,7 +565,7 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
                       }
                     },
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                 ],
               ),
             ),
@@ -657,8 +674,12 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
     if (chips.isEmpty) return const SizedBox.shrink();
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Wrap(spacing: 8, runSpacing: 4, children: chips),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      child: Wrap(
+        spacing: AppSpacing.xs,
+        runSpacing: AppSpacing.xxs,
+        children: chips,
+      ),
     );
   }
 
@@ -666,21 +687,28 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
     final theme = Theme.of(context);
     final palette = AppTheme.paletteOf(context);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.compact,
+        vertical: AppSpacing.fine,
+      ),
       decoration: BoxDecoration(
-        color: palette.surface.withValues(alpha: 0.76),
-        borderRadius: BorderRadius.circular(10),
+        color: palette.surface.withValues(alpha: AppOpacity.strong76),
+        borderRadius: BorderRadius.circular(AppRadii.narrow),
         border: Border.all(color: palette.borderSubtle),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 13, color: theme.colorScheme.onSurfaceVariant),
-          const SizedBox(width: 5),
+          Icon(
+            icon,
+            size: AppSizes.iconCompact,
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+          const SizedBox(width: AppSpacing.fine),
           Text(
             label,
             style: TextStyle(
-              fontSize: 12,
+              fontSize: AppText.xs,
               color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
@@ -692,7 +720,12 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
   Widget _buildAuditPanel() {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.sm,
+        AppSpacing.lg,
+        0,
+      ),
       child: FutureBuilder<ContentAuditTrail>(
         future: _auditFuture,
         builder: (context, snapshot) {
@@ -701,11 +734,13 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
               child: Row(
                 children: [
                   const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    width: AppSizes.icon,
+                    height: AppSizes.icon,
+                    child: CircularProgressIndicator(
+                      strokeWidth: AppStroke.medium,
+                    ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: AppSpacing.compact),
                   Text(
                     context.tr('Loading audit trail...'),
                     style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
@@ -789,10 +824,10 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
     final palette = AppTheme.paletteOf(context);
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(AppSpacing.contentInset),
       decoration: BoxDecoration(
-        color: palette.surface.withValues(alpha: 0.72),
-        borderRadius: BorderRadius.circular(14),
+        color: palette.surface.withValues(alpha: AppOpacity.strong72),
+        borderRadius: BorderRadius.circular(AppRadii.badge),
         border: Border.all(color: palette.borderSubtle),
       ),
       child: child,
@@ -802,12 +837,15 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
   Widget _auditSectionTitle(String title) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.only(top: 4, bottom: 8),
+      padding: const EdgeInsets.only(
+        top: AppSpacing.xxs,
+        bottom: AppSpacing.xs,
+      ),
       child: Text(
         title,
         style: TextStyle(
           color: theme.colorScheme.onSurface,
-          fontSize: 12,
+          fontSize: AppText.xs,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -848,11 +886,11 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
     final theme = Theme.of(context);
     final palette = AppTheme.paletteOf(context);
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.only(bottom: AppSpacing.xs),
+      padding: const EdgeInsets.all(AppSpacing.compact),
       decoration: BoxDecoration(
-        color: palette.surface.withValues(alpha: 0.7),
-        borderRadius: BorderRadius.circular(12),
+        color: palette.surface.withValues(alpha: AppOpacity.strong),
+        borderRadius: BorderRadius.circular(AppRadii.md),
         border: Border.all(color: palette.borderSubtle),
       ),
       child: Column(
@@ -862,15 +900,15 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 28,
-                height: 28,
+                width: AppSizes.iconHero,
+                height: AppSizes.iconHero,
                 decoration: BoxDecoration(
-                  color: accent.withAlpha(30),
-                  borderRadius: BorderRadius.circular(8),
+                  color: accent.withAlpha(AppAlpha.glow),
+                  borderRadius: BorderRadius.circular(AppRadii.sm),
                 ),
-                child: Icon(icon, size: 16, color: accent),
+                child: Icon(icon, size: AppSizes.icon, color: accent),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: AppSpacing.compact),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -879,16 +917,16 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
                       title,
                       style: TextStyle(
                         color: theme.colorScheme.onSurface,
-                        fontSize: 13,
+                        fontSize: AppText.compact,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 3),
+                    const SizedBox(height: AppSpacing.micro),
                     Text(
                       '${actor.actorLabel} (${actor.actorType}:${actor.actorId})',
                       style: TextStyle(
                         color: theme.colorScheme.onSurfaceVariant,
-                        fontSize: 11,
+                        fontSize: AppText.xs11,
                       ),
                     ),
                   ],
@@ -898,19 +936,19 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
                 date,
                 style: TextStyle(
                   color: theme.colorScheme.onSurfaceVariant,
-                  fontSize: 11,
+                  fontSize: AppText.xs11,
                 ),
               ),
             ],
           ),
           if (note != null && note.trim().isNotEmpty) ...[
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               note.trim(),
               style: TextStyle(
                 color: theme.colorScheme.onSurfaceVariant,
-                fontSize: 12,
-                height: 1.4,
+                fontSize: AppText.xs,
+                height: AppLineHeight.body,
               ),
             ),
           ],
@@ -941,7 +979,9 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
       SnackBar(
         content: Text(context.tr('Audit trail copied')),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadii.md),
+        ),
       ),
     );
   }
@@ -952,10 +992,10 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
     final placementState = ref.watch(socialPlacementProvider(item.id));
     return Container(
       padding: EdgeInsets.fromLTRB(
-        20,
-        12,
-        20,
-        12 + MediaQuery.of(context).padding.bottom,
+        AppSpacing.lg,
+        AppSpacing.sm,
+        AppSpacing.lg,
+        AppSpacing.sm + MediaQuery.of(context).padding.bottom,
       ),
       decoration: BoxDecoration(
         color: palette.elevatedSurface,
@@ -973,15 +1013,19 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
               label: Text(context.tr('Skip')),
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppTheme.rejectColor,
-                side: BorderSide(color: AppTheme.rejectColor.withAlpha(100)),
-                padding: const EdgeInsets.symmetric(vertical: 14),
+                side: BorderSide(
+                  color: AppTheme.rejectColor.withAlpha(AppAlpha.strong100),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppSpacing.contentInset,
+                ),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(AppRadii.badge),
                 ),
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm),
           // Publish button
           Expanded(
             flex: 2,
@@ -997,9 +1041,11 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
               ),
               style: FilledButton.styleFrom(
                 backgroundColor: AppTheme.approveColor,
-                padding: const EdgeInsets.symmetric(vertical: 14),
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppSpacing.contentInset,
+                ),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(AppRadii.badge),
                 ),
               ),
             ),
@@ -1035,7 +1081,7 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
               'Changes are queued for sync. Publishing is blocked until the full body is saved online.',
             ),
             scope: 'editor.save_body_queued',
-            backgroundColor: AppTheme.warningColor.withAlpha(200),
+            backgroundColor: AppTheme.warningColor.withAlpha(AppAlpha.text),
           );
           return;
         }
@@ -1058,7 +1104,7 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
           error: error,
           stackTrace: stackTrace,
           contextData: {'contentId': item.id},
-          backgroundColor: AppTheme.warningColor.withAlpha(200),
+          backgroundColor: AppTheme.warningColor.withAlpha(AppAlpha.text),
         );
         return;
       }
@@ -1081,16 +1127,16 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
         ref,
         message: result.message,
         scope: 'editor.publish',
-        backgroundColor: resultColor.withAlpha(200),
+        backgroundColor: resultColor.withAlpha(AppAlpha.text),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(result.message),
-          backgroundColor: resultColor.withAlpha(200),
+          backgroundColor: resultColor.withAlpha(AppAlpha.text),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(AppRadii.md),
           ),
         ),
       );
@@ -1105,9 +1151,11 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(context.tr('Skipped: {title}', {'title': item.title})),
-        backgroundColor: AppTheme.rejectColor.withAlpha(200),
+        backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadii.md),
+        ),
       ),
     );
     context.pop();
@@ -1148,7 +1196,12 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
       builder: (_) => FractionallySizedBox(
         heightFactor: 0.9,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.md,
+            AppSpacing.sm,
+            AppSpacing.md,
+            AppSpacing.md,
+          ),
           child: ProjectAssetPicker(
             targetType: 'content',
             targetId: item.id,
@@ -1165,7 +1218,7 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
                   ),
                   behavior: SnackBarBehavior.floating,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(AppRadii.md),
                   ),
                 ),
               );

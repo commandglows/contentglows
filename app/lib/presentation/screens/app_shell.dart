@@ -190,7 +190,9 @@ class _AppShellState extends ConsumerState<AppShell> {
               ),
               VerticalDivider(
                 width: 1,
-                color: colorScheme.outlineVariant.withValues(alpha: 0.3),
+                color: colorScheme.outlineVariant.withValues(
+                  alpha: AppOpacity.emphasis,
+                ),
               ),
               Expanded(
                 child: _ShellContent(
@@ -526,8 +528,8 @@ class _SideNavItem extends StatelessWidget {
         ? colorScheme.primary
         : colorScheme.onSurfaceVariant;
     final bgColor = isSelected
-        ? colorScheme.primary.withValues(alpha: 0.12)
-        : colorScheme.surface.withValues(alpha: 0);
+        ? colorScheme.primary.withValues(alpha: AppOpacity.soft)
+        : colorScheme.surface.withValues(alpha: AppOpacity.zero);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.xxsHalf),
@@ -547,7 +549,7 @@ class _SideNavItem extends StatelessWidget {
                 Badge(
                   isLabelVisible: badgeCount != null,
                   label: badgeCount != null ? Text('$badgeCount') : null,
-                  child: Icon(icon, color: color, size: 20),
+                  child: Icon(icon, color: color, size: AppSizes.iconXl),
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
@@ -608,7 +610,9 @@ class _BottomNav extends StatelessWidget {
         color: colorScheme.surface,
         border: Border(
           top: BorderSide(
-            color: colorScheme.outlineVariant.withValues(alpha: 0.3),
+            color: colorScheme.outlineVariant.withValues(
+              alpha: AppOpacity.emphasis,
+            ),
           ),
         ),
       ),
@@ -678,8 +682,10 @@ class _BottomNav extends StatelessWidget {
                     height: AppSpacing.xxs,
                     margin: const EdgeInsets.only(bottom: AppSpacing.sm),
                     decoration: BoxDecoration(
-                      color: colorScheme.outlineVariant.withValues(alpha: 0.5),
-                      borderRadius: BorderRadius.circular(AppSpacing.xxs),
+                      color: colorScheme.outlineVariant.withValues(
+                        alpha: AppOpacity.half,
+                      ),
+                      borderRadius: BorderRadius.circular(AppRadii.xxs),
                     ),
                   ),
                 ),
@@ -705,16 +711,20 @@ class _BottomNav extends StatelessWidget {
                     ),
                   ),
                   Wrap(
-                    spacing: 2,
-                    runSpacing: 2,
+                    spacing: AppSpacing.xxsHalf,
+                    runSpacing: AppSpacing.xxsHalf,
                     children: section.items.map((item) {
                       final isSelected = item.path == selectedPath;
                       final color = isSelected
                           ? colorScheme.primary
                           : colorScheme.onSurfaceVariant;
                       final bgColor = isSelected
-                          ? colorScheme.primary.withValues(alpha: 0.12)
-                          : colorScheme.surface.withValues(alpha: 0);
+                          ? colorScheme.primary.withValues(
+                              alpha: AppOpacity.soft,
+                            )
+                          : colorScheme.surface.withValues(
+                              alpha: AppOpacity.zero,
+                            );
                       return Material(
                         color: bgColor,
                         borderRadius: BorderRadius.circular(AppRadii.md),
@@ -730,7 +740,11 @@ class _BottomNav extends StatelessWidget {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(item.icon, color: color, size: 22),
+                                Icon(
+                                  item.icon,
+                                  color: color,
+                                  size: AppSizes.iconHeading,
+                                ),
                                 const SizedBox(height: AppSpacing.xxsHalf),
                                 Text(
                                   context.tr(item.label),
@@ -793,7 +807,7 @@ class _NavTab extends StatelessWidget {
             Badge(
               isLabelVisible: badgeCount != null,
               label: badgeCount != null ? Text('$badgeCount') : null,
-              child: Icon(icon, color: color, size: 24),
+              child: Icon(icon, color: color, size: AppSizes.iconXxl),
             ),
             const SizedBox(height: AppSpacing.xxs),
             Text(

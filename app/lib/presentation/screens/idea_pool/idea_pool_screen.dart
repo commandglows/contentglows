@@ -60,7 +60,12 @@ class IdeaPoolScreen extends ConsumerWidget {
                 // Status filter
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.md,
+                      AppSpacing.xs,
+                      AppSpacing.md,
+                      0,
+                    ),
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
@@ -70,7 +75,7 @@ class IdeaPoolScreen extends ConsumerWidget {
                               ? 'All'
                               : filter[0].toUpperCase() + filter.substring(1);
                           return Padding(
-                            padding: const EdgeInsets.only(right: 8),
+                            padding: const EdgeInsets.only(right: AppSpacing.xs),
                             child: FilterChip(
                               label: Text(context.tr(label)),
                               selected: selected,
@@ -86,7 +91,12 @@ class IdeaPoolScreen extends ConsumerWidget {
                 // Source filter
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.md,
+                      AppSpacing.xxs,
+                      AppSpacing.md,
+                      AppSpacing.xs,
+                    ),
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
@@ -102,7 +112,7 @@ class IdeaPoolScreen extends ConsumerWidget {
                                   updatedAt: DateTime.now(),
                                 ).sourceLabel;
                           return Padding(
-                            padding: const EdgeInsets.only(right: 8),
+                            padding: const EdgeInsets.only(right: AppSpacing.xs),
                             child: FilterChip(
                               label: Text(label),
                               selected: selected,
@@ -189,7 +199,12 @@ class _StatsRow extends StatelessWidget {
     final used = ideas.where((i) => i.status == 'used').length;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.md,
+        AppSpacing.md,
+        0,
+      ),
       child: Row(
         children: [
           _StatChip(
@@ -197,15 +212,15 @@ class _StatsRow extends StatelessWidget {
             value: '${ideas.length}',
             color: theme.colorScheme.onSurfaceVariant,
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.xs),
           _StatChip(label: 'Raw', value: '$raw', color: AppTheme.warningColor),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.xs),
           _StatChip(
             label: 'Enriched',
             value: '$enriched',
             color: AppTheme.approveColor,
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.xs),
           _StatChip(
             label: 'Used',
             value: '$used',
@@ -231,25 +246,25 @@ class _StatChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm, horizontal: AppSpacing.xs),
         decoration: BoxDecoration(
-          color: color.withAlpha(25),
-          borderRadius: BorderRadius.circular(12),
+          color: color.withAlpha(AppAlpha.low25),
+          borderRadius: BorderRadius.circular(AppRadii.md),
         ),
         child: Column(
           children: [
             Text(
               value,
               style: TextStyle(
-                fontSize: 20,
+                fontSize: AppText.xxl,
                 fontWeight: FontWeight.bold,
                 color: color,
               ),
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: AppSpacing.xxsHalf),
             Text(
               context.tr(label),
-              style: TextStyle(fontSize: 11, color: color.withAlpha(180)),
+              style: TextStyle(fontSize: AppText.xs11, color: color.withAlpha(AppAlpha.icon)),
             ),
           ],
         ),
@@ -283,9 +298,9 @@ class _IdeaCard extends StatelessWidget {
     final sourceColor = _sourceColor(idea.source, colorScheme);
 
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xxs),
       child: Padding(
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.all(AppSpacing.contentInset),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -302,20 +317,20 @@ class _IdeaCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.xs),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 3,
+                    horizontal: AppSpacing.xs,
+                    vertical: AppSpacing.micro,
                   ),
                   decoration: BoxDecoration(
-                    color: statusColor.withAlpha(30),
-                    borderRadius: BorderRadius.circular(8),
+                    color: statusColor.withAlpha(AppAlpha.glow),
+                    borderRadius: BorderRadius.circular(AppRadii.sm),
                   ),
                   child: Text(
                     idea.statusLabel,
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: AppText.xs11,
                       fontWeight: FontWeight.w600,
                       color: statusColor,
                     ),
@@ -323,11 +338,11 @@ class _IdeaCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.xs),
             // Metadata chips
             Wrap(
-              spacing: 8,
-              runSpacing: 6,
+              spacing: AppSpacing.xs,
+              runSpacing: AppSpacing.xxs2,
               children: [
                 _MetaChip(
                   icon: Icons.source_outlined,
@@ -373,24 +388,24 @@ class _IdeaCard extends StatelessWidget {
             ),
             // Tags
             if (idea.tags.isNotEmpty) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.xs),
               Wrap(
-                spacing: 4,
-                runSpacing: 4,
+                spacing: AppSpacing.xxs,
+                runSpacing: AppSpacing.xxs,
                 children: idea.tags.take(5).map((tag) {
                   return Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 2,
+                      horizontal: AppSpacing.xs,
+                      vertical: AppSpacing.xxsHalf,
                     ),
                     decoration: BoxDecoration(
-                      color: colorScheme.primary.withAlpha(20),
-                      borderRadius: BorderRadius.circular(6),
+                      color: colorScheme.primary.withAlpha(AppAlpha.subtle),
+                      borderRadius: BorderRadius.circular(AppRadii.compactControl),
                     ),
                     child: Text(
                       tag,
                       style: TextStyle(
-                        fontSize: 11,
+                        fontSize: AppText.xs11,
                         color: colorScheme.primary,
                       ),
                     ),
@@ -399,12 +414,12 @@ class _IdeaCard extends StatelessWidget {
               ),
             ],
             if (idea.source == 'search_console_feedback') ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.xs),
               _SearchConsoleEvidence(idea: idea),
             ],
             // Actions
             if (idea.status == 'raw' || idea.status == 'enriched') ...[
-              const SizedBox(height: 10),
+              const SizedBox(height: AppSpacing.compact),
               Row(
                 children: [
                   if (idea.status == 'enriched')
@@ -415,7 +430,7 @@ class _IdeaCard extends StatelessWidget {
                       onTap: () =>
                           onPrioritize((idea.priorityScore ?? 50) + 10),
                     ),
-                  if (idea.status == 'enriched') const SizedBox(width: 8),
+                  if (idea.status == 'enriched') const SizedBox(width: AppSpacing.xs),
                   if (idea.status == 'enriched')
                     _ActionButton(
                       icon: Icons.arrow_downward,
@@ -432,7 +447,7 @@ class _IdeaCard extends StatelessWidget {
                     color: colorScheme.onSurfaceVariant,
                     onTap: onDismiss,
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.xs),
                   _ActionButton(
                     icon: Icons.delete_outline,
                     label: 'Delete',
@@ -514,7 +529,7 @@ class _SearchConsoleEvidence extends StatelessWidget {
     if (chips.isEmpty) {
       return const SizedBox.shrink();
     }
-    return Wrap(spacing: 8, runSpacing: 6, children: chips.take(3).toList());
+    return Wrap(spacing: AppSpacing.xs, runSpacing: AppSpacing.xxs2, children: chips.take(3).toList());
   }
 }
 
@@ -533,9 +548,9 @@ class _MetaChip extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 13, color: color),
-        const SizedBox(width: 3),
-        Text(text, style: TextStyle(fontSize: 12, color: color)),
+        Icon(icon, size: AppSizes.iconCompact, color: color),
+        const SizedBox(width: AppStroke.strong),
+        Text(text, style: TextStyle(fontSize: AppText.xs, color: color)),
       ],
     );
   }
@@ -558,23 +573,23 @@ class _ActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(AppRadii.narrow),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        constraints: const BoxConstraints(minHeight: 44),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.compact),
+        constraints: const BoxConstraints(minHeight: AppSizes.touchTarget),
         decoration: BoxDecoration(
-          color: color.withAlpha(20),
-          borderRadius: BorderRadius.circular(10),
+          color: color.withAlpha(AppAlpha.subtle),
+          borderRadius: BorderRadius.circular(AppRadii.narrow),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 16, color: color),
-            const SizedBox(width: 6),
+            Icon(icon, size: AppSizes.icon, color: color),
+            const SizedBox(width: AppSpacing.xxs2),
             Text(
               context.tr(label),
               style: TextStyle(
-                fontSize: 13,
+                fontSize: AppText.compact,
                 fontWeight: FontWeight.w500,
                 color: color,
               ),
@@ -600,21 +615,21 @@ class _EmptyState extends StatelessWidget {
         children: [
           Icon(
             Icons.lightbulb_outline,
-            size: 64,
+            size: AppSizes.heroIcon,
             color: colorScheme.outlineVariant,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           Text(
             context.tr('No ideas yet'),
-            style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 16),
+            style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: AppText.base),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             context.tr(
               'Ideas from newsletters, SEO, Search Console,\ncompetitors and social listening will appear here.',
             ),
             textAlign: TextAlign.center,
-            style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 13),
+            style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: AppText.compact),
           ),
         ],
       ),

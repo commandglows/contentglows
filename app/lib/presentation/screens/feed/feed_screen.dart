@@ -112,10 +112,10 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
             onPressed: _isCreatingSourceDraft ? null : _createSourceDraft,
             icon: _isCreatingSourceDraft
                 ? const SizedBox(
-                    width: 22,
-                    height: 22,
+                    width: AppSizes.iconHeading,
+                    height: AppSizes.iconHeading,
                     child: CircularProgressIndicator(
-                      strokeWidth: 2.2,
+                      strokeWidth: AppStroke.loading,
                       color: AppTheme.approveColor,
                     ),
                   )
@@ -225,7 +225,9 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
       'wait' => ('WAIT', AppTheme.warningColor, Icons.hourglass_top_rounded),
       _ => (
         '',
-        Theme.of(context).colorScheme.surface.withValues(alpha: 0),
+        Theme.of(context).colorScheme.surface.withValues(
+          alpha: AppOpacity.zero,
+        ),
         Icons.circle,
       ),
     };
@@ -236,10 +238,12 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
           decoration: BoxDecoration(
             gradient: RadialGradient(
               colors: [
-                color.withAlpha(30),
-                Theme.of(context).colorScheme.surface.withValues(alpha: 0),
+                color.withAlpha(AppAlpha.glow),
+                Theme.of(context).colorScheme.surface.withValues(
+                  alpha: AppOpacity.zero,
+                ),
               ],
-              radius: 1.5,
+              radius: AppSizes.particleRadius,
             ),
           ),
           child: Center(
@@ -249,9 +253,9 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
                 vertical: _kFeedOverlayPaddingV,
               ),
               decoration: BoxDecoration(
-                color: color.withAlpha(40),
+                color: color.withAlpha(AppAlpha.tint),
                 borderRadius: BorderRadius.circular(AppRadii.lg),
-                border: Border.all(color: color, width: 2),
+                border: Border.all(color: color, width: AppStroke.medium),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -332,13 +336,13 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
           shape: CircleBorder(
             side: BorderSide(
               color: color.withAlpha(isEnabled ? 150 : 90),
-              width: 2,
+              width: AppStroke.medium,
             ),
           ),
           child: InkWell(
             onTap: onTap,
             customBorder: const CircleBorder(),
-            splashColor: color.withAlpha(60),
+            splashColor: color.withAlpha(AppAlpha.soft),
             child: SizedBox(
               width: size,
               height: size,
@@ -561,7 +565,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
         ref,
         message: message,
         scope: diagnosticScope,
-        backgroundColor: color.withAlpha(200),
+        backgroundColor: color.withAlpha(AppAlpha.text),
       );
       return;
     }
@@ -569,7 +573,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: color.withAlpha(200),
+        backgroundColor: color.withAlpha(AppAlpha.text),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadii.md),
@@ -935,10 +939,10 @@ class _FeedEmptyDashboardState extends ConsumerState<_FeedEmptyDashboard> {
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
       padding: EdgeInsets.fromLTRB(
-        isNarrow ? 14 : 18,
-        12,
-        isNarrow ? 14 : 18,
-        16,
+        isNarrow ? AppSpacing.contentInset : AppSpacing.dense,
+        AppSpacing.sm,
+        isNarrow ? AppSpacing.contentInset : AppSpacing.dense,
+        AppSpacing.md,
       ),
       children: [
         SizedBox(
@@ -993,20 +997,20 @@ class _FeedEmptyDashboardState extends ConsumerState<_FeedEmptyDashboard> {
             context,
           ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.xs),
         Text(
           context.tr(
             'One clear action at a time. Empty workspace metrics stay hidden until there is something useful to inspect.',
           ),
           style: TextStyle(
             color: Theme.of(context).colorScheme.onSurfaceVariant,
-            height: 1.45,
+            height: AppLineHeight.relaxed,
           ),
         ),
-        const SizedBox(height: 18),
+        const SizedBox(height: AppSpacing.dense),
         Wrap(
-          spacing: 12,
-          runSpacing: 12,
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
           children: [
             for (final action in actions)
               _DesktopDashboardActionCard(
@@ -1157,9 +1161,9 @@ class _MobileActionDeckState extends State<_MobileActionDeck> {
             children: [
               if (widget.nextAction != null)
                 Positioned.fill(
-                  top: 18,
-                  left: 12,
-                  right: 12,
+                  top: AppSpacing.dense,
+                  left: AppSpacing.sm,
+                  right: AppSpacing.sm,
                   child: AnimatedScale(
                     duration: _settleDuration,
                     curve: Curves.easeOutCubic,
@@ -1217,8 +1221,8 @@ class _MobileActionDeckState extends State<_MobileActionDeck> {
                         ),
                         if (_dragX > 8)
                           Positioned(
-                            top: 22,
-                            right: 22,
+                            top: AppSpacing.mid,
+                            right: AppSpacing.mid,
                             child: _SwipeCue(
                               label: context.tr('START'),
                               icon: Icons.arrow_forward_rounded,
@@ -1228,8 +1232,8 @@ class _MobileActionDeckState extends State<_MobileActionDeck> {
                           ),
                         if (_dragX < -8)
                           Positioned(
-                            top: 22,
-                            left: 22,
+                            top: AppSpacing.mid,
+                            left: AppSpacing.mid,
                             child: _SwipeCue(
                               label: context.tr('LATER'),
                               icon: Icons.close_rounded,
@@ -1245,7 +1249,7 @@ class _MobileActionDeckState extends State<_MobileActionDeck> {
             ],
           ),
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpacing.contentInset),
         _MobileDeckControls(
           action: widget.action,
           onLater: widget.onLater,
@@ -1311,15 +1315,18 @@ class _SwipeCue extends StatelessWidget {
         vertical: AppSpacing.xs,
       ),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.12),
+          color: color.withValues(alpha: AppOpacity.soft),
           borderRadius: BorderRadius.circular(AppRadii.pill),
-          border: Border.all(color: color.withValues(alpha: 0.7), width: 1.5),
+          border: Border.all(
+            color: color.withValues(alpha: AppOpacity.strong),
+            width: AppStroke.emphasis,
+          ),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: color, size: 18),
-            const SizedBox(width: 6),
+            Icon(icon, color: color, size: AppSizes.iconLarge),
+            const SizedBox(width: AppSpacing.xxs2),
             Text(
               label,
               style: TextStyle(
@@ -1350,7 +1357,7 @@ class _DashboardActionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Opacity(
-      opacity: isPreview ? 0.42 : 1,
+      opacity: isPreview ? AppOpacity.scrim : 1,
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.dense),
         decoration: BoxDecoration(
@@ -1358,13 +1365,17 @@ class _DashboardActionCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppRadii.card),
           border: Border.all(
             color: isPreview
-                ? colorScheme.outlineVariant.withValues(alpha: 0.55)
-                : action.color.withValues(alpha: 0.45),
-            width: isPreview ? 1 : 1.4,
+                ? colorScheme.outlineVariant.withValues(
+                    alpha: AppOpacity.divider,
+                  )
+                : action.color.withValues(alpha: AppOpacity.overlay),
+            width: isPreview ? AppStroke.hairline : 1.4,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.08),
+              color: AppTheme.mediaScrimColor.withValues(
+                alpha: AppOpacity.faint,
+              ),
               blurRadius: isPreview ? 18 : 30,
               offset: const Offset(0, 18),
             ),
@@ -1377,13 +1388,17 @@ class _DashboardActionCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  width: 48,
-                  height: 48,
+                  width: AppSizes.emptyStateIcon,
+                  height: AppSizes.emptyStateIcon,
                   decoration: BoxDecoration(
-                    color: action.color.withValues(alpha: 0.13),
+                    color: action.color.withValues(alpha: AppOpacity.low),
                     borderRadius: BorderRadius.circular(AppRadii.lg),
                   ),
-                  child: Icon(action.icon, color: action.color, size: 28),
+                  child: Icon(
+                    action.icon,
+                    color: action.color,
+                    size: AppSizes.iconHero,
+                  ),
                 ),
                 const Spacer(),
                 if (action.metric != null)
@@ -1392,7 +1407,7 @@ class _DashboardActionCard extends StatelessWidget {
                   _InlineCountBadge(label: positionLabel),
               ],
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: AppSpacing.contentInset),
             Expanded(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
@@ -1406,48 +1421,48 @@ class _DashboardActionCard extends StatelessWidget {
                         fontWeight: FontWeight.w800,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       action.title,
                       style: Theme.of(context).textTheme.headlineSmall
                           ?.copyWith(
                             color: colorScheme.onSurface,
                             fontWeight: FontWeight.w800,
-                            height: 1.08,
+                            height: AppLineHeight.display,
                           ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: AppSpacing.compact),
                     Text(
                       action.subtitle,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         color: colorScheme.onSurfaceVariant,
-                        height: 1.45,
+                        height: AppLineHeight.relaxed,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.md),
                     if (action.details.isNotEmpty)
                       _DashboardDetailsPanel(action: action),
                     if (action.footnote != null) ...[
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppSpacing.sm),
                       Text(
                         action.footnote!,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: colorScheme.onSurfaceVariant,
-                          height: 1.35,
+                          height: AppLineHeight.compact,
                         ),
                       ),
                     ],
-                    const SizedBox(height: 10),
+                    const SizedBox(height: AppSpacing.compact),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: AppSpacing.compact),
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(AppText.sm),
               decoration: BoxDecoration(
-                color: action.color.withValues(alpha: 0.09),
+                color: action.color.withValues(alpha: AppOpacity.faintStrong),
                 borderRadius: BorderRadius.circular(AppRadii.lg),
               ),
               child: Row(
@@ -1495,7 +1510,7 @@ class _MobileDeckControls extends StatelessWidget {
             label: Text(context.tr('Later')),
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSpacing.sm),
         Expanded(
           child: FilledButton.icon(
             key: Key('flow-action-start-${action.id}'),
@@ -1520,10 +1535,14 @@ class _DashboardDetailsPanel extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.62),
+        color: colorScheme.surfaceContainerHighest.withValues(
+          alpha: AppOpacity.overlayStrong,
+        ),
         borderRadius: BorderRadius.circular(AppRadii.lg),
         border: Border.all(
-          color: colorScheme.outlineVariant.withValues(alpha: 0.45),
+          color: colorScheme.outlineVariant.withValues(
+            alpha: AppOpacity.overlay,
+          ),
         ),
       ),
       child: Column(
@@ -1537,8 +1556,10 @@ class _DashboardDetailsPanel extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
                 child: Divider(
-                  height: 1,
-                  color: colorScheme.outlineVariant.withValues(alpha: 0.45),
+                  height: AppStroke.hairline,
+                  color: colorScheme.outlineVariant.withValues(
+                    alpha: AppOpacity.overlay,
+                  ),
                 ),
               ),
           ],
@@ -1561,15 +1582,19 @@ class _DashboardDetailRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          width: 30,
-          height: 30,
+          width: AppSizes.avatar,
+          height: AppSizes.avatar,
           decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.12),
+            color: color.withValues(alpha: AppOpacity.soft),
             borderRadius: BorderRadius.circular(AppRadii.sm),
           ),
-          child: Icon(detail.icon, color: color, size: 17),
+          child: Icon(
+            detail.icon,
+            color: color,
+            size: AppSizes.iconMedium,
+          ),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: AppSpacing.compact),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1581,12 +1606,12 @@ class _DashboardDetailRow extends StatelessWidget {
                   fontWeight: FontWeight.w800,
                 ),
               ),
-              const SizedBox(height: 2),
+              const SizedBox(height: AppSpacing.xxsHalf),
               Text(
                 detail.body,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: colorScheme.onSurfaceVariant,
-                  height: 1.28,
+                  height: AppLineHeight.balanced,
                 ),
               ),
             ],
@@ -1624,10 +1649,12 @@ class _DesktopDashboardActionCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      width: 44,
-                      height: 44,
+                      width: AppSizes.touchTarget,
+                      height: AppSizes.touchTarget,
                       decoration: BoxDecoration(
-                        color: action.color.withValues(alpha: 0.14),
+                        color: action.color.withValues(
+                          alpha: AppOpacity.selection,
+                        ),
                         borderRadius: BorderRadius.circular(AppRadii.lg),
                       ),
                       child: Icon(action.icon, color: action.color),
@@ -1637,7 +1664,7 @@ class _DesktopDashboardActionCard extends StatelessWidget {
                       _InlineCountBadge(label: action.metric!),
                   ],
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: AppSpacing.contentInset),
                 Text(
                   action.title,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -1649,7 +1676,7 @@ class _DesktopDashboardActionCard extends StatelessWidget {
                   action.subtitle,
                   style: TextStyle(
                     color: colorScheme.onSurfaceVariant,
-                    height: 1.45,
+                    height: AppLineHeight.relaxed,
                   ),
                 ),
                 if (action.details.isNotEmpty) ...[
@@ -1691,26 +1718,28 @@ class _DashboardCompleteState extends StatelessWidget {
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(AppRadii.card),
         border: Border.all(
-          color: colorScheme.outlineVariant.withValues(alpha: 0.55),
+          color: colorScheme.outlineVariant.withValues(
+            alpha: AppOpacity.divider,
+          ),
         ),
       ),
       child: Column(
         children: [
           const Spacer(),
           Container(
-            width: 64,
-            height: 64,
+            width: AppSizes.heroIcon,
+            height: AppSizes.heroIcon,
             decoration: BoxDecoration(
-              color: AppTheme.approveColor.withValues(alpha: 0.13),
+              color: AppTheme.approveColor.withValues(alpha: AppOpacity.low),
               borderRadius: BorderRadius.circular(AppRadii.lg),
             ),
             child: Icon(
               Icons.check_circle_outline,
               color: AppTheme.approveColor,
-              size: 32,
+              size: AppSizes.control,
             ),
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: AppSpacing.dense),
           Text(
             context.tr('All caught up'),
             textAlign: TextAlign.center,
@@ -1719,11 +1748,14 @@ class _DashboardCompleteState extends StatelessWidget {
               color: colorScheme.onSurface,
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpacing.compact),
           Text(
             context.tr('No dashboard action is waiting in this session.'),
             textAlign: TextAlign.center,
-            style: TextStyle(color: colorScheme.onSurfaceVariant, height: 1.45),
+            style: TextStyle(
+              color: colorScheme.onSurfaceVariant,
+              height: AppLineHeight.relaxed,
+            ),
           ),
           const Spacer(),
           Row(
@@ -1735,7 +1767,7 @@ class _DashboardCompleteState extends StatelessWidget {
                   label: Text(context.tr('Refresh')),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: FilledButton.icon(
                   onPressed: onCreate,

@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/app_diagnostics.dart';
 import '../../l10n/app_localizations.dart';
 import '../../providers/providers.dart';
+import '../theme/app_theme.dart';
 
 Future<void> copyDiagnosticsToClipboard(
   BuildContext context,
@@ -111,9 +112,12 @@ void showCopyableDiagnosticSnackBar(
 }) {
   final resolvedBackgroundColor =
       backgroundColor ??
-      Theme.of(context).colorScheme.error.withValues(alpha: 0.92);
+      Theme.of(
+        context,
+      ).colorScheme.error.withValues(alpha: AppOpacity.nearOpaqueStrong);
   final resolvedShape =
-      shape ?? RoundedRectangleBorder(borderRadius: BorderRadius.circular(12));
+      shape ??
+      RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadii.md));
 
   showDiagnosticSnackBar(
     context,
@@ -175,13 +179,15 @@ class AppErrorView extends ConsumerWidget {
       constraints: const BoxConstraints(maxWidth: 640),
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.all(compact ? 16 : 20),
+        padding: EdgeInsets.all(compact ? AppSpacing.md : AppSpacing.lg),
         decoration: BoxDecoration(
           color: colorScheme.errorContainer.withValues(
             alpha: compact ? 0.4 : 0.6,
           ),
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: colorScheme.error.withValues(alpha: 0.3)),
+          borderRadius: BorderRadius.circular(AppRadii.preview),
+          border: Border.all(
+            color: colorScheme.error.withValues(alpha: AppOpacity.emphasis),
+          ),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -192,10 +198,14 @@ class AppErrorView extends ConsumerWidget {
             if (showIcon) ...[
               Icon(
                 Icons.error_outline_rounded,
-                size: compact ? 28 : 40,
+                size: compact ? AppSizes.iconHero : AppSizes.handle,
                 color: colorScheme.error,
               ),
-              SizedBox(height: compact ? 10 : 14),
+              SizedBox(
+                height: compact
+                    ? AppSpacing.compact
+                    : AppSpacing.contentInset,
+              ),
             ],
             Text(
               localizedTitle,
@@ -205,31 +215,35 @@ class AppErrorView extends ConsumerWidget {
                 color: colorScheme.onErrorContainer,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.xs),
             SelectableText(
               resolvedMessage,
               textAlign: compact ? TextAlign.left : TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onErrorContainer.withValues(alpha: 0.9),
-                height: 1.45,
+                color: colorScheme.onErrorContainer.withValues(
+                  alpha: AppOpacity.nearOpaque,
+                ),
+                height: AppLineHeight.readable,
               ),
             ),
             if (localizedHelperText != null &&
                 localizedHelperText.trim().isNotEmpty) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.xs),
               Text(
                 localizedHelperText,
                 textAlign: compact ? TextAlign.left : TextAlign.center,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: colorScheme.onErrorContainer.withValues(alpha: 0.75),
-                  height: 1.4,
+                  color: colorScheme.onErrorContainer.withValues(
+                    alpha: AppOpacity.threeQuarter,
+                  ),
+                  height: AppLineHeight.body,
                 ),
               ),
             ],
-            const SizedBox(height: 14),
+            const SizedBox(height: AppSpacing.contentInset),
             Wrap(
-              spacing: 10,
-              runSpacing: 10,
+              spacing: AppSpacing.compact,
+              runSpacing: AppSpacing.compact,
               alignment: compact ? WrapAlignment.start : WrapAlignment.center,
               children: [
                 OutlinedButton.icon(
@@ -248,13 +262,19 @@ class AppErrorView extends ConsumerWidget {
                       ),
                     );
                   },
-                  icon: const Icon(Icons.copy_rounded, size: 18),
+                  icon: const Icon(
+                    Icons.copy_rounded,
+                    size: AppSizes.iconLarge,
+                  ),
                   label: Text(localizedCopyLabel),
                 ),
                 if (onRetry != null)
                   FilledButton.icon(
                     onPressed: onRetry,
-                    icon: const Icon(Icons.refresh_rounded, size: 18),
+                    icon: const Icon(
+                      Icons.refresh_rounded,
+                      size: AppSizes.iconLarge,
+                    ),
                     label: Text(localizedRetryLabel),
                   ),
               ],

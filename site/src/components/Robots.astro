@@ -38,10 +38,10 @@ const { content } = Astro.props;
 
 <style>
   .robots-section {
-    --robot-animation-duration: 4.2s;
-    --robot-icon-delay-1: 0.15s;
-    --robot-icon-delay-2: 0.55s;
-    --robot-icon-delay-3: 0.95s;
+    --robot-animation-duration: var(--duration-robots-cycle);
+    --robot-icon-delay-1: var(--delay-robots-1);
+    --robot-icon-delay-2: var(--delay-robots-2);
+    --robot-icon-delay-3: var(--delay-robots-3);
         padding: var(--space-24) 0;
     background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-surface-subtle) 100%);
   }

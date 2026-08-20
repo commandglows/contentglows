@@ -122,7 +122,9 @@ class _FeedbackAdminScreenState extends ConsumerState<FeedbackAdminScreen> {
                 ),
                 style: Theme.of(
                   context,
-                ).textTheme.bodyMedium?.copyWith(height: 1.5),
+                ).textTheme.bodyMedium?.copyWith(
+                  height: AppLineHeight.relaxed,
+                ),
               ),
               const SizedBox(height: AppSpacing.md),
               Wrap(

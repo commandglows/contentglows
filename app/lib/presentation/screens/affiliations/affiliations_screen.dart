@@ -115,7 +115,7 @@ class _AffiliationsScreenState extends ConsumerState<AffiliationsScreen> with Si
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: StatefulBuilder(
           builder: (context, setState) => Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.md),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,7 +124,7 @@ class _AffiliationsScreenState extends ConsumerState<AffiliationsScreen> with Si
                   existing == null ? l10n.tr('Add webhook') : l10n.tr('Edit webhook'),
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 TextField(
                   controller: urlController,
                   decoration: InputDecoration(
@@ -133,7 +133,7 @@ class _AffiliationsScreenState extends ConsumerState<AffiliationsScreen> with Si
                   ),
                   keyboardType: TextInputType.url,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm),
                 TextField(
                   controller: secretController,
                   decoration: InputDecoration(
@@ -141,7 +141,7 @@ class _AffiliationsScreenState extends ConsumerState<AffiliationsScreen> with Si
                     hintText: l10n.tr('Optional signing secret'),
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm),
                 TextField(
                   controller: eventsController,
                   decoration: InputDecoration(
@@ -149,7 +149,7 @@ class _AffiliationsScreenState extends ConsumerState<AffiliationsScreen> with Si
                     hintText: l10n.tr('Comma-separated event types'),
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm),
                 Row(
                   children: [
                     Text(l10n.tr('Enabled')),
@@ -163,7 +163,7 @@ class _AffiliationsScreenState extends ConsumerState<AffiliationsScreen> with Si
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 Row(
                   children: [
                     Expanded(
@@ -172,7 +172,7 @@ class _AffiliationsScreenState extends ConsumerState<AffiliationsScreen> with Si
                         child: Text(l10n.tr('Cancel')),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: FilledButton(
                         onPressed: () async {
@@ -221,7 +221,7 @@ class _AffiliationsScreenState extends ConsumerState<AffiliationsScreen> with Si
                     ),
                   ],
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
               ],
             ),
           ),
@@ -250,7 +250,7 @@ class _AffiliationsScreenState extends ConsumerState<AffiliationsScreen> with Si
       builder: (context) => Padding(
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -259,37 +259,37 @@ class _AffiliationsScreenState extends ConsumerState<AffiliationsScreen> with Si
                 existing == null ? l10n.tr('Add UTM template') : l10n.tr('Edit UTM template'),
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               TextField(
                 controller: nameController,
                 decoration: InputDecoration(labelText: l10n.tr('Template name')),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm),
               TextField(
                 controller: sourceController,
                 decoration: const InputDecoration(labelText: 'UTM Source'),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm),
               TextField(
                 controller: mediumController,
                 decoration: const InputDecoration(labelText: 'UTM Medium'),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm),
               TextField(
                 controller: campaignController,
                 decoration: const InputDecoration(labelText: 'UTM Campaign'),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm),
               TextField(
                 controller: termController,
                 decoration: const InputDecoration(labelText: 'UTM Term (optional)'),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm),
               TextField(
                 controller: contentController,
                 decoration: const InputDecoration(labelText: 'UTM Content (optional)'),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               Row(
                 children: [
                   Expanded(
@@ -298,7 +298,7 @@ class _AffiliationsScreenState extends ConsumerState<AffiliationsScreen> with Si
                       child: Text(l10n.tr('Cancel')),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: FilledButton(
                       onPressed: () async {
@@ -339,7 +339,7 @@ class _AffiliationsScreenState extends ConsumerState<AffiliationsScreen> with Si
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
             ],
           ),
         ),
@@ -394,9 +394,14 @@ class _AffiliationsTabState extends ConsumerState<_AffiliationsTab> {
               SliverToBoxAdapter(child: _StatsRow(affiliations: affiliations)),
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.md,
+                    AppSpacing.xs,
+                    AppSpacing.md,
+                    AppSpacing.xs,
+                  ),
                   child: Wrap(
-                    spacing: 8,
+                    spacing: AppSpacing.xs,
                     children: _statusFilters.map((filter) {
                       final isSelected = _statusFilter == filter;
                       return FilterChip(
@@ -533,10 +538,10 @@ class _WebhooksTab extends ConsumerWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.webhook_rounded, size: 64, color: Theme.of(context).colorScheme.outlineVariant),
-                const SizedBox(height: 16),
+                Icon(Icons.webhook_rounded, size: AppSizes.heroIcon, color: Theme.of(context).colorScheme.outlineVariant),
+                const SizedBox(height: AppSpacing.md),
                 Text(context.tr('No webhooks yet'), style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant)),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 FilledButton.icon(
                   onPressed: () => _showAddWebhook(context, ref),
                   icon: const Icon(Icons.add),
@@ -550,12 +555,12 @@ class _WebhooksTab extends ConsumerWidget {
         return RefreshIndicator(
           onRefresh: () async => ref.invalidate(linkWebhooksProvider),
           child: ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.md),
             itemCount: webhooks.length,
             itemBuilder: (context, index) {
               final webhook = webhooks[index];
               return Card(
-                margin: const EdgeInsets.only(bottom: 12),
+                margin: const EdgeInsets.only(bottom: AppSpacing.sm),
                 child: ListTile(
                   title: Text(webhook.url, maxLines: 1, overflow: TextOverflow.ellipsis),
                   subtitle: Text(
@@ -567,11 +572,11 @@ class _WebhooksTab extends ConsumerWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.history_rounded, size: 20),
+                        icon: const Icon(Icons.history_rounded, size: AppSizes.iconXl),
                         onPressed: () => _showDeliveries(context, ref, webhook),
                       ),
                       IconButton(
-                        icon: Icon(webhook.enabled ? Icons.toggle_on_rounded : Icons.toggle_off_rounded, size: 20),
+                        icon: Icon(webhook.enabled ? Icons.toggle_on_rounded : Icons.toggle_off_rounded, size: AppSizes.iconXl),
                         onPressed: () async {
                           final api = ref.read(apiServiceProvider);
                           await api.updateLinkWebhook(webhook.id!, {'enabled': !webhook.enabled});
@@ -579,7 +584,7 @@ class _WebhooksTab extends ConsumerWidget {
                         },
                       ),
                       IconButton(
-                        icon: const Icon(Icons.delete_outline_rounded, size: 20),
+                        icon: const Icon(Icons.delete_outline_rounded, size: AppSizes.iconXl),
                         onPressed: () async {
                           final confirmed = await showDialog<bool>(
                             context: context,
@@ -630,7 +635,10 @@ class _WebhooksTab extends ConsumerWidget {
       builder: (context) => AlertDialog(
         title: Text(context.tr('Webhook deliveries')),
         content: deliveriesAsync.when(
-          loading: () => const SizedBox(height: 120, child: Center(child: CircularProgressIndicator())),
+          loading: () => const SizedBox(
+            height: AppSizes.loadingPanelHeight,
+            child: Center(child: CircularProgressIndicator()),
+          ),
           error: (error, stackTrace) => Text('${context.tr('Error')}: $error'),
           data: (deliveries) {
             if (deliveries.isEmpty) {
@@ -648,8 +656,8 @@ class _WebhooksTab extends ConsumerWidget {
                     title: Text(d.eventType),
                     subtitle: Text('${d.url} • ${d.statusCode ?? 0}'),
                     trailing: d.error != null
-                        ? Icon(Icons.error_outline, size: 18, color: Theme.of(context).colorScheme.error)
-                        : Icon(Icons.check_circle_outline, size: 18, color: AppTheme.approveColor),
+                        ? Icon(Icons.error_outline, size: AppSizes.iconLarge, color: Theme.of(context).colorScheme.error)
+                        : Icon(Icons.check_circle_outline, size: AppSizes.iconLarge, color: AppTheme.approveColor),
                   );
                 },
               ),
@@ -690,8 +698,8 @@ class _ConversionsTab extends ConsumerWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.show_chart_rounded, size: 64, color: Theme.of(context).colorScheme.outlineVariant),
-                const SizedBox(height: 16),
+                Icon(Icons.show_chart_rounded, size: AppSizes.heroIcon, color: Theme.of(context).colorScheme.outlineVariant),
+                const SizedBox(height: AppSpacing.md),
                 Text(context.tr('No conversions yet'), style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant)),
               ],
             ),
@@ -699,12 +707,12 @@ class _ConversionsTab extends ConsumerWidget {
         }
 
         return ListView.builder(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           itemCount: linksWithClicks.length,
           itemBuilder: (context, index) {
             final link = linksWithClicks[index];
             return Card(
-              margin: const EdgeInsets.only(bottom: 12),
+              margin: const EdgeInsets.only(bottom: AppSpacing.sm),
               child: ListTile(
                 title: Text(link.name),
                 subtitle: Text('${link.clickCount} clicks'),
@@ -729,7 +737,10 @@ class _ConversionsTab extends ConsumerWidget {
       builder: (context) => AlertDialog(
         title: Text(link.name),
         content: conversionsAsync.when(
-          loading: () => const SizedBox(height: 120, child: Center(child: CircularProgressIndicator())),
+          loading: () => const SizedBox(
+            height: AppSizes.loadingPanelHeight,
+            child: Center(child: CircularProgressIndicator()),
+          ),
           error: (error, stackTrace) => Text('${context.tr('Error')}: $error'),
           data: (conversions) {
             if (conversions.isEmpty) {
@@ -787,10 +798,10 @@ class _UtmTemplatesTab extends ConsumerWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.tune_rounded, size: 64, color: Theme.of(context).colorScheme.outlineVariant),
-                const SizedBox(height: 16),
+                Icon(Icons.tune_rounded, size: AppSizes.heroIcon, color: Theme.of(context).colorScheme.outlineVariant),
+                const SizedBox(height: AppSpacing.md),
                 Text(context.tr('No UTM templates yet'), style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant)),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 FilledButton.icon(
                   onPressed: () => _showAddTemplate(context, ref),
                   icon: const Icon(Icons.add),
@@ -804,12 +815,12 @@ class _UtmTemplatesTab extends ConsumerWidget {
         return RefreshIndicator(
           onRefresh: () async => ref.invalidate(utmTemplatesProvider),
           child: ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.md),
             itemCount: templates.length,
             itemBuilder: (context, index) {
               final template = templates[index];
               return Card(
-                margin: const EdgeInsets.only(bottom: 12),
+                margin: const EdgeInsets.only(bottom: AppSpacing.sm),
                 child: ListTile(
                   title: Text(template.name),
                   subtitle: Text(
@@ -825,11 +836,11 @@ class _UtmTemplatesTab extends ConsumerWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.edit_outlined, size: 20),
+                        icon: const Icon(Icons.edit_outlined, size: AppSizes.iconXl),
                         onPressed: () => _showAddTemplate(context, ref, template),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.delete_outline_rounded, size: 20),
+                        icon: const Icon(Icons.delete_outline_rounded, size: AppSizes.iconXl),
                         onPressed: () async {
                           final confirmed = await showDialog<bool>(
                             context: context,
@@ -884,30 +895,41 @@ class _StatsRow extends StatelessWidget {
     final expired = affiliations.where((a) => a.isExpired || a.status == 'expired').length;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.md,
+        AppSpacing.md,
+        0,
+      ),
       child: Row(
         children: [
           _StatChip(
             label: context.tr('Total'),
             value: '${affiliations.length}',
             color: colorScheme.primary,
-            backgroundColor: colorScheme.primary.withValues(alpha: 0.1),
+            backgroundColor: colorScheme.primary.withValues(
+              alpha: AppOpacity.subtle,
+            ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.xs),
           _StatChip(
             label: context.tr('Active'),
             value: '$active',
             color: AppTheme.approveColor,
-            backgroundColor: AppTheme.approveColor.withValues(alpha: 0.12),
+            backgroundColor: AppTheme.approveColor.withValues(
+              alpha: AppOpacity.soft,
+            ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.xs),
           _StatChip(
             label: context.tr('Paused'),
             value: '$paused',
             color: AppTheme.warningColor,
-            backgroundColor: AppTheme.warningColor.withValues(alpha: 0.12),
+            backgroundColor: AppTheme.warningColor.withValues(
+              alpha: AppOpacity.soft,
+            ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.xs),
           _StatChip(
             label: context.tr('Expired'),
             value: '$expired',
@@ -936,16 +958,19 @@ class _StatChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        padding: const EdgeInsets.symmetric(
+          vertical: AppSpacing.sm,
+          horizontal: AppSpacing.xs,
+        ),
         decoration: BoxDecoration(
           color: backgroundColor,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppRadii.md),
         ),
         child: Column(
           children: [
-            Text(value, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: color)),
-            const SizedBox(height: 2),
-            Text(label, style: TextStyle(fontSize: 11, color: color.withValues(alpha: 0.8))),
+            Text(value, style: TextStyle(fontSize: AppText.xxl, fontWeight: FontWeight.bold, color: color)),
+            const SizedBox(height: AppSpacing.xxsHalf),
+            Text(label, style: TextStyle(fontSize: AppText.xs11, color: color.withValues(alpha: AppOpacity.prominent))),
           ],
         ),
       ),
@@ -986,13 +1011,16 @@ class _AffiliationCard extends ConsumerWidget {
     };
 
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      margin: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.xxs,
+      ),
       child: InkWell(
         onTap: isExpired ? null : onTap,
         onLongPress: onDelete,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppRadii.md),
         child: Padding(
-          padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.all(AppSpacing.contentInset),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1008,23 +1036,26 @@ class _AffiliationCard extends ConsumerWidget {
                   ),
                   if (syncInfo != null) ...[
                     OfflineSyncStatusChip(info: syncInfo, compact: true),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.xs),
                   ],
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.xs,
+                      vertical: AppSpacing.micro,
+                    ),
                     decoration: BoxDecoration(
-                      color: statusColor.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(8),
+                      color: statusColor.withValues(alpha: AppOpacity.medium),
+                      borderRadius: BorderRadius.circular(AppRadii.sm),
                     ),
                     child: Text(
                       displayStatus,
-                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: statusColor),
+                      style: TextStyle(fontSize: AppText.xs11, fontWeight: FontWeight.w600, color: statusColor),
                     ),
                   ),
                 ],
               ),
               if (isExpired) ...[
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xxs),
                 Text(
                   'Expires: ${affiliation.expiresAt?.toLocal().toString().split(' ')[0] ?? ''}',
                   style: theme.textTheme.bodySmall?.copyWith(
@@ -1034,7 +1065,7 @@ class _AffiliationCard extends ConsumerWidget {
                 ),
               ],
               if (affiliation.description != null) ...[
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xxs),
                 Text(
                   affiliation.description!,
                   style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -1042,10 +1073,10 @@ class _AffiliationCard extends ConsumerWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.xs),
               Wrap(
-                spacing: 12,
-                runSpacing: 4,
+                spacing: AppSpacing.sm,
+                runSpacing: AppSpacing.xxs,
                 children: [
                   if (affiliation.category != null)
                     _MetaChip(icon: Icons.category_outlined, text: affiliation.category!),
@@ -1078,9 +1109,9 @@ class _MetaChip extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 14, color: color),
-        const SizedBox(width: 4),
-        Text(text, style: TextStyle(fontSize: 12, color: color)),
+        Icon(icon, size: AppSizes.iconSm, color: color),
+        const SizedBox(width: AppSpacing.xxs),
+        Text(text, style: TextStyle(fontSize: AppText.xs, color: color)),
       ],
     );
   }
@@ -1098,8 +1129,12 @@ class _EmptyState extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.link_off, size: 64, color: colorScheme.outlineVariant),
-          const SizedBox(height: 16),
+          Icon(
+            Icons.link_off,
+            size: AppSizes.heroIcon,
+            color: colorScheme.outlineVariant,
+          ),
+          const SizedBox(height: AppSpacing.md),
           Text(
             hasFilter
                 ? context.tr('No affiliate links match this filter')
@@ -1107,7 +1142,7 @@ class _EmptyState extends StatelessWidget {
             style: TextStyle(color: colorScheme.onSurfaceVariant),
           ),
           if (!hasFilter) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             FilledButton.icon(
               onPressed: onAdd,
               icon: const Icon(Icons.add),

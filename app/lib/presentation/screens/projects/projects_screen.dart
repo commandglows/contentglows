@@ -59,7 +59,7 @@ class ProjectsScreen extends ConsumerWidget {
           }
 
           return ListView(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             children: [
               if (state.isDegraded) ...[
                 _NoticeCard(
@@ -68,15 +68,15 @@ class ProjectsScreen extends ConsumerWidget {
                       context.tr('Project management unavailable'),
                   tone: AppTheme.warningColor,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
               ],
               Text(
                 context.tr('Active project'),
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm),
               _ActiveProjectSummary(project: activeProject),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
               Row(
                 children: [
                   Expanded(
@@ -94,10 +94,10 @@ class ProjectsScreen extends ConsumerWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm),
               ...activeProjects.map(
                 (project) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                   child: _ProjectCard(
                     project: project,
                     isActive: activeProject?.id == project.id,
@@ -108,15 +108,15 @@ class ProjectsScreen extends ConsumerWidget {
                 ),
               ),
               if (archivedProjects.isNotEmpty) ...[
-                const SizedBox(height: 20),
+                const SizedBox(height: AppSpacing.lg),
                 Text(
                   context.tr('Archived projects'),
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm),
                 ...archivedProjects.map(
                   (project) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                     child: _ProjectCard(
                       project: project,
                       isActive: false,
@@ -171,16 +171,16 @@ class _ActiveProjectSummary extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(AppSpacing.contentInset),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(AppRadii.badge),
         border: Border.all(color: colorScheme.outlineVariant),
       ),
       child: Row(
         children: [
           Icon(Icons.folder_copy_rounded, color: colorScheme.primary),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSpacing.compact),
           Expanded(
             child: Text(
               project?.name ?? context.tr('No project selected'),
@@ -222,10 +222,10 @@ class _ProjectCard extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppRadii.lg),
         border: Border.all(
           color: isActive ? colorScheme.primary : colorScheme.outlineVariant,
         ),
@@ -239,7 +239,7 @@ class _ProjectCard extends ConsumerWidget {
                 child: Text(
                   project.name,
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: AppText.base,
                     fontWeight: FontWeight.w700,
                     color: colorScheme.onSurface,
                   ),
@@ -247,7 +247,7 @@ class _ProjectCard extends ConsumerWidget {
               ),
               if (syncInfo != null) ...[
                 OfflineSyncStatusChip(info: syncInfo, compact: true),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.xs),
               ],
               if (isActive)
                 Chip(label: Text(context.tr('Active project')))
@@ -257,15 +257,15 @@ class _ProjectCard extends ConsumerWidget {
                 Chip(label: Text(context.tr('Default'))),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             project.url.isNotEmpty ? project.url : context.tr('No source linked'),
             style: TextStyle(color: colorScheme.onSurfaceVariant),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           Wrap(
-            spacing: 8,
-            runSpacing: 8,
+            spacing: AppSpacing.xs,
+            runSpacing: AppSpacing.xs,
             children: [
               if (project.settings?.techStack != null)
                 Chip(label: Text(project.settings!.techStack!.framework.name)),
@@ -277,10 +277,10 @@ class _ProjectCard extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
           Wrap(
-            spacing: 8,
-            runSpacing: 8,
+            spacing: AppSpacing.xs,
+            runSpacing: AppSpacing.xs,
             children: [
               if (archivedView && !isDemoMode)
                 OutlinedButton(
@@ -316,19 +316,19 @@ class _ProjectCard extends ConsumerWidget {
             ],
           ),
           if (project.settings?.contentDirectories.isNotEmpty == true) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               context.tr('Detected content directories'),
               style: TextStyle(
-                fontSize: 12,
+                fontSize: AppText.xs,
                 fontWeight: FontWeight.w700,
                 color: colorScheme.onSurfaceVariant,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.xs),
             ...project.settings!.contentDirectories.map(
               (directory) => Padding(
-                padding: const EdgeInsets.only(bottom: 6),
+                padding: const EdgeInsets.only(bottom: AppSpacing.xxs2),
                 child: Text(
                   '• ${directory.path}${directory.fileExtensions.isNotEmpty ? ' (${directory.fileExtensions.join(', ')})' : ''}',
                   style: TextStyle(color: colorScheme.onSurfaceVariant),
@@ -337,19 +337,19 @@ class _ProjectCard extends ConsumerWidget {
             ),
           ],
           if (_configSections(project).isNotEmpty) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               context.tr('Configured sources'),
               style: TextStyle(
-                fontSize: 12,
+                fontSize: AppText.xs,
                 fontWeight: FontWeight.w700,
                 color: colorScheme.onSurfaceVariant,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.xs),
             Wrap(
-              spacing: 8,
-              runSpacing: 8,
+              spacing: AppSpacing.xs,
+              runSpacing: AppSpacing.xs,
               children: _configSections(
                 project,
               ).map((label) => Chip(label: Text(label))).toList(),
@@ -488,17 +488,17 @@ class _EmptyProjectsState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.folder_copy_outlined, size: 72),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Text(
               context.tr('No projects yet'),
               style: Theme.of(context).textTheme.headlineSmall,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               context.tr(
                 isDegraded
@@ -507,7 +507,7 @@ class _EmptyProjectsState extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             FilledButton(
               onPressed: () =>
                   context.push('/onboarding?mode=create&intent=project-manage'),
@@ -531,16 +531,18 @@ class _NoticeCard extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final color = tone ?? colorScheme.primary;
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withValues(alpha: 0.25)),
+        color: color.withValues(alpha: AppOpacity.faint),
+        borderRadius: BorderRadius.circular(AppRadii.lg),
+        border: Border.all(
+          color: color.withValues(alpha: AppOpacity.quarter),
+        ),
       ),
       child: Row(
         children: [
           Icon(Icons.info_outline_rounded, color: color),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(message)),
         ],
       ),

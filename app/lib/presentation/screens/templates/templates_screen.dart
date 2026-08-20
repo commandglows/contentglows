@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../providers/providers.dart';
 import '../../widgets/app_error_view.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../theme/app_theme.dart';
 import '../../widgets/project_picker_action.dart';
 
 final _templatesProvider = FutureProvider<List<Map<String, dynamic>>>((ref) async {
@@ -41,9 +42,9 @@ class TemplatesScreen extends ConsumerWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.description_outlined, size: 64,
+                  Icon(Icons.description_outlined, size: AppSizes.heroIcon,
                       color: theme.colorScheme.outlineVariant),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
                   Text(context.tr('No templates available'),
                       style: TextStyle(color: theme.colorScheme.onSurfaceVariant)),
                 ],
@@ -52,7 +53,7 @@ class TemplatesScreen extends ConsumerWidget {
           }
 
           return ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.md),
             itemCount: templates.length,
             itemBuilder: (context, index) => _TemplateCard(template: templates[index]),
           );
@@ -83,21 +84,21 @@ class _TemplateCard extends StatelessWidget {
     };
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(AppSpacing.sm),
               decoration: BoxDecoration(
                 color: theme.colorScheme.primaryContainer,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(AppRadii.md),
               ),
               child: Icon(typeIcon, color: theme.colorScheme.onPrimaryContainer),
             ),
-            const SizedBox(width: 14),
+            const SizedBox(width: AppSpacing.contentInset),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,28 +106,28 @@ class _TemplateCard extends StatelessWidget {
                   Text(name, style: theme.textTheme.titleSmall
                       ?.copyWith(fontWeight: FontWeight.w600)),
                   if (description.isNotEmpty) ...[
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xxs),
                     Text(description,
                         style: theme.textTheme.bodySmall
                             ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis),
                   ],
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.xs),
                   Wrap(
-                    spacing: 8,
+                    spacing: AppSpacing.xs,
                     children: [
                       if (contentType.isNotEmpty)
                         Chip(
                       label: Text(context.tr(contentType.replaceAll('_', ' ')),
-                              style: const TextStyle(fontSize: 11)),
+                              style: TextStyle(fontSize: AppText.xs11)),
                           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           visualDensity: VisualDensity.compact,
                         ),
                       if (sections > 0)
                         Chip(
                       label: Text(context.tr('{count} sections', {'count': sections}),
-                              style: const TextStyle(fontSize: 11)),
+                              style: TextStyle(fontSize: AppText.xs11)),
                           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           visualDensity: VisualDensity.compact,
                         ),

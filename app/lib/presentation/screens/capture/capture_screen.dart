@@ -529,7 +529,7 @@ class _UnsupportedCaptureView extends StatelessWidget {
     final theme = Theme.of(context);
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(AppSpacing.xl),
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 460),
           child: Column(
@@ -537,10 +537,10 @@ class _UnsupportedCaptureView extends StatelessWidget {
             children: [
               Icon(
                 Icons.phonelink_off_rounded,
-                size: 56,
+                size: AppSizes.iconDisplay,
                 color: theme.colorScheme.outline,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               Text(
                 context.tr('Android capture only'),
                 style: theme.textTheme.titleLarge?.copyWith(
@@ -548,7 +548,7 @@ class _UnsupportedCaptureView extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.xs),
               Text(
                 support.reason ??
                     context.tr(
@@ -780,7 +780,7 @@ class _SupportedCaptureView extends StatelessWidget {
               onSelected: onToggleMicrophone,
               avatar: Icon(
                 microphoneEnabled ? Icons.mic_rounded : Icons.mic_off_rounded,
-                size: 18,
+                size: AppSizes.iconLarge,
               ),
               label: Text(context.tr('Mic')),
             ),
@@ -816,7 +816,7 @@ class _SupportedCaptureView extends StatelessWidget {
             children: [
               Icon(
                 Icons.info_outline_rounded,
-                size: 18,
+                size: AppSizes.iconLarge,
                 color: theme.colorScheme.tertiary,
               ),
               SizedBox(width: AppSpacing.xs),
@@ -839,7 +839,7 @@ class _SupportedCaptureView extends StatelessWidget {
         SizedBox(height: AppSpacing.sm),
         if (assets.isEmpty)
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 32),
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.wide),
             child: Center(
               child: Text(
                 context.tr('No local captures yet.'),
@@ -958,9 +958,9 @@ class _CaptureAssetCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(AppSpacing.sm),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -969,7 +969,7 @@ class _CaptureAssetCard extends StatelessWidget {
               height: 96,
               child: buildCaptureAssetPreview(asset),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -982,7 +982,7 @@ class _CaptureAssetCard extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xxs),
                   Text(
                     [
                       '${asset.width}x${asset.height}',
@@ -993,10 +993,10 @@ class _CaptureAssetCard extends StatelessWidget {
                     ].join(' - '),
                     style: TextStyle(
                       color: theme.colorScheme.onSurfaceVariant,
-                      fontSize: 12,
+                      fontSize: AppText.xs,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.xs),
                   if (link != null) ...[
                     Text(
                       linkedContent == null
@@ -1006,15 +1006,15 @@ class _CaptureAssetCard extends StatelessWidget {
                             }),
                       style: TextStyle(
                         color: theme.colorScheme.primary,
-                        fontSize: 12,
+                        fontSize: AppText.xs,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.xs),
                   ],
                   Wrap(
-                    spacing: 4,
-                    runSpacing: 4,
+                    spacing: AppSpacing.xxs,
+                    runSpacing: AppSpacing.xxs,
                     children: [
                       IconButton.filled(
                         tooltip: context.tr('Create content'),
@@ -1059,7 +1059,12 @@ class _ContentPickerSheet extends StatelessWidget {
     return SafeArea(
       child: ListView(
         shrinkWrap: true,
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.md,
+          AppSpacing.xs,
+          AppSpacing.md,
+          AppSpacing.xl,
+        ),
         children: [
           Text(
             context.tr('Link to content'),
@@ -1067,10 +1072,10 @@ class _ContentPickerSheet extends StatelessWidget {
               fontWeight: FontWeight.w700,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
           if (items.isEmpty)
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 24),
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
               child: Text(
                 context.tr('No pending content is available for this project.'),
                 style: TextStyle(color: theme.colorScheme.onSurfaceVariant),

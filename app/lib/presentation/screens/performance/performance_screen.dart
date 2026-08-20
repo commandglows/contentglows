@@ -31,45 +31,45 @@ class PerformanceScreen extends ConsumerWidget {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           // Overview stats
           _buildStats(theme, pendingAsync, historyAsync),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg),
 
           // Content by type
           Text(
             context.tr('Content by Type'),
             style: theme.textTheme.titleMedium,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
           _buildTypeBreakdown(context, theme, historyAsync),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg),
 
           // Publish destinations
           Text(
             context.tr('Publish Destinations'),
             style: theme.textTheme.titleMedium,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
           _buildPublishDestinations(context, theme, historyAsync),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg),
 
           // Approval rate
           Text(context.tr('Approval Rate'), style: theme.textTheme.titleMedium),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
           _buildApprovalRate(context, theme, historyAsync),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg),
 
           // Recent published
           Text(
             context.tr('Recently Published'),
             style: theme.textTheme.titleMedium,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
           _buildRecentPublished(context, theme, historyAsync),
         ],
       ),
@@ -98,19 +98,19 @@ class PerformanceScreen extends ConsumerWidget {
           value: '$total',
           color: theme.colorScheme.primary,
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: AppSpacing.xs),
         _StatCard(
           label: 'Pending',
           value: '$pending',
           color: AppTheme.warningColor,
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: AppSpacing.xs),
         _StatCard(
           label: 'Published',
           value: '$published',
           color: AppTheme.approveColor,
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: AppSpacing.xs),
         _StatCard(
           label: 'Rejected',
           value: '$rejected',
@@ -139,8 +139,8 @@ class PerformanceScreen extends ConsumerWidget {
     }
 
     return Wrap(
-      spacing: 8,
-      runSpacing: 8,
+      spacing: AppSpacing.xs,
+      runSpacing: AppSpacing.xs,
       children: typeCounts.entries.map((e) {
         final typeLabel = e.key.name
             .replaceAllMapped(RegExp(r'[A-Z]'), (m) => ' ${m.group(0)}')
@@ -152,12 +152,12 @@ class PerformanceScreen extends ConsumerWidget {
             child: Text(
               '${e.value}',
               style: TextStyle(
-                fontSize: 10,
+                fontSize: AppText.xxs,
                 color: theme.colorScheme.onPrimaryContainer,
               ),
             ),
           ),
-          label: Text(typeLabel, style: const TextStyle(fontSize: 12)),
+          label: Text(typeLabel, style: const TextStyle(fontSize: AppText.xs)),
         );
       }).toList(),
     );
@@ -211,31 +211,31 @@ class PerformanceScreen extends ConsumerWidget {
       children: sorted.map((e) {
         final platformColor = _platformColor(e.key, theme);
         return Padding(
-          padding: const EdgeInsets.only(bottom: 6),
+          padding: const EdgeInsets.only(bottom: AppSpacing.xxs2),
           child: Row(
             children: [
               SizedBox(
                 width: 90,
-                child: Text(e.key, style: const TextStyle(fontSize: 13)),
+                child: Text(e.key, style: const TextStyle(fontSize: AppText.compact)),
               ),
               Expanded(
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(AppRadii.progress),
                   child: LinearProgressIndicator(
                     value: e.value / sorted.first.value,
-                    backgroundColor: platformColor.withValues(alpha: 0.1),
+                    backgroundColor: platformColor.withValues(alpha: AppOpacity.subtle),
                     color: platformColor,
                     minHeight: 18,
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.xs),
               SizedBox(
                 width: 30,
                 child: Text(
                   '${e.value}',
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: AppText.compact,
                     fontWeight: FontWeight.w600,
                     color: platformColor,
                   ),
@@ -275,53 +275,53 @@ class PerformanceScreen extends ConsumerWidget {
       children: [
         Expanded(
           child: Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: AppTheme.approveColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
+              color: AppTheme.approveColor.withValues(alpha: AppOpacity.subtle),
+              borderRadius: BorderRadius.circular(AppRadii.md),
             ),
             child: Column(
               children: [
                 Text(
                   '$rate%',
                   style: TextStyle(
-                    fontSize: 28,
+                    fontSize: AppText.metric,
                     fontWeight: FontWeight.w900,
                     color: AppTheme.approveColor,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xxs),
                 Text(
                   context.tr('Approval Rate'),
-                  style: TextStyle(fontSize: 12, color: AppTheme.approveColor),
+                  style: TextStyle(fontSize: AppText.xs, color: AppTheme.approveColor),
                 ),
               ],
             ),
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSpacing.sm),
         Expanded(
           child: Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: theme.colorScheme.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
+              color: theme.colorScheme.primary.withValues(alpha: AppOpacity.subtle),
+              borderRadius: BorderRadius.circular(AppRadii.md),
             ),
             child: Column(
               children: [
                 Text(
                   '$total',
                   style: TextStyle(
-                    fontSize: 28,
+                    fontSize: AppText.metric,
                     fontWeight: FontWeight.w900,
                     color: theme.colorScheme.primary,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xxs),
                 Text(
                   context.tr('Total Reviewed'),
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: AppText.xs,
                     color: theme.colorScheme.primary,
                   ),
                 ),
@@ -354,15 +354,15 @@ class PerformanceScreen extends ConsumerWidget {
       children: published
           .map(
             (item) => Card(
-              margin: const EdgeInsets.only(bottom: 6),
+              margin: const EdgeInsets.only(bottom: AppSpacing.xxs2),
               child: ListTile(
                 dense: true,
                 leading: Icon(
                   Icons.check_circle,
                   color: AppTheme.approveColor,
-                  size: 20,
+                  size: AppSizes.iconXl,
                 ),
-                title: Text(item.title, style: const TextStyle(fontSize: 13)),
+                title: Text(item.title, style: const TextStyle(fontSize: AppText.compact)),
                 subtitle: Text(
                   [
                     item.type.name,
@@ -404,27 +404,27 @@ class _StatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14),
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.contentInset),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(12),
+          color: color.withValues(alpha: AppOpacity.subtle),
+          borderRadius: BorderRadius.circular(AppRadii.md),
         ),
         child: Column(
           children: [
             Text(
               value,
               style: TextStyle(
-                fontSize: 20,
+                fontSize: AppText.xxl,
                 fontWeight: FontWeight.bold,
                 color: color,
               ),
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: AppSpacing.xxsHalf),
             Text(
               context.tr(label),
               style: TextStyle(
-                fontSize: 11,
-                color: color.withValues(alpha: 0.8),
+                fontSize: AppText.xs11,
+                color: color.withValues(alpha: AppOpacity.prominent),
               ),
             ),
           ],

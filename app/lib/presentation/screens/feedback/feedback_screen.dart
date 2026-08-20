@@ -67,7 +67,9 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
             ),
             style: Theme.of(
               context,
-            ).textTheme.bodyMedium?.copyWith(height: 1.5),
+            ).textTheme.bodyMedium?.copyWith(
+              height: AppLineHeight.relaxed,
+            ),
           ),
           const SizedBox(height: AppSpacing.lg),
           _FeedbackCard(
@@ -429,7 +431,7 @@ class _FeedbackCard extends StatelessWidget {
               context.tr(subtitle),
               style: Theme.of(
                 context,
-              ).textTheme.bodySmall?.copyWith(height: 1.4),
+              ).textTheme.bodySmall?.copyWith(height: AppLineHeight.body),
             ),
             const SizedBox(height: AppSpacing.md),
             child,

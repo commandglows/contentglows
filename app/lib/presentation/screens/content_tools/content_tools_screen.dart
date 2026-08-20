@@ -70,10 +70,10 @@ class _ValidationsTab extends ConsumerWidget {
               children: [
                 Icon(
                   Icons.check_circle_outline,
-                  size: 64,
+                  size: AppSizes.heroIcon,
                   color: theme.colorScheme.outlineVariant,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 Text(
                   context.tr('No pending validations'),
                   style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
@@ -86,13 +86,13 @@ class _ValidationsTab extends ConsumerWidget {
         return RefreshIndicator(
           onRefresh: () async => ref.invalidate(_validationsProvider),
           child: ListView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.md),
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: AppTheme.warningColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
+                  color: AppTheme.warningColor.withValues(alpha: AppOpacity.subtle),
+                  borderRadius: BorderRadius.circular(AppRadii.md),
                 ),
                 child: Text(
                   context.tr('{count} articles awaiting validation', {
@@ -104,18 +104,18 @@ class _ValidationsTab extends ConsumerWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm),
               ...articles.map((a) {
                 final article = a as Map<String, dynamic>;
                 final articleId = article['id']?.toString() ?? '';
                 return Card(
-                  margin: const EdgeInsets.only(bottom: 8),
+                  margin: const EdgeInsets.only(bottom: AppSpacing.xs),
                   child: ListTile(
                     dense: true,
                     title: Text(
                       article['title']?.toString() ?? context.tr('Untitled'),
                       style: const TextStyle(
-                        fontSize: 13,
+                        fontSize: AppText.compact,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -169,10 +169,10 @@ class _FunnelTab extends ConsumerWidget {
           children: [
             Icon(
               Icons.filter_alt_outlined,
-              size: 64,
+              size: AppSizes.heroIcon,
               color: theme.colorScheme.outlineVariant,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Text(
               context.tr('No content data for funnel analysis'),
               style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
@@ -198,31 +198,31 @@ class _FunnelTab extends ConsumerWidget {
         ref.invalidate(contentHistoryProvider);
       },
       child: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           Text(
             context.tr('Content Clusters'),
             style: theme.textTheme.titleMedium,
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xxs),
           Text(
             context.tr('Articles grouped by topic cluster'),
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           ...sorted.map((entry) {
             final published = entry.value
                 .where((c) => c.status == ContentStatus.published)
                 .length;
             return Card(
-              margin: const EdgeInsets.only(bottom: 8),
+              margin: const EdgeInsets.only(bottom: AppSpacing.xs),
               child: ListTile(
                 title: Text(
                   entry.key,
                   style: const TextStyle(
-                    fontSize: 14,
+                    fontSize: AppText.sm,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -261,15 +261,15 @@ class _FunnelTab extends ConsumerWidget {
       _ => theme.colorScheme.error,
     };
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.compact, vertical: AppSpacing.xxs),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(8),
+        color: color.withValues(alpha: AppOpacity.medium),
+        borderRadius: BorderRadius.circular(AppRadii.sm),
       ),
       child: Text(
         grade,
         style: TextStyle(
-          fontSize: 14,
+          fontSize: AppText.sm,
           fontWeight: FontWeight.w700,
           color: color,
         ),
@@ -297,10 +297,10 @@ class _AuditTab extends ConsumerWidget {
           children: [
             Icon(
               Icons.fact_check_outlined,
-              size: 64,
+              size: AppSizes.heroIcon,
               color: theme.colorScheme.outlineVariant,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Text(
               context.tr('No content to audit'),
               style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
@@ -333,7 +333,7 @@ class _AuditTab extends ConsumerWidget {
         ref.invalidate(contentHistoryProvider);
       },
       child: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           // Summary
           Row(
@@ -343,7 +343,7 @@ class _AuditTab extends ConsumerWidget {
                 value: '${allContent.length}',
                 color: theme.colorScheme.primary,
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.xs),
               _AuditStat(
                 label: 'Issues',
                 value: '${issues.length}',
@@ -351,7 +351,7 @@ class _AuditTab extends ConsumerWidget {
                     ? AppTheme.approveColor
                     : AppTheme.warningColor,
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.xs),
               _AuditStat(
                 label: 'Reviewed',
                 value:
@@ -360,51 +360,51 @@ class _AuditTab extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           Text(
             context.tr('Recent review actors'),
             style: theme.textTheme.titleSmall,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           ...allContent
               .where((item) => item.reviewActorDisplay != null)
               .take(6)
               .map(
                 (item) => Card(
-                  margin: const EdgeInsets.only(bottom: 6),
+                  margin: const EdgeInsets.only(bottom: AppSpacing.xxs2),
                   child: ListTile(
                     dense: true,
-                    leading: const Icon(Icons.verified_user_outlined, size: 20),
+                    leading: const Icon(Icons.verified_user_outlined, size: AppSizes.iconXl),
                     title: Text(
                       item.title.isEmpty
                           ? context.tr('(no title)')
                           : item.title,
-                      style: const TextStyle(fontSize: 13),
+                      style: const TextStyle(fontSize: AppText.compact),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     subtitle: Text(
                       '${item.reviewActorDisplay}${item.reviewActorType == null ? '' : ' • ${item.reviewActorType}'}',
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: AppText.xs,
                         color: theme.colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ),
                 ),
               ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
 
           if (issues.isEmpty)
             Card(
-              color: AppTheme.approveColor.withValues(alpha: 0.1),
+              color: AppTheme.approveColor.withValues(alpha: AppOpacity.subtle),
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 child: Row(
                   children: [
                     Icon(Icons.check_circle, color: AppTheme.approveColor),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.xs),
                     Text(context.tr('All content passes basic audit checks')),
                   ],
                 ),
@@ -412,29 +412,29 @@ class _AuditTab extends ConsumerWidget {
             )
           else ...[
             Text(context.tr('Issues Found'), style: theme.textTheme.titleSmall),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.xs),
             ...issues.map(
               (issue) => Card(
-                margin: const EdgeInsets.only(bottom: 6),
+                margin: const EdgeInsets.only(bottom: AppSpacing.xxs2),
                 child: ListTile(
                   dense: true,
                   leading: Icon(
                     Icons.warning_amber,
                     color: AppTheme.warningColor,
-                    size: 20,
+                    size: AppSizes.iconXl,
                   ),
                   title: Text(
                     issue.title.isEmpty
                         ? context.tr('(no title)')
                         : issue.title,
-                    style: const TextStyle(fontSize: 13),
+                    style: const TextStyle(fontSize: AppText.compact),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   subtitle: Text(
                     context.tr(issue.issue),
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: AppText.xs,
                       color: AppTheme.warningColor,
                     ),
                   ),
@@ -469,25 +469,25 @@ class _AuditStat extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14),
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.contentInset),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(12),
+          color: color.withValues(alpha: AppOpacity.subtle),
+          borderRadius: BorderRadius.circular(AppRadii.md),
         ),
         child: Column(
           children: [
             Text(
               value,
               style: TextStyle(
-                fontSize: 22,
+                fontSize: AppText.heading,
                 fontWeight: FontWeight.bold,
                 color: color,
               ),
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: AppSpacing.xxsHalf),
             Text(
               context.tr(label),
-              style: TextStyle(fontSize: 11, color: color),
+              style: TextStyle(fontSize: AppText.xs11, color: color),
             ),
           ],
         ),

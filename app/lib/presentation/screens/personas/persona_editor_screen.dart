@@ -99,9 +99,11 @@ class _PersonaEditorScreenState extends ConsumerState<PersonaEditorScreen> {
             onPressed: (_isSaving || _isAutofilling) ? null : _prefillWithAi,
             icon: _isAutofilling
                 ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    width: AppSizes.icon,
+                    height: AppSizes.icon,
+                    child: CircularProgressIndicator(
+                      strokeWidth: AppStroke.medium,
+                    ),
                   )
                 : const Icon(Icons.auto_awesome_rounded),
           ),
@@ -109,20 +111,22 @@ class _PersonaEditorScreenState extends ConsumerState<PersonaEditorScreen> {
             onPressed: _isSaving ? null : _save,
             child: _isSaving
                 ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    width: AppSizes.icon,
+                    height: AppSizes.icon,
+                    child: CircularProgressIndicator(
+                      strokeWidth: AppStroke.medium,
+                    ),
                   )
                 : Text(context.tr('Save')),
           ),
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         children: [
           // Name
           _sectionLabel(context.tr('Identity')),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
           TextField(
             controller: _nameController,
             decoration: InputDecoration(
@@ -132,11 +136,11 @@ class _PersonaEditorScreenState extends ConsumerState<PersonaEditorScreen> {
             ),
           ),
 
-          const SizedBox(height: 28),
+          const SizedBox(height: AppSpacing.section),
 
           // Demographics
           _sectionLabel(context.tr('Demographics')),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
           TextField(
             controller: _roleController,
             decoration: InputDecoration(
@@ -146,7 +150,7 @@ class _PersonaEditorScreenState extends ConsumerState<PersonaEditorScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
           Row(
             children: [
               Expanded(
@@ -158,7 +162,7 @@ class _PersonaEditorScreenState extends ConsumerState<PersonaEditorScreen> {
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: TextField(
                   controller: _ageRangeController,
@@ -170,7 +174,7 @@ class _PersonaEditorScreenState extends ConsumerState<PersonaEditorScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
           TextField(
             controller: _experienceController,
             decoration: InputDecoration(
@@ -179,18 +183,18 @@ class _PersonaEditorScreenState extends ConsumerState<PersonaEditorScreen> {
             ),
           ),
 
-          const SizedBox(height: 28),
+          const SizedBox(height: AppSpacing.section),
 
           // Pain Points
           _sectionLabel(context.tr('Pain Points (min. 2)')),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xxs),
           Text(
             context.tr('Deep, real problems — not surface-level symptoms'),
             style: theme.textTheme.bodySmall?.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
           ..._buildListFields(
             controllers: _painPointControllers,
             hintPrefix: context.tr('Pain point'),
@@ -200,18 +204,18 @@ class _PersonaEditorScreenState extends ConsumerState<PersonaEditorScreen> {
             ),
           ),
 
-          const SizedBox(height: 28),
+          const SizedBox(height: AppSpacing.section),
 
           // Goals
           _sectionLabel(context.tr('Goals (min. 2)')),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xxs),
           Text(
             context.tr('Aspirations and desired outcomes'),
             style: theme.textTheme.bodySmall?.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
           ..._buildListFields(
             controllers: _goalControllers,
             hintPrefix: context.tr('Goal'),
@@ -220,18 +224,18 @@ class _PersonaEditorScreenState extends ConsumerState<PersonaEditorScreen> {
                 setState(() => _goalControllers.add(TextEditingController())),
           ),
 
-          const SizedBox(height: 28),
+          const SizedBox(height: AppSpacing.section),
 
           // Language — Vocabulary
           _sectionLabel(context.tr('Vocabulary')),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xxs),
           Text(
             context.tr('Words and expressions this persona actually uses'),
             style: theme.textTheme.bodySmall?.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
           ..._buildListFields(
             controllers: _vocabularyControllers,
             hintPrefix: context.tr('Word or phrase'),
@@ -241,18 +245,18 @@ class _PersonaEditorScreenState extends ConsumerState<PersonaEditorScreen> {
             ),
           ),
 
-          const SizedBox(height: 28),
+          const SizedBox(height: AppSpacing.section),
 
           // Language — Objections
           _sectionLabel(context.tr('Objections')),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xxs),
           Text(
             context.tr('Common pushbacks or doubts this persona has'),
             style: theme.textTheme.bodySmall?.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
           ..._buildListFields(
             controllers: _objectionControllers,
             hintPrefix: context.tr('Objection'),
@@ -262,7 +266,7 @@ class _PersonaEditorScreenState extends ConsumerState<PersonaEditorScreen> {
             ),
           ),
 
-          const SizedBox(height: 40),
+          const SizedBox(height: AppSpacing.hero),
         ],
       ),
     );
@@ -288,28 +292,28 @@ class _PersonaEditorScreenState extends ConsumerState<PersonaEditorScreen> {
     return [
       ...List.generate(controllers.length, (i) {
         return Padding(
-          padding: const EdgeInsets.only(bottom: 10),
+          padding: const EdgeInsets.only(bottom: AppSpacing.compact),
           child: Row(
             children: [
               Container(
-                width: 24,
-                height: 24,
+                width: AppSizes.iconXxl,
+                height: AppSizes.iconXxl,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: color.withAlpha(30),
+                  color: color.withAlpha(AppAlpha.glow),
                 ),
                 child: Center(
                   child: Text(
                     '${i + 1}',
                     style: TextStyle(
                       color: color,
-                      fontSize: 12,
+                      fontSize: AppText.xs,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: AppSpacing.compact),
               Expanded(
                 child: TextField(
                   controller: controllers[i],
@@ -320,7 +324,7 @@ class _PersonaEditorScreenState extends ConsumerState<PersonaEditorScreen> {
                 IconButton(
                   icon: Icon(
                     Icons.close,
-                    size: 18,
+                    size: AppSizes.iconLarge,
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                   onPressed: () {
@@ -336,7 +340,7 @@ class _PersonaEditorScreenState extends ConsumerState<PersonaEditorScreen> {
       }),
       TextButton.icon(
         onPressed: onAdd,
-        icon: Icon(Icons.add, size: 18, color: color),
+        icon: Icon(Icons.add, size: AppSizes.iconLarge, color: color),
         label: Text(context.tr('Add'), style: TextStyle(color: color)),
       ),
     ];
@@ -395,10 +399,10 @@ class _PersonaEditorScreenState extends ConsumerState<PersonaEditorScreen> {
             content: Text(
               context.tr('Persona "{name}" saved', {'name': persona.name}),
             ),
-            backgroundColor: AppTheme.approveColor.withAlpha(200),
+            backgroundColor: AppTheme.approveColor.withAlpha(AppAlpha.text),
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppRadii.md),
             ),
           ),
         );
@@ -468,7 +472,7 @@ class _PersonaEditorScreenState extends ConsumerState<PersonaEditorScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(context.tr('Persona draft generated and pre-filled.')),
-          backgroundColor: AppTheme.approveColor.withAlpha(200),
+          backgroundColor: AppTheme.approveColor.withAlpha(AppAlpha.text),
           behavior: SnackBarBehavior.floating,
         ),
       );

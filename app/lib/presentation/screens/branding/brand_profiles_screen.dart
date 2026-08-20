@@ -436,7 +436,7 @@ class _HeroCard extends StatelessWidget {
                 width: AppSpacing.xl * 2,
                 height: AppSpacing.xl * 2,
                 decoration: BoxDecoration(
-                  color: AppTheme.editColor.withAlpha(28),
+                  color: AppTheme.editColor.withAlpha(AppAlpha.low28),
                   borderRadius: BorderRadius.circular(AppRadii.lg),
                 ),
                 child: Icon(Icons.palette_outlined, color: AppTheme.editColor),
@@ -463,7 +463,7 @@ class _HeroCard extends StatelessWidget {
                             ),
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        height: 1.4,
+                        height: AppLineHeight.body,
                       ),
                     ),
                   ],
@@ -540,7 +540,7 @@ class _EmptyState extends StatelessWidget {
             ),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Theme.of(context).colorScheme.onSurfaceVariant,
-              height: 1.4,
+              height: AppLineHeight.body,
             ),
           ),
           const SizedBox(height: AppSpacing.md),
@@ -722,7 +722,7 @@ class _BrandProfileCard extends StatelessWidget {
                 ),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  height: 1.4,
+                  height: AppLineHeight.body,
                 ),
               ),
             ],
@@ -793,7 +793,7 @@ class _BlueprintTemplateSection extends StatelessWidget {
               }),
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
-                height: 1.4,
+                height: AppLineHeight.body,
               ),
             ),
           const SizedBox(height: AppSpacing.xs),
@@ -826,7 +826,7 @@ class _BlueprintTemplateSection extends StatelessWidget {
                       ),
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
-                        height: 1.4,
+                        height: AppLineHeight.body,
                       ),
                     ),
                   ),
@@ -854,7 +854,7 @@ class _MiniChip extends StatelessWidget {
         vertical: AppSpacing.xxs,
       ),
       decoration: BoxDecoration(
-        color: color.withAlpha(24),
+        color: color.withAlpha(AppAlpha.low24),
         borderRadius: BorderRadius.circular(AppRadii.pill),
       ),
       child: Text(
@@ -1267,7 +1267,9 @@ class _BrandProfileEditorDialogState
               ? const SizedBox(
                   width: _brandProfileLoadingIndicatorSize,
                   height: _brandProfileLoadingIndicatorSize,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+                  child: CircularProgressIndicator(
+                    strokeWidth: AppStroke.medium,
+                  ),
                 )
               : Text(context.tr('Save')),
         ),

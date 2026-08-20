@@ -46,9 +46,9 @@ class _UptimeScreenState extends ConsumerState<UptimeScreen> {
           IconButton(
             icon: _checking
                 ? const SizedBox(
-                    height: 18,
-                    width: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    height: AppSpacing.dense,
+                    width: AppSpacing.dense,
+                    child: CircularProgressIndicator(strokeWidth: AppStroke.medium),
                   )
                 : const Icon(Icons.refresh),
             onPressed: _checking ? null : _checkAgain,
@@ -56,11 +56,11 @@ class _UptimeScreenState extends ConsumerState<UptimeScreen> {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           Card(
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.md),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -68,7 +68,7 @@ class _UptimeScreenState extends ConsumerState<UptimeScreen> {
                     context.tr('Access State'),
                     style: theme.textTheme.titleSmall,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     context.tr('Stage: {stage}', {
                       'stage':
@@ -76,14 +76,14 @@ class _UptimeScreenState extends ConsumerState<UptimeScreen> {
                           context.tr('loading'),
                     }),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xxs),
                   Text(
                     context.tr('Session: {state}', {
                       'state': authSession.status.name,
                     }),
                   ),
                   if (authSession.email != null) ...[
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xxs),
                     Text(
                       context.tr('Email: {email}', {
                         'email': '${authSession.email}',
@@ -91,7 +91,7 @@ class _UptimeScreenState extends ConsumerState<UptimeScreen> {
                     ),
                   ],
                   if (accessState?.message case final message?) ...[
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       context.tr('Last backend message: {message}', {
                         'message': message,
@@ -103,10 +103,10 @@ class _UptimeScreenState extends ConsumerState<UptimeScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg),
           Card(
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.md),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -114,37 +114,37 @@ class _UptimeScreenState extends ConsumerState<UptimeScreen> {
                     context.tr('Offline Sync'),
                     style: theme.textTheme.titleSmall,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     context.tr('Pending: {count}', {
                       'count': '${offlineSync.pendingCount}',
                     }),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xxs),
                   Text(
                     context.tr('Waiting for dependencies: {count}', {
                       'count': '${offlineSync.blockedDependencyCount}',
                     }),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xxs),
                   Text(
                     context.tr('Paused for auth: {count}', {
                       'count': '${offlineSync.pausedAuthCount}',
                     }),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xxs),
                   Text(
                     context.tr('Failed: {count}', {
                       'count': '${offlineSync.failedCount}',
                     }),
                   ),
                   if (offlineSync.hasStaleData) ...[
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       context.tr('Cached data is currently being used.'),
                       style: theme.textTheme.bodySmall,
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xxs),
                     Text(
                       context.tr('Affected views: {views}', {
                         'views': _describeStaleKeys(offlineSync.staleKeys),
@@ -152,10 +152,10 @@ class _UptimeScreenState extends ConsumerState<UptimeScreen> {
                       style: theme.textTheme.bodySmall,
                     ),
                   ],
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.sm),
                   Wrap(
-                    spacing: 12,
-                    runSpacing: 12,
+                    spacing: AppSpacing.sm,
+                    runSpacing: AppSpacing.sm,
                     children: [
                       FilledButton.icon(
                         onPressed: offlineSync.hasQueuedActions
@@ -180,10 +180,10 @@ class _UptimeScreenState extends ConsumerState<UptimeScreen> {
                             : null,
                         icon: _refreshingStaleData
                             ? const SizedBox(
-                                height: 16,
-                                width: 16,
+                                height: AppSpacing.md,
+                                width: AppSpacing.md,
                                 child: CircularProgressIndicator(
-                                  strokeWidth: 2,
+                                  strokeWidth: AppStroke.medium,
                                 ),
                               )
                             : const Icon(Icons.cloud_sync_rounded),
@@ -195,14 +195,14 @@ class _UptimeScreenState extends ConsumerState<UptimeScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg),
           // Current status
           statusAsync.when(
             loading: () => const LinearProgressIndicator(),
             error: (error, stackTrace) => Column(
               children: [
                 _StatusBanner(online: false, theme: theme),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm),
                 AppErrorView(
                   scope: 'uptime.status_check',
                   title: context.tr('Backend status check failed'),
@@ -221,7 +221,7 @@ class _UptimeScreenState extends ConsumerState<UptimeScreen> {
               return _StatusBanner(online: online, theme: theme);
             },
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg),
 
           // API details
           statusAsync.when(
@@ -230,7 +230,7 @@ class _UptimeScreenState extends ConsumerState<UptimeScreen> {
             data: (data) {
               return Card(
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(AppSpacing.md),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -238,25 +238,25 @@ class _UptimeScreenState extends ConsumerState<UptimeScreen> {
                         context.tr('API Details'),
                         style: theme.textTheme.titleSmall,
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.xs),
                       ...data.entries
                           .where((e) => e.key != 'status')
                           .map(
                             (e) => Padding(
-                              padding: const EdgeInsets.only(bottom: 4),
+                              padding: const EdgeInsets.only(bottom: AppSpacing.xxs),
                               child: Row(
                                 children: [
                                   Text(
                                     '${e.key}: ',
                                     style: TextStyle(
-                                      fontSize: 12,
+                                      fontSize: AppText.xs,
                                       color: theme.colorScheme.onSurfaceVariant,
                                     ),
                                   ),
                                   Expanded(
                                     child: Text(
                                       '${e.value}',
-                                      style: const TextStyle(fontSize: 12),
+                                      style: const TextStyle(fontSize: AppText.xs),
                                     ),
                                   ),
                                 ],
@@ -269,7 +269,7 @@ class _UptimeScreenState extends ConsumerState<UptimeScreen> {
               );
             },
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg),
           queueAsync.when(
             loading: () => const SizedBox.shrink(),
             error: (error, stackTrace) => AppErrorView(
@@ -287,7 +287,7 @@ class _UptimeScreenState extends ConsumerState<UptimeScreen> {
               }
               return Card(
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(AppSpacing.md),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -295,7 +295,7 @@ class _UptimeScreenState extends ConsumerState<UptimeScreen> {
                         context.tr('Queued Actions'),
                         style: theme.textTheme.titleSmall,
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppSpacing.sm),
                       for (final action in items)
                         _QueuedActionTile(
                           action: action,
@@ -312,10 +312,10 @@ class _UptimeScreenState extends ConsumerState<UptimeScreen> {
               );
             },
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg),
           Wrap(
-            spacing: 12,
-            runSpacing: 12,
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
             children: [
               FilledButton.icon(
                 onPressed: _checking ? null : _checkAgain,
@@ -348,7 +348,7 @@ class _UptimeScreenState extends ConsumerState<UptimeScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg),
 
           // Ping history
           if (_history.isNotEmpty) ...[
@@ -356,10 +356,10 @@ class _UptimeScreenState extends ConsumerState<UptimeScreen> {
               context.tr('Ping History'),
               style: theme.textTheme.titleMedium,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm),
             ..._history.reversed.map(
               (ping) => Card(
-                margin: const EdgeInsets.only(bottom: 6),
+                margin: const EdgeInsets.only(bottom: AppSpacing.xxs2),
                 child: ListTile(
                   dense: true,
                   leading: Icon(
@@ -367,11 +367,11 @@ class _UptimeScreenState extends ConsumerState<UptimeScreen> {
                     color: ping.online
                         ? AppTheme.approveColor
                         : AppTheme.rejectColor,
-                    size: 20,
+                    size: AppSizes.iconXl,
                   ),
                   title: Text(
                     ping.online ? context.tr('Online') : context.tr('Offline'),
-                    style: const TextStyle(fontSize: 13),
+                    style: const TextStyle(fontSize: AppText.compact),
                   ),
                   subtitle: Text(
                     '${ping.latencyMs}ms · ${ping.timestamp.hour}:${ping.timestamp.minute.toString().padLeft(2, '0')}:${ping.timestamp.second.toString().padLeft(2, '0')}',
@@ -382,7 +382,7 @@ class _UptimeScreenState extends ConsumerState<UptimeScreen> {
             ),
           ],
 
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg),
           OutlinedButton.icon(
             onPressed: _checking ? null : _checkOnce,
             icon: const Icon(Icons.speed),
@@ -523,31 +523,31 @@ class _QueuedActionTile extends StatelessWidget {
       OfflineQueueStatus.cancelled => context.tr('cancelled'),
     };
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Container(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(AppSpacing.sm),
         decoration: BoxDecoration(
           color: theme.colorScheme.surfaceContainerHighest.withValues(
-            alpha: 0.35,
+            alpha: AppOpacity.highlight,
           ),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppRadii.md),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(action.label, style: theme.textTheme.titleSmall),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xxs),
             Text(
               '${action.method} ${action.path}',
               style: theme.textTheme.bodySmall,
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xxs),
             Text(
               context.tr('Status: {status}', {'status': statusLabel}),
               style: theme.textTheme.bodySmall,
             ),
             if (action.lastError?.isNotEmpty == true) ...[
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpacing.xxs),
               Text(
                 action.lastError!,
                 style: theme.textTheme.bodySmall?.copyWith(
@@ -555,10 +555,10 @@ class _QueuedActionTile extends StatelessWidget {
                 ),
               ),
             ],
-            const SizedBox(height: 10),
+            const SizedBox(height: AppSpacing.compact),
             Wrap(
-              spacing: 10,
-              runSpacing: 10,
+              spacing: AppSpacing.compact,
+              runSpacing: AppSpacing.compact,
               children: [
                 OutlinedButton.icon(
                   onPressed: onRetry,
@@ -600,10 +600,10 @@ class _StatusBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     final statusColor = online ? AppTheme.approveColor : AppTheme.rejectColor;
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: statusColor.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(16),
+        color: statusColor.withValues(alpha: AppOpacity.subtle),
+        borderRadius: BorderRadius.circular(AppRadii.lg),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -611,13 +611,13 @@ class _StatusBanner extends StatelessWidget {
           Icon(
             online ? Icons.cloud_done : Icons.cloud_off,
             color: statusColor,
-            size: 32,
+            size: AppSizes.control,
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm),
           Text(
             online ? context.tr('API Online') : context.tr('API Offline'),
             style: TextStyle(
-              fontSize: 20,
+              fontSize: AppText.xxl,
               fontWeight: FontWeight.bold,
               color: statusColor,
             ),

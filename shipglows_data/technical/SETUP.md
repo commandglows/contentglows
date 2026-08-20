@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "0.1.1"
 project: contentglows
 created: "2026-05-04"
-updated: "2026-05-04"
+updated: "2026-08-20"
 status: draft
 source_skill: sf-docs
 scope: setup
@@ -106,7 +106,28 @@ FEEDBACK_ADMIN_EMAILS=admin@contentglows.com \
 
 Do not put server secrets such as `ZERNIO_API_KEY`, `LATE_API_KEY`, Turso database tokens, or provider API keys into Flutter build defines.
 
-## 5. Backend Lab
+## 5. Design Tokens
+
+The canonical app/site visual source is
+`tools/design-tokens/contentglows_theme.json`. Update it before changing a
+shared color, type scale, spacing, radius, shadow, motion, breakpoint, or
+component role. Flutter consumes the generated
+`app/lib/presentation/theme/app_theme_tokens.dart` adapter through
+`app_theme.dart`; do not edit generated values independently.
+
+In a session that permits local execution, regenerate the Flutter adapter with:
+
+```bash
+node tools/design-tokens/generate_app_theme_tokens.mjs
+```
+
+Then run the relevant Flutter/site checks and let ShipGlows perform the central
+design-drift verification. ContentGlows deliberately carries no duplicate
+project-local drift scanner. User brand data, intrinsic media geometry,
+platform/protocol constants, and generated design-reference values follow the
+documented design-system exception policy.
+
+## 6. Backend Lab
 
 ```bash
 cd lab
@@ -137,7 +158,7 @@ cp .env.example .env
 # Edit .env locally. Never commit it.
 ```
 
-## 6. Turso CLI Install and Connection
+## 7. Turso CLI Install and Connection
 
 `lab` installs the Turso CLI through its project-local Flox environment. After cloning, do not install Turso globally with curl for normal project work; activate the repo-managed CLI from `lab`:
 

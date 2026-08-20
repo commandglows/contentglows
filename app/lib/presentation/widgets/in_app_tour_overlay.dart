@@ -68,7 +68,7 @@ class _InAppTourOverlayState extends ConsumerState<InAppTourOverlay> {
     final stepCardKey = GlobalKey();
     final stepCard = Material(
       key: stepCardKey,
-      color: Colors.transparent,
+      color: AppTheme.transparentColor,
       child: Container(
         padding: EdgeInsets.fromLTRB(
           AppSpacing.lg,
@@ -79,11 +79,15 @@ class _InAppTourOverlayState extends ConsumerState<InAppTourOverlay> {
         decoration: BoxDecoration(
           color: palette.elevatedSurface,
           borderRadius: BorderRadius.circular(AppRadii.lg),
-          border: Border.all(color: AppTheme.approveColor.withAlpha(80)),
+          border: Border.all(
+            color: AppTheme.approveColor.withAlpha(AppAlpha.border),
+          ),
           boxShadow: [
             BoxShadow(
-              color: colorScheme.shadow.withValues(alpha: 0.22),
-              blurRadius: 24,
+              color: colorScheme.shadow.withValues(
+                alpha: AppOpacity.softStrong,
+              ),
+              blurRadius: AppEffects.blurStrong,
               offset: const Offset(0, AppSpacing.xs),
             ),
           ],
@@ -110,7 +114,7 @@ class _InAppTourOverlayState extends ConsumerState<InAppTourOverlay> {
               style: TextStyle(
                 color: colorScheme.onSurfaceVariant,
                 fontSize: AppText.sm,
-                height: 1.45,
+                height: AppLineHeight.readable,
               ),
             ),
             if (step.hint != null) ...[
@@ -121,17 +125,17 @@ class _InAppTourOverlayState extends ConsumerState<InAppTourOverlay> {
                   vertical: AppSpacing.xs,
                 ),
                 decoration: BoxDecoration(
-                  color: AppTheme.approveColor.withAlpha(20),
+                  color: AppTheme.approveColor.withAlpha(AppAlpha.subtle),
                   borderRadius: BorderRadius.circular(AppRadii.md),
                   border: Border.all(
-                    color: AppTheme.approveColor.withAlpha(60),
+                    color: AppTheme.approveColor.withAlpha(AppAlpha.soft),
                   ),
                 ),
                 child: Row(
                   children: [
                     Icon(
                       Icons.lightbulb_outline,
-                      size: 16,
+                      size: AppSizes.icon,
                       color: AppTheme.approveColor,
                     ),
                     SizedBox(width: AppSpacing.xs),
@@ -142,7 +146,7 @@ class _InAppTourOverlayState extends ConsumerState<InAppTourOverlay> {
                           color: AppTheme.approveColor,
                           fontSize: AppText.body,
                           fontWeight: FontWeight.w500,
-                          height: 1.35,
+                          height: AppLineHeight.compact,
                         ),
                       ),
                     ),
@@ -281,14 +285,18 @@ class _InAppTourOverlayState extends ConsumerState<InAppTourOverlay> {
             ),
           ),
         ),
-        Icon(Icons.tour_rounded, size: 18, color: AppTheme.approveColor),
+        Icon(
+          Icons.tour_rounded,
+          size: AppSizes.iconLarge,
+          color: AppTheme.approveColor,
+        ),
         SizedBox(width: AppSpacing.xs),
         IconButton(
           tooltip: context.tr('Pause tour'),
           onPressed: controller.pause,
           icon: Icon(
             Icons.close_rounded,
-            size: 18,
+            size: AppSizes.iconLarge,
             color: colorScheme.onSurfaceVariant,
           ),
           padding: EdgeInsets.zero,
@@ -305,12 +313,14 @@ class _InAppTourOverlayState extends ConsumerState<InAppTourOverlay> {
         final isActive = i <= tour.stepIndex;
         return Expanded(
           child: Container(
-            height: 3,
+            height: AppStroke.strong,
             margin: const EdgeInsets.symmetric(horizontal: AppSpacing.thin),
             decoration: BoxDecoration(
               color: isActive
                   ? AppTheme.approveColor
-                  : colorScheme.outlineVariant.withValues(alpha: 0.35),
+                  : colorScheme.outlineVariant.withValues(
+                      alpha: AppOpacity.highlight,
+                    ),
               borderRadius: BorderRadius.circular(AppRadii.xxs),
             ),
           ),
@@ -333,7 +343,10 @@ class _InAppTourOverlayState extends ConsumerState<InAppTourOverlay> {
         if (!tour.isFirst)
           TextButton.icon(
             onPressed: () => controller.previous(context),
-            icon: const Icon(Icons.arrow_back_rounded, size: 16),
+            icon: const Icon(
+              Icons.arrow_back_rounded,
+              size: AppSizes.icon,
+            ),
             label: Text(context.tr('Previous')),
             style: TextButton.styleFrom(
               foregroundColor: colorScheme.onSurface,
@@ -349,7 +362,7 @@ class _InAppTourOverlayState extends ConsumerState<InAppTourOverlay> {
           child: Text(context.tr('Skip tour')),
         ),
         if (hasNavigationShortcut) ...[
-          const SizedBox(width: 6),
+          const SizedBox(width: AppSpacing.xxs2),
           TextButton(
             onPressed: () => context.go(route),
             style: TextButton.styleFrom(
@@ -369,7 +382,7 @@ class _InAppTourOverlayState extends ConsumerState<InAppTourOverlay> {
           onPressed: () => controller.next(context),
           icon: Icon(
             tour.isLast ? Icons.check_rounded : Icons.arrow_forward_rounded,
-            size: 16,
+            size: AppSizes.icon,
           ),
           label: Text(context.tr(tour.isLast ? 'Finish' : 'Next')),
           style: FilledButton.styleFrom(

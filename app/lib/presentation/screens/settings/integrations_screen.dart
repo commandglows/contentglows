@@ -262,7 +262,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
             width: _kHeroIconSize,
             height: _kHeroIconSize,
             decoration: BoxDecoration(
-              color: theme.colorScheme.primary.withAlpha(40),
+              color: theme.colorScheme.primary.withAlpha(AppAlpha.tint),
               borderRadius: BorderRadius.circular(AppRadii.md),
             ),
             child: Icon(
@@ -361,7 +361,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
               'Degraded mode is active. The app stays available, cached data may be stale, and queued actions will replay when FastAPI recovers.',
             ),
             style: TextStyle(
-              color: AppTheme.warningColor.withAlpha(220),
+              color: AppTheme.warningColor.withAlpha(AppAlpha.high220),
               fontSize: AppText.xs,
               height: _kLineHeight,
             ),
@@ -476,7 +476,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
             : error.message.trim(),
         scope: 'settings.ai_runtime.update',
         contextData: {'mode': mode, 'responseBody': error.responseBody},
-        backgroundColor: AppTheme.rejectColor.withAlpha(200),
+        backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
       );
     } finally {
       if (mounted) setState(() => _isSavingRuntimeMode = false);
@@ -521,9 +521,11 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
                   vertical: 10,
                 ),
                 decoration: BoxDecoration(
-                  color: AppTheme.infoColor.withAlpha(12),
+                  color: AppTheme.infoColor.withAlpha(AppAlpha.low12),
                   borderRadius: BorderRadius.circular(AppRadii.md),
-                  border: Border.all(color: AppTheme.infoColor.withAlpha(40)),
+                  border: Border.all(
+                    color: AppTheme.infoColor.withAlpha(AppAlpha.tint),
+                  ),
                 ),
                 child: Row(
                   children: [
@@ -590,8 +592,8 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
             ),
             const SizedBox(height: _IntegrationsScreenState._kInlineSpacing14),
             Wrap(
-              spacing: 10,
-              runSpacing: 10,
+              spacing: AppSpacing.compact,
+              runSpacing: AppSpacing.compact,
               children: [
                 FilledButton.icon(
                   onPressed: canManage && !busy
@@ -639,7 +641,9 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
                       : const Icon(Icons.delete_outline, size: _kActionIconSize),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppTheme.rejectColor,
-                    side: BorderSide(color: AppTheme.rejectColor.withAlpha(80)),
+                    side: BorderSide(
+                      color: AppTheme.rejectColor.withAlpha(AppAlpha.border),
+                    ),
                     minimumSize: const Size(0, _kActionButtonHeight),
                   ),
                   label: Text(context.tr('Delete')),
@@ -788,7 +792,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
         scope: 'settings.openrouter.save',
         error: error,
         contextData: {'statusCode': error.statusCode, 'path': error.path},
-        backgroundColor: AppTheme.rejectColor.withAlpha(200),
+        backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
       );
     } catch (error, stackTrace) {
       if (!mounted) return;
@@ -801,7 +805,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
         scope: 'settings.openrouter.save.unexpected',
         error: error,
         stackTrace: stackTrace,
-        backgroundColor: AppTheme.rejectColor.withAlpha(200),
+        backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
       );
     } finally {
       if (mounted) setState(() => _isSavingOpenRouterKey = false);
@@ -821,7 +825,9 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(validationMessage),
-            backgroundColor: AppTheme.approveColor.withAlpha(210),
+            backgroundColor: AppTheme.approveColor.withAlpha(
+              AppAlpha.high210,
+            ),
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -831,7 +837,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
           ref,
           message: validationMessage,
           scope: 'settings.openrouter.validation_warning',
-          backgroundColor: AppTheme.warningColor.withAlpha(220),
+          backgroundColor: AppTheme.warningColor.withAlpha(AppAlpha.high220),
         );
       }
     } on ApiException catch (error) {
@@ -845,7 +851,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
         scope: 'settings.openrouter.validate',
         error: error,
         contextData: {'statusCode': error.statusCode, 'path': error.path},
-        backgroundColor: AppTheme.rejectColor.withAlpha(200),
+        backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
       );
     } catch (error, stackTrace) {
       if (!mounted) return;
@@ -858,7 +864,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
         scope: 'settings.openrouter.validate.unexpected',
         error: error,
         stackTrace: stackTrace,
-        backgroundColor: AppTheme.rejectColor.withAlpha(200),
+        backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
       );
     } finally {
       if (mounted) setState(() => _isValidatingOpenRouterKey = false);
@@ -920,7 +926,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
         scope: 'settings.openrouter.delete',
         error: error,
         contextData: {'statusCode': error.statusCode, 'path': error.path},
-        backgroundColor: AppTheme.rejectColor.withAlpha(200),
+        backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
       );
     } catch (error, stackTrace) {
       if (!mounted) return;
@@ -933,7 +939,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
         scope: 'settings.openrouter.delete.unexpected',
         error: error,
         stackTrace: stackTrace,
-        backgroundColor: AppTheme.rejectColor.withAlpha(200),
+        backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
       );
     } finally {
       if (mounted) setState(() => _isDeletingOpenRouterKey = false);
@@ -1074,8 +1080,8 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
             ],
             const SizedBox(height: _IntegrationsScreenState._kInlineSpacing14),
             Wrap(
-              spacing: 10,
-              runSpacing: 10,
+              spacing: AppSpacing.compact,
+              runSpacing: AppSpacing.compact,
               children: [
                 FilledButton.icon(
                   onPressed: canManage && activeProjectId != null && !busy
@@ -1123,7 +1129,9 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
                       : const Icon(Icons.delete_outline, size: _kActionIconSize),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppTheme.rejectColor,
-                    side: BorderSide(color: AppTheme.rejectColor.withAlpha(80)),
+                    side: BorderSide(
+                      color: AppTheme.rejectColor.withAlpha(AppAlpha.border),
+                    ),
                     minimumSize: const Size(0, _kActionButtonHeight),
                   ),
                   label: Text(context.tr('Delete')),
@@ -1137,7 +1145,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
                   'Select a project before enabling automatic email ingestion.',
                 ),
                 style: TextStyle(
-                  color: AppTheme.warningColor.withAlpha(220),
+                  color: AppTheme.warningColor.withAlpha(AppAlpha.high220),
                   fontSize: AppText.xs,
                 ),
               ),
@@ -1296,7 +1304,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
         scope: 'settings.email_source.save',
         error: error,
         contextData: {'statusCode': error.statusCode, 'path': error.path},
-        backgroundColor: AppTheme.rejectColor.withAlpha(200),
+        backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
       );
     } finally {
       if (mounted) setState(() => _isSavingEmailSource = false);
@@ -1311,8 +1319,8 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
       ref.invalidate(emailSourceStatusProvider);
       if (!mounted) return;
       final color = result.valid
-          ? AppTheme.approveColor.withAlpha(210)
-          : AppTheme.warningColor.withAlpha(220);
+          ? AppTheme.approveColor.withAlpha(AppAlpha.high210)
+          : AppTheme.warningColor.withAlpha(AppAlpha.high220);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(result.message),
@@ -1330,7 +1338,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
         }),
         scope: 'settings.email_source.validate',
         error: error,
-        backgroundColor: AppTheme.rejectColor.withAlpha(200),
+        backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
       );
     } finally {
       if (mounted) setState(() => _isValidatingEmailSource = false);
@@ -1387,7 +1395,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
         }),
         scope: 'settings.email_source.delete',
         error: error,
-        backgroundColor: AppTheme.rejectColor.withAlpha(200),
+        backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
       );
     } finally {
       if (mounted) setState(() => _isDeletingEmailSource = false);
@@ -1520,7 +1528,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
           'GitHub OAuth is unavailable. Check backend configuration.',
         ),
         scope: 'settings.github.connect_url_missing',
-        backgroundColor: AppTheme.rejectColor.withAlpha(200),
+        backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
       );
       return;
     }
@@ -1563,7 +1571,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
         message: context.tr('Could not open browser for GitHub authorization'),
         scope: 'settings.github.browser_unavailable',
         contextData: {'connectUrl': connectUrl},
-        backgroundColor: AppTheme.rejectColor.withAlpha(200),
+        backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
       );
     }
   }
@@ -1614,7 +1622,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
         ref,
         message: context.tr('Failed to disconnect GitHub.'),
         scope: 'settings.github.disconnect',
-        backgroundColor: AppTheme.rejectColor.withAlpha(200),
+        backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
       );
     }
   }
@@ -1692,8 +1700,8 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
             ],
             const SizedBox(height: _IntegrationsScreenState._kInlineSpacing14),
             Wrap(
-              spacing: 10,
-              runSpacing: 10,
+              spacing: AppSpacing.compact,
+              runSpacing: AppSpacing.compact,
               children: [
                 FilledButton.icon(
                   onPressed: canManage && !busy
@@ -1865,8 +1873,8 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
             ),
             const SizedBox(height: _IntegrationsScreenState._kInlineSpacing6),
             Wrap(
-              spacing: 8,
-              runSpacing: 8,
+              spacing: AppSpacing.xs,
+              runSpacing: AppSpacing.xs,
               children: compatible.take(8).map((property) {
                 final selected = selectedPropertyUrl == property.siteUrl;
                 return ChoiceChip(
@@ -1995,7 +2003,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
           ),
           scope: 'settings.search_console.browser_unavailable',
           contextData: {'authorizeUrl': start.authorizeUrl},
-          backgroundColor: AppTheme.rejectColor.withAlpha(200),
+          backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
         );
       }
     } on ApiException catch (error, stackTrace) {
@@ -2046,7 +2054,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
             : error.message.trim(),
         scope: 'settings.search_console.property',
         error: error,
-        backgroundColor: AppTheme.rejectColor.withAlpha(200),
+        backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
       );
     } finally {
       if (mounted) setState(() => _isSavingSearchConsoleProperty = false);
@@ -2076,7 +2084,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
             : error.message.trim(),
         scope: 'settings.search_console.validate',
         error: error,
-        backgroundColor: AppTheme.rejectColor.withAlpha(200),
+        backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
       );
     } finally {
       if (mounted) setState(() => _isValidatingSearchConsole = false);
@@ -2135,7 +2143,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
             : error.message.trim(),
         scope: 'settings.search_console.disconnect',
         error: error,
-        backgroundColor: AppTheme.rejectColor.withAlpha(200),
+        backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
       );
     } finally {
       if (mounted) setState(() => _isDisconnectingSearchConsole = false);
@@ -2292,7 +2300,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
       return Text(
         context.tr('Not wired'),
         style: TextStyle(
-          color: AppTheme.warningColor.withAlpha(180),
+          color: AppTheme.warningColor.withAlpha(AppAlpha.icon),
           fontSize: AppText.xs,
         ),
       );
@@ -2303,7 +2311,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
       return Text(
         context.tr('Unavailable'),
         style: TextStyle(
-          color: AppTheme.warningColor.withAlpha(180),
+          color: AppTheme.warningColor.withAlpha(AppAlpha.icon),
           fontSize: AppText.xs,
         ),
       );
@@ -2374,7 +2382,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
         ),
         scope: 'settings.channel.no_project',
         contextData: {'channel': channelName, 'platform': platform},
-        backgroundColor: AppTheme.warningColor.withAlpha(200),
+        backgroundColor: AppTheme.warningColor.withAlpha(AppAlpha.text),
       );
       return;
     }
@@ -2396,7 +2404,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
         }),
         scope: 'settings.channel.connect_url_missing',
         contextData: {'channel': channelName, 'platform': platform},
-        backgroundColor: AppTheme.rejectColor.withAlpha(200),
+        backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
       );
       return;
     }
@@ -2453,7 +2461,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
           'platform': platform,
           'connectUrl': connectUrl,
         },
-        backgroundColor: AppTheme.rejectColor.withAlpha(200),
+          backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
       );
     }
   }
@@ -2529,7 +2537,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
           }),
           scope: 'settings.channel.disconnect',
           contextData: {'channel': channelName, 'platform': platform},
-          backgroundColor: AppTheme.rejectColor.withAlpha(200),
+          backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
         );
       }
     }
@@ -2701,10 +2709,14 @@ class AiRuntimeSettingsCard extends StatelessWidget {
               vertical: _IntegrationsScreenState._kInlineSpacing10,
             ),
             decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest.withAlpha(80),
+              color: theme.colorScheme.surfaceContainerHighest.withAlpha(
+                AppAlpha.border,
+              ),
               borderRadius: BorderRadius.circular(AppRadii.md),
               border: Border.all(
-                color: theme.colorScheme.outlineVariant.withAlpha(120),
+                color: theme.colorScheme.outlineVariant.withAlpha(
+                  AppAlpha.strong120,
+                ),
               ),
             ),
             child: Row(

@@ -49,12 +49,12 @@ class WorkDomainsScreen extends ConsumerWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.workspaces_outlined, size: 64,
+                  Icon(Icons.workspaces_outlined, size: AppSizes.heroIcon,
                       color: theme.colorScheme.outlineVariant),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
                   Text(context.tr('No work domains configured'),
                       style: TextStyle(color: theme.colorScheme.onSurfaceVariant)),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xxs),
                   Text(context.tr('Domains are created when robots run on a project'),
                       style: theme.textTheme.bodySmall
                           ?.copyWith(color: theme.colorScheme.outlineVariant)),
@@ -66,7 +66,7 @@ class WorkDomainsScreen extends ConsumerWidget {
           return RefreshIndicator(
             onRefresh: () async => ref.invalidate(_workDomainsProvider),
             child: ListView.builder(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.md),
               itemCount: domains.length,
               itemBuilder: (context, index) =>
                   _DomainCard(domain: domains[index]),
@@ -108,17 +108,23 @@ class _DomainCard extends StatelessWidget {
     };
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 10),
+      margin: const EdgeInsets.only(bottom: AppSpacing.compact),
       child: Padding(
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.all(AppSpacing.contentInset),
         child: Row(
           children: [
             CircleAvatar(
               radius: 22,
-              backgroundColor: statusColor.withValues(alpha: 0.15),
-              child: Icon(domainIcon, color: statusColor, size: 22),
+              backgroundColor: statusColor.withValues(
+                alpha: AppOpacity.medium,
+              ),
+              child: Icon(
+                domainIcon,
+                color: statusColor,
+                size: AppSizes.iconHeading,
+              ),
             ),
-            const SizedBox(width: 14),
+            const SizedBox(width: AppSpacing.contentInset),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,19 +134,26 @@ class _DomainCard extends StatelessWidget {
                       Text(name.toUpperCase(),
                           style: theme.textTheme.titleSmall
                               ?.copyWith(fontWeight: FontWeight.w700)),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.xs),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.xxs2,
+                          vertical: AppSpacing.xxsHalf,
+                        ),
                         decoration: BoxDecoration(
-                          color: statusColor.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(6),
+                          color: statusColor.withValues(
+                            alpha: AppOpacity.medium,
+                          ),
+                          borderRadius: BorderRadius.circular(
+                            AppRadii.compactControl,
+                          ),
                         ),
                         child: Text(context.tr(status),
-                            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: statusColor)),
+                            style: TextStyle(fontSize: AppText.xxs, fontWeight: FontWeight.w600, color: statusColor)),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: AppSpacing.xxs2),
                   Row(
                     children: [
                       _Stat(
@@ -148,14 +161,14 @@ class _DomainCard extends StatelessWidget {
                         value: '$pending',
                         color: AppTheme.warningColor,
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: AppSpacing.md),
                       _Stat(
                         label: context.tr('Done'),
                         value: '$completed',
                         color: AppTheme.approveColor,
                       ),
                       if (lastRunStatus != null) ...[
-                        const SizedBox(width: 16),
+                        const SizedBox(width: AppSpacing.md),
                         _Stat(
                           label: context.tr('Last'),
                           value: context.tr(lastRunStatus),
@@ -185,8 +198,8 @@ class _Stat extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(value, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: color)),
-        Text(label, style: TextStyle(fontSize: 10, color: color.withValues(alpha: 0.7))),
+        Text(value, style: TextStyle(fontSize: AppText.sm, fontWeight: FontWeight.w600, color: color)),
+        Text(label, style: TextStyle(fontSize: AppText.xxs, color: color.withValues(alpha: AppOpacity.strong))),
       ],
     );
   }

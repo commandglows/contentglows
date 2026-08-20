@@ -46,20 +46,24 @@ class OfflineSyncStatusChip extends StatelessWidget {
         vertical: compact ? 4 : 5,
       ),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: color.withValues(alpha: 0.2)),
+        color: color.withValues(alpha: AppOpacity.soft),
+        borderRadius: BorderRadius.circular(AppRadii.pill),
+        border: Border.all(color: color.withValues(alpha: AppOpacity.light)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: compact ? 12 : 14, color: color),
-          const SizedBox(width: 4),
+          Icon(
+            icon,
+            size: compact ? AppSizes.iconTiny : AppSizes.iconSm,
+            color: color,
+          ),
+          const SizedBox(width: AppSpacing.xxs),
           Text(
             label,
             style: TextStyle(
               color: color,
-              fontSize: compact ? 11 : 12,
+              fontSize: compact ? AppText.xs11 : AppText.xs,
               fontWeight: FontWeight.w600,
             ),
           ),

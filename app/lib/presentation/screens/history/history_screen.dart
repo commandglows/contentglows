@@ -41,14 +41,14 @@ class HistoryScreen extends ConsumerWidget {
                 children: [
                   Icon(
                     Icons.history,
-                    size: 64,
+                    size: AppSizes.heroIcon,
                     color: theme.colorScheme.outlineVariant,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
                   Text(
                     context.tr('No history yet'),
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: AppText.title,
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
@@ -57,7 +57,7 @@ class HistoryScreen extends ConsumerWidget {
             );
           }
           return ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.md),
             itemCount: items.length,
             itemBuilder: (context, index) => _HistoryTile(item: items[index]),
           );
@@ -81,11 +81,11 @@ class _HistoryTile extends StatelessWidget {
     final dateFormat = DateFormat('MMM d, HH:mm', context.localeTag);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: palette.elevatedSurface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppRadii.lg),
         border: Border.all(color: palette.borderSubtle),
       ),
       child: Row(
@@ -95,12 +95,16 @@ class _HistoryTile extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: statusColor.withAlpha(30),
+              color: statusColor.withAlpha(AppAlpha.glow),
               shape: BoxShape.circle,
             ),
-            child: Icon(_statusIcon(item.status), color: statusColor, size: 22),
+            child: Icon(
+              _statusIcon(item.status),
+              color: statusColor,
+              size: AppSizes.iconHeading,
+            ),
           ),
-          const SizedBox(width: 14),
+          const SizedBox(width: AppSpacing.contentInset),
           // Content info
           Expanded(
             child: Column(
@@ -110,13 +114,13 @@ class _HistoryTile extends StatelessWidget {
                   item.title,
                   style: TextStyle(
                     color: theme.colorScheme.onSurface,
-                    fontSize: 15,
+                    fontSize: AppText.medium,
                     fontWeight: FontWeight.w600,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xxs),
                 Row(
                   children: [
                     Container(
@@ -125,34 +129,39 @@ class _HistoryTile extends StatelessWidget {
                         vertical: 2,
                       ),
                       decoration: BoxDecoration(
-                        color: typeColor.withAlpha(30),
-                        borderRadius: BorderRadius.circular(6),
+                        color: typeColor.withAlpha(AppAlpha.glow),
+                        borderRadius: BorderRadius.circular(
+                          AppRadii.compactControl,
+                        ),
                       ),
                       child: Text(
                         item.typeLabel,
-                        style: TextStyle(color: typeColor, fontSize: 11),
+                        style: TextStyle(
+                          color: typeColor,
+                          fontSize: AppText.xs11,
+                        ),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.xs),
                     Text(
                       dateFormat.format(item.publishedAt ?? item.createdAt),
                       style: TextStyle(
                         color: theme.colorScheme.onSurfaceVariant,
-                        fontSize: 12,
+                        fontSize: AppText.xs,
                       ),
                     ),
                   ],
                 ),
                 if (item.reviewActorDisplay != null) ...[
-                  const SizedBox(height: 6),
+                  const SizedBox(height: AppSpacing.xxs2),
                   Row(
                     children: [
                       Icon(
                         Icons.verified_user_outlined,
-                        size: 13,
+                        size: AppSizes.iconCompact,
                         color: theme.colorScheme.onSurfaceVariant,
                       ),
-                      const SizedBox(width: 6),
+                      const SizedBox(width: AppSpacing.xxs2),
                       Expanded(
                         child: Text(
                           context.tr('Reviewed by {reviewer}{typeSuffix}', {
@@ -163,7 +172,7 @@ class _HistoryTile extends StatelessWidget {
                           }),
                           style: TextStyle(
                             color: theme.colorScheme.onSurfaceVariant,
-                            fontSize: 11,
+                            fontSize: AppText.xs11,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -177,16 +186,19 @@ class _HistoryTile extends StatelessWidget {
           ),
           // Status badge
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.compact,
+              vertical: AppSpacing.fine,
+            ),
             decoration: BoxDecoration(
-              color: statusColor.withAlpha(20),
-              borderRadius: BorderRadius.circular(8),
+              color: statusColor.withAlpha(AppAlpha.subtle),
+              borderRadius: BorderRadius.circular(AppRadii.sm),
             ),
             child: Text(
               context.tr(item.status.name),
               style: TextStyle(
                 color: statusColor,
-                fontSize: 12,
+                fontSize: AppText.xs,
                 fontWeight: FontWeight.w500,
               ),
             ),

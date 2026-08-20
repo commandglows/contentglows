@@ -42,13 +42,14 @@ class PersonasListScreen extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(Icons.people_outline,
-                      size: 64, color: colorScheme.outlineVariant),
-                  const SizedBox(height: 16),
+                      size: AppSizes.heroIcon,
+                      color: colorScheme.outlineVariant),
+                  const SizedBox(height: AppSpacing.md),
                   Text(
                     context.tr('No personas yet'),
                     style: theme.textTheme.titleMedium,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     context.tr(
                       'Create a customer persona to help\nthe AI generate targeted content',
@@ -58,7 +59,7 @@ class PersonasListScreen extends ConsumerWidget {
                       color: colorScheme.onSurfaceVariant,
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   FilledButton.icon(
                     onPressed: () => context.push('/personas/new'),
                     icon: const Icon(Icons.add),
@@ -70,7 +71,7 @@ class PersonasListScreen extends ConsumerWidget {
           }
 
           return ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.md),
             itemCount: personas.length,
             itemBuilder: (context, index) {
               final p = personas[index];
@@ -78,17 +79,22 @@ class PersonasListScreen extends ConsumerWidget {
                 offlineEntitySyncProvider(offlineEntityKey('persona', p.id ?? '')),
               );
               return Container(
-                margin: const EdgeInsets.only(bottom: 12),
+                margin: const EdgeInsets.only(bottom: AppSpacing.sm),
                 decoration: BoxDecoration(
                   color: palette.surface,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(AppRadii.lg),
                   border: Border.all(color: colorScheme.outlineVariant),
                 ),
                 child: ListTile(
                   contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                      const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.lg,
+                        vertical: AppSpacing.xs,
+                      ),
                   leading: CircleAvatar(
-                    backgroundColor: colorScheme.primary.withValues(alpha: 0.14),
+                    backgroundColor: colorScheme.primary.withValues(
+                      alpha: AppOpacity.selection,
+                    ),
                     child: Text(
                       p.avatar ?? p.name.substring(0, 1).toUpperCase(),
                       style: theme.textTheme.titleMedium?.copyWith(
@@ -112,7 +118,7 @@ class PersonasListScreen extends ConsumerWidget {
                     children: [
                       _confidenceBadge(p.confidence),
                       if (syncInfo != null) ...[
-                        const SizedBox(height: 6),
+                        const SizedBox(height: AppSpacing.xxs2),
                         OfflineSyncStatusChip(info: syncInfo, compact: true),
                       ],
                     ],
@@ -135,15 +141,22 @@ class PersonasListScreen extends ConsumerWidget {
             : AppTheme.rejectColor;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.compact,
+        vertical: AppSpacing.xxs,
+      ),
       decoration: BoxDecoration(
-        color: color.withAlpha(20),
-        borderRadius: BorderRadius.circular(8),
+        color: color.withAlpha(AppAlpha.subtle),
+        borderRadius: BorderRadius.circular(AppRadii.sm),
       ),
       child: Text(
         '$confidence%',
         style:
-            TextStyle(color: color, fontSize: 13, fontWeight: FontWeight.w600),
+            TextStyle(
+              color: color,
+              fontSize: AppText.compact,
+              fontWeight: FontWeight.w600,
+            ),
       ),
     );
   }

@@ -1,6 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Navbar from '../components/Navbar.astro';
+import themeTokens from '../../../tools/design-tokens/contentglows_theme.json';
+
+const { colors, typography, spacing, radius, motion } = themeTokens;
 ---
 
 <Layout
@@ -13,7 +16,7 @@ import Navbar from '../components/Navbar.astro';
     <div class="container">
       <header class="pg-header">
         <h1>Design Playground</h1>
-        <p>Live token reference for the ContentGlows design system. All values sourced from <code>Layout.astro :root</code>.</p>
+        <p>Live token reference for the ContentGlows design system. The canonical JSON source is injected as CSS variables by <code>Layout.astro</code>; displayed raw values are documentation, not independent UI decisions.</p>
       </header>
 
       <!-- COLORS -->
@@ -22,25 +25,25 @@ import Navbar from '../components/Navbar.astro';
 
         <h3 class="pg-group-label">Brand</h3>
         <div class="swatch-row">
-          <div class="swatch" style="background:var(--color-primary);"><span>--color-primary</span><span>#3b82f6</span></div>
-          <div class="swatch" style="background:var(--color-primary-dark);"><span>--color-primary-dark</span><span>#2563eb</span></div>
-          <div class="swatch" style="background:var(--color-secondary);"><span>--color-secondary</span><span>#8b5cf6</span></div>
-          <div class="swatch" style="background:var(--color-accent);"><span>--color-accent</span><span>#06b6d4</span></div>
+          <div class="swatch" style="background:var(--color-primary);"><span>--color-primary</span><span>{colors.primary}</span></div>
+          <div class="swatch" style="background:var(--color-primary-dark);"><span>--color-primary-dark</span><span>{colors.primaryDark}</span></div>
+          <div class="swatch" style="background:var(--color-secondary);"><span>--color-secondary</span><span>{colors.secondary}</span></div>
+          <div class="swatch" style="background:var(--color-accent);"><span>--color-accent</span><span>{colors.accent}</span></div>
         </div>
 
         <h3 class="pg-group-label">Neutral</h3>
         <div class="swatch-row">
-          <div class="swatch dark" style="background:var(--color-dark);"><span>--color-dark</span><span>#0f172a</span></div>
-          <div class="swatch dark" style="background:var(--color-gray);"><span>--color-gray</span><span>#64748b</span></div>
-          <div class="swatch light" style="background:var(--color-light-gray);"><span>--color-light-gray</span><span>#f1f5f9</span></div>
-          <div class="swatch light" style="background:var(--color-light-blue);"><span>--color-light-blue</span><span>#dbeafe</span></div>
-          <div class="swatch light bordered" style="background:var(--color-white);"><span>--color-white</span><span>#ffffff</span></div>
+          <div class="swatch dark" style="background:var(--color-dark);"><span>--color-dark</span><span>{colors.dark}</span></div>
+          <div class="swatch dark" style="background:var(--color-gray);"><span>--color-gray</span><span>{colors.gray}</span></div>
+          <div class="swatch light" style="background:var(--color-light-gray);"><span>--color-light-gray</span><span>{colors.lightGray}</span></div>
+          <div class="swatch light" style="background:var(--color-light-blue);"><span>--color-light-blue</span><span>{colors.lightBlue}</span></div>
+          <div class="swatch light bordered" style="background:var(--color-white);"><span>--color-white</span><span>{colors.white}</span></div>
         </div>
 
         <h3 class="pg-group-label">Support</h3>
         <div class="swatch-row">
-          <div class="swatch dark" style="background:var(--color-badge-bg); color:var(--color-badge-text);"><span>--color-badge-bg</span><span>#fef3c7</span></div>
-          <div class="swatch dark" style="background:var(--color-code-text); color:var(--color-text-primary);"><span>--color-code-text</span><span>#e2e8f0</span></div>
+          <div class="swatch dark" style="background:var(--color-badge-bg); color:var(--color-badge-text);"><span>--color-badge-bg</span><span>{colors.badgeBg}</span></div>
+          <div class="swatch dark" style="background:var(--color-code-text); color:var(--color-text-primary);"><span>--color-code-text</span><span>{colors.codeText}</span></div>
         </div>
 
         <h3 class="pg-group-label">Gradient preview</h3>
@@ -62,23 +65,23 @@ import Navbar from '../components/Navbar.astro';
             <span class="type-sample" style="font-size:var(--text-h2); font-weight:700; line-height:var(--leading-tight);">Heading 2</span>
           </div>
           <div class="type-row">
-            <span class="type-label">--text-h3 · 1.5rem</span>
+            <span class="type-label">--text-h3 · {typography.textH3}</span>
             <span class="type-sample" style="font-size:var(--text-h3); font-weight:700">Heading 3</span>
           </div>
           <div class="type-row">
-            <span class="type-label">--text-lg · 1.25rem</span>
+            <span class="type-label">--text-lg · {typography.textLg}</span>
             <span class="type-sample" style="font-size:var(--text-lg);">Lead / section subtitle</span>
           </div>
           <div class="type-row">
-            <span class="type-label">--text-base · 1rem</span>
+            <span class="type-label">--text-base · {typography.textBase}</span>
             <span class="type-sample" style="font-size:var(--text-base);">Body text — readable and comfortable at this size.</span>
           </div>
           <div class="type-row">
-            <span class="type-label">--text-sm · 0.875rem</span>
+            <span class="type-label">--text-sm · {typography.textSm}</span>
             <span class="type-sample" style="font-size:var(--text-sm);">Meta, small body, captions</span>
           </div>
           <div class="type-row">
-            <span class="type-label">--text-xs · 0.75rem</span>
+            <span class="type-label">--text-xs · {typography.textXs}</span>
             <span class="type-sample" style="font-size:var(--text-xs); text-transform:uppercase; letter-spacing:var(--tracking-wider); font-weight:700">LABEL / BADGE</span>
           </div>
         </div>
@@ -90,23 +93,23 @@ import Navbar from '../components/Navbar.astro';
         <p class="pg-meta">Base: <strong>4px</strong> · Unit: <strong>0.25rem = 1</strong></p>
         <div class="space-grid">
           {[
-            ['--space-1',  '0.25rem', '4px'],
-            ['--space-2',  '0.5rem',  '8px'],
-            ['--space-3',  '0.75rem', '12px'],
-            ['--space-4',  '1rem',    '16px'],
-            ['--space-5',  '1.25rem', '20px'],
-            ['--space-6',  '1.5rem',  '24px'],
-            ['--space-8',  '2rem',    '32px'],
-            ['--space-10', '2.5rem',  '40px'],
-            ['--space-12', '3rem',    '48px'],
-            ['--space-16', '4rem',    '64px'],
-            ['--space-20', '5rem',    '80px'],
-            ['--space-24', '6rem',    '96px'],
-          ].map(([token, rem, px]) => (
+            ['--space-1', spacing[1]],
+            ['--space-2', spacing[2]],
+            ['--space-3', spacing[3]],
+            ['--space-4', spacing[4]],
+            ['--space-5', spacing[5]],
+            ['--space-6', spacing[6]],
+            ['--space-8', spacing[8]],
+            ['--space-10', spacing[10]],
+            ['--space-12', spacing[12]],
+            ['--space-16', spacing[16]],
+            ['--space-20', spacing[20]],
+            ['--space-24', spacing[24]],
+          ].map(([token, value]) => (
             <div class="space-row">
               <div class="space-bar" style={`--space-size:var(${token})`}></div>
               <code>{token}</code>
-              <span>{rem} · {px}</span>
+              <span>{value}</span>
             </div>
           ))}
         </div>
@@ -116,12 +119,12 @@ import Navbar from '../components/Navbar.astro';
       <section class="pg-section">
         <h2>Border Radius</h2>
         <div class="radius-row">
-          <div class="radius-chip" style="border-radius:var(--radius-sm);"><span>sm</span><em>8px</em></div>
-          <div class="radius-chip" style="border-radius:var(--radius-md);"><span>md</span><em>12px</em></div>
-          <div class="radius-chip" style="border-radius:var(--radius-lg);"><span>lg</span><em>16px</em></div>
-          <div class="radius-chip" style="border-radius:var(--radius-xl);"><span>xl</span><em>20px</em></div>
-          <div class="radius-chip" style="border-radius:var(--radius-2xl);"><span>2xl</span><em>28px</em></div>
-          <div class="radius-chip" style="border-radius:var(--radius-pill);"><span>pill</span><em>9999px</em></div>
+          <div class="radius-chip" style="border-radius:var(--radius-sm);"><span>sm</span><em>{radius.sm}</em></div>
+          <div class="radius-chip" style="border-radius:var(--radius-md);"><span>md</span><em>{radius.md}</em></div>
+          <div class="radius-chip" style="border-radius:var(--radius-lg);"><span>lg</span><em>{radius.lg}</em></div>
+          <div class="radius-chip" style="border-radius:var(--radius-xl);"><span>xl</span><em>{radius.xl}</em></div>
+          <div class="radius-chip" style="border-radius:var(--radius-2xl);"><span>2xl</span><em>{radius['2xl']}</em></div>
+          <div class="radius-chip" style="border-radius:var(--radius-pill);"><span>pill</span><em>{radius.pill}</em></div>
         </div>
       </section>
 
@@ -144,19 +147,23 @@ import Navbar from '../components/Navbar.astro';
         <div class="motion-grid">
           <div class="motion-card">
             <div class="motion-demo" data-duration="instant">Hover me</div>
-            <code>--duration-instant · 0.12s</code>
+            <code>--duration-instant · {motion.instant}</code>
           </div>
           <div class="motion-card">
             <div class="motion-demo" data-duration="fast">Hover me</div>
-            <code>--duration-fast · 0.15s</code>
+            <code>--duration-fast · {motion.fast}</code>
           </div>
           <div class="motion-card">
             <div class="motion-demo" data-duration="base">Hover me</div>
-            <code>--duration-base · 0.2s</code>
+            <code>--duration-base · {motion.base}</code>
           </div>
           <div class="motion-card">
             <div class="motion-demo" data-duration="slow">Hover me</div>
-            <code>--duration-slow · 0.3s</code>
+            <code>--duration-slow · {motion.slow}</code>
+          </div>
+          <div class="motion-card">
+            <div class="motion-demo" data-duration="reveal">Hover me</div>
+            <code>--duration-reveal · entrance</code>
           </div>
         </div>
 
@@ -164,6 +171,7 @@ import Navbar from '../components/Navbar.astro';
         <div class="ease-row">
           <div class="ease-demo ease-standard">ease-standard</div>
           <div class="ease-demo ease-out">ease-out</div>
+          <div class="ease-demo ease-emphasized-out">ease-emphasized-out</div>
           <div class="ease-demo ease-spring">ease-spring</div>
         </div>
       </section>
@@ -399,6 +407,7 @@ import Navbar from '../components/Navbar.astro';
   .motion-demo[data-duration="fast"]    { transition-duration: var(--duration-fast); }
   .motion-demo[data-duration="base"]    { transition-duration: var(--duration-base); }
   .motion-demo[data-duration="slow"]    { transition-duration: var(--duration-slow); }
+  .motion-demo[data-duration="reveal"]  { transition-duration: var(--duration-reveal); }
 
   .motion-demo:hover {
     background: var(--color-primary);
@@ -438,6 +447,7 @@ import Navbar from '../components/Navbar.astro';
 
   .ease-demo.ease-standard { transition-timing-function: var(--ease-standard); }
   .ease-demo.ease-out      { transition-timing-function: var(--ease-out); }
+  .ease-demo.ease-emphasized-out { transition-timing-function: var(--ease-emphasized-out); }
   .ease-demo.ease-spring   { transition-timing-function: var(--ease-spring); }
 
   .ease-demo:hover {

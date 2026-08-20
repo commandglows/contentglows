@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../data/services/api_service.dart';
 import '../../../providers/providers.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../theme/app_theme.dart';
 import '../../widgets/app_error_view.dart';
 
 const _cadenceModes = ['fixed', 'ramp_up'];
@@ -99,7 +100,12 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
         children: [
           // Header
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.md,
+              AppSpacing.sm,
+              AppSpacing.md,
+              0,
+            ),
             child: Row(
               children: [
                 Expanded(
@@ -120,16 +126,16 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
 
           // Step indicator
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
             child: Row(
               children: List.generate(
                 4,
                 (i) => Expanded(
                   child: Container(
-                    height: 4,
-                    margin: const EdgeInsets.symmetric(horizontal: 2),
+                    height: AppSpacing.xxs,
+                    margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xxsHalf),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(2),
+                      borderRadius: BorderRadius.circular(AppRadii.xxs),
                       color: i <= _step
                           ? colorScheme.primary
                           : colorScheme.surfaceContainerHighest,
@@ -144,7 +150,7 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
           Expanded(
             child: SingleChildScrollView(
               controller: scrollController,
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.md),
               child: switch (_step) {
                 0 => _buildStep1(),
                 1 => _buildStep2(),
@@ -157,7 +163,7 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
 
           // Footer buttons
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.md),
             child: Row(
               children: [
                 if (_step > 0)
@@ -178,9 +184,9 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
                     onPressed: _submitting ? null : _submit,
                     child: _submitting
                         ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
+                            width: AppSpacing.lg,
+                            height: AppSpacing.lg,
+                            child: CircularProgressIndicator(strokeWidth: AppStroke.medium),
                           )
                         : Text(context.tr('Create Plan')),
                   ),
@@ -253,7 +259,7 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
         context.tr('Name & Source'),
         style: Theme.of(context).textTheme.titleSmall,
       ),
-      const SizedBox(height: 16),
+      const SizedBox(height: AppSpacing.md),
       TextField(
         controller: _nameCtrl,
         decoration: InputDecoration(
@@ -263,9 +269,9 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
         ),
         onChanged: (_) => setState(() {}),
       ),
-      const SizedBox(height: 16),
+      const SizedBox(height: AppSpacing.md),
       _buildDirectoryPresets(),
-      const SizedBox(height: 12),
+      const SizedBox(height: AppSpacing.sm),
       TextField(
         controller: _directoryCtrl,
         decoration: InputDecoration(
@@ -318,7 +324,7 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
                     '${context.tr('Chemin sélectionné')}: ${browsePath.isEmpty ? '/' : browsePath}',
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.sm),
                   Expanded(
                     child: FutureBuilder<Map<String, dynamic>>(
                       future: ref
@@ -338,7 +344,9 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
                           return Center(
                             child: Text(
                               '${context.tr('Unable to load content tree')}: ${snapshot.error}',
-                              style: const TextStyle(color: Colors.red),
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.error,
+                              ),
                             ),
                           );
                         }
@@ -470,10 +478,10 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
           context.tr('Suggestions depuis le projet actif'),
           style: Theme.of(context).textTheme.bodySmall,
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.xs),
         Wrap(
-          spacing: 8,
-          runSpacing: 8,
+          spacing: AppSpacing.xs,
+          runSpacing: AppSpacing.xs,
           children: presetPaths
               .map(
                 (path) => ActionChip(
@@ -504,7 +512,7 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
         context.tr('Cadence'),
         style: Theme.of(context).textTheme.titleSmall,
       ),
-      const SizedBox(height: 16),
+      const SizedBox(height: AppSpacing.md),
       SegmentedButton<String>(
         segments: _cadenceModes
             .map(
@@ -519,7 +527,7 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
         selected: {_cadenceMode},
         onSelectionChanged: (s) => setState(() => _cadenceMode = s.first),
       ),
-      const SizedBox(height: 16),
+      const SizedBox(height: AppSpacing.md),
       Row(
         children: [
           Expanded(
@@ -533,7 +541,7 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
               onChanged: (v) => _itemsPerDay = int.tryParse(v) ?? 3,
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: TextField(
               controller: _startDateCtrl,
@@ -546,16 +554,16 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
           ),
         ],
       ),
-      const SizedBox(height: 16),
+      const SizedBox(height: AppSpacing.md),
       Text(context.tr('Random publish time')),
-      const SizedBox(height: 8),
+      const SizedBox(height: AppSpacing.xs),
       Text(
         context.tr(
           'Choose a daily time window. Publishing will be random inside this window.',
         ),
         style: Theme.of(context).textTheme.bodySmall,
       ),
-      const SizedBox(height: 12),
+      const SizedBox(height: AppSpacing.sm),
       Row(
         children: [
           Expanded(
@@ -568,7 +576,7 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
               onChanged: (_) => setState(() {}),
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: TextField(
               controller: _publishTimeEndCtrl,
@@ -581,7 +589,7 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
           ),
         ],
       ),
-      const SizedBox(height: 16),
+      const SizedBox(height: AppSpacing.md),
       Row(
         children: [
           Expanded(
@@ -594,7 +602,7 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: TextField(
               decoration: InputDecoration(
@@ -609,14 +617,14 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
           ),
         ],
       ),
-      const SizedBox(height: 16),
+      const SizedBox(height: AppSpacing.md),
       Text(
         context.tr('Publish days'),
         style: Theme.of(context).textTheme.bodyMedium,
       ),
-      const SizedBox(height: 8),
+      const SizedBox(height: AppSpacing.xs),
       Wrap(
-        spacing: 8,
+        spacing: AppSpacing.xs,
         children: List.generate(
           7,
           (i) => FilterChip(
@@ -647,21 +655,21 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
         context.tr('Stratégie de clustering'),
         style: Theme.of(context).textTheme.titleSmall,
       ),
-      const SizedBox(height: 8),
+      const SizedBox(height: AppSpacing.xs),
       Text(
         context.tr(
           'Le clustering est la logique de groupement thématique qui décide de l’ordre d’apparition des articles.',
         ),
         style: Theme.of(context).textTheme.bodySmall,
       ),
-      const SizedBox(height: 12),
+      const SizedBox(height: AppSpacing.sm),
       Text(
         context.tr(
           'Objectif éditorial : publier les contenus dans une séquence qui fait sens (des concepts larges vers les déclinaisons), pour réduire la dispersion et faciliter la lecture continue.',
         ),
         style: Theme.of(context).textTheme.bodySmall,
       ),
-      const SizedBox(height: 16),
+      const SizedBox(height: AppSpacing.md),
       ...(_clusterModes.map(
         (m) => ListTile(
           leading: Icon(
@@ -697,11 +705,11 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
               ' La publication suit uniquement la cadence/régularité définies, sans ordre thématique supplémentaire.',
             ),
             _ => '',
-          }, style: const TextStyle(fontSize: 12)),
+          }, style: const TextStyle(fontSize: AppText.xs)),
           onTap: () => setState(() => _clusterMode = m),
         ),
       )),
-      const SizedBox(height: 8),
+      const SizedBox(height: AppSpacing.xs),
       SwitchListTile(
         title: Text(context.tr('Publier le pilier avant les satellites')),
         subtitle: Text(
@@ -710,7 +718,7 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
             ' Quand cette option est activée, l’ordre devient : “pilier puis satellites”.'
             ' Cela améliore la cohérence éditoriale quand un sujet est construit progressivement.',
           ),
-          style: const TextStyle(fontSize: 12),
+          style: const TextStyle(fontSize: AppText.xs),
         ),
         value: _pillarFirst,
         onChanged: (v) => setState(() => _pillarFirst = v),
@@ -727,7 +735,7 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
         context.tr('Déploiement'),
         style: Theme.of(context).textTheme.titleSmall,
       ),
-      const SizedBox(height: 16),
+      const SizedBox(height: AppSpacing.md),
       DropdownButtonFormField<String>(
         initialValue: _framework,
         decoration: InputDecoration(
@@ -744,7 +752,7 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
             .toList(),
         onChanged: (v) => setState(() => _framework = v!),
       ),
-      const SizedBox(height: 16),
+      const SizedBox(height: AppSpacing.md),
       DropdownButtonFormField<String>(
         initialValue: _gatingMethod,
         decoration: InputDecoration(
@@ -768,9 +776,9 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
             .toList(),
         onChanged: (v) => setState(() => _gatingMethod = v!),
       ),
-      const SizedBox(height: 8),
+      const SizedBox(height: AppSpacing.xs),
       Padding(
-        padding: const EdgeInsets.only(left: 12, right: 12, bottom: 8),
+        padding: const EdgeInsets.only(left: AppSpacing.sm, right: AppSpacing.sm, bottom: AppSpacing.xs),
         child: Text(switch (_gatingMethod) {
           'future_date' => context.tr(
             'Méthode de contrôle par date : le front matter reçoit une date de publication future.'
@@ -790,7 +798,7 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
           _ => '',
         }, style: Theme.of(context).textTheme.bodySmall),
       ),
-      const SizedBox(height: 12),
+      const SizedBox(height: AppSpacing.sm),
       SwitchListTile(
         title: Text(
           context.tr(
@@ -801,7 +809,7 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
           context.tr(
             'Met automatiquement un marqueur noindex dans le front matter tant que le contenu n’est pas publié. Ce mode limite fortement l’indexation prématurée, mais n’est pas une garantie absolue : c’est efficace si votre stack (build, CDN, headers, robots/meta) applique bien ce signal au crawl.',
           ),
-          style: const TextStyle(fontSize: 12),
+          style: const TextStyle(fontSize: AppText.xs),
         ),
         value: _indexProof,
         onChanged: (v) => setState(() => _indexProof = v),
@@ -812,12 +820,12 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
           context.tr(
             'Recommandé si votre repository mélange du contenu Drip et du contenu éditorial indépendant. Quand ce mode est actif, on ne modifie le front matter que pour les fichiers qui portent explicitement le champ d’opt-in (ex: dripManaged: true), évitant de toucher aux pages non Drip.',
           ),
-          style: const TextStyle(fontSize: 12),
+          style: const TextStyle(fontSize: AppText.xs),
         ),
         value: _requireOptIn,
         onChanged: (v) => setState(() => _requireOptIn = v),
       ),
-      const SizedBox(height: 16),
+      const SizedBox(height: AppSpacing.md),
       DropdownButtonFormField<String>(
         initialValue: _rebuildMethod,
         decoration: InputDecoration(
@@ -839,9 +847,9 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
             .toList(),
         onChanged: (v) => setState(() => _rebuildMethod = v!),
       ),
-      const SizedBox(height: 8),
+      const SizedBox(height: AppSpacing.xs),
       Padding(
-        padding: const EdgeInsets.only(left: 12, right: 12, bottom: 8),
+        padding: const EdgeInsets.only(left: AppSpacing.sm, right: AppSpacing.sm, bottom: AppSpacing.xs),
         child: Text(switch (_rebuildMethod) {
           'webhook' => context.tr(
             'Le webhook notifie votre pipeline CI/CD à chaque exécution Drip.'
@@ -860,7 +868,7 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
         }, style: Theme.of(context).textTheme.bodySmall),
       ),
       if (_rebuildMethod == 'webhook') ...[
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.md),
         TextField(
           controller: _webhookUrlCtrl,
           decoration: InputDecoration(
@@ -873,7 +881,7 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
         ),
       ],
       if (_rebuildMethod == 'github_actions') ...[
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.md),
         if (ref.watch(githubIntegrationStatusProvider).value?.connected !=
             true) ...[
           Text(
@@ -882,13 +890,13 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
             ),
             style: Theme.of(context).textTheme.bodySmall,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           OutlinedButton.icon(
             icon: const Icon(Icons.link),
             onPressed: () => _connectGithubFromDrip(),
             label: Text(context.tr('Connecter GitHub')),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
         ],
         TextField(
           controller: _githubRepoCtrl,
@@ -898,9 +906,9 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
               tooltip: context.tr('Choisir un dépôt GitHub'),
               icon: _isGithubRepoPickerLoading
                   ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
+                      width: AppSpacing.md,
+                      height: AppSpacing.md,
+                      child: CircularProgressIndicator(strokeWidth: AppStroke.medium),
                     )
                   : const Icon(Icons.travel_explore),
               onPressed: _isGithubRepoPickerLoading
@@ -919,22 +927,22 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
         ),
         if (ref.watch(githubIntegrationStatusProvider).value?.connected != true)
           Padding(
-            padding: const EdgeInsets.only(top: 8),
+            padding: const EdgeInsets.only(top: AppSpacing.xs),
             child: Text(
               context.tr(
                 'Une connexion GitHub est requise pour charger la liste des dépôts.',
               ),
-              style: const TextStyle(fontSize: 12),
+              style: const TextStyle(fontSize: AppText.xs),
             ),
           ),
       ],
-      const SizedBox(height: 8),
+      const SizedBox(height: AppSpacing.xs),
       ExpansionTile(
         title: Text(context.tr('Options avancées')),
-        childrenPadding: const EdgeInsets.only(bottom: 8),
+        childrenPadding: const EdgeInsets.only(bottom: AppSpacing.xs),
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: TextField(
               controller: _optInFieldCtrl,
               decoration: InputDecoration(
@@ -947,9 +955,9 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
               ),
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: TextField(
               controller: _robotsFieldCtrl,
               decoration: InputDecoration(
@@ -962,21 +970,21 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
               ),
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
           SwitchListTile(
             title: Text(context.tr('Google Search Console (Indexing API)')),
             subtitle: Text(
               context.tr(
                 'Après chaque exécution du drip, Drip peut notifier Google (Indexing API) pour accélérer la découverte des pages déjà publiées. C’est une notification de "mise à jour", pas une garantie d’indexation instantanée.',
               ),
-              style: const TextStyle(fontSize: 12),
+              style: const TextStyle(fontSize: AppText.xs),
             ),
             value: _gscEnabled,
             onChanged: (v) => setState(() => _gscEnabled = v),
           ),
           if (_gscEnabled) ...[
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
               child: TextField(
                 controller: _gscSiteUrlCtrl,
                 decoration: InputDecoration(
@@ -986,9 +994,9 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
                 ),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
               child: SwitchListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Text(context.tr('Soumettre les URL')),
@@ -997,7 +1005,7 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
               child: TextField(
                 decoration: InputDecoration(
                   labelText: context.tr('Soumissions max / jour'),
@@ -1008,9 +1016,9 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
                 onChanged: (v) => _gscMaxPerDay = int.tryParse(v) ?? 200,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.xs),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
               child: Text(
                 context.tr(
                   'La logique backend soumet les URL via l’API d’indexation Google et vérifie ensuite l’état en mode inspection si disponible. La limite par défaut est de 200 URLs/jour, cohérente avec le comportement courant de l’API, et dépend du quota réel de votre projet Google.',
@@ -1215,7 +1223,9 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
               'L’authentification GitHub n’est pas disponible. Vérifiez la configuration backend.',
             ),
           ),
-          backgroundColor: Colors.red.withValues(alpha: 0.8),
+          backgroundColor: Theme.of(context).colorScheme.error.withValues(
+            alpha: AppOpacity.prominent,
+          ),
         ),
       );
       return;
@@ -1261,7 +1271,9 @@ class _DripWizardSheetState extends ConsumerState<DripWizardSheet> {
               'Impossible d’ouvrir le navigateur pour l’autorisation GitHub.',
             ),
           ),
-          backgroundColor: Colors.red.withValues(alpha: 0.8),
+          backgroundColor: Theme.of(context).colorScheme.error.withValues(
+            alpha: AppOpacity.prominent,
+          ),
         ),
       );
     }

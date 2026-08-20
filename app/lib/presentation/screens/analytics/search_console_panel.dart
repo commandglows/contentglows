@@ -43,7 +43,7 @@ class _SearchConsolePanelState extends ConsumerState<SearchConsolePanel> {
           isSyncing: _isSyncing,
           onSync: !canSync ? null : () => _sync(activeProjectId, period),
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpacing.contentInset),
         _PeriodSelector(
           selected: period,
           onSelected: (next) {
@@ -51,7 +51,7 @@ class _SearchConsolePanelState extends ConsumerState<SearchConsolePanel> {
             setState(_selectedOpportunityKeys.clear);
           },
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.md),
         summary.when(
           loading: () => const _PanelLoading(),
           error: (error, stackTrace) => AppErrorView(
@@ -84,15 +84,15 @@ class _SearchConsolePanelState extends ConsumerState<SearchConsolePanel> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 _OverviewCard(summary: data),
-                const SizedBox(height: 14),
+                const SizedBox(height: AppSpacing.contentInset),
                 _GoogleSearchSection(section: data.googleSearch),
-                const SizedBox(height: 14),
+                const SizedBox(height: AppSpacing.contentInset),
                 _SiteTrafficSection(section: data.siteTraffic),
               ],
             );
           },
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpacing.contentInset),
         opportunities.when(
           loading: () =>
               const _InlineLoading(label: 'Loading opportunities...'),
@@ -148,7 +148,7 @@ class _SearchConsolePanelState extends ConsumerState<SearchConsolePanel> {
             : error.message.trim(),
         scope: 'search_console.sync',
         error: error,
-        backgroundColor: AppTheme.rejectColor.withAlpha(200),
+        backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
       );
     } finally {
       if (mounted) setState(() => _isSyncing = false);
@@ -196,7 +196,7 @@ class _SearchConsolePanelState extends ConsumerState<SearchConsolePanel> {
             : error.message.trim(),
         scope: 'search_console.ingest',
         error: error,
-        backgroundColor: AppTheme.rejectColor.withAlpha(200),
+        backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
       );
     } finally {
       if (mounted) setState(() => _isIngesting = false);
@@ -223,7 +223,7 @@ class _SeoStatsHeader extends StatelessWidget {
     final status = connection;
     final color = _connectionColor(status, theme.colorScheme);
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppTheme.paletteOf(context).elevatedSurface,
         borderRadius: BorderRadius.circular(AppRadii.card),
@@ -236,12 +236,12 @@ class _SeoStatsHeader extends StatelessWidget {
             width: 42,
             height: 42,
             decoration: BoxDecoration(
-              color: color.withAlpha(24),
-              borderRadius: BorderRadius.circular(10),
+              color: color.withAlpha(AppAlpha.low24),
+              borderRadius: BorderRadius.circular(AppRadii.narrow),
             ),
             child: Icon(Icons.query_stats_rounded, color: color),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -252,17 +252,17 @@ class _SeoStatsHeader extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xxs),
                 Text(
                   _connectionLabel(context, status),
                   style: TextStyle(
                     color: theme.colorScheme.onSurfaceVariant,
-                    fontSize: 12,
-                    height: 1.35,
+                    fontSize: AppText.xs,
+                    height: AppLineHeight.compact,
                   ),
                 ),
                 if (period == 'today') ...[
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.xs),
                   _SourceBadge(
                     label: context.tr('Today is partial'),
                     color: AppTheme.warningColor,
@@ -271,16 +271,16 @@ class _SeoStatsHeader extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSpacing.compact),
           FilledButton.icon(
             onPressed: isSyncing ? null : onSync,
             icon: isSyncing
                 ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    width: AppSpacing.md,
+                    height: AppSpacing.md,
+                    child: CircularProgressIndicator(strokeWidth: AppStroke.medium),
                   )
-                : const Icon(Icons.sync_rounded, size: 18),
+                : const Icon(Icons.sync_rounded, size: AppSizes.iconLarge),
             label: Text(context.tr('Sync')),
           ),
         ],
@@ -337,8 +337,8 @@ class _PeriodSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: 8,
-      runSpacing: 8,
+      spacing: AppSpacing.xs,
+      runSpacing: AppSpacing.xs,
       children: searchConsolePeriods.map((period) {
         return ChoiceChip(
           label: Text(context.tr(searchConsolePeriodLabel(period))),
@@ -360,11 +360,11 @@ class _OverviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: theme.colorScheme.primary.withAlpha(16),
+        color: theme.colorScheme.primary.withAlpha(AppAlpha.low16),
         borderRadius: BorderRadius.circular(AppRadii.card),
-        border: Border.all(color: theme.colorScheme.primary.withAlpha(45)),
+        border: Border.all(color: theme.colorScheme.primary.withAlpha(AppAlpha.mid45)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -373,10 +373,10 @@ class _OverviewCard extends StatelessWidget {
             children: [
               Icon(
                 Icons.auto_awesome_outlined,
-                size: 18,
+                size: AppSizes.iconLarge,
                 color: theme.colorScheme.primary,
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.xs),
               Expanded(
                 child: Text(
                   context.tr('Overview'),
@@ -391,20 +391,20 @@ class _OverviewCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpacing.compact),
           Text(
             summary.overview,
-            style: TextStyle(color: theme.colorScheme.onSurface, height: 1.45),
+            style: TextStyle(color: theme.colorScheme.onSurface, height: AppLineHeight.readable),
           ),
           if (summary.googleSearch.isPartial ||
               summary.siteTraffic.isPartial) ...[
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               context.tr('Recent data can be delayed or incomplete.'),
               style: TextStyle(
                 color: AppTheme.warningColor,
-                fontSize: 12,
-                height: 1.35,
+                fontSize: AppText.xs,
+                height: AppLineHeight.compact,
               ),
             ),
           ],
@@ -479,14 +479,14 @@ class _GoogleSearchSection extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpacing.contentInset),
         _TopRows(
           title: context.tr('Top organic landing pages from Google'),
           rows: section.topPages,
           emptyText: context.tr('No Google landing pages synced yet.'),
           mode: _TopRowsMode.pages,
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpacing.contentInset),
         _TopRows(
           title: context.tr('Top queries'),
           rows: section.topQueries,
@@ -494,7 +494,7 @@ class _GoogleSearchSection extends StatelessWidget {
           mode: _TopRowsMode.queries,
         ),
         if (section.issues.isNotEmpty) ...[
-          const SizedBox(height: 14),
+          const SizedBox(height: AppSpacing.contentInset),
           _InspectionIssues(issues: section.issues),
         ],
       ],
@@ -538,20 +538,20 @@ class _SiteTrafficSection extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpacing.contentInset),
         Text(
           context.tr('Most visited pages on site'),
           style: Theme.of(
             context,
           ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.xs),
         if (section.topPages.isEmpty)
           Text(
             context.tr('No private analytics pageviews for this period.'),
             style: TextStyle(
               color: Theme.of(context).colorScheme.onSurfaceVariant,
-              fontSize: 13,
+              fontSize: AppText.compact,
             ),
           )
         else
@@ -588,7 +588,7 @@ class _StatsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppTheme.paletteOf(context).surface,
         borderRadius: BorderRadius.circular(AppRadii.card),
@@ -610,12 +610,12 @@ class _StatsSection extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSpacing.xxsHalf),
                     Text(
                       sourceLabel,
                       style: TextStyle(
                         color: theme.colorScheme.onSurfaceVariant,
-                        fontSize: 12,
+                        fontSize: AppText.xs,
                       ),
                     ),
                   ],
@@ -628,16 +628,16 @@ class _StatsSection extends StatelessWidget {
                 ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpacing.compact),
           Text(
             summary,
             style: TextStyle(
               color: theme.colorScheme.onSurfaceVariant,
-              fontSize: 13,
-              height: 1.4,
+              fontSize: AppText.compact,
+              height: AppLineHeight.body,
             ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: AppSpacing.contentInset),
           ...children,
         ],
       ),
@@ -659,8 +659,8 @@ class _MetricWrap extends StatelessWidget {
             ? constraints.maxWidth
             : (constraints.maxWidth - 12) / 2;
         return Wrap(
-          spacing: 12,
-          runSpacing: 12,
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
           children: cards
               .map(
                 (card) => SizedBox(
@@ -698,16 +698,16 @@ class _MetricCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       constraints: const BoxConstraints(minHeight: 84),
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
-        color: data.color.withAlpha(16),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: data.color.withAlpha(45)),
+        color: data.color.withAlpha(AppAlpha.low16),
+        borderRadius: BorderRadius.circular(AppRadii.sm),
+        border: Border.all(color: data.color.withAlpha(AppAlpha.mid45)),
       ),
       child: Row(
         children: [
           Icon(data.icon, color: data.color, size: 22),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSpacing.compact),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -717,19 +717,19 @@ class _MetricCard extends StatelessWidget {
                   data.value,
                   style: TextStyle(
                     color: data.color,
-                    fontSize: 22,
+                    fontSize: AppText.heading,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                const SizedBox(height: 3),
+                const SizedBox(height: AppSpacing.micro),
                 Text(
                   data.label,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    fontSize: 12,
-                    height: 1.25,
+                    fontSize: AppText.xs,
+                    height: AppLineHeight.quarter,
                   ),
                 ),
               ],
@@ -768,13 +768,13 @@ class _TopRows extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.xs),
         if (rows.isEmpty)
           Text(
             emptyText,
             style: TextStyle(
               color: theme.colorScheme.onSurfaceVariant,
-              fontSize: 13,
+              fontSize: AppText.compact,
             ),
           )
         else
@@ -817,7 +817,7 @@ class _InspectionIssues extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.xs),
         ...issues.take(5).map((issue) {
           final type = (issue['type'] ?? 'indexation_problem')
               .toString()
@@ -856,7 +856,7 @@ class _SimpleRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 7),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.controlGap),
       child: Row(
         children: [
           Expanded(
@@ -870,23 +870,23 @@ class _SimpleRow extends StatelessWidget {
                   style: TextStyle(
                     color: theme.colorScheme.onSurface,
                     fontWeight: FontWeight.w600,
-                    fontSize: 13,
+                    fontSize: AppText.compact,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSpacing.xxsHalf),
                 Text(
                   subtitle,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: theme.colorScheme.onSurfaceVariant,
-                    fontSize: 12,
+                    fontSize: AppText.xs,
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSpacing.compact),
           Text(
             trailing,
             style: TextStyle(
@@ -919,7 +919,7 @@ class _OpportunitiesSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppTheme.paletteOf(context).surface,
         borderRadius: BorderRadius.circular(AppRadii.card),
@@ -944,13 +944,13 @@ class _OpportunitiesSection extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpacing.compact),
           if (opportunities.isEmpty)
             Text(
               context.tr('No Search Console opportunities for this period.'),
               style: TextStyle(
                 color: theme.colorScheme.onSurfaceVariant,
-                fontSize: 13,
+                fontSize: AppText.compact,
               ),
             )
           else ...[
@@ -981,16 +981,16 @@ class _OpportunitiesSection extends StatelessWidget {
                 ),
               );
             }),
-            const SizedBox(height: 10),
+            const SizedBox(height: AppSpacing.compact),
             FilledButton.icon(
               onPressed: selectedKeys.isEmpty || isIngesting ? null : onIngest,
               icon: isIngesting
                   ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
+                      width: AppSpacing.md,
+                      height: AppSpacing.md,
+                      child: CircularProgressIndicator(strokeWidth: AppStroke.medium),
                     )
-                  : const Icon(Icons.add_task_rounded, size: 18),
+                  : const Icon(Icons.add_task_rounded, size: AppSizes.iconLarge),
               label: Text(context.tr('Add to Idea Pool')),
             ),
           ],
@@ -1009,17 +1009,17 @@ class _SourceBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: AppSpacing.xxs),
       decoration: BoxDecoration(
-        color: color.withAlpha(22),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: color.withAlpha(55)),
+        color: color.withAlpha(AppAlpha.low22),
+        borderRadius: BorderRadius.circular(AppRadii.pill),
+        border: Border.all(color: color.withAlpha(AppAlpha.mid55)),
       ),
       child: Text(
         label,
         style: TextStyle(
           color: color,
-          fontSize: 11,
+          fontSize: AppText.xs11,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -1034,7 +1034,7 @@ class _PanelLoading extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Center(
       child: Padding(
-        padding: EdgeInsets.all(32),
+        padding: EdgeInsets.all(AppSpacing.wide),
         child: CircularProgressIndicator(),
       ),
     );
@@ -1051,11 +1051,11 @@ class _InlineLoading extends StatelessWidget {
     return Row(
       children: [
         const SizedBox(
-          width: 16,
-          height: 16,
-          child: CircularProgressIndicator(strokeWidth: 2),
+          width: AppSpacing.md,
+          height: AppSpacing.md,
+          child: CircularProgressIndicator(strokeWidth: AppStroke.medium),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: AppSpacing.compact),
         Text(
           context.tr(label),
           style: TextStyle(
@@ -1082,7 +1082,7 @@ class _PanelMessage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(AppSpacing.dense),
       decoration: BoxDecoration(
         color: AppTheme.paletteOf(context).surface,
         borderRadius: BorderRadius.circular(AppRadii.card),
@@ -1091,7 +1091,7 @@ class _PanelMessage extends StatelessWidget {
       child: Row(
         children: [
           Icon(icon, color: theme.colorScheme.onSurfaceVariant),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1102,13 +1102,13 @@ class _PanelMessage extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xxs),
                 Text(
                   body,
                   style: TextStyle(
                     color: theme.colorScheme.onSurfaceVariant,
-                    fontSize: 13,
-                    height: 1.35,
+                    fontSize: AppText.compact,
+                    height: AppLineHeight.compact,
                   ),
                 ),
               ],

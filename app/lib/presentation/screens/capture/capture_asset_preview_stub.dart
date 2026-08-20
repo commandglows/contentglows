@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../data/models/capture_asset.dart';
+import '../../theme/app_theme.dart';
 
 class CaptureAssetPreview extends StatelessWidget {
   const CaptureAssetPreview({super.key, required this.asset});
@@ -15,7 +16,7 @@ class CaptureAssetPreview extends StatelessWidget {
       child: Icon(
         asset.isScreenshot ? Icons.image_rounded : Icons.smart_display_rounded,
         color: Theme.of(context).colorScheme.onSurfaceVariant,
-        size: 32,
+        size: AppSizes.control,
       ),
     );
   }

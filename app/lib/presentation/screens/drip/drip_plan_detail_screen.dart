@@ -74,17 +74,17 @@ class _DripPlanDetailScreenState extends ConsumerState<DripPlanDetailScreen> {
             ref.invalidate(dripStatsProvider(resolvedPlanId));
           },
           child: ListView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.md),
             children: [
               // Status + config summary
               _StatusHeader(plan: p),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
 
               // Progress
               statsAsync.when(
                 loading: () => const Card(
                   child: Padding(
-                    padding: EdgeInsets.all(16),
+                    padding: EdgeInsets.all(AppSpacing.md),
                     child: Center(child: CircularProgressIndicator()),
                   ),
                 ),
@@ -94,7 +94,7 @@ class _DripPlanDetailScreenState extends ConsumerState<DripPlanDetailScreen> {
                   colorScheme: Theme.of(context).colorScheme,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
 
               // Clusters
               statsAsync.when(
@@ -105,11 +105,11 @@ class _DripPlanDetailScreenState extends ConsumerState<DripPlanDetailScreen> {
                   colorScheme: Theme.of(context).colorScheme,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
 
               // Config details
               _ConfigCard(plan: p),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
 
               // Action buttons
               if (!p.isTerminal)
@@ -234,7 +234,7 @@ class _DripPlanDetailScreenState extends ConsumerState<DripPlanDetailScreen> {
           child: ListView.separated(
             shrinkWrap: true,
             itemCount: issueList.length,
-            separatorBuilder: (_, _) => const Divider(height: 16),
+            separatorBuilder: (_, _) => const Divider(height: AppSpacing.md),
             itemBuilder: (context, i) {
               final raw = issueList[i];
               final entry = raw is Map ? raw : const {};
@@ -249,14 +249,14 @@ class _DripPlanDetailScreenState extends ConsumerState<DripPlanDetailScreen> {
                       'warning' => Icons.warning,
                       _ => Icons.info,
                     },
-                    size: 18,
+                    size: AppSizes.iconLarge,
                     color: switch (sev) {
                       'error' => Theme.of(context).colorScheme.error,
                       'warning' => AppTheme.warningColor,
                       _ => Theme.of(context).colorScheme.primary,
                     },
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.xs),
                   Expanded(child: Text('[$sev] $msg')),
                 ],
               );
@@ -286,14 +286,14 @@ class _StatusHeader extends StatelessWidget {
     final colorScheme = theme.colorScheme;
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 _statusIcon(plan.status),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.xs),
                 Text(
                   context.tr(plan.status),
                   style: theme.textTheme.titleSmall?.copyWith(
@@ -303,7 +303,7 @@ class _StatusHeader extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm),
             _infoRow(context.tr('Articles'), '${plan.totalItems}'),
             _infoRow(
               context.tr('Cadence'),
@@ -339,7 +339,7 @@ class _StatusHeader extends StatelessWidget {
     builder: (context) {
       final theme = Theme.of(context);
       return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 2),
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxsHalf),
         child: Row(
           children: [
             SizedBox(
@@ -370,7 +370,7 @@ class _StatusHeader extends StatelessWidget {
           _ => Icons.circle_outlined,
         },
         color: _statusColor(status, colorScheme),
-        size: 20,
+        size: AppSizes.iconXl,
       );
     },
   );
@@ -394,7 +394,7 @@ class _ProgressCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -402,16 +402,16 @@ class _ProgressCard extends StatelessWidget {
               context.tr('Progress'),
               style: Theme.of(context).textTheme.titleSmall,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm),
             ClipRRect(
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(AppRadii.compactControl),
               child: LinearProgressIndicator(
                 value: stats.progressPercent,
                 minHeight: 16,
                 backgroundColor: colorScheme.surfaceContainerHighest,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               context.tr('Published {published}/{total} ({percent}%)', {
                 'published': '${stats.published}',
@@ -420,9 +420,9 @@ class _ProgressCard extends StatelessWidget {
               }),
               style: Theme.of(context).textTheme.bodyMedium,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.xs),
             Wrap(
-              spacing: 16,
+              spacing: AppSpacing.md,
               children: stats.byStatus.entries
                   .map(
                     (e) => Chip(
@@ -438,7 +438,7 @@ class _ProgressCard extends StatelessWidget {
                           'status': context.tr(e.key),
                           'count': '${e.value}',
                         }),
-                        style: const TextStyle(fontSize: 12),
+                        style: const TextStyle(fontSize: AppText.xs),
                       ),
                       visualDensity: VisualDensity.compact,
                     ),
@@ -463,7 +463,7 @@ class _ClustersCard extends StatelessWidget {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -471,28 +471,28 @@ class _ClustersCard extends StatelessWidget {
               context.tr('Clusters'),
               style: Theme.of(context).textTheme.titleSmall,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm),
             ...stats.clusters.map(
               (c) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxs),
                 child: Row(
                   children: [
                     Icon(
                       c.isComplete ? Icons.check_circle : Icons.circle_outlined,
-                      size: 18,
+                      size: AppSizes.iconLarge,
                       color: c.isComplete
                           ? AppTheme.approveColor
                           : colorScheme.onSurfaceVariant,
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.xs),
                     Expanded(
-                      child: Text(c.name, style: const TextStyle(fontSize: 13)),
+                      child: Text(c.name, style: const TextStyle(fontSize: AppText.compact)),
                     ),
                     Text(
                       '${c.published}/${c.total}',
                       style: TextStyle(
-                        fontSize: 13,
-                        color: colorScheme.onSurface.withValues(alpha: 0.6),
+                        fontSize: AppText.compact,
+                        color: colorScheme.onSurface.withValues(alpha: AppOpacity.muted),
                       ),
                     ),
                   ],
@@ -514,7 +514,7 @@ class _ConfigCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -522,7 +522,7 @@ class _ConfigCard extends StatelessWidget {
               context.tr('Configuration'),
               style: Theme.of(context).textTheme.titleSmall,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm),
             _row(context.tr('Framework'), plan.ssgFramework),
             _row(
               context.tr('Gating'),
@@ -554,7 +554,7 @@ class _ConfigCard extends StatelessWidget {
     builder: (context) {
       final theme = Theme.of(context);
       return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 2),
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxsHalf),
         child: Row(
           children: [
             SizedBox(
@@ -589,7 +589,7 @@ class _ActionButtons extends StatelessWidget {
     if (loading) {
       return const Center(
         child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.all(AppSpacing.md),
           child: CircularProgressIndicator(),
         ),
       );
@@ -604,25 +604,25 @@ class _ActionButtons extends StatelessWidget {
             icon: const Icon(Icons.fact_check),
             label: Text(context.tr('Run preflight')),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           FilledButton.icon(
             onPressed: () => onAction('import'),
             icon: const Icon(Icons.download),
             label: Text(context.tr('Import Content')),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           FilledButton.tonalIcon(
             onPressed: () => onAction('cluster'),
             icon: const Icon(Icons.hub),
             label: Text(context.tr('Cluster Items')),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           FilledButton.tonalIcon(
             onPressed: () => onAction('schedule'),
             icon: const Icon(Icons.calendar_month),
             label: Text(context.tr('Generate Schedule')),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           FilledButton.icon(
             onPressed: () => onAction('activate'),
             icon: const Icon(Icons.play_arrow),
@@ -635,13 +635,13 @@ class _ActionButtons extends StatelessWidget {
             icon: const Icon(Icons.fact_check),
             label: Text(context.tr('Run preflight')),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           FilledButton.icon(
             onPressed: () => onAction('execute'),
             icon: const Icon(Icons.water_drop),
             label: Text(context.tr('Execute Drip Now')),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           OutlinedButton.icon(
             onPressed: () => onAction('pause'),
             icon: const Icon(Icons.pause),
@@ -654,13 +654,13 @@ class _ActionButtons extends StatelessWidget {
             icon: const Icon(Icons.fact_check),
             label: Text(context.tr('Run preflight')),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           FilledButton.icon(
             onPressed: () => onAction('resume'),
             icon: const Icon(Icons.play_arrow),
             label: Text(context.tr('Resume')),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           OutlinedButton.icon(
             onPressed: () => onAction('cancel'),
             icon: const Icon(Icons.cancel),

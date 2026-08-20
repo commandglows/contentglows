@@ -39,20 +39,20 @@ class _SeoScreenState extends ConsumerState<SeoScreen> {
         actions: const [ProjectPickerAction()],
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           Text(
             context.tr('Topical Mesh Analysis'),
             style: theme.textTheme.titleMedium,
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xxs),
           Text(
             context.tr('Analyze your site structure and topical coverage'),
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           TextField(
             controller: _repoUrlCtrl,
@@ -67,9 +67,11 @@ class _SeoScreenState extends ConsumerState<SeoScreen> {
               suffixIcon: IconButton(
                 icon: _isRepoPickerLoading
                     ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
+                        width: AppSizes.icon,
+                        height: AppSizes.icon,
+                        child: CircularProgressIndicator(
+                          strokeWidth: AppStroke.medium,
+                        ),
                       )
                     : const Icon(Icons.travel_explore_rounded),
                 tooltip: context.tr('Choose from connected GitHub repos'),
@@ -83,22 +85,24 @@ class _SeoScreenState extends ConsumerState<SeoScreen> {
             keyboardType: TextInputType.url,
           ),
           if (githubStatus?.connected != true) ...[
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.xs),
             OutlinedButton.icon(
               icon: const Icon(Icons.link),
               label: Text(context.tr('Connect GitHub')),
               onPressed: _connectGithubFromSeo,
             ),
           ],
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg),
 
           FilledButton.icon(
             onPressed: _analyzing ? null : _analyze,
             icon: _analyzing
                 ? const SizedBox(
-                    height: 18,
-                    width: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    height: AppSizes.iconLarge,
+                    width: AppSizes.iconLarge,
+                    child: CircularProgressIndicator(
+                      strokeWidth: AppStroke.medium,
+                    ),
                   )
                 : const Icon(Icons.hub),
             label: Text(
@@ -109,7 +113,7 @@ class _SeoScreenState extends ConsumerState<SeoScreen> {
           ),
 
           if (_result != null) ...[
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg),
             _MeshResults(result: _result!),
           ],
         ],
@@ -267,7 +271,9 @@ class _SeoScreenState extends ConsumerState<SeoScreen> {
               'GitHub OAuth is unavailable. Check backend configuration.',
             ),
           ),
-          backgroundColor: Colors.red.withValues(alpha: 0.8),
+          backgroundColor: Theme.of(
+            context,
+          ).colorScheme.error.withValues(alpha: AppOpacity.prominent),
         ),
       );
       return;
@@ -310,7 +316,9 @@ class _SeoScreenState extends ConsumerState<SeoScreen> {
           content: Text(
             context.tr('Could not open browser for GitHub authorization'),
           ),
-          backgroundColor: Colors.red.withValues(alpha: 0.8),
+          backgroundColor: Theme.of(
+            context,
+          ).colorScheme.error.withValues(alpha: AppOpacity.prominent),
         ),
       );
     }
@@ -340,20 +348,20 @@ class _MeshResults extends StatelessWidget {
               value: '$pages',
               color: theme.colorScheme.primary,
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.xs),
             _StatCard(
               label: context.tr('Issues'),
               value: '$issues',
               color: AppTheme.warningColor,
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.xs),
             _StatCard(
               label: context.tr('Tips'),
               value: '$recommendations',
               color: AppTheme.approveColor,
             ),
             if (score != null) ...[
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.xs),
               _StatCard(
                 label: context.tr('Score'),
                 value: '${score.toInt()}%',
@@ -366,25 +374,25 @@ class _MeshResults extends StatelessWidget {
         // Issues
         if (result['issues'] case final List issueList
             when issueList.isNotEmpty) ...[
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           Text(context.tr('Issues'), style: theme.textTheme.titleSmall),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           ...issueList
               .take(10)
               .map(
                 (issue) => Card(
-                  margin: const EdgeInsets.only(bottom: 6),
+                  margin: const EdgeInsets.only(bottom: AppSpacing.xxs2),
                   child: ListTile(
                     dense: true,
                     leading: Icon(
                       Icons.warning_amber,
                       color: AppTheme.warningColor,
-                      size: 20,
+                      size: AppSizes.iconXl,
                     ),
                     title: Text(
                       (issue as Map)['description']?.toString() ??
                           context.tr('Issue'),
-                      style: const TextStyle(fontSize: 13),
+                      style: TextStyle(fontSize: AppText.compact),
                     ),
                   ),
                 ),
@@ -394,28 +402,28 @@ class _MeshResults extends StatelessWidget {
         // Recommendations
         if (result['recommendations'] case final List recs
             when recs.isNotEmpty) ...[
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           Text(
             context.tr('Recommendations'),
             style: theme.textTheme.titleSmall,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           ...recs
               .take(10)
               .map(
                 (rec) => Card(
-                  margin: const EdgeInsets.only(bottom: 6),
+                  margin: const EdgeInsets.only(bottom: AppSpacing.xxs2),
                   child: ListTile(
                     dense: true,
                     leading: Icon(
                       Icons.lightbulb_outline,
                       color: AppTheme.approveColor,
-                      size: 20,
+                      size: AppSizes.iconXl,
                     ),
                     title: Text(
                       (rec as Map)['description']?.toString() ??
                           context.tr('Recommendation'),
-                      style: const TextStyle(fontSize: 13),
+                      style: TextStyle(fontSize: AppText.compact),
                     ),
                   ),
                 ),
@@ -440,23 +448,26 @@ class _StatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(12),
+          color: color.withValues(alpha: AppOpacity.subtle),
+          borderRadius: BorderRadius.circular(AppRadii.md),
         ),
         child: Column(
           children: [
             Text(
               value,
               style: TextStyle(
-                fontSize: 18,
+                fontSize: AppText.title,
                 fontWeight: FontWeight.bold,
                 color: color,
               ),
             ),
-            const SizedBox(height: 2),
-            Text(label, style: TextStyle(fontSize: 11, color: color)),
+            const SizedBox(height: AppSpacing.xxsHalf),
+            Text(
+              label,
+              style: TextStyle(fontSize: AppText.xs11, color: color),
+            ),
           ],
         ),
       ),

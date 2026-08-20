@@ -31,13 +31,13 @@ const { content } = Astro.props;
 
 <style>
   .testimonials-section {
-    --testimonials-animation-duration: 3.4s;
-    --testimonial-icon-delay-1: 0.1s;
-    --testimonial-icon-delay-2: 0.3s;
-    --testimonial-icon-delay-3: 0.6s;
-    --testimonial-icon-delay-4: 0.9s;
-    --testimonial-icon-delay-5: 1.2s;
-    --testimonial-icon-delay-6: 1.5s;
+    --testimonials-animation-duration: var(--duration-testimonials-cycle);
+    --testimonial-icon-delay-1: var(--delay-testimonials-1);
+    --testimonial-icon-delay-2: var(--delay-testimonials-2);
+    --testimonial-icon-delay-3: var(--delay-testimonials-3);
+    --testimonial-icon-delay-4: var(--delay-testimonials-4);
+    --testimonial-icon-delay-5: var(--delay-testimonials-5);
+    --testimonial-icon-delay-6: var(--delay-testimonials-6);
         padding: var(--space-24) 0;
     background: var(--color-surface);
   }
@@ -106,7 +106,7 @@ const { content } = Astro.props;
 
   @media (prefers-reduced-motion: no-preference) {
     .testimonial-card {
-      animation: testimonial-fade-in 480ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1));
+      animation: testimonial-fade-in var(--duration-reveal) var(--ease-emphasized-out);
       animation-fill-mode: both;
     }
 

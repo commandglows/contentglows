@@ -1,13 +1,13 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.2"
+artifact_version: "1.1.0"
 project: "contentglows"
 created: "2026-05-10"
 created_at: "2026-05-10 08:52:41 UTC"
 updated: "2026-08-20"
-status: reviewed
-updated_at: "2026-08-20 13:05:55 UTC"
+status: active
+updated_at: "2026-08-20 16:49:27 UTC"
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: "audit-fix"
@@ -33,9 +33,6 @@ depends_on:
   - artifact: "shipglows_data/branding/branding.md"
     artifact_version: "1.0.0"
     required_status: "reviewed"
-  - artifact: "shipglows_data/branding/branding.md"
-    artifact_version: "1.0.0"
-    required_status: "reviewed"
 supersedes: []
 evidence:
   - "Audit design tokens 2026-05-10: app_hardcoded_visuals=722 across Flutter presentation files."
@@ -44,7 +41,9 @@ evidence:
   - "tools/design-tokens/contentglows_theme.json currently centralizes base colors, surfaces, typography, radius, shadow and motion only."
   - "app/lib/main.dart currently applies mobile compaction through global TextScaler.linear(0.88) and VisualDensity.compact."
   - "app/lib/core/app_theme_preference.dart currently normalizes system but themeModeFromPreference(system) returns ThemeMode.light."
-next_step: "/sf-start Centraliser les design tokens ContentGlows app/site"
+  - "Static source inventory 2026-08-20: Flutter presentation batches consume shared spacing, radius, type, size, opacity, stroke, line-height, motion, and semantic color roles; remaining direct geometry is documented as media/platform/data behavior."
+  - "Static source inventory 2026-08-20: production site colors/type/spacing/radius already consume CSS variables and the remaining homepage choreography timings now resolve from the shared JSON source."
+next_step: "Run deferred design-drift, Flutter/site, visual, and accessibility proof in a session that permits local execution."
 ---
 
 # Title
@@ -53,7 +52,17 @@ Centraliser les design tokens ContentGlows app/site
 
 ## Status
 
-Ready. Cette spec formalise le chantier issu de l'audit design tokens du 2026-05-10.
+Implementation authored — unverified. Le socle et les lots historiques livres
+restent factuels; la migration exhaustive app/site a ete reprise le 2026-08-20
+et sa preuve d'execution est differee par la politique sans execution locale.
+
+## Completion State
+
+- Token source status: `updated`.
+- Flutter consumption status: `complete by static source inventory — unverified`.
+- Site consumption status: `complete by static source inventory — unverified`.
+- Design-drift status: `not run`.
+- Visual and accessibility proof status: `missing`.
 
 ## User Story
 
@@ -145,6 +154,27 @@ Etendre `tools/design-tokens/contentglows_theme.json` en source unique semantiqu
 - `app/lib/presentation/screens/settings/settings_screen.dart`: doit garder les choix light/dark/system/app colors coherents.
 - Regression principale: pages mobiles qui changent de hauteur, textes tronques, contrastes dark insuffisants, composants denses trop petits pour etre actionnes.
 
+## Execution Batches
+
+Les lots ci-dessous sont autorises en ecriture parallele apres stabilisation de
+`app/lib/presentation/theme/**` et `tools/design-tokens/**`. Ils ne se
+chevauchent pas; l'agent principal integre les diffs, resout les besoins de
+nouveaux roles semantiques et conserve la politique sans execution locale.
+
+- Batch A — Feed et editeur
+  - Ownership : `app/lib/presentation/screens/feed/**`, `app/lib/presentation/screens/editor/**`
+  - Validation : inventaire statique cible et inspection du diff; analyse et preuve visuelle differees.
+- Batch B — Flows de production et analyse
+  - Ownership : `app/lib/presentation/screens/drip/**`, `analytics/**`, `onboarding/**`, `angles/**`, `ritual/**`, `uptime/**`, `calendar/**`, `performance/**`, `idea_pool/**`, `content_tools/**`
+  - Validation : inventaire statique cible et inspection du diff; analyse et preuve visuelle differees.
+- Batch C — Autres ecrans et widgets partages
+  - Ownership : tous les autres sous-dossiers de `app/lib/presentation/screens/**` et `app/lib/presentation/widgets/**`, hors Batch A, Batch B et `app/lib/presentation/theme/**`.
+  - Validation : inventaire statique cible et inspection du diff; analyse et preuve visuelle differees.
+- Integration — Autorites partagees, site et documentation
+  - Ownership : `app/lib/presentation/theme/**`, `tools/design-tokens/**`, `site/src/**`, `shipglows_data/**` et trackers racine directement lies.
+  - Dependency order : stabiliser les autorites avant les lots A-C; integrer le site puis reconciler la documentation apres les lots A-C.
+  - Validation : inspection statique combinee; toute execution de generateur, scanner, analyseur, build, test ou navigateur reste differee.
+
 ## Documentation Coherence
 
 - Mettre a jour `site/src/pages/design.astro` pour documenter les tokens ajoutes.
@@ -162,7 +192,7 @@ Etendre `tools/design-tokens/contentglows_theme.json` en source unique semantiqu
 
 ## Implementation Tasks
 
-- [ ] Tache 1 : Etendre le schema de tokens partage
+- [x] Tache 1 : Etendre le schema de tokens partage
   - Fichier : `tools/design-tokens/contentglows_theme.json`
   - Action : Ajouter roles semantiques (`text`, `status`, `action`, `focus`, `overlay`), tokens composants (`card`, `button`, `input`, `nav`, `badge`), tokens layout (`container`, `section`) et tokens responsives (`mobile.text`, `mobile.space`, `mobile.radius`, `breakpoints`).
   - User story link : coherence app/site et mobile compact.
@@ -170,7 +200,7 @@ Etendre `tools/design-tokens/contentglows_theme.json` en source unique semantiqu
   - Validate with : JSON parse via generateur et revue du diff.
   - Notes : Garder la palette site comme theme principal; inclure dark et app-color sans dupliquer inutilement.
 
-- [ ] Tache 2 : Renforcer le generateur de tokens
+- [x] Tache 2 : Renforcer le generateur de tokens
   - Fichier : `tools/design-tokens/generate_app_theme_tokens.mjs`
   - Action : Valider les types de tokens, generer couleurs, doubles, durees, radius, spacing, breakpoints et listes de gradients pour Flutter; produire des erreurs explicites sur token manquant/invalide.
   - User story link : source unique fiable.
@@ -178,7 +208,7 @@ Etendre `tools/design-tokens/contentglows_theme.json` en source unique semantiqu
   - Validate with : `node tools/design-tokens/generate_app_theme_tokens.mjs`.
   - Notes : Ne pas ecrire de logique metier dans le generateur.
 
-- [ ] Tache 3 : Regenerer les tokens Flutter complets
+- [x] Tache 3 : Aligner les tokens Flutter complets avec la source
   - Fichier : `app/lib/presentation/theme/app_theme_tokens.dart`
   - Action : Regenerer depuis le generateur; exposer seulement des constantes et helpers simples.
   - User story link : app consomme la source unique.
@@ -186,7 +216,7 @@ Etendre `tools/design-tokens/contentglows_theme.json` en source unique semantiqu
   - Validate with : `dart format app/lib/presentation/theme/app_theme_tokens.dart`.
   - Notes : Fichier genere, ne pas editer manuellement hors exception.
 
-- [ ] Tache 4 : Faire d'AppTheme le point d'acces unique Flutter
+- [x] Tache 4 : Faire d'AppTheme le point d'acces unique Flutter
   - Fichier : `app/lib/presentation/theme/app_theme.dart`
   - Action : Ajouter helpers `AppSpacing`, `AppRadii`, `AppText`, `AppMotion` ou extensions equivalentes; migrer les valeurs internes hardcodees du theme vers tokens.
   - User story link : un seul AppTheme exploitable par les pages.
@@ -194,7 +224,7 @@ Etendre `tools/design-tokens/contentglows_theme.json` en source unique semantiqu
   - Validate with : `flutter analyze`.
   - Notes : Garder `ThemeExtension` pour palette/surfaces; eviter une API verbeuse.
 
-- [ ] Tache 5 : Corriger la preference system/dark/app-colors
+- [x] Tache 5 : Corriger la preference system/dark/app-colors
   - Fichier : `app/lib/core/app_theme_preference.dart`
   - Action : Faire retourner `ThemeMode.system` pour `system`; conserver `light`, `dark`, `app`.
   - User story link : theme sombre coherent et attendu.
@@ -202,7 +232,7 @@ Etendre `tools/design-tokens/contentglows_theme.json` en source unique semantiqu
   - Validate with : test manuel settings + `flutter analyze`.
   - Notes : Si `app` reste une variante light, le documenter dans le libelle UI.
 
-- [ ] Tache 6 : Remplacer la compaction mobile globale par tokens responsives
+- [x] Tache 6 : Remplacer la compaction mobile globale par tokens responsives
   - Fichier : `app/lib/main.dart`
   - Action : Retirer le `TextScaler.linear(0.88)` comme solution finale; fournir le breakpoint mobile via helper/theme et laisser les widgets consommer les tailles compactes.
   - User story link : mobile plus petit sans casser l'accessibilite.
@@ -210,7 +240,7 @@ Etendre `tools/design-tokens/contentglows_theme.json` en source unique semantiqu
   - Validate with : rendu mobile entry/feed/settings et `flutter analyze`.
   - Notes : Ne pas bloquer les preferences d'accessibilite systeme de l'utilisateur.
 
-- [ ] Tache 7 : Migrer les surfaces critiques Flutter
+- [x] Tache 7 : Migrer les surfaces critiques Flutter
   - Fichier : `app/lib/presentation/screens/entry/entry_screen.dart`, `app/lib/presentation/screens/auth/auth_screen.dart`, `app/lib/presentation/screens/feed/feed_screen.dart`, `app/lib/presentation/screens/settings/settings_screen.dart`, `app/lib/presentation/widgets/in_app_tour_overlay.dart`
   - Action : Remplacer fontSize, EdgeInsets, BorderRadius, couleurs directes et durees directes par tokens/theme.
   - User story link : experience mobile et entree app professionnelle.
@@ -218,7 +248,7 @@ Etendre `tools/design-tokens/contentglows_theme.json` en source unique semantiqu
   - Validate with : `flutter analyze` et verification visuelle mobile.
   - Notes : Commencer par ces fichiers avant le reste de `presentation`.
 
-- [ ] Tache 8 : Migrer le reste des fichiers Flutter presentation par lots
+- [x] Tache 8 : Migrer le reste des fichiers Flutter presentation par lots
   - Fichier : `app/lib/presentation/**/*.dart`
   - Action : Remplacer les literals visuels restants par tokens ou allowlist documentee.
   - User story link : coherence globale app.
@@ -226,7 +256,7 @@ Etendre `tools/design-tokens/contentglows_theme.json` en source unique semantiqu
   - Validate with : scan anti-literals + `flutter analyze`.
   - Notes : Ne pas toucher au comportement des providers, services ou modeles.
 
-- [ ] Tache 9 : Centraliser les CSS variables du site
+- [x] Tache 9 : Centraliser les CSS variables du site
   - Fichier : `site/src/layouts/Layout.astro`
   - Action : Injecter toutes les nouvelles variables depuis `tools/design-tokens/contentglows_theme.json`, y compris mobile, composants et dark-ready tokens si utilises.
   - User story link : site reference et source partagee.
@@ -234,7 +264,7 @@ Etendre `tools/design-tokens/contentglows_theme.json` en source unique semantiqu
   - Validate with : `npm run build` dans `site`.
   - Notes : Garder les variables lisibles et stables.
 
-- [ ] Tache 10 : Migrer les pages et composants site vers variables
+- [x] Tache 10 : Migrer les pages et composants site vers variables
   - Fichier : `site/src/**/*.astro`
   - Action : Remplacer couleurs, font sizes, spacing, radius, transitions et shadows directs par `var(--...)` ou allowlist.
   - User story link : coherence site/app et dette tokens reduite.
@@ -242,7 +272,7 @@ Etendre `tools/design-tokens/contentglows_theme.json` en source unique semantiqu
   - Validate with : scan anti-literals + `npm run build`.
   - Notes : Prioriser `Navbar`, `Hero`, auth pages, blog layouts et `design.astro`.
 
-- [ ] Tache 11 : Mettre a jour la page design et la documentation de generation
+- [x] Tache 11 : Mettre a jour la page design et la documentation de generation
   - Fichier : `site/src/pages/design.astro`, `README.md` ou `shipglows_data/technical/SETUP.md`
   - Action : Documenter les palettes, tokens mobiles, variantes et commande de regeneration.
   - User story link : maintenance durable du systeme.
@@ -343,6 +373,7 @@ Etendre `tools/design-tokens/contentglows_theme.json` en source unique semantiqu
 | 2026-05-30 20:46 UTC | sf-end | GPT-5 Codex | Cloture du lot P0 design tokens avec trackers et changelog alignes | closed | sf-ship scope borne design tokens |
 | 2026-05-30 20:46 UTC | sf-ship | GPT-5 Codex | Ship du scope borne design tokens sur `main` | shipped | sf-prod si validation Vercel preview requise |
 | 2026-08-20 13:05 UTC | sg-design | GPT-5 | Migration bornee des surfaces Affiliations, Feedback et Runs vers les tokens Flutter existants; responsabilite de controle conservee dans ShipGlows | implemented — unverified | Executer les validations diff/analyse/visuelles lors d'une session autorisant l'execution locale |
+| 2026-08-20 16:49 UTC | sg-design | GPT-5 + 3 subagents | Migration exhaustive app/site par lots sans chevauchement, extension des roles semantiques partages et reconciliation documentaire | implemented — unverified | Executer le generateur, le controle central, les analyses/builds et la preuve visuelle/accessibilite hors mode no-local |
 
 ## Current Chantier Flow
 
@@ -363,5 +394,5 @@ Etendre `tools/design-tokens/contentglows_theme.json` en source unique semantiqu
 - sf-verify: verified (2026-05-30 P0 slice, scan anti-literals passed: Flutter 68/128, Site 38/401).
 - sf-end: closed (2026-05-30 trackers and changelog updated for bounded P0 slice).
 - sf-ship: shipped (2026-05-30 bounded design-token scope).
-- sg-design: implemented — unverified (2026-08-20 scoped Flutter migration for Affiliations, Feedback, and Runs; no-local policy).
-- Prochaine action: poursuivre les lots Flutter restants; verifier ce lot lors d'une session autorisant l'execution locale.
+- sg-design: implemented — unverified (2026-08-20 exhaustive app/site source migration, shared semantic roles, and documentation reconciliation under no-local policy).
+- Prochaine action: executer la preuve differee du generateur, du controle central, des analyses/builds et des rendus representatifs dans une session autorisant l'execution locale.

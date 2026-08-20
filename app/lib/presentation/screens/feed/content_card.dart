@@ -26,15 +26,21 @@ class ContentCard extends ConsumerWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        margin: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.xs,
+        ),
         decoration: BoxDecoration(
           color: palette.elevatedSurface,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: typeColor.withAlpha(80), width: 1.5),
+          borderRadius: BorderRadius.circular(AppRadii.xxl),
+          border: Border.all(
+            color: typeColor.withAlpha(AppAlpha.border),
+            width: AppStroke.emphasis,
+          ),
           boxShadow: [
             BoxShadow(
-              color: typeColor.withAlpha(30),
-              blurRadius: 20,
+              color: typeColor.withAlpha(AppAlpha.glow),
+              blurRadius: AppEffects.blurCard,
               offset: const Offset(0, 8),
             ),
           ],
@@ -74,25 +80,37 @@ class ContentCard extends ConsumerWidget {
   ) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.md,
+        AppSpacing.lg,
+        0,
+      ),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.sm,
+              vertical: AppSpacing.xxs2,
+            ),
             decoration: BoxDecoration(
-              color: typeColor.withAlpha(40),
-              borderRadius: BorderRadius.circular(20),
+              color: typeColor.withAlpha(AppAlpha.tint),
+              borderRadius: BorderRadius.circular(AppRadii.xl),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(_iconForType(item.type), size: 14, color: typeColor),
-                const SizedBox(width: 6),
+                Icon(
+                  _iconForType(item.type),
+                  size: AppSizes.iconSm,
+                  color: typeColor,
+                ),
+                const SizedBox(width: AppSpacing.xxs2),
                 Text(
                   item.typeLabel,
                   style: TextStyle(
                     color: typeColor,
-                    fontSize: 12,
+                    fontSize: AppText.xs,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -102,14 +120,14 @@ class ContentCard extends ConsumerWidget {
           const Spacer(),
           if (syncInfo != null) ...[
             OfflineSyncStatusChip(info: syncInfo, compact: true),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.xs),
           ],
           if (item.projectName != null)
             Text(
               item.projectName!,
               style: TextStyle(
                 color: theme.colorScheme.onSurfaceVariant,
-                fontSize: 12,
+                fontSize: AppText.xs,
               ),
             ),
         ],
@@ -203,27 +221,46 @@ class ContentCard extends ConsumerWidget {
     if (chips.isEmpty) return const SizedBox.shrink();
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-      child: Wrap(spacing: 6, runSpacing: 4, children: chips),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.compact,
+        AppSpacing.lg,
+        0,
+      ),
+      child: Wrap(
+        spacing: AppSpacing.xxs2,
+        runSpacing: AppSpacing.xxs,
+        children: chips,
+      ),
     );
   }
 
   Widget _metaChip(IconData icon, String label, Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.xs,
+        vertical: AppSpacing.xxs,
+      ),
       decoration: BoxDecoration(
-        color: color.withAlpha(20),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withAlpha(40)),
+        color: color.withAlpha(AppAlpha.subtle),
+        borderRadius: BorderRadius.circular(AppRadii.sm),
+        border: Border.all(color: color.withAlpha(AppAlpha.tint)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 12, color: color.withAlpha(180)),
-          const SizedBox(width: 4),
+          Icon(
+            icon,
+            size: AppSizes.iconTiny,
+            color: color.withAlpha(AppAlpha.icon),
+          ),
+          const SizedBox(width: AppSpacing.xxs),
           Text(
             label,
-            style: TextStyle(fontSize: 11, color: color.withAlpha(200)),
+            style: TextStyle(
+              fontSize: AppText.xs11,
+              color: color.withAlpha(AppAlpha.text),
+            ),
           ),
         ],
       ),
@@ -245,13 +282,18 @@ class ContentCard extends ConsumerWidget {
     final palette = AppTheme.paletteOf(context);
     return Container(
       height: 180,
-      margin: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+      margin: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.sm,
+        AppSpacing.lg,
+        0,
+      ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppRadii.lg),
         color: palette.mutedSurface,
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppRadii.lg),
         child: Image.network(
           item.imageUrl!,
           fit: BoxFit.cover,
@@ -260,7 +302,7 @@ class ContentCard extends ConsumerWidget {
             child: Icon(
               Icons.image_outlined,
               color: Theme.of(context).colorScheme.outlineVariant,
-              size: 48,
+              size: AppSizes.emptyStateIcon,
             ),
           ),
         ),
@@ -282,18 +324,23 @@ class ContentCard extends ConsumerWidget {
     return Container(
       key: Key('video-preview-${item.id}'),
       height: 124,
-      margin: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+      margin: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.sm,
+        AppSpacing.lg,
+        0,
+      ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(AppRadii.preview),
         color: palette.mutedSurface,
         gradient: previewImageUrl == null
             ? LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  status.color.withValues(alpha: 0.24),
+                  status.color.withValues(alpha: AppOpacity.tint),
                   palette.mutedSurface,
-                  typeColor.withValues(alpha: 0.12),
+                  typeColor.withValues(alpha: AppOpacity.soft),
                 ],
               )
             : null,
@@ -320,32 +367,49 @@ class ContentCard extends ConsumerWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.black.withValues(alpha: 0.08),
-                  Colors.black.withValues(alpha: 0.1),
-                  Colors.black.withValues(alpha: 0.55),
+                  AppTheme.mediaScrimColor.withValues(alpha: AppOpacity.faint),
+                  AppTheme.mediaScrimColor.withValues(
+                    alpha: AppOpacity.subtle,
+                  ),
+                  AppTheme.mediaScrimColor.withValues(
+                    alpha: AppOpacity.divider,
+                  ),
                 ],
               ),
             ),
           ),
           Positioned(
-            top: 12,
-            left: 12,
+            top: AppSpacing.sm,
+            left: AppSpacing.sm,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.compact,
+                vertical: AppSpacing.xxs2,
+              ),
               decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.42),
-                borderRadius: BorderRadius.circular(999),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
+                color: AppTheme.mediaScrimColor.withValues(
+                  alpha: AppOpacity.scrim,
+                ),
+                borderRadius: BorderRadius.circular(AppRadii.pill),
+                border: Border.all(
+                  color: AppTheme.onMediaColor.withValues(
+                    alpha: AppOpacity.border,
+                  ),
+                ),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.smart_display_rounded, size: 14, color: Colors.white),
-                  const SizedBox(width: 6),
+                  Icon(
+                    Icons.smart_display_rounded,
+                    size: AppSizes.iconSm,
+                    color: AppTheme.onMediaColor,
+                  ),
+                  const SizedBox(width: AppSpacing.xxs2),
                   Text(
                     context.tr('Video preview'),
                     style: theme.textTheme.labelSmall?.copyWith(
-                      color: Colors.white,
+                      color: AppTheme.onMediaColor,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -354,48 +418,56 @@ class ContentCard extends ConsumerWidget {
             ),
           ),
           Positioned(
-            top: 12,
-            right: 12,
+            top: AppSpacing.sm,
+            right: AppSpacing.sm,
             child: TextButton.icon(
               key: Key('edit-video-${item.id}'),
               onPressed: onTap,
               style: TextButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.black.withValues(alpha: 0.42),
+                foregroundColor: AppTheme.onMediaColor,
+                backgroundColor: AppTheme.mediaScrimColor.withValues(
+                  alpha: AppOpacity.scrim,
+                ),
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 8,
+                  horizontal: AppSpacing.compact,
+                  vertical: AppSpacing.xs,
                 ),
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 visualDensity: VisualDensity.compact,
               ),
-              icon: const Icon(Icons.edit_rounded, size: 14),
+              icon: Icon(Icons.edit_rounded, size: AppSizes.iconSm),
               label: Text(context.tr('Edit video')),
             ),
           ),
           Center(
             child: Container(
-              width: 58,
-              height: 58,
+              width: AppSizes.playButton,
+              height: AppSizes.playButton,
               decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.42),
+                color: AppTheme.mediaScrimColor.withValues(
+                  alpha: AppOpacity.scrim,
+                ),
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+                border: Border.all(
+                  color: AppTheme.onMediaColor.withValues(
+                    alpha: AppOpacity.light,
+                  ),
+                ),
               ),
               child: Icon(
                 item.isVideoReadyToPublish
                     ? Icons.play_arrow_rounded
                     : Icons.hourglass_top_rounded,
-                color: Colors.white,
-                size: 34,
+                color: AppTheme.onMediaColor,
+                size: AppSizes.playbackIcon,
               ),
             ),
           ),
           Positioned(
-            left: 14,
-            right: 14,
-            bottom: 14,
+            left: AppSpacing.contentInset,
+            right: AppSpacing.contentInset,
+            bottom: AppSpacing.contentInset,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -407,16 +479,18 @@ class ContentCard extends ConsumerWidget {
                       Text(
                         previewCaption,
                         style: theme.textTheme.labelLarge?.copyWith(
-                          color: Colors.white,
+                          color: AppTheme.onMediaColor,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: AppSpacing.xxsHalf),
                       Text(
                         status.label,
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: Colors.white.withValues(alpha: 0.86),
-                          height: 1.2,
+                          color: AppTheme.onMediaColor.withValues(
+                            alpha: AppOpacity.readable,
+                          ),
+                          height: AppLineHeight.tight,
                         ),
                       ),
                     ],
@@ -424,17 +498,17 @@ class ContentCard extends ConsumerWidget {
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 6,
+                    horizontal: AppSpacing.compact,
+                    vertical: AppSpacing.xxs2,
                   ),
                   decoration: BoxDecoration(
-                    color: status.color.withValues(alpha: 0.88),
-                    borderRadius: BorderRadius.circular(999),
+                    color: status.color.withValues(alpha: AppOpacity.high),
+                    borderRadius: BorderRadius.circular(AppRadii.pill),
                   ),
                   child: Text(
                     status.label,
                     style: theme.textTheme.labelSmall?.copyWith(
-                      color: Colors.white,
+                      color: AppTheme.onMediaColor,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -453,11 +527,11 @@ class ContentCard extends ConsumerWidget {
     _VideoStatusPresentation status,
   ) {
     return Padding(
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(AppSpacing.dense),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(status.icon, color: status.color, size: 28),
+          Icon(status.icon, color: status.color, size: AppSizes.iconHero),
           const Spacer(),
           Text(
             item.title,
@@ -468,14 +542,14 @@ class ContentCard extends ConsumerWidget {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSpacing.xxs2),
           Text(
             item.summary?.trim().isNotEmpty == true
                 ? item.summary!.trim()
                 : item.videoPreflightSummary,
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
-              height: 1.3,
+              height: AppLineHeight.snug,
             ),
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
@@ -504,7 +578,12 @@ class ContentCard extends ConsumerWidget {
           _ => item.isVideoType ? 3 : 5,
         };
         return Padding(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.lg,
+            AppSpacing.md,
+            AppSpacing.lg,
+            0,
+          ),
           child: ClipRect(
             child: SingleChildScrollView(
               physics: const NeverScrollableScrollPhysics(),
@@ -516,21 +595,21 @@ class ContentCard extends ConsumerWidget {
                     item.title,
                     style: TextStyle(
                       color: theme.colorScheme.onSurface,
-                      fontSize: 20,
+                      fontSize: AppText.xxl,
                       fontWeight: FontWeight.bold,
-                      height: 1.3,
+                      height: AppLineHeight.snug,
                     ),
                     maxLines: titleLines,
                     overflow: TextOverflow.ellipsis,
                   ),
                   if (showPreview) ...[
-                    const SizedBox(height: 10),
+                    const SizedBox(height: AppSpacing.compact),
                     Text(
                       previewText,
                       style: TextStyle(
                         color: theme.colorScheme.onSurfaceVariant,
-                        fontSize: 14,
-                        height: 1.6,
+                        fontSize: AppText.sm,
+                        height: AppLineHeight.comfortable,
                       ),
                       maxLines: previewLines,
                       overflow: TextOverflow.ellipsis,
@@ -553,12 +632,22 @@ class ContentCard extends ConsumerWidget {
         ? _videoFooterHint(context)
         : context.tr('Publish');
     final publishHintColor = item.isVideoType && !item.isVideoReadyToPublish
-        ? AppTheme.warningColor.withAlpha(170)
-        : AppTheme.approveColor.withAlpha(150);
+        ? AppTheme.warningColor.withAlpha(AppAlpha.warning)
+        : AppTheme.approveColor.withAlpha(AppAlpha.muted);
 
     final footerPadding = item.isVideoType
-        ? const EdgeInsets.fromLTRB(20, 10, 20, 10)
-        : const EdgeInsets.fromLTRB(20, 12, 20, 16);
+        ? const EdgeInsets.fromLTRB(
+            AppSpacing.lg,
+            AppSpacing.compact,
+            AppSpacing.lg,
+            AppSpacing.compact,
+          )
+        : const EdgeInsets.fromLTRB(
+            AppSpacing.lg,
+            AppSpacing.sm,
+            AppSpacing.lg,
+            AppSpacing.md,
+          );
 
     return Container(
       padding: footerPadding,
@@ -567,10 +656,10 @@ class ContentCard extends ConsumerWidget {
           // Channel icons
           ...item.channels.map(
             (channel) => Padding(
-              padding: const EdgeInsets.only(right: 8),
+              padding: const EdgeInsets.only(right: AppSpacing.xs),
               child: Icon(
                 _iconForChannel(channel),
-                size: 18,
+                size: AppSizes.iconLarge,
                 color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
@@ -584,41 +673,44 @@ class ContentCard extends ConsumerWidget {
                 children: [
                   Icon(
                     Icons.arrow_back_rounded,
-                    size: 14,
-                    color: AppTheme.rejectColor.withAlpha(150),
+                    size: AppSizes.iconSm,
+                    color: AppTheme.rejectColor.withAlpha(AppAlpha.muted),
                   ),
-                  const SizedBox(width: 3),
+                  const SizedBox(width: AppSpacing.micro),
                   Text(
                     context.tr('Skip'),
                     style: TextStyle(
-                      fontSize: 11,
-                      color: AppTheme.rejectColor.withAlpha(150),
+                      fontSize: AppText.xs11,
+                      color: AppTheme.rejectColor.withAlpha(AppAlpha.muted),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.xs),
                   Icon(
                     Icons.arrow_upward_rounded,
-                    size: 14,
-                    color: AppTheme.editColor.withAlpha(150),
+                    size: AppSizes.iconSm,
+                    color: AppTheme.editColor.withAlpha(AppAlpha.muted),
                   ),
-                  const SizedBox(width: 3),
+                  const SizedBox(width: AppSpacing.micro),
                   Text(
                     context.tr('Edit'),
                     style: TextStyle(
-                      fontSize: 11,
-                      color: AppTheme.editColor.withAlpha(150),
+                      fontSize: AppText.xs11,
+                      color: AppTheme.editColor.withAlpha(AppAlpha.muted),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.xs),
                   Text(
                     publishHint,
-                    style: TextStyle(fontSize: 11, color: publishHintColor),
+                    style: TextStyle(
+                      fontSize: AppText.xs11,
+                      color: publishHintColor,
+                    ),
                   ),
                   if (item.isVideoReadyToPublish) ...[
-                    const SizedBox(width: 3),
+                    const SizedBox(width: AppSpacing.micro),
                     Icon(
                       Icons.arrow_forward_rounded,
-                      size: 14,
+                      size: AppSizes.iconSm,
                       color: publishHintColor,
                     ),
                   ],
@@ -638,12 +730,19 @@ class ContentCard extends ConsumerWidget {
     final preflightSummary = _videoPreflightSummary(context, destinations);
 
     return Container(
-      margin: const EdgeInsets.fromLTRB(20, 8, 20, 0),
-      padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.xs,
+        AppSpacing.lg,
+        0,
+      ),
+      padding: const EdgeInsets.all(AppSpacing.compact),
       decoration: BoxDecoration(
-        color: typeColor.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: typeColor.withValues(alpha: 0.18)),
+        color: typeColor.withValues(alpha: AppOpacity.faint),
+        borderRadius: BorderRadius.circular(AppRadii.lg),
+        border: Border.all(
+          color: typeColor.withValues(alpha: AppOpacity.border),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -652,21 +751,25 @@ class ContentCard extends ConsumerWidget {
             children: [
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 6,
+                  horizontal: AppSpacing.compact,
+                  vertical: AppSpacing.xxs2,
                 ),
                 decoration: BoxDecoration(
-                  color: status.color.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(999),
+                  color: status.color.withValues(alpha: AppOpacity.medium),
+                  borderRadius: BorderRadius.circular(AppRadii.pill),
                   border: Border.all(
-                    color: status.color.withValues(alpha: 0.3),
+                    color: status.color.withValues(alpha: AppOpacity.emphasis),
                   ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(status.icon, size: 14, color: status.color),
-                    const SizedBox(width: 6),
+                    Icon(
+                      status.icon,
+                      size: AppSizes.iconSm,
+                      color: status.color,
+                    ),
+                    const SizedBox(width: AppSpacing.xxs2),
                     Text(
                       status.label,
                       style: theme.textTheme.labelMedium?.copyWith(
@@ -679,18 +782,18 @@ class ContentCard extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             status.copy,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurface,
               fontWeight: FontWeight.w600,
-              height: 1.35,
+              height: AppLineHeight.compact,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             context.tr('Publish preflight'),
             style: theme.textTheme.labelLarge?.copyWith(
@@ -698,20 +801,20 @@ class ContentCard extends ConsumerWidget {
               fontWeight: FontWeight.w800,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xxs),
           Text(
             preflightSummary,
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
-              height: 1.35,
+              height: AppLineHeight.compact,
             ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           Wrap(
-            spacing: 8,
-            runSpacing: 8,
+            spacing: AppSpacing.xs,
+            runSpacing: AppSpacing.xs,
             children: [
               _reviewTemplateChip(
                 context,
@@ -742,12 +845,19 @@ class ContentCard extends ConsumerWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     return Container(
-      margin: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.compact,
+        AppSpacing.lg,
+        0,
+      ),
+      padding: const EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
-        color: typeColor.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: typeColor.withValues(alpha: 0.18)),
+        color: typeColor.withValues(alpha: AppOpacity.faint),
+        borderRadius: BorderRadius.circular(AppRadii.lg),
+        border: Border.all(
+          color: typeColor.withValues(alpha: AppOpacity.border),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -755,15 +865,19 @@ class ContentCard extends ConsumerWidget {
           Row(
             children: [
               Container(
-                width: 30,
-                height: 30,
+                width: AppSizes.avatar,
+                height: AppSizes.avatar,
                 decoration: BoxDecoration(
-                  color: typeColor.withValues(alpha: 0.16),
-                  borderRadius: BorderRadius.circular(10),
+                  color: typeColor.withValues(alpha: AppOpacity.mediumHigh),
+                  borderRadius: BorderRadius.circular(AppRadii.narrow),
                 ),
-                child: Icon(template.icon, color: typeColor, size: 17),
+                child: Icon(
+                  template.icon,
+                  color: typeColor,
+                  size: AppSizes.iconMedium,
+                ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: AppSpacing.compact),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -781,7 +895,7 @@ class ContentCard extends ConsumerWidget {
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,
-                        height: 1.25,
+                        height: AppLineHeight.quarter,
                       ),
                     ),
                   ],
@@ -789,10 +903,10 @@ class ContentCard extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpacing.compact),
           Wrap(
-            spacing: 8,
-            runSpacing: 8,
+            spacing: AppSpacing.xs,
+            runSpacing: AppSpacing.xs,
             children: [
               for (final step in template.steps)
                 _reviewTemplateChip(context, step, typeColor),
@@ -809,22 +923,29 @@ class ContentCard extends ConsumerWidget {
     Color color,
   ) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 7),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.controlInset,
+        vertical: AppSpacing.controlGap,
+      ),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.68),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: color.withValues(alpha: 0.18)),
+        color: Theme.of(context).colorScheme.surface.withValues(
+          alpha: AppOpacity.surface,
+        ),
+        borderRadius: BorderRadius.circular(AppRadii.pill),
+        border: Border.all(
+          color: color.withValues(alpha: AppOpacity.border),
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(step.icon, size: 13, color: color),
-          const SizedBox(width: 5),
+          Icon(step.icon, size: AppSizes.iconCompact, color: color),
+          const SizedBox(width: AppSpacing.fine),
           Text(
             step.label,
             style: TextStyle(
               color: Theme.of(context).colorScheme.onSurface,
-              fontSize: 11,
+              fontSize: AppText.xs11,
               fontWeight: FontWeight.w700,
             ),
           ),

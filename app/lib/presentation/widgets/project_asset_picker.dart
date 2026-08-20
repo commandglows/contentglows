@@ -5,6 +5,7 @@ import '../../data/models/project_asset.dart';
 import '../../l10n/app_localizations.dart';
 import '../../providers/providers.dart';
 import '../theme/app_theme_tokens.dart';
+import '../theme/app_theme.dart';
 
 class ProjectAssetPicker extends ConsumerWidget {
   const ProjectAssetPicker({
@@ -155,7 +156,7 @@ class ProjectAssetPicker extends ConsumerWidget {
               return Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: theme.colorScheme.outlineVariant),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(AppRadii.sm),
                 ),
                 child: Column(
                   children: [
@@ -168,7 +169,7 @@ class ProjectAssetPicker extends ConsumerWidget {
             return Container(
               decoration: BoxDecoration(
                 border: Border.all(color: theme.colorScheme.outlineVariant),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(AppRadii.sm),
               ),
               child: Row(
                 children: [
@@ -248,10 +249,15 @@ class _AssetListPane extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(10, 8, 10, 6),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.compact,
+            AppSpacing.xs,
+            AppSpacing.compact,
+            AppSpacing.xxs2,
+          ),
           child: Wrap(
-            spacing: 8,
-            runSpacing: 6,
+            spacing: AppSpacing.xs,
+            runSpacing: AppSpacing.xxs2,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               SizedBox(
@@ -284,7 +290,7 @@ class _AssetListPane extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                width: 150,
+                width: AppThemeTokens.inputCompactWidth,
                 child: TextFormField(
                   initialValue: state.sourceFilter ?? '',
                   decoration: InputDecoration(
@@ -361,13 +367,14 @@ class _AssetListPane extends StatelessWidget {
             ],
           ),
         ),
-        const Divider(height: 1),
+        const Divider(height: AppStroke.hairline),
         Expanded(
           child: assets.isEmpty
               ? Center(child: Text(context.tr('No assets')))
               : ListView.separated(
                   itemCount: assets.length,
-                  separatorBuilder: (_, _) => const Divider(height: 1),
+                  separatorBuilder: (_, _) =>
+                      const Divider(height: AppStroke.hairline),
                   itemBuilder: (context, index) {
                     final asset = assets[index];
                     final selected = state.selectedAssetId == asset.id;
@@ -391,13 +398,19 @@ class _AssetListPane extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       trailing: Wrap(
-                        spacing: 4,
+                        spacing: AppSpacing.xxs,
                         children: [
                           if (asset.metadata['candidate_type'] ==
                               'candidate_global_asset')
-                            const Icon(Icons.public_rounded, size: 16),
+                            const Icon(
+                              Icons.public_rounded,
+                              size: AppSizes.icon,
+                            ),
                           if (asset.status == 'tombstoned')
-                            const Icon(Icons.archive_rounded, size: 16),
+                            const Icon(
+                              Icons.archive_rounded,
+                              size: AppSizes.icon,
+                            ),
                           if (incompatibility != null)
                             Icon(
                               Icons.block_rounded,
@@ -491,7 +504,7 @@ class _AssetDetailPane extends StatelessWidget {
         result?.tags.where((tag) => tag.acceptedByUser).toList() ??
         const <AssetSemanticTag>[];
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(AppSpacing.compact),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -510,7 +523,7 @@ class _AssetDetailPane extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.titleSmall,
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xxs),
           Text('${asset!.mediaKind} · ${asset!.source}'),
           if (incompatibilityReason != null) ...[
             const SizedBox(height: AppThemeTokens.spacing2),
@@ -574,10 +587,10 @@ class _AssetDetailPane extends StatelessWidget {
                 }),
               ),
           ],
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           Wrap(
-            spacing: 6,
-            runSpacing: 6,
+            spacing: AppSpacing.xxs2,
+            runSpacing: AppSpacing.xxs2,
             children: [
               FilledButton.tonal(
                 onPressed: isMutating || incompatibilityReason != null
@@ -614,7 +627,7 @@ class _AssetDetailPane extends StatelessWidget {
                 ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpacing.compact),
           if (understanding?.job != null)
             Text(
               context.tr('Understanding: {status}', {

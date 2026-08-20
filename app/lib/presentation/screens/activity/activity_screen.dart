@@ -56,15 +56,15 @@ class ActivityScreen extends ConsumerWidget {
                 children: [
                   Icon(
                     Icons.timeline_outlined,
-                    size: 64,
+                    size: AppSizes.heroIcon,
                     color: theme.colorScheme.outlineVariant,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
                   Text(
                     context.tr('No activity yet'),
                     style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xxs),
                   Text(
                     context.tr(
                       'Actions from robots and your work will appear here',
@@ -81,7 +81,7 @@ class ActivityScreen extends ConsumerWidget {
           return RefreshIndicator(
             onRefresh: () async => ref.invalidate(_activityProvider),
             child: ListView.builder(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.md),
               itemCount: activities.length,
               itemBuilder: (context, index) =>
                   _ActivityItem(activity: activities[index]),
@@ -122,17 +122,24 @@ class _ActivityItem extends StatelessWidget {
     };
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 6),
+      margin: const EdgeInsets.only(bottom: AppSpacing.xxs2),
       child: ListTile(
         dense: true,
         leading: CircleAvatar(
           radius: 18,
-          backgroundColor: statusColor.withValues(alpha: 0.15),
-          child: Icon(actionIcon, color: statusColor, size: 18),
+          backgroundColor: statusColor.withValues(alpha: AppOpacity.medium),
+          child: Icon(
+            actionIcon,
+            color: statusColor,
+            size: AppSizes.iconLarge,
+          ),
         ),
         title: Text(
           action.replaceAll('_', ' '),
-          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+          style: TextStyle(
+            fontSize: AppText.compact,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         subtitle: Text(
           [

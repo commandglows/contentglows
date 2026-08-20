@@ -49,26 +49,26 @@ class AnalyticsScreen extends ConsumerWidget {
         },
         child: ListView(
           physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           children: [
             const SearchConsolePanel(),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
             Text(
               context.tr('Content pipeline'),
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w700,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm),
             if (allContent.isEmpty)
               _PipelineEmpty(theme: theme)
             else ...[
               _PipelineFunnel(content: allContent, theme: theme),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.lg),
               _ContentByType(content: allContent, theme: theme),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.lg),
               _ChannelDistribution(content: allContent, theme: theme),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.lg),
               _PublishingTimeline(content: allContent, theme: theme),
             ],
           ],
@@ -86,7 +86,7 @@ class _PipelineEmpty extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(AppSpacing.dense),
       decoration: BoxDecoration(
         color: AppTheme.paletteOf(context).surface,
         borderRadius: BorderRadius.circular(AppRadii.card),
@@ -98,7 +98,7 @@ class _PipelineEmpty extends StatelessWidget {
             Icons.insights_outlined,
             color: theme.colorScheme.onSurfaceVariant,
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
               context.tr(
@@ -106,7 +106,7 @@ class _PipelineEmpty extends StatelessWidget {
               ),
               style: TextStyle(
                 color: theme.colorScheme.onSurfaceVariant,
-                height: 1.35,
+                height: AppLineHeight.compact,
               ),
             ),
           ),
@@ -141,35 +141,35 @@ class _PipelineFunnel extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(context.tr('Pipeline Funnel'), style: theme.textTheme.titleMedium),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.sm),
         _FunnelBar(
           label: 'Total',
           count: total,
           maxCount: total,
           color: theme.colorScheme.primary,
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: AppSpacing.xxs2),
         _FunnelBar(
           label: 'Pending Review',
           count: pending,
           maxCount: total,
           color: AppTheme.warningColor,
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: AppSpacing.xxs2),
         _FunnelBar(
           label: 'Approved',
           count: approved,
           maxCount: total,
           color: AppTheme.editColor,
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: AppSpacing.xxs2),
         _FunnelBar(
           label: 'Published',
           count: published,
           maxCount: total,
           color: AppTheme.approveColor,
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: AppSpacing.xxs2),
         _FunnelBar(
           label: 'Rejected',
           count: rejected,
@@ -200,26 +200,26 @@ class _FunnelBar extends StatelessWidget {
       children: [
         SizedBox(
           width: 110,
-          child: Text(context.tr(label), style: const TextStyle(fontSize: 12)),
+          child: Text(context.tr(label), style: const TextStyle(fontSize: AppText.xs)),
         ),
         Expanded(
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(AppRadii.progress),
             child: LinearProgressIndicator(
               value: fraction,
-              backgroundColor: color.withValues(alpha: 0.1),
+              backgroundColor: color.withValues(alpha: AppOpacity.subtle),
               color: color,
               minHeight: 20,
             ),
           ),
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: AppSpacing.xs),
         SizedBox(
           width: 30,
           child: Text(
             '$count',
             style: TextStyle(
-              fontSize: 13,
+              fontSize: AppText.compact,
               fontWeight: FontWeight.w600,
               color: color,
             ),
@@ -250,7 +250,7 @@ class _ContentByType extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(context.tr('Content by Type'), style: theme.textTheme.titleMedium),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.sm),
         ...sorted.map((e) {
           final label = e.key.name
               .replaceAllMapped(RegExp(r'[A-Z]'), (m) => ' ${m.group(0)}')
@@ -294,10 +294,10 @@ class _ChannelDistribution extends StatelessWidget {
           context.tr('Channel Distribution'),
           style: theme.textTheme.titleMedium,
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.sm),
         Wrap(
-          spacing: 8,
-          runSpacing: 8,
+          spacing: AppSpacing.xs,
+          runSpacing: AppSpacing.xs,
           children: sorted
               .map(
                 (e) => Chip(
@@ -307,12 +307,12 @@ class _ChannelDistribution extends StatelessWidget {
                     child: Text(
                       '${e.value}',
                       style: TextStyle(
-                        fontSize: 10,
+                        fontSize: AppText.xxs,
                         color: theme.colorScheme.onTertiaryContainer,
                       ),
                     ),
                   ),
-                  label: Text(e.key, style: const TextStyle(fontSize: 12)),
+                  label: Text(e.key, style: const TextStyle(fontSize: AppText.xs)),
                 ),
               )
               .toList(),
@@ -357,36 +357,36 @@ class _PublishingTimeline extends StatelessWidget {
           context.tr('Publishing Timeline'),
           style: theme.textTheme.titleMedium,
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.sm),
         ...sortedDays
             .take(14)
             .map(
               (e) => Padding(
-                padding: const EdgeInsets.only(bottom: 4),
+                padding: const EdgeInsets.only(bottom: AppSpacing.xxs),
                 child: Row(
                   children: [
                     SizedBox(
                       width: 90,
-                      child: Text(e.key, style: const TextStyle(fontSize: 12)),
+                      child: Text(e.key, style: const TextStyle(fontSize: AppText.xs)),
                     ),
                     Expanded(
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(AppRadii.progress),
                         child: LinearProgressIndicator(
                           value: e.value / (sortedDays.first.value),
                           backgroundColor: AppTheme.approveColor.withValues(
-                            alpha: 0.1,
+                            alpha: AppOpacity.subtle,
                           ),
                           color: AppTheme.approveColor,
                           minHeight: 16,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.xs),
                     Text(
                       '${e.value}',
                       style: const TextStyle(
-                        fontSize: 12,
+                        fontSize: AppText.xs,
                         fontWeight: FontWeight.w600,
                       ),
                     ),

@@ -54,50 +54,50 @@ class _CalendarBody extends ConsumerWidget {
       children: [
         // Week strip
         _buildWeekStrip(context),
-        const SizedBox(height: 20),
+        const SizedBox(height: AppSpacing.lg),
 
         // Approved items awaiting scheduling
         if (approvedItems.isNotEmpty) ...[
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             child: Text(
               context.tr('Ready to Schedule'),
               style: TextStyle(
-                fontSize: 13,
+                fontSize: AppText.compact,
                 fontWeight: FontWeight.w600,
-                color: AppTheme.approveColor.withAlpha(180),
+                color: AppTheme.approveColor.withAlpha(AppAlpha.icon),
                 letterSpacing: 1.2,
               ),
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           SizedBox(
             height: 80,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
               itemCount: approvedItems.length,
               itemBuilder: (context, i) =>
                   _buildScheduleChip(context, ref, approvedItems[i]),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
         ],
 
         // Today's schedule
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           child: Text(
             context.tr('Timeline'),
             style: TextStyle(
-              fontSize: 13,
+              fontSize: AppText.compact,
               fontWeight: FontWeight.w600,
               color: theme.colorScheme.onSurfaceVariant,
               letterSpacing: 1.2,
             ),
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.sm),
 
         Expanded(
           child: items.isEmpty
@@ -107,22 +107,22 @@ class _CalendarBody extends ConsumerWidget {
                     children: [
                       Icon(
                         Icons.calendar_today,
-                        size: 48,
+                        size: AppSizes.emptyStateIcon,
                         color: theme.colorScheme.outlineVariant,
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppSpacing.sm),
                       Text(
                         context.tr('Nothing scheduled yet'),
                         style: TextStyle(
                           color: theme.colorScheme.onSurfaceVariant,
-                          fontSize: 16,
+                          fontSize: AppText.base,
                         ),
                       ),
                     ],
                   ),
                 )
               : ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                   itemCount: items.length,
                   itemBuilder: (context, i) =>
                       _buildScheduleItem(context, items[i]),
@@ -146,7 +146,7 @@ class _CalendarBody extends ConsumerWidget {
       height: 80,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
         itemCount: days.length,
         itemBuilder: (context, i) {
           final day = days[i];
@@ -160,12 +160,12 @@ class _CalendarBody extends ConsumerWidget {
 
           return Container(
             width: 64,
-            margin: const EdgeInsets.only(right: 8),
+            margin: const EdgeInsets.only(right: AppSpacing.xs),
             decoration: BoxDecoration(
               color: isToday
-                  ? AppTheme.colorForContentType('Article').withAlpha(30)
+                  ? AppTheme.colorForContentType('Article').withAlpha(AppAlpha.glow)
                   : palette.elevatedSurface,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(AppRadii.badge),
               border: Border.all(
                 color: isToday
                     ? AppTheme.colorForContentType('Article')
@@ -181,25 +181,25 @@ class _CalendarBody extends ConsumerWidget {
                     color: isToday
                         ? AppTheme.colorForContentType('Article')
                         : theme.colorScheme.onSurfaceVariant,
-                    fontSize: 12,
+                    fontSize: AppText.xs,
                     fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
                   ),
                 ),
                 if (dayItems > 0) ...[
-                  const SizedBox(height: 6),
+                  const SizedBox(height: AppSpacing.xxs2),
                   Container(
-                    width: 20,
-                    height: 20,
+                    width: AppSpacing.lg,
+                    height: AppSpacing.lg,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppTheme.approveColor.withAlpha(30),
+                      color: AppTheme.approveColor.withAlpha(AppAlpha.glow),
                     ),
                     child: Center(
                       child: Text(
                         '$dayItems',
                         style: TextStyle(
                           color: AppTheme.approveColor,
-                          fontSize: 11,
+                          fontSize: AppText.xs11,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -226,12 +226,12 @@ class _CalendarBody extends ConsumerWidget {
       onTap: () => _showSchedulePicker(context, ref, item),
       child: Container(
         width: 200,
-        margin: const EdgeInsets.only(right: 10),
-        padding: const EdgeInsets.all(12),
+        margin: const EdgeInsets.only(right: AppSpacing.compact),
+        padding: const EdgeInsets.all(AppSpacing.sm),
         decoration: BoxDecoration(
-          color: AppTheme.approveColor.withAlpha(10),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppTheme.approveColor.withAlpha(40)),
+          color: AppTheme.approveColor.withAlpha(AppAlpha.faint),
+          borderRadius: BorderRadius.circular(AppRadii.badge),
+          border: Border.all(color: AppTheme.approveColor.withAlpha(AppAlpha.tint)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -241,46 +241,46 @@ class _CalendarBody extends ConsumerWidget {
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 6,
-                    vertical: 2,
+                    horizontal: AppSpacing.xxs2,
+                    vertical: AppSpacing.xxsHalf,
                   ),
                   decoration: BoxDecoration(
-                    color: typeColor.withAlpha(30),
-                    borderRadius: BorderRadius.circular(6),
+                    color: typeColor.withAlpha(AppAlpha.glow),
+                    borderRadius: BorderRadius.circular(AppRadii.compactControl),
                   ),
                   child: Text(
                     item.typeLabel,
                     style: TextStyle(
                       color: typeColor,
-                      fontSize: 10,
+                      fontSize: AppText.xxs,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
                 const Spacer(),
-                Icon(Icons.schedule, size: 16, color: AppTheme.approveColor),
+                Icon(Icons.schedule, size: AppSizes.icon, color: AppTheme.approveColor),
               ],
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: AppSpacing.xxs2),
             Text(
               item.title,
               style: TextStyle(
                 color: theme.colorScheme.onSurface,
-                fontSize: 13,
+                fontSize: AppText.compact,
                 fontWeight: FontWeight.w500,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
             if (item.reviewActorDisplay != null) ...[
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpacing.xxs),
               Text(
                 context.tr('Reviewer: {reviewer}', {
                   'reviewer': item.reviewActorDisplay,
                 }),
                 style: TextStyle(
                   color: theme.colorScheme.onSurfaceVariant,
-                  fontSize: 10,
+                  fontSize: AppText.xxs,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -345,10 +345,10 @@ class _CalendarBody extends ConsumerWidget {
                 ).format(scheduledFor),
               }),
             ),
-            backgroundColor: AppTheme.approveColor.withAlpha(200),
+            backgroundColor: AppTheme.approveColor.withAlpha(AppAlpha.text),
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppRadii.md),
             ),
           ),
         );
@@ -360,10 +360,10 @@ class _CalendarBody extends ConsumerWidget {
             content: Text(
               context.tr('Failed to schedule. Check backend connection.'),
             ),
-            backgroundColor: AppTheme.rejectColor.withAlpha(200),
+            backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppRadii.md),
             ),
           ),
         );
@@ -380,7 +380,7 @@ class _CalendarBody extends ConsumerWidget {
     final theme = Theme.of(context);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
+      margin: const EdgeInsets.only(bottom: AppSpacing.compact),
       child: Row(
         children: [
           // Time
@@ -390,22 +390,22 @@ class _CalendarBody extends ConsumerWidget {
               time,
               style: TextStyle(
                 color: theme.colorScheme.onSurfaceVariant,
-                fontSize: 13,
+                fontSize: AppText.compact,
                 fontWeight: FontWeight.w500,
               ),
             ),
           ),
           // Line
-          Container(width: 2, height: 60, color: typeColor.withAlpha(60)),
-          const SizedBox(width: 14),
+          Container(width: AppSpacing.xxsHalf, height: 60, color: typeColor.withAlpha(AppAlpha.soft)),
+          const SizedBox(width: AppSpacing.contentInset),
           // Content
           Expanded(
             child: Container(
-              padding: const EdgeInsets.all(14),
+              padding: const EdgeInsets.all(AppSpacing.contentInset),
               decoration: BoxDecoration(
-                color: typeColor.withAlpha(10),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: typeColor.withAlpha(30)),
+                color: typeColor.withAlpha(AppAlpha.faint),
+                borderRadius: BorderRadius.circular(AppRadii.md),
+                border: Border.all(color: typeColor.withAlpha(AppAlpha.glow)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -414,18 +414,18 @@ class _CalendarBody extends ConsumerWidget {
                     children: [
                       Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 2,
+                          horizontal: AppSpacing.xs,
+                          vertical: AppSpacing.xxsHalf,
                         ),
                         decoration: BoxDecoration(
-                          color: typeColor.withAlpha(30),
-                          borderRadius: BorderRadius.circular(6),
+                          color: typeColor.withAlpha(AppAlpha.glow),
+                          borderRadius: BorderRadius.circular(AppRadii.compactControl),
                         ),
                         child: Text(
                           item.typeLabel,
                           style: TextStyle(
                             color: typeColor,
-                            fontSize: 10,
+                            fontSize: AppText.xxs,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -435,17 +435,17 @@ class _CalendarBody extends ConsumerWidget {
                         item.channelLabels,
                         style: TextStyle(
                           color: theme.colorScheme.onSurfaceVariant,
-                          fontSize: 11,
+                          fontSize: AppText.xs11,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: AppSpacing.xxs2),
                   Text(
                     item.title,
                     style: TextStyle(
                       color: theme.colorScheme.onSurface,
-                      fontSize: 14,
+                      fontSize: AppText.sm,
                       fontWeight: FontWeight.w500,
                     ),
                     maxLines: 1,

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../data/models/project_asset.dart';
 import '../../../data/models/video_timeline.dart';
 import '../../../providers/video_timeline_provider.dart';
+import '../../theme/app_theme.dart';
 import '../../widgets/project_asset_picker.dart';
 
 class VideoTimelineScreen extends ConsumerWidget {
@@ -27,7 +28,7 @@ class VideoTimelineScreen extends ConsumerWidget {
           : RefreshIndicator(
               onRefresh: notifier.loadFromContentId,
               child: ListView(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 children: [
                   _TimelineSummary(
                     state: state,
@@ -46,10 +47,10 @@ class VideoTimelineScreen extends ConsumerWidget {
                   ),
                   if (state.lastError != null &&
                       state.lastError!.isNotEmpty) ...[
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.sm),
                     _InlineError(message: state.lastError!),
                   ],
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.sm),
                   _EditToolbar(
                     state: state,
                     onAddText: notifier.addTextClip,
@@ -59,7 +60,7 @@ class VideoTimelineScreen extends ConsumerWidget {
                       notifier: notifier,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
                   if (document == null)
                     const _EmptyTimeline()
                   else
@@ -121,7 +122,7 @@ class VideoTimelineScreen extends ConsumerWidget {
               child: SizedBox(
                 height: MediaQuery.of(context).size.height * 0.82,
                 child: Padding(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(AppSpacing.sm),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -140,7 +141,7 @@ class VideoTimelineScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.xs),
                       SegmentedButton<String>(
                         segments: const [
                           ButtonSegment(
@@ -169,7 +170,7 @@ class VideoTimelineScreen extends ConsumerWidget {
                           setModalState(() => clipType = selection.first);
                         },
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppSpacing.sm),
                       Expanded(
                         child: ProjectAssetPicker(
                           targetType: 'video_version',
@@ -295,8 +296,8 @@ class _TimelineSummary extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Wrap(
-          spacing: 8,
-          runSpacing: 8,
+          spacing: AppSpacing.xs,
+          runSpacing: AppSpacing.xs,
           children: [
             _StatusChip(
               label: state.hasUnsavedChanges ? 'Draft changed' : 'Saved draft',
@@ -319,10 +320,10 @@ class _TimelineSummary extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: AppSpacing.compact),
         Wrap(
-          spacing: 8,
-          runSpacing: 8,
+          spacing: AppSpacing.xs,
+          runSpacing: AppSpacing.xs,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             IconButton(
@@ -335,7 +336,7 @@ class _TimelineSummary extends StatelessWidget {
               tooltip: 'Redo draft change',
               icon: const Icon(Icons.redo_rounded),
             ),
-            const SizedBox(width: 4),
+            const SizedBox(width: AppSpacing.xxs),
             FilledButton.icon(
               onPressed: canSave ? onSaveVersion : null,
               icon: const Icon(Icons.save_rounded),
@@ -368,7 +369,7 @@ class _TimelineSummary extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: AppSpacing.compact),
         _TimelineFacts(state: state),
       ],
     );
@@ -385,8 +386,8 @@ class _TimelineFacts extends StatelessWidget {
     final timeline = state.timeline;
     final version = state.activeVersion;
     return Wrap(
-      spacing: 12,
-      runSpacing: 4,
+      spacing: AppSpacing.sm,
+      runSpacing: AppSpacing.xxs,
       children: [
         Text('Preset ${timeline?.formatPreset ?? '-'}'),
         Text('Revision ${timeline?.draftRevision ?? 0}'),
@@ -421,8 +422,8 @@ class _EditToolbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: 8,
-      runSpacing: 8,
+      spacing: AppSpacing.xs,
+      runSpacing: AppSpacing.xs,
       children: [
         FilledButton.tonalIcon(
           onPressed: state.timeline == null ? null : onAddText,
@@ -476,13 +477,13 @@ class _TimelineEditor extends StatelessWidget {
             context,
           ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.xxs),
         Text(
           '${_secondsLabel(totalFrames, document.fps)} total • '
           '${document.fps} fps • ${document.clips.length} clip(s)',
           style: Theme.of(context).textTheme.bodySmall,
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: AppSpacing.compact),
         for (final track in tracks)
           _TrackLane(
             track: track,
@@ -536,32 +537,35 @@ class _TrackLane extends StatelessWidget {
         document.clips.where((clip) => clip.trackId == track.id).toList()
           ..sort((a, b) => a.startFrame.compareTo(b.startFrame));
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(_trackIcon(track.type), size: 18),
-              const SizedBox(width: 6),
+              Icon(_trackIcon(track.type), size: AppSizes.iconLarge),
+              const SizedBox(width: AppSpacing.xxs2),
               Text(
                 track.type,
                 style: Theme.of(
                   context,
                 ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.xs),
               Text('${clips.length} clip(s)'),
               const Spacer(),
-              Icon(track.muted ? Icons.volume_off : Icons.volume_up, size: 16),
-              const SizedBox(width: 4),
+              Icon(
+                track.muted ? Icons.volume_off : Icons.volume_up,
+                size: AppSizes.icon,
+              ),
+              const SizedBox(width: AppSpacing.xxs),
               Icon(
                 track.locked ? Icons.lock_rounded : Icons.lock_open_rounded,
-                size: 16,
+                size: AppSizes.icon,
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           _TrackStrip(
             clips: clips,
             isMuted: track.muted,
@@ -570,10 +574,10 @@ class _TrackLane extends StatelessWidget {
             totalFrames: totalFrames,
             onSelectClip: onSelectClip,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           Wrap(
-            spacing: 4,
-            runSpacing: 4,
+            spacing: AppSpacing.xxs,
+            runSpacing: AppSpacing.xxs,
             children: [
               IconButton(
                 tooltip: track.muted
@@ -591,7 +595,7 @@ class _TrackLane extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           if (clips.isEmpty)
             const Text('No clips on this track.')
           else
@@ -651,7 +655,7 @@ class _TrackStrip extends StatelessWidget {
           height: 54,
           decoration: BoxDecoration(
             color: scheme.surfaceContainerHighest,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(AppRadii.sm),
             border: Border.all(color: scheme.outlineVariant),
           ),
           child: Stack(
@@ -660,8 +664,8 @@ class _TrackStrip extends StatelessWidget {
                 Positioned(
                   left: _frameToX(clip.startFrame, totalFrames, width),
                   width: _clipWidth(clip.durationFrames, totalFrames, width),
-                  top: 8,
-                  bottom: 8,
+                  top: AppSpacing.xs,
+                  bottom: AppSpacing.xs,
                   child: _ClipBlock(
                     isMuted: isMuted,
                     isTrackLocked: isLocked,
@@ -696,17 +700,20 @@ class _ClipBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final opacity = isTrackLocked || isMuted ? 0.55 : 1.0;
+    final opacity = isTrackLocked || isMuted ? AppOpacity.divider : 1.0;
     return Opacity(
       opacity: opacity,
       child: Material(
         color: selected ? scheme.primary : _clipColor(context, clip.clipType),
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(AppRadii.compactControl),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(AppRadii.compactControl),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.xs,
+              vertical: AppSpacing.fine,
+            ),
             child: Row(
               children: [
                 Expanded(
@@ -722,10 +729,14 @@ class _ClipBlock extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (isTrackLocked) const Icon(Icons.lock_rounded, size: 12),
+                if (isTrackLocked)
+                  const Icon(
+                    Icons.lock_rounded,
+                    size: AppSizes.iconTiny,
+                  ),
                 if (isMuted) ...[
-                  const SizedBox(width: 4),
-                  const Icon(Icons.volume_off, size: 12),
+                  const SizedBox(width: AppSpacing.xxs),
+                  const Icon(Icons.volume_off, size: AppSizes.iconTiny),
                 ],
               ],
             ),
@@ -768,14 +779,14 @@ class _ClipControls extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.only(bottom: AppSpacing.xs),
+      padding: const EdgeInsets.all(AppSpacing.compact),
       decoration: BoxDecoration(
         color: selected ? scheme.primaryContainer : scheme.surface,
         border: Border.all(
           color: selected ? scheme.primary : scheme.outlineVariant,
         ),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(AppRadii.sm),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -784,8 +795,8 @@ class _ClipControls extends StatelessWidget {
             onTap: onSelect,
             child: Row(
               children: [
-                Icon(_trackIcon(clip.clipType), size: 18),
-                const SizedBox(width: 6),
+                Icon(_trackIcon(clip.clipType), size: AppSizes.iconLarge),
+                const SizedBox(width: AppSpacing.xxs2),
                 Expanded(
                   child: Text(
                     _clipLabel(clip),
@@ -801,7 +812,7 @@ class _ClipControls extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xxs),
           Text(
             'Start ${clip.startFrame}f • Duration '
             '${clip.durationFrames}f (${_secondsLabel(clip.durationFrames, fps)})',
@@ -810,10 +821,10 @@ class _ClipControls extends StatelessWidget {
             Text('Asset ${clip.assetId}'),
           if (clip.text != null && clip.text!.isNotEmpty)
             Text('Text ${clip.text}'),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           Wrap(
-            spacing: 4,
-            runSpacing: 4,
+            spacing: AppSpacing.xxs,
+            runSpacing: AppSpacing.xxs,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               IconButton.filledTonal(
@@ -858,9 +869,17 @@ class _ClipControls extends StatelessWidget {
                 icon: const Icon(Icons.delete_outline_rounded),
               ),
               if (isTrackLocked)
-                const Icon(Icons.lock_rounded, size: 16, color: Colors.orange),
+                Icon(
+                  Icons.lock_rounded,
+                  size: AppSizes.icon,
+                  color: AppTheme.attentionStrongColor,
+                ),
               if (isTrackMuted)
-                const Icon(Icons.volume_off, size: 16, color: Colors.orange),
+                Icon(
+                  Icons.volume_off,
+                  size: AppSizes.icon,
+                  color: AppTheme.attentionStrongColor,
+                ),
             ],
           ),
         ],
@@ -896,7 +915,7 @@ class _StatusChip extends StatelessWidget {
       ),
     };
     return Chip(
-      avatar: Icon(icon, size: 18, color: colors.$2),
+      avatar: Icon(icon, size: AppSizes.iconLarge, color: colors.$2),
       label: Text(label),
       backgroundColor: colors.$1,
       labelStyle: TextStyle(color: colors.$2, fontWeight: FontWeight.w700),
@@ -912,10 +931,10 @@ class _EmptyTimeline extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(AppSpacing.contentInset),
       decoration: BoxDecoration(
         border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(AppRadii.sm),
       ),
       child: Text(
         'No timeline data available for this content item yet.',
@@ -935,10 +954,10 @@ class _InlineError extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
         color: scheme.errorContainer,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(AppRadii.sm),
       ),
       child: Text(message, style: TextStyle(color: scheme.onErrorContainer)),
     );

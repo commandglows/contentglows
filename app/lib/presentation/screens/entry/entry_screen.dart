@@ -346,7 +346,9 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
           style: OutlinedButton.styleFrom(
             foregroundColor: theme.colorScheme.onSurfaceVariant,
             side: BorderSide(
-              color: theme.colorScheme.outlineVariant.withValues(alpha: 0.9),
+              color: theme.colorScheme.outlineVariant.withValues(
+                alpha: AppOpacity.nearOpaque,
+              ),
             ),
           ),
           icon: const Icon(Icons.copy_all_rounded, size: _entryActionIconSize),
@@ -385,7 +387,7 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
         border: Border.all(color: palette.borderSubtle),
         boxShadow: [
           BoxShadow(
-            color: accent.withAlpha(22),
+            color: accent.withAlpha(AppAlpha.low22),
             blurRadius: AppSpacing.xl + AppSpacing.sm,
             offset: const Offset(0, 18),
           ),
@@ -417,7 +419,7 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
                     ? _entryStateButtonHeightCompact
                     : _entryStateButtonHeightExpanded,
                 decoration: BoxDecoration(
-                  color: accent.withAlpha(30),
+                  color: accent.withAlpha(AppAlpha.glow),
                   borderRadius: BorderRadius.circular(
                     compact ? AppRadii.lg : AppRadii.xl,
                   ),
@@ -427,7 +429,7 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
                         padding: const EdgeInsets.all(AppSpacing.sm),
                         child: CircularProgressIndicator(
                           color: accent,
-                          strokeWidth: 2.5,
+                          strokeWidth: AppStroke.accent,
                         ),
                       )
                     : Icon(
@@ -450,7 +452,7 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
                     ?.copyWith(
                       color: theme.colorScheme.onSurface,
                       fontWeight: FontWeight.bold,
-                      height: 1.15,
+                      height: AppLineHeight.dense,
                     ),
           ),
           SizedBox(height: compact ? AppSpacing.md : AppSpacing.xl),
@@ -458,7 +460,7 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
             context.tr(description),
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
-              height: 1.5,
+              height: AppLineHeight.relaxed,
             ),
           ),
           SizedBox(height: compact ? AppSpacing.md : AppSpacing.lg),
@@ -523,7 +525,7 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
                 color: theme.colorScheme.onSurfaceVariant.withValues(
                   alpha: 0.8,
                 ),
-                height: 1.5,
+                height: AppLineHeight.relaxed,
               ),
             ),
           ],

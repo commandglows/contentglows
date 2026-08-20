@@ -67,14 +67,19 @@ class _RitualScreenState extends ConsumerState<RitualScreen> {
       children: [
         // Header
         Padding(
-          padding: const EdgeInsets.fromLTRB(24, 8, 24, 4),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.xl,
+            AppSpacing.xs,
+            AppSpacing.xl,
+            AppSpacing.xxs,
+          ),
           child: Row(
             children: [
               Text(
                 '${context.tr('Progress')}: $filledCount/${_entries.length}',
                 style: TextStyle(
                   color: theme.colorScheme.onSurfaceVariant,
-                  fontSize: 13,
+                  fontSize: AppText.compact,
                 ),
               ),
               const Spacer(),
@@ -82,7 +87,7 @@ class _RitualScreenState extends ConsumerState<RitualScreen> {
                 context.tr('Fill at least {count}', {'count': '2'}),
                 style: TextStyle(
                   color: theme.colorScheme.onSurfaceVariant,
-                  fontSize: 13,
+                  fontSize: AppText.compact,
                 ),
               ),
             ],
@@ -91,7 +96,7 @@ class _RitualScreenState extends ConsumerState<RitualScreen> {
         // Entries
         Expanded(
           child: ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.md),
             itemCount: _entries.length,
             itemBuilder: (context, index) => _buildEntryCard(_entries[index]),
           ),
@@ -99,10 +104,10 @@ class _RitualScreenState extends ConsumerState<RitualScreen> {
         // Submit
         Container(
           padding: EdgeInsets.fromLTRB(
-            24,
-            12,
-            24,
-            12 + MediaQuery.of(context).padding.bottom,
+            AppSpacing.xl,
+            AppSpacing.sm,
+            AppSpacing.xl,
+            AppSpacing.sm + MediaQuery.of(context).padding.bottom,
           ),
           decoration: BoxDecoration(
             color: palette.elevatedSurface,
@@ -113,15 +118,15 @@ class _RitualScreenState extends ConsumerState<RitualScreen> {
           child: FilledButton(
             onPressed: filledCount >= 2 && !_isSubmitting ? _submit : null,
             style: FilledButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
               backgroundColor: AppTheme.colorForContentType('Article'),
             ),
             child: _isSubmitting
                 ? SizedBox(
-                    height: 20,
-                    width: 20,
+                    height: AppSpacing.lg,
+                    width: AppSpacing.lg,
                     child: CircularProgressIndicator(
-                      strokeWidth: 2,
+                      strokeWidth: AppStroke.medium,
                       color: Theme.of(context).colorScheme.onPrimary,
                     ),
                   )
@@ -139,13 +144,13 @@ class _RitualScreenState extends ConsumerState<RitualScreen> {
     final palette = AppTheme.paletteOf(context);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
       decoration: BoxDecoration(
         color: palette.elevatedSurface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppRadii.lg),
         border: Border.all(
           color: controller.text.trim().isNotEmpty
-              ? color.withAlpha(60)
+              ? color.withAlpha(AppAlpha.soft)
               : palette.borderSubtle,
         ),
       ),
@@ -154,17 +159,22 @@ class _RitualScreenState extends ConsumerState<RitualScreen> {
         children: [
           // Type header
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.md,
+              AppSpacing.contentInset,
+              AppSpacing.md,
+              0,
+            ),
             child: Row(
               children: [
-                Text(entry.emoji, style: const TextStyle(fontSize: 20)),
-                const SizedBox(width: 10),
+                Text(entry.emoji, style: const TextStyle(fontSize: AppText.xxl)),
+                const SizedBox(width: AppSpacing.compact),
                 Text(
                   _localizedLabel(entry.type),
                   style: TextStyle(
                     color: color,
                     fontWeight: FontWeight.w600,
-                    fontSize: 16,
+                    fontSize: AppText.base,
                   ),
                 ),
               ],
@@ -172,15 +182,20 @@ class _RitualScreenState extends ConsumerState<RitualScreen> {
           ),
           // Input
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.md,
+              AppSpacing.xs,
+              AppSpacing.md,
+              AppSpacing.md,
+            ),
             child: TextField(
               controller: controller,
               maxLines: 3,
               minLines: 2,
               style: TextStyle(
                 color: theme.colorScheme.onSurface,
-                fontSize: 14,
-                height: 1.6,
+                fontSize: AppText.sm,
+                height: AppLineHeight.comfortable,
               ),
               decoration: InputDecoration(
                 hintText: _localizedHint(entry.type),
@@ -203,23 +218,23 @@ class _RitualScreenState extends ConsumerState<RitualScreen> {
     final palette = AppTheme.paletteOf(context);
 
     return ListView(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(AppSpacing.xl),
       children: [
         // Chapter transition badge
         if (result.chapterTransition && result.suggestedChapterTitle != null)
           Container(
-            margin: const EdgeInsets.only(bottom: 20),
-            padding: const EdgeInsets.all(16),
+            margin: const EdgeInsets.only(bottom: AppSpacing.lg),
+            padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppTheme.colorForContentType('Article').withAlpha(30),
-                  AppTheme.editColor.withAlpha(30),
+                  AppTheme.colorForContentType('Article').withAlpha(AppAlpha.glow),
+                  AppTheme.editColor.withAlpha(AppAlpha.glow),
                 ],
               ),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(AppRadii.lg),
               border: Border.all(
-                color: AppTheme.colorForContentType('Article').withAlpha(60),
+                color: AppTheme.colorForContentType('Article').withAlpha(AppAlpha.soft),
               ),
             ),
             child: Row(
@@ -227,9 +242,9 @@ class _RitualScreenState extends ConsumerState<RitualScreen> {
                 Icon(
                   Icons.auto_stories,
                   color: AppTheme.colorForContentType('Article'),
-                  size: 28,
+                  size: AppSizes.iconHero,
                 ),
-                const SizedBox(width: 14),
+                const SizedBox(width: AppSpacing.contentInset),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -238,15 +253,15 @@ class _RitualScreenState extends ConsumerState<RitualScreen> {
                         context.tr('New Chapter Detected'),
                         style: TextStyle(
                           color: theme.colorScheme.onSurfaceVariant,
-                          fontSize: 12,
+                          fontSize: AppText.xs,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xxs),
                       Text(
                         result.suggestedChapterTitle!,
                         style: TextStyle(
                           color: theme.colorScheme.onSurface,
-                          fontSize: 18,
+                          fontSize: AppText.title,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -261,42 +276,42 @@ class _RitualScreenState extends ConsumerState<RitualScreen> {
         Text(
           context.tr('Narrative Summary'),
           style: TextStyle(
-            fontSize: 13,
+            fontSize: AppText.compact,
             fontWeight: FontWeight.w600,
             color: theme.colorScheme.onSurfaceVariant,
             letterSpacing: 1,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.sm),
         Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
             color: palette.elevatedSurface,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(AppRadii.lg),
           ),
           child: Text(
             result.narrativeSummary,
             style: TextStyle(
               color: theme.colorScheme.onSurface,
-              fontSize: 15,
-              height: 1.7,
+              fontSize: AppText.medium,
+              height: AppLineHeight.spacious,
             ),
           ),
         ),
 
         // Voice changes
         if (result.voiceDelta.isNotEmpty) ...[
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xl),
           Text(
             context.tr('Voice Evolution'),
             style: TextStyle(
-              fontSize: 13,
+              fontSize: AppText.compact,
               fontWeight: FontWeight.w600,
               color: theme.colorScheme.onSurfaceVariant,
               letterSpacing: 1,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
           _buildDeltaCard(
             result.voiceDelta,
             Icons.record_voice_over,
@@ -306,17 +321,17 @@ class _RitualScreenState extends ConsumerState<RitualScreen> {
 
         // Positioning changes
         if (result.positioningDelta.isNotEmpty) ...[
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           Text(
             context.tr('Positioning Shift'),
             style: TextStyle(
-              fontSize: 13,
+              fontSize: AppText.compact,
               fontWeight: FontWeight.w600,
               color: theme.colorScheme.onSurfaceVariant,
               letterSpacing: 1,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
           _buildDeltaCard(
             result.positioningDelta,
             Icons.my_location,
@@ -324,7 +339,7 @@ class _RitualScreenState extends ConsumerState<RitualScreen> {
           ),
         ],
 
-        const SizedBox(height: 32),
+        const SizedBox(height: AppSpacing.wide),
 
         // Actions
         Row(
@@ -333,19 +348,19 @@ class _RitualScreenState extends ConsumerState<RitualScreen> {
               child: OutlinedButton(
                 onPressed: () => setState(() => _result = null),
                 style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.contentInset),
                   side: BorderSide(color: theme.colorScheme.outlineVariant),
                 ),
                 child: Text(context.tr('Edit Entries')),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm),
             Expanded(
               flex: 2,
               child: FilledButton(
                 onPressed: _validateNarrative,
                 style: FilledButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.contentInset),
                   backgroundColor: AppTheme.approveColor,
                 ),
                 child: Text(context.tr('Validate & Save')),
@@ -363,11 +378,11 @@ class _RitualScreenState extends ConsumerState<RitualScreen> {
     Color color,
   ) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: color.withAlpha(10),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: color.withAlpha(40)),
+        color: color.withAlpha(AppAlpha.faint),
+        borderRadius: BorderRadius.circular(AppRadii.badge),
+        border: Border.all(color: color.withAlpha(AppAlpha.tint)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -376,12 +391,12 @@ class _RitualScreenState extends ConsumerState<RitualScreen> {
               ? (e.value as List).join(', ')
               : '${e.value}';
           return Padding(
-            padding: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.only(bottom: AppSpacing.xs),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(icon, size: 16, color: color),
-                const SizedBox(width: 10),
+                Icon(icon, size: AppSizes.icon, color: color),
+                const SizedBox(width: AppSpacing.compact),
                 Expanded(
                   child: RichText(
                     text: TextSpan(
@@ -515,9 +530,9 @@ class _RitualScreenState extends ConsumerState<RitualScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(context.tr('Narrative validated and saved!')),
-        backgroundColor: AppTheme.approveColor.withAlpha(200),
+        backgroundColor: AppTheme.approveColor.withAlpha(AppAlpha.text),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadii.md)),
       ),
     );
     context.pop();

@@ -221,19 +221,22 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Widget _buildProgressBar() {
     final colorScheme = Theme.of(context).colorScheme;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.xl,
+        vertical: AppSpacing.sm,
+      ),
       child: Row(
         children: List.generate(3, (i) {
           final isActive = i <= _currentPage;
           return Expanded(
             child: Container(
-              height: 4,
-              margin: const EdgeInsets.symmetric(horizontal: 3),
+              height: AppSpacing.xxs,
+              margin: const EdgeInsets.symmetric(horizontal: AppSpacing.micro),
               decoration: BoxDecoration(
                 color: isActive
                     ? AppTheme.approveColor
-                    : colorScheme.outlineVariant.withValues(alpha: 0.35),
-                borderRadius: BorderRadius.circular(2),
+                    : colorScheme.outlineVariant.withValues(alpha: AppOpacity.highlight),
+                borderRadius: BorderRadius.circular(AppRadii.xxs),
               ),
             ),
           );
@@ -248,9 +251,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final theme = Theme.of(context);
     final githubStatus = ref.watch(githubIntegrationStatusProvider).value;
     return ListView(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(AppSpacing.xl),
       children: [
-        if (_isDemoMode) ...[_buildDemoBanner(), const SizedBox(height: 24)],
+        if (_isDemoMode) ...[_buildDemoBanner(), const SizedBox(height: AppSpacing.xl)],
         Text(
           context.tr(
             _isProjectEditMode
@@ -258,23 +261,23 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 : 'Connect your project source',
           ),
           style: TextStyle(
-            fontSize: 24,
+            fontSize: AppText.xxxl,
             fontWeight: FontWeight.bold,
             color: theme.colorScheme.onSurface,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.xs),
         Text(
           context.tr(
             'Add an optional source URL (GitHub or public website). You can continue with just a project name.',
           ),
           style: TextStyle(
-            fontSize: 15,
+            fontSize: AppText.medium,
             color: theme.colorScheme.onSurfaceVariant,
-            height: 1.5,
+            height: AppLineHeight.relaxed,
           ),
         ),
-        const SizedBox(height: 32),
+        const SizedBox(height: AppSpacing.wide),
         TextField(
           controller: _projectNameController,
           readOnly: _isDemoMode,
@@ -284,7 +287,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             prefixIcon: Icon(Icons.folder_outlined),
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.md),
         TextField(
           controller: _repoUrlController,
           readOnly: _isDemoMode,
@@ -302,9 +305,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     ),
                     icon: _isRepoPickerLoading
                         ? const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2),
+                            width: AppSpacing.md,
+                            height: AppSpacing.md,
+                            child: CircularProgressIndicator(strokeWidth: AppStroke.medium),
                           )
                         : const Icon(Icons.travel_explore_rounded),
                     onPressed:
@@ -318,25 +321,25 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           keyboardType: TextInputType.url,
         ),
         if (githubStatus?.connected != true && !_isDemoMode) ...[
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpacing.compact),
           Text(
             context.tr(
               'GitHub connection is optional. Connect it only if you want to pick a repository automatically.',
             ),
             style: Theme.of(context).textTheme.bodySmall,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           OutlinedButton.icon(
             icon: const Icon(Icons.link),
             onPressed: _connectGithubFromOnboarding,
             label: Text(context.tr('Connecter GitHub')),
           ),
         ],
-        const SizedBox(height: 32),
+        const SizedBox(height: AppSpacing.wide),
         FilledButton(
           onPressed: _hasValidProjectStep ? _nextPage : null,
           style: FilledButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 16),
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
             backgroundColor: AppTheme.approveColor,
           ),
           child: Text(
@@ -379,7 +382,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               'L’authentification GitHub n’est pas disponible. Vérifiez la configuration backend.',
             ),
           ),
-          backgroundColor: Colors.red.withValues(alpha: 0.8),
+          backgroundColor: Theme.of(context).colorScheme.error.withValues(
+            alpha: AppOpacity.prominent,
+          ),
         ),
       );
       return;
@@ -425,7 +430,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               'Impossible d’ouvrir le navigateur pour l’autorisation GitHub.',
             ),
           ),
-          backgroundColor: Colors.red.withValues(alpha: 0.8),
+          backgroundColor: Theme.of(context).colorScheme.error.withValues(
+            alpha: AppOpacity.prominent,
+          ),
         ),
       );
     }
@@ -515,11 +522,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Widget _buildDemoBanner() {
     final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppTheme.approveColor.withAlpha(24),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.approveColor.withAlpha(70)),
+        color: AppTheme.approveColor.withAlpha(AppAlpha.low24),
+        borderRadius: BorderRadius.circular(AppRadii.lg),
+        border: Border.all(color: AppTheme.approveColor.withAlpha(AppAlpha.mid70)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -528,19 +535,19 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             context.tr('Demo workspace locked'),
             style: TextStyle(
               color: theme.colorScheme.onSurface,
-              fontSize: 16,
+              fontSize: AppText.base,
               fontWeight: FontWeight.w700,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             context.tr(
               'This onboarding uses a fixed public repo and pre-generated content. Users can explore the flow, but the demo data is intentionally read-only.',
             ),
             style: TextStyle(
               color: theme.colorScheme.onSurfaceVariant,
-              fontSize: 14,
-              height: 1.5,
+              fontSize: AppText.sm,
+              height: AppLineHeight.relaxed,
             ),
           ),
         ],
@@ -553,37 +560,37 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Widget _buildContentTypesPage() {
     final theme = Theme.of(context);
     return ListView(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(AppSpacing.xl),
       children: [
         Text(
           context.tr('What content do you want?'),
           style: TextStyle(
-            fontSize: 24,
+            fontSize: AppText.xxxl,
             fontWeight: FontWeight.bold,
             color: theme.colorScheme.onSurface,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.xs),
         Text(
           context.tr(
             'Choose the types of content the AI should generate for you, and how often.',
           ),
           style: TextStyle(
-            fontSize: 15,
+            fontSize: AppText.medium,
             color: theme.colorScheme.onSurfaceVariant,
-            height: 1.5,
+            height: AppLineHeight.relaxed,
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSpacing.xl),
         ...List.generate(_contentTypes.length, (i) {
           final ct = _contentTypes[i];
           return _buildContentTypeCard(ct, i);
         }),
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSpacing.xl),
         FilledButton(
           onPressed: _contentTypes.any((c) => c.enabled) ? _nextPage : null,
           style: FilledButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 16),
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
             backgroundColor: AppTheme.approveColor,
           ),
           child: Text(context.tr('Continue')),
@@ -599,14 +606,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final palette = AppTheme.paletteOf(context);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       decoration: BoxDecoration(
-        color: ct.enabled ? color.withAlpha(15) : palette.elevatedSurface,
-        borderRadius: BorderRadius.circular(16),
+        color: ct.enabled ? color.withAlpha(AppAlpha.low15) : palette.elevatedSurface,
+        borderRadius: BorderRadius.circular(AppRadii.lg),
         border: Border.all(
           color: ct.enabled
-              ? color.withAlpha(80)
-              : theme.colorScheme.outlineVariant.withValues(alpha: 0.65),
+              ? color.withAlpha(AppAlpha.border)
+              : theme.colorScheme.outlineVariant.withValues(
+                  alpha: AppOpacity.balanced,
+                ),
         ),
       ),
       child: Column(
@@ -640,7 +649,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           // Frequency slider (if enabled)
           if (ct.enabled)
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.md,
+                0,
+                AppSpacing.md,
+                AppSpacing.md,
+              ),
               child: Row(
                 children: [
                   Text(
@@ -648,7 +662,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     style: TextStyle(
                       color: color,
                       fontWeight: FontWeight.w600,
-                      fontSize: 14,
+                      fontSize: AppText.sm,
                     ),
                   ),
                   Expanded(
@@ -688,17 +702,17 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final theme = Theme.of(context);
 
     return ListView(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(AppSpacing.xl),
       children: [
         Text(
           context.tr('Ready to go!'),
           style: TextStyle(
-            fontSize: 24,
+            fontSize: AppText.xxxl,
             fontWeight: FontWeight.bold,
             color: theme.colorScheme.onSurface,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.xs),
         Text(
           _isDemoMode
               ? context.tr(
@@ -708,12 +722,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   'Here\'s your content plan. You can change it anytime in Settings.',
                 ),
           style: TextStyle(
-            fontSize: 15,
+            fontSize: AppText.medium,
             color: theme.colorScheme.onSurfaceVariant,
-            height: 1.5,
+            height: AppLineHeight.relaxed,
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSpacing.xl),
         // Project card
         _summaryCard(
           icon: Icons.folder_outlined,
@@ -726,14 +740,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               ? '${_repoUrlController.text}\nLive demo: ${DemoSeed.siteUrl}'
               : _repoUrlController.text,
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.sm),
         // Content summary
         _summaryCard(
           icon: Icons.auto_awesome,
           title: context.tr('{count} contents/week', {'count': totalPerWeek}),
           subtitle: enabled.map((c) => context.tr(c.label)).join(', '),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.sm),
         // Next steps
         _summaryCard(
           icon: Icons.checklist,
@@ -742,19 +756,19 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             '1. Set up your brand voice (weekly ritual)\n2. Create a customer persona\n3. Content starts flowing!',
           ),
         ),
-        const SizedBox(height: 32),
+        const SizedBox(height: AppSpacing.wide),
         FilledButton(
           onPressed: _isFinishing ? null : _finish,
           style: FilledButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 16),
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
             backgroundColor: AppTheme.approveColor,
           ),
           child: _isFinishing
               ? SizedBox(
-                  width: 20,
-                  height: 20,
+                  width: AppSpacing.lg,
+                  height: AppSpacing.lg,
                   child: CircularProgressIndicator(
-                    strokeWidth: 2,
+                    strokeWidth: AppStroke.medium,
                     color: Theme.of(context).colorScheme.onPrimary,
                   ),
                 )
@@ -772,17 +786,17 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final theme = Theme.of(context);
     final palette = AppTheme.paletteOf(context);
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: palette.elevatedSurface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppRadii.lg),
         border: Border.all(color: palette.borderSubtle),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: AppTheme.approveColor, size: 24),
-          const SizedBox(width: 16),
+          Icon(icon, color: AppTheme.approveColor, size: AppSizes.iconXxl),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -792,16 +806,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   style: TextStyle(
                     color: theme.colorScheme.onSurface,
                     fontWeight: FontWeight.w600,
-                    fontSize: 16,
+                    fontSize: AppText.base,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xxs),
                 Text(
                   subtitle,
                   style: TextStyle(
                     color: theme.colorScheme.onSurfaceVariant,
-                    fontSize: 14,
-                    height: 1.5,
+                    fontSize: AppText.sm,
+                    height: AppLineHeight.relaxed,
                   ),
                 ),
               ],
@@ -823,14 +837,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   void _nextPage() {
     _pageController.nextPage(
-      duration: const Duration(milliseconds: 300),
+      duration: const AppMotion.slow,
       curve: Curves.easeInOut,
     );
   }
 
   void _previousPage() {
     _pageController.previousPage(
-      duration: const Duration(milliseconds: 300),
+      duration: const AppMotion.slow,
       curve: Curves.easeInOut,
     );
   }
@@ -882,7 +896,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       );
       _pageController.animateToPage(
         0,
-        duration: const Duration(milliseconds: 300),
+        duration: const AppMotion.slow,
         curve: Curves.easeInOut,
       );
       return;

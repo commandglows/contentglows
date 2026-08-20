@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/openrouter_guard.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../providers/providers.dart';
+import '../../theme/app_theme.dart';
 import '../../widgets/app_error_view.dart';
 import '../../widgets/project_picker_action.dart';
 
@@ -40,20 +41,20 @@ class _ResearchScreenState extends ConsumerState<ResearchScreen> {
         actions: const [ProjectPickerAction()],
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           Text(
             context.tr('Competitor Analysis'),
             style: theme.textTheme.titleMedium,
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xxs),
           Text(
             context.tr('Analyze your site against competitors'),
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           TextField(
             controller: _targetUrlCtrl,
@@ -63,7 +64,7 @@ class _ResearchScreenState extends ConsumerState<ResearchScreen> {
             ),
             keyboardType: TextInputType.url,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
 
           TextField(
             controller: _competitorsCtrl,
@@ -76,7 +77,7 @@ class _ResearchScreenState extends ConsumerState<ResearchScreen> {
             maxLines: 3,
             keyboardType: TextInputType.url,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
 
           TextField(
             controller: _keywordsCtrl,
@@ -85,15 +86,17 @@ class _ResearchScreenState extends ConsumerState<ResearchScreen> {
               hintText: context.tr('saas, flutter, ai'),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg),
 
           FilledButton.icon(
             onPressed: _analyzing ? null : _analyze,
             icon: _analyzing
                 ? const SizedBox(
-                    height: 18,
-                    width: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    height: AppSizes.iconLarge,
+                    width: AppSizes.iconLarge,
+                    child: CircularProgressIndicator(
+                      strokeWidth: AppStroke.medium,
+                    ),
                   )
                 : const Icon(Icons.analytics),
             label: Text(
@@ -102,10 +105,10 @@ class _ResearchScreenState extends ConsumerState<ResearchScreen> {
           ),
 
           if (_result != null) ...[
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg),
             Card(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -113,7 +116,7 @@ class _ResearchScreenState extends ConsumerState<ResearchScreen> {
                       context.tr('Analysis Results'),
                       style: theme.textTheme.titleSmall,
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.xs),
                     ..._buildResults(),
                   ],
                 ),
@@ -132,27 +135,36 @@ class _ResearchScreenState extends ConsumerState<ResearchScreen> {
       for (final comp in competitors) ...[
         Text(
           (comp as Map)['name']?.toString() ?? context.tr('Unknown'),
-          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: AppText.compact,
+          ),
         ),
         if (comp['strengths'] case final List strengths
             when strengths.isNotEmpty)
           Padding(
-            padding: const EdgeInsets.only(left: 12, top: 4),
+            padding: const EdgeInsets.only(
+              left: AppSpacing.sm,
+              top: AppSpacing.xxs,
+            ),
             child: Text(
               context.tr('Strengths: {list}', {'list': strengths.join(', ')}),
-              style: const TextStyle(fontSize: 12),
+              style: TextStyle(fontSize: AppText.xs),
             ),
           ),
         if (comp['weaknesses'] case final List weaknesses
             when weaknesses.isNotEmpty)
           Padding(
-            padding: const EdgeInsets.only(left: 12, top: 2),
+            padding: const EdgeInsets.only(
+              left: AppSpacing.sm,
+              top: AppSpacing.xxsHalf,
+            ),
             child: Text(
               context.tr('Weaknesses: {list}', {'list': weaknesses.join(', ')}),
-              style: const TextStyle(fontSize: 12),
+              style: TextStyle(fontSize: AppText.xs),
             ),
           ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.xs),
       ],
       if (competitors.isEmpty)
         Text(

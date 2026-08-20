@@ -11,7 +11,7 @@ class SkeletonLoader extends StatefulWidget {
     super.key,
     this.width = double.infinity,
     required this.height,
-    this.borderRadius = 12,
+    this.borderRadius = AppRadii.md,
   });
 
   @override
@@ -27,7 +27,7 @@ class _SkeletonLoaderState extends State<SkeletonLoader>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: AppMotion.shimmer,
     )..repeat();
   }
 
@@ -71,11 +71,14 @@ class ContentCardSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = AppTheme.paletteOf(context);
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      padding: const EdgeInsets.all(20),
+      margin: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.xs,
+      ),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: palette.elevatedSurface,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(AppRadii.sheet),
         border: Border.all(color: palette.borderSubtle),
       ),
       child: const Column(
@@ -88,15 +91,15 @@ class ContentCardSkeleton extends StatelessWidget {
               SkeletonLoader(width: 60, height: 16),
             ],
           ),
-          SizedBox(height: 20),
+          SizedBox(height: AppSpacing.lg),
           SkeletonLoader(height: 24),
-          SizedBox(height: 12),
+          SizedBox(height: AppSpacing.sm),
           SkeletonLoader(height: 16, width: 250),
-          SizedBox(height: 8),
+          SizedBox(height: AppSpacing.xs),
           SkeletonLoader(height: 16, width: 200),
-          SizedBox(height: 8),
+          SizedBox(height: AppSpacing.xs),
           SkeletonLoader(height: 16, width: 280),
-          SizedBox(height: 20),
+          SizedBox(height: AppSpacing.lg),
           SkeletonLoader(height: 14, width: 150),
         ],
       ),
@@ -111,7 +114,7 @@ class FeedSkeletonLoader extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Center(
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 40),
+        padding: EdgeInsets.symmetric(vertical: AppSpacing.hero),
         child: ContentCardSkeleton(),
       ),
     );

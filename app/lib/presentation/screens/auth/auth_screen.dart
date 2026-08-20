@@ -63,8 +63,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                 border: Border.all(color: palette.borderSubtle),
                 boxShadow: [
                   BoxShadow(
-                    color: AppTheme.warningColor.withAlpha(18),
-                    blurRadius: 20,
+                    color: AppTheme.warningColor.withAlpha(AppAlpha.low18),
+                    blurRadius: AppEffects.blurCard,
                     offset: const Offset(0, AppSpacing.xs),
                   ),
                 ],
@@ -99,7 +99,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
           ),
           style: theme.textTheme.bodyMedium?.copyWith(
             color: theme.colorScheme.onSurfaceVariant,
-            height: 1.5,
+            height: AppLineHeight.relaxed,
           ),
         ),
         const SizedBox(height: AppSpacing.lg),
@@ -144,7 +144,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
           ),
           style: theme.textTheme.bodyMedium?.copyWith(
             color: theme.colorScheme.onSurfaceVariant,
-            height: 1.5,
+            height: AppLineHeight.relaxed,
           ),
         ),
         const SizedBox(height: AppSpacing.md),
@@ -161,19 +161,19 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
           child: FilledButton(
             onPressed: _isSubmitting || !_isAndroid ? null : _signInWithGoogle,
             child: _isSubmitting
-                ? const Row(
+                ? Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(
                         width: AppSpacing.md,
                         height: AppSpacing.md,
                         child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
+                          strokeWidth: AppStroke.medium,
+                          color: AppTheme.onMediaColor,
                         ),
                       ),
-                      SizedBox(width: AppSpacing.sm),
-                      Text('Opening Google…'),
+                      const SizedBox(width: AppSpacing.sm),
+                      const Text('Opening Google…'),
                     ],
                   )
                 : Text(context.tr('Continue with Google')),
@@ -187,7 +187,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
           ),
           style: theme.textTheme.bodySmall?.copyWith(
             color: theme.colorScheme.onSurfaceVariant,
-            height: 1.4,
+            height: AppLineHeight.body,
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
@@ -222,7 +222,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
           ),
           style: theme.textTheme.bodyMedium?.copyWith(
             color: theme.colorScheme.onSurfaceVariant,
-            height: 1.5,
+            height: AppLineHeight.relaxed,
           ),
         ),
         const SizedBox(height: AppSpacing.md),

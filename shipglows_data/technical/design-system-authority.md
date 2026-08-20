@@ -1,12 +1,12 @@
 ---
 artifact: design_system_authority
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: "contentglows"
 created: "2026-06-11"
-updated: "2026-06-11"
-status: "draft"
-source_skill: "300-sf-docs"
+updated: "2026-08-20"
+status: "active"
+source_skill: "sg-design"
 scope: "design-system-authority"
 owner: "Diane"
 confidence: "high"
@@ -40,8 +40,9 @@ evidence:
   - "Code scan: `app/lib/presentation/theme/app_theme_tokens.dart` and `app/lib/presentation/theme/app_theme.dart` are explicit Flutter token layers."
   - "Site scan: `site/src/layouts/Layout.astro` injects shared CSS variables from `tools/design-tokens/contentglows_theme.json`."
   - "Token generator source: `tools/design-tokens/generate_app_theme_tokens.mjs` transforms `tools/design-tokens/contentglows_theme.json` into `app_theme_tokens.dart`."
-  - "Cross-project design-token drift baseline: `python3 /home/claude/shipglowz/tools/design_system_drift_check.py --root /home/claude/contentglows --warn-only --format markdown --max-findings 5000`."
-next_step: "run 503-sf-audit-design-tokens contentglows"
+  - "ShipGlows runtime owns the central design-drift contract and checker; ContentGlows does not duplicate that enforcement in project tooling."
+  - "2026-08-20 source inspection confirmed the site consumes the shared JSON through Layout CSS variables and Flutter consumes generated tokens through AppTheme helpers."
+next_step: "Run the central ShipGlows design-drift and visual proof path in a session that permits local execution."
 ---
 
 # ContentGlows Design-System Authority
@@ -63,9 +64,8 @@ Any change introducing or modifying **colors, typography, spacing, radii, shadow
 
 - Flutter UI must use `AppThemeTokens`, `AppSpacing`, `AppRadii`, `AppText`, and `Theme.of(context)` helpers.
 - Site UI must use `var(--*)` tokens (or component-local variables derived from them).
-- New visual values in non-authoritative files are only valid when:
-  1. the value is clearly non-visual (for example media dimensions, API payloads), or
-  2. an explicit temporary exception is approved in this document.
+- New visual values in non-authoritative files are valid only under the explicit
+  exception policy in section 5.
 
 ## 3) Required token map
 
@@ -95,22 +95,38 @@ Any change introducing or modifying **colors, typography, spacing, radii, shadow
 4. No component-level `if (themeIsDark)` visual branches in production UI; branch at token/theme layer.
 5. Any new hard-coded visual value in Flutter must be paired with a matching token update before merge.
 
-## 5) Temporary exceptions
+## 5) Explicit exceptions
 
-- `app/web_auth/clerk-auth.css` is an external Clerk auth shell and keeps legacy values until migrated behind shared tokens.
-- `site/dist/**` and other generated build artifacts are non-authoritative.
-- `lab/venv/**` and other dependency artifacts are out of scope of product UI contracts.
+- User-provided brand colors and other project data remain data, not fixed UI
+  decisions; their surrounding surfaces, states, and contrast treatment still
+  resolve through the theme.
+- Intrinsic media dimensions, aspect ratios, canvas coordinates, waveform/video
+  timeline geometry, sampling values, and protocol or platform-required
+  constants may remain local when naming them as design tokens would obscure
+  their technical meaning.
+- Values calculated from runtime constraints, `MediaQuery`, safe areas, keyboard
+  insets, or content measurements remain local and adaptive.
+- Generated outputs and the design playground may display resolved raw values as
+  documentation, but they are not independent sources of visual truth.
+- `app/web_auth/clerk-auth.css` remains an external Clerk shell exception until
+  it can consume the shared source without weakening the provider integration.
+- Build and dependency artifacts are non-authoritative and remain outside the
+  product UI contract.
 
 ## 6) Change process
 
-For every style-related commit:
+For every style-related change:
 1. Update canonical token source first (`tools/design-tokens/contentglows_theme.json`) or the token injection path that feeds both app and site.
 2. Regenerate app tokens where relevant.
 3. Consume the value through shared helpers/variables.
-4. Run the token-drift check with generated/output artifacts excluded from evidence.
+4. Let ShipGlows run its central token-drift check with generated/output
+   artifacts excluded from evidence; do not add a duplicate project-local guard.
+5. Collect proportional visual and accessibility proof before claiming the
+   design chantier verified or closed.
 
 ## 7) Acceptance criteria
 
 - No new visual hard-coded values are introduced in production UI component code without a token update.
 - Any visual styling change remains traceable to the canonical sources listed in section 1.
 - Any direct visual exception is documented in this artifact before merge.
+- ContentGlows owns token consumption; ShipGlows owns coherence verification.

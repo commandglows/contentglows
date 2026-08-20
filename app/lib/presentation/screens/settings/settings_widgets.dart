@@ -72,7 +72,7 @@ class SettingsGroup extends StatelessWidget {
         stacked.add(children[i]);
         if (i != children.length - 1) {
           stacked.add(Divider(
-            height: 1,
+            height: AppStroke.hairline,
             thickness: 1,
             color: palette.borderSubtle,
           ));
@@ -127,7 +127,7 @@ class SettingsGroup extends StatelessWidget {
               style: TextStyle(
                 fontSize: AppText.xs,
                 color: colorScheme.onSurfaceVariant,
-                height: 1.4,
+                height: AppLineHeight.body,
               ),
             ),
           ),
@@ -181,10 +181,10 @@ class SettingsRow extends StatelessWidget {
         width: _kSettingsLeadingSize,
         height: _kSettingsLeadingSize,
         decoration: BoxDecoration(
-          color: color.withAlpha(25),
+          color: color.withAlpha(AppAlpha.low25),
           borderRadius: BorderRadius.circular(AppRadii.md - 2),
         ),
-        child: Icon(icon, color: color, size: AppText.base + 4),
+        child: Icon(icon, color: color, size: AppSizes.iconXl),
       ),
       title: Text(
         context.tr(title),
@@ -203,7 +203,7 @@ class SettingsRow extends StatelessWidget {
                 style: TextStyle(
                   color: colorScheme.onSurfaceVariant,
                   fontSize: AppText.xs,
-                  height: 1.35,
+                  height: AppLineHeight.compact,
                 ),
               ),
             ),
@@ -211,7 +211,9 @@ class SettingsRow extends StatelessWidget {
           (onTap != null
               ? Icon(
                   Icons.chevron_right,
-                  color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                  color: colorScheme.onSurfaceVariant.withValues(
+                    alpha: AppOpacity.strong,
+                  ),
                 )
               : null),
       onTap: onTap,
@@ -268,14 +270,14 @@ class SettingsStatusPill extends StatelessWidget {
         vertical: AppSpacing.xxs + 1,
       ),
       decoration: BoxDecoration(
-        color: color.withAlpha(28),
+        color: color.withAlpha(AppAlpha.low28),
         borderRadius: BorderRadius.circular(AppRadii.pill),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (icon != null) ...[
-            Icon(icon, color: color, size: AppText.xs),
+            Icon(icon, color: color, size: AppSizes.iconTiny),
             SizedBox(width: AppSpacing.xxs),
           ],
           Text(
@@ -318,7 +320,7 @@ class SettingsErrorDiagnostic extends ConsumerWidget {
           style: TextStyle(
             color: theme.colorScheme.onSurfaceVariant,
             fontSize: AppText.xs,
-            height: 1.4,
+            height: AppLineHeight.body,
           ),
         ),
         SizedBox(height: AppSpacing.xs),

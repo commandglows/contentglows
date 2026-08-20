@@ -204,7 +204,7 @@ Concurrent sources: Filmora, PixVerse. Canonical execution spec: `shipglows_data
 | ✅ | Feedback Admin v1 côté Flutter — soumission texte/audio, historique local léger, accès anonyme et écran admin in-app | High | Medium | ✅ done — client FastAPI prêt, build-time allowlist + docs ajoutés |
 | ✅ | Localisation app EN/FR — préférence de langue (système/anglais/français) + couverture FR sur les écrans shell, debug et drip | High | Medium | ✅ done — AppLanguage, persistance SharedPreferences et passe UI sur settings/editor/drip/uptime/work domains/runs/research |
 | ✅ | Système de thème complet — light/dark/system persisté + réglage utilisateur + thème éditorial partagé | High | Medium | ✅ done — préférence normalisée, `ThemeMode` branché sur l'app Flutter, palette/tokens centralisés |
-| ✅ | Purger les couleurs hard-codées des écrans Flutter pour rendre le light mode réellement cohérent | High | High | ✅ done — écrans migrés vers `Theme.of(context)` / `AppTheme.paletteOf(context)` sur tout `lib/presentation/screens` |
+| ✅ | Purger les couleurs hard-codées des écrans Flutter pour rendre le light mode réellement cohérent | High | High | ✅ lot couleur/theme historique livré; migration exhaustive app/site reprise et code-authored le 2026-08-20, preuve d'exécution différée |
 | ✅ | Implémenter `SPEC-content-editor-multiformat` (toolbar riche universelle Markdown-backed: gras/italique/titres/listes/citation/lien/suppression de paragraphe + tests) | High | Medium | ✅ implemented and verified — lifecycle closure/ship bookkeeping remains |
 | 🟡 | Finaliser les vérifications feedback restantes: stockage audio S3-compatible, URLs signées de lecture admin et validation admin connectée | Medium | Low | 📋 todo — admin email configuré; non bloquant pour le prochain gros chantier |
 | 🔴 | Project flows selection onboarding archive — source URL optionnelle, no-selection explicite persistante, archive/unarchive alignés app+API | High | High | ✅ done |
@@ -336,10 +336,10 @@ Concurrent sources: Filmora, PixVerse. Canonical execution spec: `shipglows_data
 
 | Pri | Task | Status |
 |-----|------|--------|
-| 🔴 | Remplacer les 722 valeurs visuelles Flutter hardcodées par des helpers issus de `AppTheme`/`tools/design-tokens/contentglows_theme.json` | 🔄 in progress |
-| 🔴 | Introduire des tokens Flutter responsives mobile pour tailles de texte, padding, gap et rayons, puis migrer les écrans principaux | 🔄 in progress |
-| 🟠 | Tokeniser les couleurs directes restantes (`Colors.red`, `Colors.white`, alphas de bordures) hors fichiers de thème générés | 📋 todo |
-| 🟠 | Ajouter une vérification automatisée qui bloque les nouveaux `fontSize`, `EdgeInsets` et `BorderRadius.circular` hors exceptions autorisées | 📋 todo |
+| 🔴 | Remplacer la baseline historique de 722 valeurs visuelles Flutter par les helpers issus de `AppTheme` et de la source partagée | ✅ implementation authored — unverified (2026-08-20); géométries média/plateforme/données dynamiques conservées comme exceptions documentées |
+| 🔴 | Introduire des tokens Flutter responsives et sémantiques pour texte, spacing, gap, rayons, tailles, opacités, traits et mouvement, puis migrer les écrans | ✅ implementation authored — unverified (2026-08-20) |
+| 🟠 | Tokeniser les couleurs UI directes restantes hors source/theme et conserver les couleurs de marque utilisateur comme données | ✅ implementation authored — unverified (2026-08-20) |
+| 🟠 | Vérifier la dérive des nouveaux literals visuels | ✅ owned centrally by ShipGlows; aucune garde locale dupliquée dans ContentGlows |
 
 ### Audit: Copywriting (2026-05-10 — App entry homepage — Overall: C+)
 
@@ -384,7 +384,7 @@ Concurrent sources: Filmora, PixVerse. Canonical execution spec: `shipglows_data
 
 > **Priority last updated**: 2026-08-20
 > **Criteria**: Impact/effort matrix — "what makes the product actually work"
-> **Recommended next**: Restaurer d'abord le déploiement Vercel de l'app; côté code, compléter les tests Brand Studio/canonical video path et poursuivre la centralisation des design tokens. Polar billing reste bloqué jusqu'à un contrat commercial/checkout dédié.
+> **Recommended next**: Restaurer le déploiement Vercel de l'app puis exécuter la preuve différée du chantier design tokens (contrôle central, analyse et rendu visuel). Polar billing reste bloqué jusqu'à un contrat commercial/checkout dédié.
 
 ### Audit: Code (2026-04-28)
 

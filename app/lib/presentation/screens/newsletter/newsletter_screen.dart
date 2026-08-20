@@ -49,7 +49,7 @@ class _NewsletterScreenState extends ConsumerState<NewsletterScreen> {
         actions: const [ProjectPickerAction()],
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           // Config status
           configAsync.when(
@@ -107,31 +107,31 @@ class _NewsletterScreenState extends ConsumerState<NewsletterScreen> {
                     );
               return Card(
                 color: configured
-                    ? statusColor.withValues(alpha: 0.1)
+                    ? statusColor.withValues(alpha: AppOpacity.subtle)
                     : palette.mutedSurface,
                 child: Padding(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(AppSpacing.sm),
                   child: Row(
                     children: [
                       Icon(
                         configured ? Icons.check_circle : Icons.warning,
                         color: statusColor,
-                        size: 20,
+                        size: AppSizes.iconXl,
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.xs),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               statusMessage,
-                              style: const TextStyle(fontSize: 13),
+                              style: TextStyle(fontSize: AppText.compact),
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: AppSpacing.xxs),
                             Text(
                               detailMessage,
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: AppText.xs,
                                 color: theme.colorScheme.onSurfaceVariant,
                               ),
                             ),
@@ -144,13 +144,13 @@ class _NewsletterScreenState extends ConsumerState<NewsletterScreen> {
               );
             },
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg),
 
           Text(
             context.tr('Generate Newsletter'),
             style: theme.textTheme.titleMedium,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
 
           TextField(
             controller: _nameCtrl,
@@ -159,7 +159,7 @@ class _NewsletterScreenState extends ConsumerState<NewsletterScreen> {
               hintText: context.tr('Weekly Tech Digest #43'),
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
 
           TextField(
             controller: _topicsCtrl,
@@ -168,7 +168,7 @@ class _NewsletterScreenState extends ConsumerState<NewsletterScreen> {
               hintText: context.tr('AI, Flutter, SaaS'),
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
 
           TextField(
             controller: _audienceCtrl,
@@ -177,7 +177,7 @@ class _NewsletterScreenState extends ConsumerState<NewsletterScreen> {
               hintText: context.tr('Indie developers building SaaS products'),
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
 
           DropdownButtonFormField<String>(
             initialValue: _tone,
@@ -202,25 +202,27 @@ class _NewsletterScreenState extends ConsumerState<NewsletterScreen> {
             ],
             onChanged: (v) => setState(() => _tone = v ?? 'professional'),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg),
 
           FilledButton.icon(
             onPressed: _generating ? null : _generate,
             icon: _generating
                 ? const SizedBox(
-                    height: 18,
-                    width: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    height: AppSizes.iconLarge,
+                    width: AppSizes.iconLarge,
+                    child: CircularProgressIndicator(
+                      strokeWidth: AppStroke.medium,
+                    ),
                   )
                 : const Icon(Icons.auto_awesome),
             label: Text(context.tr(_generating ? 'Generating...' : 'Generate')),
           ),
 
           if (_result != null) ...[
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg),
             Card(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -228,7 +230,7 @@ class _NewsletterScreenState extends ConsumerState<NewsletterScreen> {
                       context.tr('Job started'),
                       style: theme.textTheme.titleSmall,
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       context.tr('Job ID: {jobId}', {
                         'jobId': _result!['job_id'] ?? context.tr('unknown'),

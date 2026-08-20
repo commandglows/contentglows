@@ -14,5 +14,6 @@ Migration note:
 | 2026-04-28 | monorepo code audit | B | — | — | — | — | — | — | — | B | 1/1/2 (auth diagnostics XSS fixed; publish client requires content record id) |
 | 2026-06-11 | design-system authority | — | D+ | — | — | — | — | — | — | D+ | 0/1/2 (authority contract added; baseline app scan: 106 files / 1150 candidates) |
 | 2026-05-10 | design tokens | — | D+ | — | — | — | — | — | — | D+ | 1/2/1 (theme source exists; 722 app visual literals remain, mobile compacting not tokenized) |
+| 2026-08-20 | design tokens migration | — | — | — | — | — | — | — | — | pending proof | implementation authored across Flutter presentation; central drift/analyze/visual proof deferred by no-local policy |
 | 2026-05-10 | app entry homepage copywriting | — | — | C+ | — | — | — | — | — | C+ | 0/3/3 (entry page is operationally clear, but public handoff overpromises automation/publish outcomes vs app state) |
 🟢 [app] audit: translate | date: 2026-06-12 | overall: B | issues: 0/0/1 | scope: Flutter app French coverage restored for active UI keys; remaining architecture gap is on site

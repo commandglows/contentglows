@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../data/models/app_settings.dart';
 import '../../l10n/app_localizations.dart';
 import '../../providers/providers.dart';
+import '../theme/app_theme.dart';
 import 'app_error_view.dart';
 
 class ProjectPickerAction extends ConsumerWidget {
@@ -28,11 +29,11 @@ class ProjectPickerAction extends ConsumerWidget {
 
     if (isSwitching) {
       return const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12),
+        padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm),
         child: SizedBox(
-          width: 18,
-          height: 18,
-          child: CircularProgressIndicator(strokeWidth: 2),
+          width: AppSizes.iconLarge,
+          height: AppSizes.iconLarge,
+          child: CircularProgressIndicator(strokeWidth: AppStroke.medium),
         ),
       );
     }
@@ -90,7 +91,10 @@ class ProjectPickerAction extends ConsumerWidget {
                 leading: const Icon(Icons.block_rounded),
                 title: Text(context.tr('No project selected')),
                 trailing: isNoSelectionMode
-                    ? const Icon(Icons.check_rounded, size: 18)
+                    ? const Icon(
+                        Icons.check_rounded,
+                        size: AppSizes.iconLarge,
+                      )
                     : null,
               ),
             ),
@@ -109,7 +113,10 @@ class ProjectPickerAction extends ConsumerWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                   trailing: activeProject?.id == project.id
-                      ? const Icon(Icons.check_rounded, size: 18)
+                      ? const Icon(
+                          Icons.check_rounded,
+                          size: AppSizes.iconLarge,
+                        )
                       : null,
                 ),
               ),
@@ -129,12 +136,12 @@ class ProjectPickerAction extends ConsumerWidget {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.folder_copy_rounded),
-            const SizedBox(width: 6),
+            const SizedBox(width: AppSpacing.xxs2),
             ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 130),
               child: Text(
@@ -142,13 +149,16 @@ class ProjectPickerAction extends ConsumerWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: AppText.compact,
                   color: activeColor,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ),
-            const Icon(Icons.keyboard_arrow_down_rounded, size: 18),
+            const Icon(
+              Icons.keyboard_arrow_down_rounded,
+              size: AppSizes.iconLarge,
+            ),
           ],
         ),
       ),

@@ -48,9 +48,9 @@ class DripScreen extends ConsumerWidget {
           return RefreshIndicator(
             onRefresh: () async => ref.invalidate(dripPlansProvider),
             child: ListView.separated(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.md),
               itemCount: plans.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 12),
+              separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.sm),
               itemBuilder: (context, index) => _PlanCard(
                 plan: plans[index],
                 onTap: () => _openDetail(context, plans[index]),
@@ -89,22 +89,22 @@ class _EmptyState extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: const EdgeInsets.all(AppSpacing.wide),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.water_drop_outlined, size: 64, color: colorScheme.primary.withValues(alpha: 0.5)),
-            const SizedBox(height: 16),
+            Icon(Icons.water_drop_outlined, size: AppSizes.heroIcon, color: colorScheme.primary.withValues(alpha: AppOpacity.half)),
+            const SizedBox(height: AppSpacing.md),
             Text(context.tr('No drip plans yet'),
                 style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               context.tr(
                   'Create a plan to progressively publish your content.\nGoogle will see a natural publishing rhythm.'),
               textAlign: TextAlign.center,
-              style: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.6)),
+              style: TextStyle(color: colorScheme.onSurface.withValues(alpha: AppOpacity.muted)),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
             FilledButton.icon(
               onPressed: onCreatePressed,
               icon: const Icon(Icons.add),
@@ -136,7 +136,7 @@ class _PlanCard extends ConsumerWidget {
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -148,19 +148,19 @@ class _PlanCard extends ConsumerWidget {
                   ),
                   if (syncInfo != null) ...[
                     OfflineSyncStatusChip(info: syncInfo, compact: true),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.xs),
                   ],
                   _StatusChip(status: plan.status),
                 ],
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.xs),
 
               // Config summary
               Text(
                 '${plan.totalItems} ${context.tr('articles')}  ·  ${plan.itemsPerDay}/${context.tr('day')}  ·  ${context.tr(plan.clusterMode)}  ·  ${context.tr(plan.ssgFramework)}',
-                style: TextStyle(fontSize: 13, color: colorScheme.onSurface.withValues(alpha: 0.6)),
+                style: TextStyle(fontSize: AppText.compact, color: colorScheme.onSurface.withValues(alpha: AppOpacity.muted)),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm),
 
               // Progress bar
               statsAsync.when(
@@ -170,14 +170,14 @@ class _PlanCard extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(AppRadii.progress),
                       child: LinearProgressIndicator(
                         value: stats.progressPercent,
                         minHeight: 8,
                         backgroundColor: colorScheme.surfaceContainerHighest,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: AppSpacing.xxs2),
                     Text(
                       '${stats.published}/${stats.totalItems} published',
                       style: theme.textTheme.bodySmall?.copyWith(
@@ -190,16 +190,16 @@ class _PlanCard extends ConsumerWidget {
 
               // Next drip
               if (plan.nextDripAt != null && plan.isActive) ...[
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.xs),
                 Row(
                   children: [
-                    Icon(Icons.schedule, size: 14, color: colorScheme.primary),
-                    const SizedBox(width: 4),
+                    Icon(Icons.schedule, size: AppSizes.iconSm, color: colorScheme.primary),
+                    const SizedBox(width: AppSpacing.xxs),
                     Text(
                       context.tr('Next drip: {date}', {
                         'date': _formatIso(plan.nextDripAt!, context),
                       }),
-                      style: TextStyle(fontSize: 12, color: colorScheme.primary),
+                      style: TextStyle(fontSize: AppText.xs, color: colorScheme.primary),
                     ),
                   ],
                 ),
@@ -234,8 +234,8 @@ class _StatusChip extends StatelessWidget {
     };
 
     return Chip(
-      avatar: Icon(icon, size: 16, color: color),
-      label: Text(context.tr(status), style: TextStyle(fontSize: 12, color: color)),
+      avatar: Icon(icon, size: AppSizes.icon, color: color),
+      label: Text(context.tr(status), style: TextStyle(fontSize: AppText.xs, color: color)),
       visualDensity: VisualDensity.compact,
       padding: EdgeInsets.zero,
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

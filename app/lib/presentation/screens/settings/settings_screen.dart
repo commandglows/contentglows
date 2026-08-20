@@ -210,7 +210,7 @@ class _FeedbackAdminAccessRow extends StatelessWidget {
         trailing: const SizedBox(
           width: _kSettingsMiniLoaderDotSize,
           height: _kSettingsMiniLoaderDotSize,
-          child: CircularProgressIndicator(strokeWidth: 2),
+          child: CircularProgressIndicator(strokeWidth: AppStroke.medium),
         ),
       ),
       error: (_, _) => SettingsRow(
@@ -275,7 +275,7 @@ class _AccountGroup extends ConsumerWidget {
                     width: _kSettingsStatusAvatarSize,
                     height: _kSettingsStatusAvatarSize,
                     decoration: BoxDecoration(
-                      color: statusColor.withAlpha(28),
+                      color: statusColor.withAlpha(AppAlpha.low28),
                 borderRadius: BorderRadius.circular(AppRadii.narrow),
                     ),
                     child: Icon(
@@ -285,7 +285,7 @@ class _AccountGroup extends ConsumerWidget {
                           ? Icons.science_outlined
                           : Icons.lock_outline,
                       color: statusColor,
-                      size: 20,
+                      size: AppSizes.iconXl,
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm),
@@ -307,7 +307,7 @@ class _AccountGroup extends ConsumerWidget {
                           style: TextStyle(
                             color: theme.colorScheme.onSurfaceVariant,
                             fontSize: AppText.xs,
-                            height: 1.4,
+                            height: AppLineHeight.body,
                           ),
                         ),
                       ],
@@ -392,12 +392,14 @@ class _IntegrationsLinkGroup extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               SettingsStatusPill(label: pillLabel, color: pillColor),
-              const SizedBox(width: 6),
+              const SizedBox(width: AppSpacing.xxs2),
               Icon(
                 Icons.chevron_right,
                 color: Theme.of(
                   context,
-                ).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                ).colorScheme.onSurfaceVariant.withValues(
+                  alpha: AppOpacity.strong,
+                ),
               ),
             ],
           ),
@@ -500,7 +502,7 @@ class _IdeaPoolBlock extends ConsumerWidget {
               contentPadding: EdgeInsets.zero,
             ),
             if (enabled) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.xs),
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
@@ -513,7 +515,7 @@ class _IdeaPoolBlock extends ConsumerWidget {
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppTheme.warningColor,
                     side: BorderSide(
-                      color: AppTheme.warningColor.withAlpha(60),
+                      color: AppTheme.warningColor.withAlpha(AppAlpha.soft),
                     ),
                     minimumSize: const Size(0, _kSettingsActionRowHeight),
                   ),
@@ -530,7 +532,7 @@ class _IdeaPoolBlock extends ConsumerWidget {
             const SizedBox(
               width: _kSettingsMiniLoaderDotSize,
               height: _kSettingsMiniLoaderDotSize,
-              child: CircularProgressIndicator(strokeWidth: 2),
+              child: CircularProgressIndicator(strokeWidth: AppStroke.medium),
             ),
             const SizedBox(width: AppSpacing.sm),
             Text(
@@ -583,7 +585,7 @@ class _FrequencyBlock extends ConsumerWidget {
               style: TextStyle(
                 color: theme.colorScheme.onSurfaceVariant,
                 fontSize: AppText.compact,
-                height: 1.4,
+                height: AppLineHeight.body,
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
@@ -598,7 +600,7 @@ class _FrequencyBlock extends ConsumerWidget {
                   ? null
                   : (v) => update('blog_posts_per_month', v),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.xs),
             _FrequencyRow(
               icon: Icons.email_outlined,
               label: 'Newsletters',
@@ -610,7 +612,7 @@ class _FrequencyBlock extends ConsumerWidget {
                   ? null
                   : (v) => update('newsletters_per_week', v),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.xs),
             _FrequencyRow(
               icon: Icons.bolt_outlined,
               label: 'Shorts',
@@ -622,7 +624,7 @@ class _FrequencyBlock extends ConsumerWidget {
                   ? null
                   : (v) => update('shorts_per_day', v),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.xs),
             _FrequencyRow(
               icon: Icons.chat_bubble_outline,
               label: 'Social posts',
@@ -634,7 +636,7 @@ class _FrequencyBlock extends ConsumerWidget {
                   ? null
                   : (v) => update('social_posts_per_day', v),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.xs),
             _FrequencyRow(
               icon: Icons.smart_display_outlined,
               label: 'Branded videos',
@@ -653,9 +655,9 @@ class _FrequencyBlock extends ConsumerWidget {
         padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
         child: Center(
           child: SizedBox(
-            width: 20,
-            height: 20,
-            child: CircularProgressIndicator(strokeWidth: 2),
+            width: AppSizes.iconXl,
+            height: AppSizes.iconXl,
+            child: CircularProgressIndicator(strokeWidth: AppStroke.medium),
           ),
         ),
       ),
@@ -692,9 +694,9 @@ class _FrequencyRow extends StatelessWidget {
     final slider = SliderTheme(
       data: SliderThemeData(
         activeTrackColor: color,
-        inactiveTrackColor: color.withAlpha(30),
+        inactiveTrackColor: color.withAlpha(AppAlpha.glow),
         thumbColor: color,
-        overlayColor: color.withAlpha(30),
+        overlayColor: color.withAlpha(AppAlpha.glow),
         trackHeight: 4,
       ),
       child: Slider(
@@ -720,8 +722,8 @@ class _FrequencyRow extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(icon, size: 18, color: color),
-            const SizedBox(width: 8),
+            Icon(icon, size: AppSizes.iconLarge, color: color),
+            const SizedBox(width: AppSpacing.xs),
             Expanded(
               child: Text(
                 context.tr(label),
@@ -808,7 +810,7 @@ class _LanguageRow extends ConsumerWidget {
               selected: current == appLanguageFrench,
               onTap: () => Navigator.pop(ctx, appLanguageFrench),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.xs),
           ],
         ),
       ),
@@ -856,7 +858,7 @@ class _AppearanceRow extends ConsumerWidget {
             left: -2000,
             child: SizedBox(
               width: 1,
-              height: 1,
+              height: AppStroke.hairline,
               child: ExcludeSemantics(
                 child: DropdownButton<String>(
                   key: const Key('theme-mode-dropdown'),
@@ -937,7 +939,7 @@ class _AppearanceRow extends ConsumerWidget {
               selected: current == appThemeApp,
               onTap: () => Navigator.pop(ctx, appThemeApp),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.xs),
           ],
         ),
       ),
@@ -975,13 +977,13 @@ class _NotificationsRow extends ConsumerWidget {
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: AppTheme.approveColor.withAlpha(25),
+                color: AppTheme.approveColor.withAlpha(AppAlpha.low25),
                 borderRadius: BorderRadius.circular(AppRadii.narrow),
               ),
               child: Icon(
                 Icons.notifications_outlined,
                 color: AppTheme.approveColor,
-                size: 20,
+                size: AppSizes.iconXl,
               ),
             ),
             title: Text(
@@ -1020,9 +1022,9 @@ class _NotificationsRow extends ConsumerWidget {
         title: 'Loading notification preferences',
         iconColor: AppTheme.approveColor,
         trailing: const SizedBox(
-          width: 18,
-          height: 18,
-          child: CircularProgressIndicator(strokeWidth: 2),
+          width: AppSizes.iconLarge,
+          height: AppSizes.iconLarge,
+          child: CircularProgressIndicator(strokeWidth: AppStroke.medium),
         ),
       ),
       error: (_, _) => SettingsRow(
@@ -1053,16 +1055,16 @@ class _AboutRow extends StatelessWidget {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: theme.colorScheme.primary.withAlpha(25),
+              color: theme.colorScheme.primary.withAlpha(AppAlpha.low25),
                 borderRadius: BorderRadius.circular(AppRadii.narrow),
             ),
             child: Icon(
               Icons.info_outline,
               color: theme.colorScheme.primary,
-              size: 20,
+              size: AppSizes.iconXl,
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1075,7 +1077,7 @@ class _AboutRow extends StatelessWidget {
                     color: theme.colorScheme.onSurface,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSpacing.xxsHalf),
                 Text(
                   context.tr('Content Approval Pipeline v0.1.0'),
                   style: TextStyle(
@@ -1083,13 +1085,13 @@ class _AboutRow extends StatelessWidget {
                     fontSize: AppText.xs,
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: AppSpacing.xxs2),
                 Text(
                   context.tr('AI generates content, you swipe to publish.'),
                   style: TextStyle(
                     color: theme.colorScheme.onSurfaceVariant,
                     fontSize: AppText.xs,
-                    height: 1.4,
+                    height: AppLineHeight.body,
                   ),
                 ),
               ],

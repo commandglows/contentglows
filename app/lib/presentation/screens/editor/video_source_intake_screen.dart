@@ -500,7 +500,7 @@ class _IntakeHeader extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.info_outline_rounded,
-                    size: 18,
+                    size: AppSizes.iconLarge,
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
                   const SizedBox(width: AppSpacing.sm),

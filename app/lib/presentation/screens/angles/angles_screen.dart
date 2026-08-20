@@ -123,8 +123,9 @@ class _AnglesScreenState extends ConsumerState<AnglesScreen> {
           // Persona picker
           personasAsync.when(
             data: (personas) => _buildPersonaPicker(personas),
-            loading: () => const SizedBox(height: 60),
-            error: (error, stackTrace) => const SizedBox(height: 60),
+            loading: () => const SizedBox(height: AppSizes.placeholderHeight),
+            error: (error, stackTrace) =>
+                const SizedBox(height: AppSizes.placeholderHeight),
           ),
           // Narrative context banner
           _buildNarrativeBanner(),
@@ -147,10 +148,10 @@ class _AnglesScreenState extends ConsumerState<AnglesScreen> {
     final palette = AppTheme.paletteOf(context);
     if (personas.isEmpty) {
       return Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: OutlinedButton.icon(
           onPressed: () => context.push('/personas/new'),
-          icon: const Icon(Icons.person_add, size: 18),
+          icon: const Icon(Icons.person_add, size: AppSizes.iconLarge),
           label: Text(context.tr('Create a persona first')),
         ),
       );
@@ -158,11 +159,11 @@ class _AnglesScreenState extends ConsumerState<AnglesScreen> {
 
     return Container(
       height: 56,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: personas.length,
-        separatorBuilder: (context, index) => const SizedBox(width: 8),
+        separatorBuilder: (context, index) => const SizedBox(width: AppSpacing.xs),
         itemBuilder: (context, index) {
           final persona = personas[index];
           final isSelected = _selectedPersona?.id == persona.id;
@@ -174,11 +175,11 @@ class _AnglesScreenState extends ConsumerState<AnglesScreen> {
             child: Chip(
               avatar: Text(
                 persona.avatar ?? '👤',
-                style: const TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: AppText.base),
               ),
               label: Text(persona.name),
               backgroundColor: isSelected
-                  ? AppTheme.colorForContentType('Article').withAlpha(30)
+                  ? AppTheme.colorForContentType('Article').withAlpha(AppAlpha.glow)
                   : palette.elevatedSurface,
               side: BorderSide(
                 color: isSelected
@@ -189,7 +190,7 @@ class _AnglesScreenState extends ConsumerState<AnglesScreen> {
                 color: isSelected
                     ? AppTheme.colorForContentType('Article')
                     : theme.colorScheme.onSurfaceVariant,
-                fontSize: 13,
+                fontSize: AppText.compact,
               ),
             ),
           );
@@ -203,14 +204,19 @@ class _AnglesScreenState extends ConsumerState<AnglesScreen> {
     final theme = Theme.of(context);
     if (narrative == null) {
       return Padding(
-        padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.md,
+          AppSpacing.xxs,
+          AppSpacing.md,
+          AppSpacing.xs,
+        ),
         child: GestureDetector(
           onTap: () => context.push('/ritual'),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.contentInset, vertical: AppSpacing.compact),
             decoration: BoxDecoration(
-              color: AppTheme.paletteOf(context).surface.withValues(alpha: 0.7),
-              borderRadius: BorderRadius.circular(12),
+              color: AppTheme.paletteOf(context).surface.withValues(alpha: AppOpacity.strong),
+              borderRadius: BorderRadius.circular(AppRadii.md),
               border: Border.all(
                 color: AppTheme.paletteOf(context).borderSubtle,
               ),
@@ -219,22 +225,22 @@ class _AnglesScreenState extends ConsumerState<AnglesScreen> {
               children: [
                 Icon(
                   Icons.edit_note,
-                  size: 18,
+                  size: AppSizes.iconLarge,
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: AppSpacing.compact),
                 Expanded(
                   child: Text(
                     context.tr('Complete your weekly ritual for better angles'),
                     style: TextStyle(
                       color: theme.colorScheme.onSurfaceVariant,
-                      fontSize: 13,
+                      fontSize: AppText.compact,
                     ),
                   ),
                 ),
                 Icon(
                   Icons.chevron_right,
-                  size: 18,
+                  size: AppSizes.iconLarge,
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
               ],
@@ -245,36 +251,41 @@ class _AnglesScreenState extends ConsumerState<AnglesScreen> {
     }
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.xxs,
+        AppSpacing.md,
+        AppSpacing.xs,
+      ),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.contentInset, vertical: AppSpacing.compact),
         decoration: BoxDecoration(
-          color: AppTheme.colorForContentType('Article').withAlpha(10),
-          borderRadius: BorderRadius.circular(12),
+          color: AppTheme.colorForContentType('Article').withAlpha(AppAlpha.faint),
+          borderRadius: BorderRadius.circular(AppRadii.md),
           border: Border.all(
-            color: AppTheme.colorForContentType('Article').withAlpha(30),
+            color: AppTheme.colorForContentType('Article').withAlpha(AppAlpha.glow),
           ),
         ),
         child: Row(
           children: [
             Icon(
               Icons.auto_stories,
-              size: 18,
+              size: AppSizes.iconLarge,
               color: AppTheme.colorForContentType('Article'),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: AppSpacing.compact),
             Expanded(
               child: Text(
                 narrative.suggestedChapterTitle ??
                     context.tr('Narrative loaded'),
                 style: TextStyle(
                   color: AppTheme.colorForContentType('Article'),
-                  fontSize: 13,
+                  fontSize: AppText.compact,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            Icon(Icons.check_circle, size: 16, color: AppTheme.approveColor),
+            Icon(Icons.check_circle, size: AppSizes.icon, color: AppTheme.approveColor),
           ],
         ),
       ),
@@ -289,30 +300,30 @@ class _AnglesScreenState extends ConsumerState<AnglesScreen> {
         children: [
           Icon(
             Icons.lightbulb_outline,
-            size: 64,
+            size: AppSizes.heroIcon,
             color: theme.colorScheme.outlineVariant,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           Text(
             context.tr('No angles available'),
             style: TextStyle(
-              fontSize: 18,
+              fontSize: AppText.title,
               color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             _selectedPersona == null
                 ? context.tr('Select a persona above to generate angles')
                 : context.tr('Try refreshing or complete your weekly ritual'),
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: AppText.sm,
               color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
           if (_selectedPersona == null) ...[
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
             FilledButton.icon(
               onPressed: () => context.push('/personas/new'),
               icon: const Icon(Icons.person_add),
@@ -327,15 +338,15 @@ class _AnglesScreenState extends ConsumerState<AnglesScreen> {
   Widget _buildAnglesList() {
     final theme = Theme.of(context);
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.md),
       children: [
         Padding(
-          padding: const EdgeInsets.only(bottom: 16, left: 4),
+          padding: const EdgeInsets.only(bottom: AppSpacing.md, left: AppSpacing.xxs),
           child: Text(
             context.tr('Pick an angle to generate content'),
             style: TextStyle(
               color: theme.colorScheme.onSurfaceVariant,
-              fontSize: 14,
+              fontSize: AppText.sm,
             ),
           ),
         ),
@@ -365,14 +376,14 @@ class _AnglesScreenState extends ConsumerState<AnglesScreen> {
         () => _selectedIndex = _selectedIndex == index ? null : index,
       ),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        margin: const EdgeInsets.only(bottom: 16),
-        padding: const EdgeInsets.all(20),
+        duration: const AppMotion.base,
+        margin: const EdgeInsets.only(bottom: AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppTheme.colorForContentType('Article').withAlpha(15)
+              ? AppTheme.colorForContentType('Article').withAlpha(AppAlpha.low15)
               : palette.elevatedSurface,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(AppRadii.xl),
           border: Border.all(
             color: isSelected
                 ? AppTheme.colorForContentType('Article')
@@ -388,37 +399,37 @@ class _AnglesScreenState extends ConsumerState<AnglesScreen> {
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4,
+                    horizontal: AppSpacing.compact,
+                    vertical: AppSpacing.xxs,
                   ),
                   decoration: BoxDecoration(
-                    color: typeColor.withAlpha(30),
-                    borderRadius: BorderRadius.circular(8),
+                    color: typeColor.withAlpha(AppAlpha.glow),
+                    borderRadius: BorderRadius.circular(AppRadii.sm),
                   ),
                   child: Text(
                     _contentTypeLabel(angle.contentType),
                     style: TextStyle(
                       color: typeColor,
-                      fontSize: 11,
+                      fontSize: AppText.xs11,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.xs),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
+                    horizontal: AppSpacing.xs,
+                    vertical: AppSpacing.xxs,
                   ),
                   decoration: BoxDecoration(
-                    color: confidenceColor.withAlpha(20),
-                    borderRadius: BorderRadius.circular(8),
+                    color: confidenceColor.withAlpha(AppAlpha.subtle),
+                    borderRadius: BorderRadius.circular(AppRadii.sm),
                   ),
                   child: Text(
                     '${angle.confidence}%',
                     style: TextStyle(
                       color: confidenceColor,
-                      fontSize: 11,
+                      fontSize: AppText.xs11,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -432,57 +443,57 @@ class _AnglesScreenState extends ConsumerState<AnglesScreen> {
                   ),
               ],
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: AppSpacing.contentInset),
 
             // Title
             Text(
               angle.title,
               style: TextStyle(
                 color: theme.colorScheme.onSurface,
-                fontSize: 17,
+                fontSize: AppText.tall,
                 fontWeight: FontWeight.bold,
-                height: 1.3,
+                height: AppLineHeight.snug,
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: AppSpacing.compact),
 
             // Hook
             Container(
-              padding: const EdgeInsets.all(14),
+              padding: const EdgeInsets.all(AppSpacing.contentInset),
               decoration: BoxDecoration(
-                color: palette.surface.withValues(alpha: 0.7),
-                borderRadius: BorderRadius.circular(12),
+                color: palette.surface.withValues(alpha: AppOpacity.strong),
+                borderRadius: BorderRadius.circular(AppRadii.md),
                 border: Border(
-                  left: BorderSide(color: typeColor.withAlpha(100), width: 3),
+                  left: BorderSide(color: typeColor.withAlpha(AppAlpha.strong100), width: AppStroke.strong),
                 ),
               ),
               child: Text(
                 angle.hook,
                 style: TextStyle(
                   color: theme.colorScheme.onSurface,
-                  fontSize: 14,
+                  fontSize: AppText.sm,
                   fontStyle: FontStyle.italic,
-                  height: 1.5,
+                  height: AppLineHeight.relaxed,
                 ),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm),
 
             // Angle strategy
             Text(
               angle.angle,
               style: TextStyle(
                 color: theme.colorScheme.onSurfaceVariant,
-                fontSize: 13,
-                height: 1.5,
+                fontSize: AppText.compact,
+                height: AppLineHeight.relaxed,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm),
 
             // Meta: narrative thread + pain point
             Wrap(
-              spacing: 8,
-              runSpacing: 6,
+              spacing: AppSpacing.xs,
+              runSpacing: AppSpacing.xxs2,
               children: [
                 if (angle.narrativeThread.isNotEmpty)
                   _chip(Icons.auto_stories, angle.narrativeThread),
@@ -500,22 +511,26 @@ class _AnglesScreenState extends ConsumerState<AnglesScreen> {
     final theme = Theme.of(context);
     final palette = AppTheme.paletteOf(context);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: AppSpacing.xxs),
       decoration: BoxDecoration(
-        color: palette.surface.withValues(alpha: 0.7),
-        borderRadius: BorderRadius.circular(6),
+        color: palette.surface.withValues(alpha: AppOpacity.strong),
+        borderRadius: BorderRadius.circular(AppRadii.compactControl),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 12, color: theme.colorScheme.onSurfaceVariant),
-          const SizedBox(width: 5),
+          Icon(
+            icon,
+            size: AppSizes.iconTiny,
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+          const SizedBox(width: AppSpacing.fine),
           Flexible(
             child: Text(
               label,
               style: TextStyle(
                 color: theme.colorScheme.onSurfaceVariant,
-                fontSize: 11,
+                fontSize: AppText.xs11,
               ),
               overflow: TextOverflow.ellipsis,
             ),
@@ -530,10 +545,10 @@ class _AnglesScreenState extends ConsumerState<AnglesScreen> {
     final palette = AppTheme.paletteOf(context);
     return Container(
       padding: EdgeInsets.fromLTRB(
-        24,
-        12,
-        24,
-        12 + MediaQuery.of(context).padding.bottom,
+        AppSpacing.xl,
+        AppSpacing.sm,
+        AppSpacing.xl,
+        AppSpacing.sm + MediaQuery.of(context).padding.bottom,
       ),
       decoration: BoxDecoration(
         color: palette.elevatedSurface,
@@ -545,10 +560,10 @@ class _AnglesScreenState extends ConsumerState<AnglesScreen> {
         onPressed: _isGenerating ? null : _generateContent,
         icon: _isGenerating
             ? SizedBox(
-                height: 18,
-                width: 18,
+                height: AppSpacing.dense,
+                width: AppSpacing.dense,
                 child: CircularProgressIndicator(
-                  strokeWidth: 2,
+                  strokeWidth: AppStroke.medium,
                   color: Theme.of(context).colorScheme.onPrimary,
                 ),
               )
@@ -559,7 +574,7 @@ class _AnglesScreenState extends ConsumerState<AnglesScreen> {
               : context.tr('Generate Content'),
         ),
         style: FilledButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
           backgroundColor: AppTheme.colorForContentType('Article'),
         ),
       ),
@@ -600,12 +615,12 @@ class _AnglesScreenState extends ConsumerState<AnglesScreen> {
                 'title': angle.title,
               }),
             ),
-            backgroundColor: AppTheme.approveColor.withAlpha(200),
+            backgroundColor: AppTheme.approveColor.withAlpha(AppAlpha.text),
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppRadii.md),
             ),
-            duration: const Duration(seconds: 3),
+            duration: const AppMotion.notification,
           ),
         );
         context.pop();

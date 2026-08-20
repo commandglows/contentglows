@@ -49,7 +49,7 @@ class _ProjectIntelligenceScreenState
     }
 
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.md),
       children: [
         _HeaderCard(
           statusAsync: statusAsync,
@@ -57,14 +57,14 @@ class _ProjectIntelligenceScreenState
           controllerState: controllerState,
           onSync: _syncConnectors,
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpacing.contentInset),
         _UploadPanel(
           fileNameCtrl: _fileNameCtrl,
           textCtrl: _textCtrl,
           busy: controllerState.isUploading,
           onSubmit: _uploadTextSource,
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpacing.contentInset),
         _SectionCard(
           title: context.tr('Source Inventory'),
           child: sourcesAsync.when(
@@ -83,7 +83,7 @@ class _ProjectIntelligenceScreenState
             ),
           ),
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpacing.contentInset),
         _SectionCard(
           title: context.tr('Recommendations'),
           child: recommendationsAsync.when(
@@ -103,7 +103,7 @@ class _ProjectIntelligenceScreenState
             ),
           ),
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpacing.contentInset),
         _SectionCard(
           title: context.tr('Facts'),
           child: factsAsync.when(
@@ -147,7 +147,7 @@ class _ProjectIntelligenceScreenState
                 ? context.tr('Upload failed.')
                 : error.message.trim(),
           ),
-          backgroundColor: AppTheme.rejectColor.withAlpha(200),
+          backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
         ),
       );
     }
@@ -171,7 +171,7 @@ class _ProjectIntelligenceScreenState
                 ? context.tr('Connector sync failed.')
                 : error.message.trim(),
           ),
-          backgroundColor: AppTheme.rejectColor.withAlpha(200),
+          backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
         ),
       );
     }
@@ -195,7 +195,7 @@ class _ProjectIntelligenceScreenState
                 ? context.tr('Failed to remove source.')
                 : error.message.trim(),
           ),
-          backgroundColor: AppTheme.rejectColor.withAlpha(200),
+          backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
         ),
       );
     }
@@ -223,7 +223,7 @@ class _ProjectIntelligenceScreenState
                 ? context.tr('Failed to add recommendation to Idea Pool.')
                 : error.message.trim(),
           ),
-          backgroundColor: AppTheme.rejectColor.withAlpha(200),
+          backgroundColor: AppTheme.rejectColor.withAlpha(AppAlpha.text),
         ),
       );
     }
@@ -235,7 +235,7 @@ class _ProjectRequiredState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(AppSpacing.xl),
         child: Text(
           context.tr('Select a project to use Project Intelligence.'),
           textAlign: TextAlign.center,
@@ -271,7 +271,7 @@ class _HeaderCard extends StatelessWidget {
         border: Border.all(color: palette.borderSubtle),
         borderRadius: BorderRadius.circular(AppRadii.card),
       ),
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(AppSpacing.contentInset),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -289,19 +289,21 @@ class _HeaderCard extends StatelessWidget {
                 onPressed: controllerState.isSyncing ? null : () => onSync(),
                 icon: controllerState.isSyncing
                     ? const SizedBox(
-                        width: 14,
-                        height: 14,
-                        child: CircularProgressIndicator(strokeWidth: 2),
+                        width: AppSizes.iconSm,
+                        height: AppSizes.iconSm,
+                        child: CircularProgressIndicator(
+                          strokeWidth: AppStroke.medium,
+                        ),
                       )
-                    : const Icon(Icons.sync_rounded, size: 16),
+                    : const Icon(Icons.sync_rounded, size: AppSizes.icon),
                 label: Text(context.tr('Sync')),
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpacing.compact),
           Wrap(
-            spacing: 8,
-            runSpacing: 8,
+            spacing: AppSpacing.xs,
+            runSpacing: AppSpacing.xs,
             children: [
               _MetricChip(
                 label: context.tr('Sources'),
@@ -322,14 +324,14 @@ class _HeaderCard extends StatelessWidget {
             ],
           ),
           if (readiness != null) ...[
-            const SizedBox(height: 10),
+            const SizedBox(height: AppSpacing.compact),
             Text(
               '${context.tr('Provider readiness')}: ${readiness.readiness} (${readiness.score})',
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ],
           if (status.degraded && (status.degradedReason ?? '').isNotEmpty) ...[
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               status.degradedReason!,
               style: Theme.of(
@@ -352,11 +354,14 @@ class _MetricChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.compact,
+        vertical: AppSpacing.xxs2,
+      ),
       decoration: BoxDecoration(
         color: AppTheme.paletteOf(context).mutedSurface,
         border: Border.all(color: AppTheme.paletteOf(context).borderSubtle),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(AppRadii.sm),
       ),
       child: Text(
         '$label: $value',
@@ -390,7 +395,7 @@ class _UploadPanel extends StatelessWidget {
             controller: fileNameCtrl,
             decoration: InputDecoration(labelText: context.tr('Filename')),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpacing.compact),
           TextField(
             controller: textCtrl,
             maxLines: 8,
@@ -400,18 +405,23 @@ class _UploadPanel extends StatelessWidget {
               alignLabelWithHint: true,
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpacing.compact),
           Align(
             alignment: Alignment.centerRight,
             child: FilledButton.icon(
               onPressed: busy ? null : () => onSubmit(),
               icon: busy
                   ? const SizedBox(
-                      width: 14,
-                      height: 14,
-                      child: CircularProgressIndicator(strokeWidth: 2),
+                      width: AppSizes.iconSm,
+                      height: AppSizes.iconSm,
+                      child: CircularProgressIndicator(
+                        strokeWidth: AppStroke.medium,
+                      ),
                     )
-                  : const Icon(Icons.upload_file_rounded, size: 16),
+                  : const Icon(
+                      Icons.upload_file_rounded,
+                      size: AppSizes.icon,
+                    ),
               label: Text(context.tr('Upload')),
             ),
           ),
@@ -435,7 +445,7 @@ class _SectionCard extends StatelessWidget {
         border: Border.all(color: AppTheme.paletteOf(context).borderSubtle),
         borderRadius: BorderRadius.circular(AppRadii.card),
       ),
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(AppSpacing.contentInset),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -445,7 +455,7 @@ class _SectionCard extends StatelessWidget {
               context,
             ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpacing.compact),
           child,
         ],
       ),
@@ -567,11 +577,11 @@ class _InlineLoading extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Center(
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 8),
+        padding: EdgeInsets.symmetric(vertical: AppSpacing.xs),
         child: SizedBox(
-          width: 18,
-          height: 18,
-          child: CircularProgressIndicator(strokeWidth: 2),
+          width: AppSizes.iconLarge,
+          height: AppSizes.iconLarge,
+          child: CircularProgressIndicator(strokeWidth: AppStroke.medium),
         ),
       ),
     );

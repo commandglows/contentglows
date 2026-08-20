@@ -73,6 +73,7 @@ All notable changes to the ContentGlows monorepo are documented here.
 - Added baseline `shipglows_data/editorial/` governance for the public Astro site.
 
 ### Changed
+- Authored the exhaustive app/site design-token consumption pass, expanded shared semantic Flutter and site motion roles, documented legitimate media/platform/data exceptions, and retained central ShipGlows drift enforcement; runtime and visual proof remain deferred.
 - Added bilingual `fr/en` core routes for the marketing site with English at `/`, French under `/fr`, localized homepage/privacy/handoff copy, and locale-aware `lang`, canonical, `og:url`, `hreflang`, and `x-default` metadata on the shipped core pages.
 - Added bilingual `fr/en` blog routing with English articles under `/blog`, French articles under `/fr/blog`, locale-filtered blog indexes and tag pages, and locale-aware blog metadata plus localized shared blog CTAs/links.
 - Reprioritized ContentGlows trackers so feedback production checks are no longer treated as the next blocking win after the admin allowlist was configured.

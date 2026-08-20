@@ -38,18 +38,21 @@ class PlatformPreviewSheet extends ConsumerWidget {
         children: [
           // Handle
           Padding(
-            padding: const EdgeInsets.only(top: 12, bottom: 8),
+            padding: const EdgeInsets.only(
+              top: AppSpacing.sm,
+              bottom: AppSpacing.xs,
+            ),
             child: Container(
-              width: 40,
-              height: 4,
+              width: AppSizes.handle,
+              height: AppSpacing.xxs,
               decoration: BoxDecoration(
                 color: theme.colorScheme.outlineVariant,
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(AppRadii.xxs),
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             child: Text(context.tr('Platform Previews'),
                 style: theme.textTheme.titleMedium),
           ),
@@ -58,7 +61,12 @@ class PlatformPreviewSheet extends ConsumerWidget {
           Expanded(
             child: ListView.builder(
               controller: scrollController,
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.md,
+                0,
+                AppSpacing.md,
+                AppSpacing.wide,
+              ),
               itemCount: previews.length,
               itemBuilder: (context, index) => previews[index],
             ),
@@ -231,35 +239,47 @@ class _TwitterPreview extends StatelessWidget {
         children: [
           Row(
             children: [
-              CircleAvatar(radius: 18, backgroundColor: theme.colorScheme.surfaceContainerHighest,
-                  child: const Icon(Icons.person, size: 20)),
-              const SizedBox(width: 10),
+              CircleAvatar(
+                radius: AppRadii.avatar,
+                backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                child: const Icon(Icons.person, size: AppSizes.iconXl),
+              ),
+              const SizedBox(width: AppSpacing.compact),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(context.tr('Your Name'),
-                      style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: AppText.sm,
+                      )),
                   Text(
                     '@yourhandle',
                     style: TextStyle(
                       color: theme.colorScheme.onSurfaceVariant,
-                      fontSize: 12,
+                      fontSize: AppText.xs,
                     ),
                   ),
                 ],
               ),
             ],
           ),
-          const SizedBox(height: 10),
-          Text(body, style: const TextStyle(fontSize: 14, height: 1.5)),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.compact),
+          Text(
+            body,
+            style: TextStyle(
+              fontSize: AppText.sm,
+              height: AppLineHeight.relaxed,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
                 '$charCount/280',
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: AppText.xs,
                   color: overLimit
                       ? AppTheme.rejectColor
                       : theme.colorScheme.onSurfaceVariant,
@@ -293,26 +313,40 @@ class _LinkedInPreview extends StatelessWidget {
         children: [
           Row(
             children: [
-              CircleAvatar(radius: 22, backgroundColor: theme.colorScheme.surfaceContainerHighest,
-                  child: const Icon(Icons.person, size: 24)),
-              const SizedBox(width: 10),
+              CircleAvatar(
+                radius: AppRadii.avatarLarge,
+                backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                child: const Icon(Icons.person, size: AppSizes.iconXxl),
+              ),
+              const SizedBox(width: AppSpacing.compact),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(context.tr('Your Name'),
-                      style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: AppText.sm,
+                      )),
                   Text(context.tr('Your Headline'),
                       style: TextStyle(
                         color: theme.colorScheme.onSurfaceVariant,
-                        fontSize: 12,
+                        fontSize: AppText.xs,
                       )),
                 ],
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          Text(body, style: const TextStyle(fontSize: 14, height: 1.6), maxLines: 8, overflow: TextOverflow.ellipsis),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            body,
+            style: TextStyle(
+              fontSize: AppText.sm,
+              height: AppLineHeight.comfortable,
+            ),
+            maxLines: 8,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: AppSpacing.xs),
           const Divider(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -340,12 +374,16 @@ class _LinkedInAction extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 18, color: theme.colorScheme.onSurfaceVariant),
-        const SizedBox(height: 2),
+        Icon(
+          icon,
+          size: AppSizes.iconLarge,
+          color: theme.colorScheme.onSurfaceVariant,
+        ),
+        const SizedBox(height: AppSpacing.xxsHalf),
         Text(
           label,
           style: TextStyle(
-            fontSize: 10,
+            fontSize: AppText.xxs,
             color: theme.colorScheme.onSurfaceVariant,
           ),
         ),
@@ -375,25 +413,25 @@ class _InstagramPreview extends StatelessWidget {
             width: double.infinity,
             decoration: BoxDecoration(
               color: theme.colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(AppRadii.sm),
             ),
             child: Center(
               child: Icon(
                 Icons.image,
-                size: 40,
+                size: AppSizes.handle,
                 color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpacing.compact),
           RichText(
             maxLines: 5,
             overflow: TextOverflow.ellipsis,
             text: TextSpan(
               style: TextStyle(
-                fontSize: 13,
+                fontSize: AppText.compact,
                 color: theme.colorScheme.onSurface,
-                height: 1.5,
+                height: AppLineHeight.relaxed,
               ),
               children: [
                 TextSpan(text: '${context.tr('yourhandle')} ', style: const TextStyle(fontWeight: FontWeight.w700)),
@@ -424,10 +462,25 @@ class _BlogPreview extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800, height: 1.3)),
-          const SizedBox(height: 8),
-          Text(body, style: TextStyle(fontSize: 13, height: 1.7, color: Theme.of(context).colorScheme.onSurface),
-              maxLines: 10, overflow: TextOverflow.ellipsis),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: AppText.xxl,
+              fontWeight: FontWeight.w800,
+              height: AppLineHeight.snug,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            body,
+            style: TextStyle(
+              fontSize: AppText.compact,
+              height: AppLineHeight.spacious,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+            maxLines: 10,
+            overflow: TextOverflow.ellipsis,
+          ),
         ],
       ),
     );
@@ -456,23 +509,30 @@ class _YouTubePreview extends StatelessWidget {
             width: double.infinity,
             decoration: BoxDecoration(
               color: theme.colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(AppRadii.sm),
             ),
             child: Center(
               child: Icon(
                 Icons.play_arrow,
-                size: 40,
+                size: AppSizes.handle,
                 color: theme.colorScheme.onSurface,
               ),
             ),
           ),
-          const SizedBox(height: 10),
-          Text(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700), maxLines: 2),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.compact),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: AppText.medium,
+              fontWeight: FontWeight.w700,
+            ),
+            maxLines: 2,
+          ),
+          const SizedBox(height: AppSpacing.xxs),
           Text(
             description,
             style: TextStyle(
-              fontSize: 12,
+              fontSize: AppText.xs,
               color: theme.colorScheme.onSurfaceVariant,
             ),
             maxLines: 2,
@@ -501,17 +561,29 @@ class _TikTokPreview extends StatelessWidget {
         height: 180,
         decoration: BoxDecoration(
           color: theme.colorScheme.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppRadii.sm),
         ),
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(AppSpacing.sm),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('@${context.tr('yourhandle')}',
-                style: TextStyle(color: theme.colorScheme.onSurface, fontWeight: FontWeight.w700, fontSize: 14)),
-            const SizedBox(height: 4),
-            Text(caption, style: TextStyle(color: theme.colorScheme.onSurface, fontSize: 12), maxLines: 3, overflow: TextOverflow.ellipsis),
+                style: TextStyle(
+                  color: theme.colorScheme.onSurface,
+                  fontWeight: FontWeight.w700,
+                  fontSize: AppText.sm,
+                )),
+            const SizedBox(height: AppSpacing.xxs),
+            Text(
+              caption,
+              style: TextStyle(
+                color: theme.colorScheme.onSurface,
+                fontSize: AppText.xs,
+              ),
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+            ),
           ],
         ),
       ),
@@ -539,26 +611,36 @@ class _PreviewCard extends StatelessWidget {
     final theme = Theme.of(context);
     final palette = AppTheme.paletteOf(context);
     return Card(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
       clipBehavior: Clip.antiAlias,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Platform header
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            color: color.withValues(alpha: 0.1),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.contentInset,
+              vertical: AppSpacing.xs,
+            ),
+            color: color.withValues(alpha: AppOpacity.subtle),
             child: Row(
               children: [
-                Icon(icon, size: 18, color: color),
-                const SizedBox(width: 8),
-                Text(platform, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: color)),
+                Icon(icon, size: AppSizes.iconLarge, color: color),
+                const SizedBox(width: AppSpacing.xs),
+                Text(
+                  platform,
+                  style: TextStyle(
+                    fontSize: AppText.compact,
+                    fontWeight: FontWeight.w700,
+                    color: color,
+                  ),
+                ),
               ],
             ),
           ),
           // Content
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.md),
             color: palette.elevatedSurface,
             child: DefaultTextStyle(
               style: TextStyle(color: theme.colorScheme.onSurface),
