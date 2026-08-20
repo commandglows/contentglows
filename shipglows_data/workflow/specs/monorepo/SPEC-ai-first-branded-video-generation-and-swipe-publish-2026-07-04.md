@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.0.1"
 project: "contentglows"
 created: "2026-07-04"
 created_at: "2026-07-04 00:00:00 UTC"
-updated: "2026-07-08"
-updated_at: "2026-07-08 00:00:00 UTC"
+updated: "2026-08-20"
+updated_at: "2026-08-20 08:11:40 UTC"
 status: reviewed
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -615,12 +615,13 @@ None. This spec is ready only for the bounded first implementation slice that un
 | 2026-07-08 00:00:00 UTC | 101-sg-ready | GPT-5 Codex | Verified the spec against the real repo substrate: canonical branded generation route, brand profile/blueprint CRUD, drip scheduling, and feed/manual caller wiring are present enough for a bounded first implementation slice. | ready | /102-sg-start AI-first branded video generation and swipe publish |
 | 2026-07-08 00:00:00 UTC | 101-sg-ready | GPT-5 Codex | Re-reviewed the spec against the live repo and found blocking gaps: feed is still a review queue, there is no explicit content-complete gate, scheduler-driven video generation is absent, and branding save/preview semantics are not yet separate. | not ready | /100-sg-spec AI-first branded video generation and swipe publish repo-alignment fixes |
 | 2026-07-08 00:00:00 UTC | 101-sg-ready | GPT-5 Codex | Re-reviewed after the repo alignment pass: the explicit content-complete gate and scheduler-backed branded generation now exist, but the main feed is still structurally and textually a review queue rather than a publish-ready video decision surface, so the product contract is not yet fully aligned. | not ready | /100-sg-spec AI-first branded video generation and swipe publish feed-semantic alignment |
+| 2026-08-20 08:11:40 UTC | 001-sg-build | GPT-5 Codex | Added focused regression coverage for the canonical branded-generation endpoint/payload, exact content-ID routing from feed and content detail, timeline loading through `manual_create`, and feed publish gating without last-minute generation. | Code authored; automated execution intentionally deferred because the operator prohibited local builds, tests, and artifacts. Static diff validation only. | Run the focused Dart tests in authorized CI before changing verification status. |
 
 ## Current Chantier Flow
 
 - 100-sf-spec: completed
 - 101-sg-ready: reviewed
-- 102-sg-start: partial
+- 102-sg-start: partial — canonical app regression coverage authored; automated Dart execution deferred by the operator's no-local-build policy
 - 103-sg-verify: pending
 - 104-sg-end: pending
 - 005-sg-ship: pending

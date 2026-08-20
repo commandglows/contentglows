@@ -286,8 +286,9 @@ void main() {
         ),
         GoRoute(
           path: '/editor/:id/video',
-          builder: (context, state) =>
-              const Scaffold(body: Text('Video Route')),
+          builder: (context, state) => Scaffold(
+            body: Text('Video Route ${state.pathParameters['id']}'),
+          ),
         ),
       ],
     );
@@ -323,7 +324,7 @@ void main() {
     await tester.tap(find.byTooltip('Video timeline'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Video Route'), findsOneWidget);
+    expect(find.text('Video Route content-1'), findsOneWidget);
   });
 }
 

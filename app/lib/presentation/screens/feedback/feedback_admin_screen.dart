@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../../../data/models/feedback_entry.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../providers/providers.dart';
+import '../../theme/app_theme.dart';
 import '../../widgets/app_error_view.dart';
 
 class FeedbackAdminScreen extends ConsumerStatefulWidget {
@@ -59,7 +60,7 @@ class _FeedbackAdminScreenState extends ConsumerState<FeedbackAdminScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const CircularProgressIndicator(),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm),
               Text(context.tr('Checking access...')),
             ],
           ),
@@ -68,7 +69,7 @@ class _FeedbackAdminScreenState extends ConsumerState<FeedbackAdminScreen> {
       error: (error, stackTrace) => Scaffold(
         appBar: AppBar(title: Text(context.tr('Feedback Admin'))),
         body: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: Center(
             child: AppErrorView(
               scope: 'feedback_admin.capability',
@@ -86,7 +87,7 @@ class _FeedbackAdminScreenState extends ConsumerState<FeedbackAdminScreen> {
             appBar: AppBar(title: Text(context.tr('Feedback Admin'))),
             body: Center(
               child: Padding(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.all(AppSpacing.xl),
                 child: Text(
                   context.tr(
                     'Access denied. This view is visible only to allowlisted accounts.',
@@ -113,7 +114,7 @@ class _FeedbackAdminScreenState extends ConsumerState<FeedbackAdminScreen> {
             ],
           ),
           body: ListView(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             children: [
               Text(
                 context.tr(
@@ -123,10 +124,10 @@ class _FeedbackAdminScreenState extends ConsumerState<FeedbackAdminScreen> {
                   context,
                 ).textTheme.bodyMedium?.copyWith(height: 1.5),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               Wrap(
-                spacing: 8,
-                runSpacing: 8,
+                spacing: AppSpacing.xs,
+                runSpacing: AppSpacing.xs,
                 children: [
                   for (final filter in FeedbackAdminStatusFilter.values)
                     ChoiceChip(
@@ -136,10 +137,10 @@ class _FeedbackAdminScreenState extends ConsumerState<FeedbackAdminScreen> {
                     ),
                 ],
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.xs),
               Wrap(
-                spacing: 8,
-                runSpacing: 8,
+                spacing: AppSpacing.xs,
+                runSpacing: AppSpacing.xs,
                 children: [
                   for (final filter in FeedbackAdminTypeFilter.values)
                     ChoiceChip(
@@ -149,7 +150,7 @@ class _FeedbackAdminScreenState extends ConsumerState<FeedbackAdminScreen> {
                     ),
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.lg),
               entriesAsync.when(
                 data: (entries) {
                   if (entries.isEmpty) {
@@ -173,11 +174,11 @@ class _FeedbackAdminScreenState extends ConsumerState<FeedbackAdminScreen> {
                   );
                 },
                 loading: () => const Padding(
-                  padding: EdgeInsets.all(32),
+                  padding: EdgeInsets.all(AppSpacing.wide),
                   child: Center(child: CircularProgressIndicator()),
                 ),
                 error: (error, stackTrace) => Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(AppSpacing.md),
                   child: AppErrorView(
                     scope: 'feedback_admin.load',
                     title: context.tr('Could not load feedback'),
@@ -278,9 +279,9 @@ class _FeedbackEntryCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -290,10 +291,10 @@ class _FeedbackEntryCard extends StatelessWidget {
                   label: Text(context.tr(entry.isAudio ? 'Audio' : 'Text')),
                   avatar: Icon(
                     entry.isAudio ? Icons.mic_rounded : Icons.notes_rounded,
-                    size: 18,
+                    size: AppSpacing.dense,
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.xs),
                 Chip(
                   backgroundColor: entry.status == FeedbackEntryStatus.reviewed
                       ? theme.colorScheme.surfaceContainerHighest
@@ -308,17 +309,17 @@ class _FeedbackEntryCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               entry.message?.trim().isNotEmpty == true
                   ? entry.message!
                   : context.tr('Audio feedback'),
               style: theme.textTheme.bodyLarge,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm),
             Wrap(
-              spacing: 8,
-              runSpacing: 8,
+              spacing: AppSpacing.xs,
+              runSpacing: AppSpacing.xs,
               children: [
                 _MetaChip(
                   label: DateFormat.yMMMd(
@@ -337,7 +338,7 @@ class _FeedbackEntryCard extends StatelessWidget {
               ],
             ),
             if (entry.isAudio) ...[
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm),
               Row(
                 children: [
                   FilledButton.tonalIcon(
@@ -350,7 +351,7 @@ class _FeedbackEntryCard extends StatelessWidget {
                     label: Text(context.tr(isPlaying ? 'Pause' : 'Play')),
                   ),
                   if (entry.audioUrl == null || entry.audioUrl!.isEmpty) ...[
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.sm),
                     Text(
                       context.tr('Audio unavailable'),
                       style: theme.textTheme.bodySmall,
@@ -359,7 +360,7 @@ class _FeedbackEntryCard extends StatelessWidget {
                 ],
               ),
             ],
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm),
             Align(
               alignment: Alignment.centerRight,
               child: OutlinedButton.icon(
@@ -383,10 +384,13 @@ class _MetaChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.compact,
+        vertical: AppSpacing.compactStack,
+      ),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(AppRadii.pill),
       ),
       child: Text(label, style: Theme.of(context).textTheme.bodySmall),
     );

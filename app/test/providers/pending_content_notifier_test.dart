@@ -125,6 +125,10 @@ void main() {
       expect(result.openVideoEditor, isTrue);
       expect(result.message, contains('still preparing'));
       expect(api.refreshPreparedCalls, 1);
+      expect(api.refreshedProjectId, 'project-1');
+      expect(api.refreshedContentIds, ['content-1']);
+      expect(api.refreshTriggerSource, 'feed_swipe_publish');
+      expect(api.generateBrandedCalls, 0);
       expect(api.swipePublishCalls, 0);
     },
   );
@@ -229,6 +233,9 @@ class _FakeApiService extends ApiService {
   String? publishedContent;
   String? swipeTimelineId;
   String? swipeVersionId;
+  String? refreshedProjectId;
+  List<String>? refreshedContentIds;
+  String? refreshTriggerSource;
 
   @override
   Future<String?> fetchContentBody(
@@ -269,6 +276,9 @@ class _FakeApiService extends ApiService {
     String? triggerSource,
   }) async {
     refreshPreparedCalls++;
+    refreshedProjectId = projectId;
+    refreshedContentIds = List<String>.from(contentIds);
+    refreshTriggerSource = triggerSource;
     return refreshedCandidates;
   }
 

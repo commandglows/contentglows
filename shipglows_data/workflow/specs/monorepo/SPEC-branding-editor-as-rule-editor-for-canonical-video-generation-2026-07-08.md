@@ -1,13 +1,13 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.0.1"
 project: "contentglows"
 created: "2026-07-08"
 created_at: "2026-07-08 14:33:23 UTC"
-updated: "2026-07-08"
-updated_at: "2026-07-08 23:05:00 UTC"
-status: ready
+updated: "2026-08-20"
+updated_at: "2026-08-20 07:48:00 UTC"
+status: active
 source_skill: 100-sg-spec
 source_model: "GPT-5 Codex"
 scope: "feature"

@@ -1,13 +1,13 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.0.1"
 project: "contentglows"
 created: "2026-05-14"
 created_at: "2026-05-14 22:42:30 UTC"
-updated: "2026-05-24"
-updated_at: "2026-05-24 00:00:00 UTC"
-status: ready
+updated: "2026-08-20"
+updated_at: "2026-08-20 07:48:00 UTC"
+status: active
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: "migration"
@@ -48,6 +48,8 @@ evidence:
   - "2026-05-15: backend CORS/OpenAPI paths include contentglows.com domains and GitHub contact URL."
   - "2026-05-15: worker package/composition contract is now contentglows-remotion-worker and ContentGlowsTimelineVideo."
   - "2026-05-15: residual active old-name occurrences remain in app copy and lab agent docs; many governance/spec/research occurrences are historical or require classification."
+  - "2026-08-19: contentglows.com deployed successfully and live HTML uses ContentGlows plus contentglows.com canonical/OG metadata with no active ContentGlowz occurrence."
+  - "2026-08-19: app.contentglows.com still serves the legacy ContentGlowz build because the current Vercel app deployment failed; authenticated Vercel logs are required before a safe repair."
 next_step: "/sf-test --retest BUG-2026-05-10-001"
 ---
 
@@ -414,6 +416,7 @@ None.
 | 2026-05-16 12:54:28 UTC | sf-verify | GPT-5 Codex | Vérification ciblée BUG-2026-05-05-001: tests Flutter focalisés repassés et retest Android utilisateur accepté comme preuve de fermeture. | verified | `/sf-test --retest BUG-2026-05-05-002 on Android device` |
 | 2026-05-16 13:54:53 UTC | sf-test | GPT-5 Codex | Retest manuel BUG-2026-05-05-002 validé par l'utilisateur; remarque séparée soulevée sur le comportement Back hors onboarding à clarifier. | pass | `/sf-verify BUG-2026-05-05-002 Android back navigation demo` |
 | 2026-05-16 13:57:23 UTC | sf-verify | GPT-5 Codex | Vérification ciblée BUG-2026-05-05-002: test Flutter focalisé repassé et retest Android utilisateur accepté comme preuve de fermeture; question Back hors onboarding laissée hors contrat. | verified | `/sf-test --retest BUG-2026-05-10-001` |
+| 2026-08-20 07:48:00 UTC | sg-docs | Codex | Réconciliation de la vérité de déploiement du renommage: site public corrigé et vérifié, application publique encore sur le build legacy après échec Vercel. | partial | Restaurer le déploiement app avec logs Vercel authentifiés, puis revérifier les deux domaines. |
 
 ## Current Chantier Flow
 
@@ -426,5 +429,7 @@ None.
 - sf-fix: fix-attempted
 - sf-end: not launched
 - sf-ship: not launched
+- production site: verified on `contentglows.com` with `ContentGlows` identity and canonical metadata
+- production app: blocked; `app.contentglows.com` still serves `ContentGlowz` after the current Vercel deployment failed
 
-Prochaine commande recommandée : `/sf-test --retest BUG-2026-05-10-001`.
+Prochaine action recommandée : obtenir les logs Vercel authentifiés du build app en échec, corriger la cause sans réintroduire de build local, puis revérifier l'identité servie par `app.contentglows.com`.

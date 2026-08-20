@@ -5,6 +5,7 @@ import '../../../data/models/affiliate_link.dart';
 import '../../../providers/providers.dart';
 import '../../widgets/app_error_view.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../theme/app_theme.dart';
 
 const _categories = [
   'tech',
@@ -99,25 +100,30 @@ class _AffiliationFormSheetState extends ConsumerState<AffiliationFormSheet> {
           key: _formKey,
           child: ListView(
             controller: scrollController,
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.md,
+              AppSpacing.lg,
+              AppSpacing.wide,
+            ),
             children: [
               // Handle
               Center(
                 child: Container(
-                  width: 40,
-                  height: 4,
+                  width: AppSpacing.lg + AppSpacing.lg,
+                  height: AppSpacing.xxs,
                   decoration: BoxDecoration(
                     color: theme.colorScheme.outlineVariant,
-                    borderRadius: BorderRadius.circular(2),
+                    borderRadius: BorderRadius.circular(AppRadii.xxs),
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               Text(
                 _isEditing ? context.tr('Edit Affiliate Link') : context.tr('New Affiliate Link'),
                 style: theme.textTheme.titleLarge,
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.lg),
 
               // Name
               TextFormField(
@@ -129,7 +135,7 @@ class _AffiliationFormSheetState extends ConsumerState<AffiliationFormSheet> {
                 validator: (v) =>
                     (v == null || v.trim().isEmpty) ? context.tr('Required') : null,
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm),
 
               // URL
               TextFormField(
@@ -142,7 +148,7 @@ class _AffiliationFormSheetState extends ConsumerState<AffiliationFormSheet> {
                 validator: (v) =>
                     (v == null || v.trim().isEmpty) ? context.tr('Required') : null,
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm),
 
               // Slug
               TextFormField(
@@ -154,7 +160,7 @@ class _AffiliationFormSheetState extends ConsumerState<AffiliationFormSheet> {
                 ),
                 textCapitalization: TextCapitalization.none,
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm),
 
               // Description
               TextFormField(
@@ -165,7 +171,7 @@ class _AffiliationFormSheetState extends ConsumerState<AffiliationFormSheet> {
                 ),
                 maxLines: 2,
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm),
 
               // Category + Commission
               Row(
@@ -183,7 +189,7 @@ class _AffiliationFormSheetState extends ConsumerState<AffiliationFormSheet> {
                       onChanged: (v) => setState(() => _category = v ?? ''),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: TextFormField(
                       controller: _commissionCtrl,
@@ -195,7 +201,7 @@ class _AffiliationFormSheetState extends ConsumerState<AffiliationFormSheet> {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm),
 
               // Contact URL + Login URL
               Row(
@@ -209,7 +215,7 @@ class _AffiliationFormSheetState extends ConsumerState<AffiliationFormSheet> {
                       keyboardType: TextInputType.url,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: TextFormField(
                       controller: _loginUrlCtrl,
@@ -221,7 +227,7 @@ class _AffiliationFormSheetState extends ConsumerState<AffiliationFormSheet> {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm),
 
               // Keywords
               TextFormField(
@@ -232,7 +238,7 @@ class _AffiliationFormSheetState extends ConsumerState<AffiliationFormSheet> {
                   helperText: context.tr('AI uses these to match content topics'),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm),
 
               // Status + Expires
               Row(
@@ -251,7 +257,7 @@ class _AffiliationFormSheetState extends ConsumerState<AffiliationFormSheet> {
                           setState(() => _status = v ?? 'active'),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: InkWell(
                       onTap: _pickDate,
@@ -273,7 +279,7 @@ class _AffiliationFormSheetState extends ConsumerState<AffiliationFormSheet> {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm),
 
               // Notes
               TextFormField(
@@ -284,7 +290,7 @@ class _AffiliationFormSheetState extends ConsumerState<AffiliationFormSheet> {
                 ),
                 maxLines: 3,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
 
               // Actions
               Row(
@@ -296,15 +302,17 @@ class _AffiliationFormSheetState extends ConsumerState<AffiliationFormSheet> {
                       child: Text(context.tr('Cancel')),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: FilledButton(
                       onPressed: _saving ? null : _save,
                       child: _saving
                           ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
+                              height: AppSpacing.lg,
+                              width: AppSpacing.lg,
+                              child: CircularProgressIndicator(
+                                strokeWidth: AppSpacing.xxs,
+                              ),
                             )
                           : Text(_isEditing ? context.tr('Update') : context.tr('Create')),
                     ),

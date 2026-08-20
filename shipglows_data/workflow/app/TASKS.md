@@ -205,13 +205,13 @@ Concurrent sources: Filmora, PixVerse. Canonical execution spec: `shipglows_data
 | ✅ | Localisation app EN/FR — préférence de langue (système/anglais/français) + couverture FR sur les écrans shell, debug et drip | High | Medium | ✅ done — AppLanguage, persistance SharedPreferences et passe UI sur settings/editor/drip/uptime/work domains/runs/research |
 | ✅ | Système de thème complet — light/dark/system persisté + réglage utilisateur + thème éditorial partagé | High | Medium | ✅ done — préférence normalisée, `ThemeMode` branché sur l'app Flutter, palette/tokens centralisés |
 | ✅ | Purger les couleurs hard-codées des écrans Flutter pour rendre le light mode réellement cohérent | High | High | ✅ done — écrans migrés vers `Theme.of(context)` / `AppTheme.paletteOf(context)` sur tout `lib/presentation/screens` |
-| 🟠 | Implémenter `SPEC-content-editor-multiformat` (toolbar riche universelle Markdown-backed: gras/italique/titres/listes/citation/lien/suppression de paragraphe + tests) | High | Medium | 🔄 in progress |
+| ✅ | Implémenter `SPEC-content-editor-multiformat` (toolbar riche universelle Markdown-backed: gras/italique/titres/listes/citation/lien/suppression de paragraphe + tests) | High | Medium | ✅ implemented and verified — lifecycle closure/ship bookkeeping remains |
 | 🟡 | Finaliser les vérifications feedback restantes: stockage audio S3-compatible, URLs signées de lecture admin et validation admin connectée | Medium | Low | 📋 todo — admin email configuré; non bloquant pour le prochain gros chantier |
 | 🔴 | Project flows selection onboarding archive — source URL optionnelle, no-selection explicite persistante, archive/unarchive alignés app+API | High | High | ✅ done |
-| 🟠 | Polar.sh Billing (free, 19€, 49€) | High | Medium | Débloqué maintenant que l'auth Clerk web est stable |
+| 🟠 | Polar.sh Billing (free, 19€, 49€) | High | Medium | ⛔ not code-ready — requires a dedicated commercial/checkout spec; the ready AI quota spec excludes checkout, invoices, taxes, and exact prices |
 | ✅ | Tests end-to-end pipeline | High | Low | ✅ done — test_e2e_pipeline.py + test_new_domains.py dans lab |
 | 🟡 | DataForSEO — credentials OK dans Doppler, ajouter credits au compte DFS | High | Low | Auth OK (20000), mais 402 Payment Required — ajouter credits sur dataforseo.com/billing |
-| 🟠 | Exposer l'audit structuré des actions (`actor_type/id/label`) dans l'UI debug/admin | High | Medium | Le backend persiste déjà transitions, edits et reviews avec acteurs structurés |
+| ✅ | Exposer l'audit structuré des actions (`actor_type/id/label`) dans l'UI debug/admin | High | Medium | ✅ done — editor audit panel renders actor label/type/id and copied audit trails preserve the structured actor |
 
 ## Phase 11 — Offline Sync V2 (2026-04-20) ✅
 
@@ -382,9 +382,9 @@ Concurrent sources: Filmora, PixVerse. Canonical execution spec: `shipglows_data
 
 ---
 
-> **Priority last updated**: 2026-04-20
+> **Priority last updated**: 2026-08-20
 > **Criteria**: Impact/effort matrix — "what makes the product actually work"
-> **Recommended next**: Continuer la centralisation des design tokens, puis brancher Polar billing, finir la passe i18n secondaire et finaliser les crédits DataForSEO
+> **Recommended next**: Restaurer d'abord le déploiement Vercel de l'app; côté code, compléter les tests Brand Studio/canonical video path et poursuivre la centralisation des design tokens. Polar billing reste bloqué jusqu'à un contrat commercial/checkout dédié.
 
 ### Audit: Code (2026-04-28)
 

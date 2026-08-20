@@ -1,11 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.0.1"
 project: app
 created: "2026-04-25"
-updated: "2026-05-10"
-status: ready
+updated: "2026-08-20"
+updated_at: "2026-08-20 07:48:00 UTC"
+status: active
 source_skill: sf-docs
 scope: feature
 owner: unknown

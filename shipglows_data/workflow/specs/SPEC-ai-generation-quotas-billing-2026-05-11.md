@@ -1,13 +1,13 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.0.1"
 project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 15:02:22 UTC"
-updated: "2026-05-11"
-updated_at: "2026-05-11 16:03:00 UTC"
-status: ready
+updated: "2026-08-20"
+updated_at: "2026-08-20 08:35:06 UTC"
+status: active
 source_skill: sf-spec
 source_model: "gpt-5.5"
 scope: "feature"
@@ -245,13 +245,13 @@ Add a backend-owned entitlement and usage ledger that gates managed AI generatio
 
 ## Implementation Tasks
 
-- [ ] Task 1: Define the AI usage domain models
+- [x] Task 1: Define the AI usage domain models
   - File: `lab/api/models/ai_usage.py`
   - Action: Add Pydantic models/enums for `AIUsageAction`, `AIUsageScope`, `AIEntitlement`, `AIUsageReservation`, `AIUsageLedgerEntry`, `AIQuotaStatus`, `AIQuotaError`, and provider-cost metadata.
   - User story link: Gives backend and app a shared language for available generation rights and recoverable errors.
   - Depends on: none.
   - Validate with: model validation tests for Flux image, Bunny upload, Remotion render, BYOK metadata, and quota error envelopes.
-  - Notes: Do not encode plan prices or included quantities here.
+  - Notes: Do not encode plan prices or included quantities here. Code authored on 2026-08-20; automated execution remains deferred by the operator's no-local-build policy.
 
 - [ ] Task 2: Create durable ledger and entitlement store
   - File: `lab/api/services/ai_usage_store.py`
@@ -438,7 +438,8 @@ None for this implementation-ready enforcement foundation. Exact public prices, 
 | 2026-05-11 15:02:22 UTC | sf-spec | gpt-5.5 | Created draft spec for future AI generation quotas, billing, and cost controls. | Draft saved with product decisions captured as Open Questions. | `/sf-ready shipglows_data/workflow/specs/SPEC-ai-generation-quotas-billing-2026-05-11.md` |
 | 2026-05-11 15:38:45 UTC | sf-spec | GPT-5 Codex | Integrated product decisions for hard quota block, PAYG, LTD/BYOK separation, refund-on-failure, and user-scoped limits. | Draft updated; remaining blockers narrowed to unit/pricing/checkout/retry/ops details. | `/sf-ready shipglows_data/workflow/specs/SPEC-ai-generation-quotas-billing-2026-05-11.md` |
 | 2026-05-11 16:03:00 UTC | sf-ready | GPT-5 Codex | Ran strict readiness gate, resolved non-blocking commercial questions into Scope Out, clarified enforcement/refund/security/docs contracts, and checked BFL freshness evidence. | Ready. | `/sf-start AI Generation Quotas, Billing, And Cost Controls` |
+| 2026-08-20 08:35:06 UTC | 001-sg-build | GPT-5 Codex | Implemented Task 1 domain contracts for managed/BYOK usage, entitlements, reservations, ledger events, quota states/errors, provider-cost evidence, and guarded reservation transitions, with focused validation tests. | Code authored; Python AST and diff integrity checks pass. Automated tests intentionally not run because the operator prohibited local builds, tests, and artifacts. | Run the focused model tests in authorized CI before starting the durable ledger/store task. |
 
 ## Current Chantier Flow
 
-sf-spec ✅ -> sf-ready ✅ -> sf-start ⏳ -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳
+sf-spec ✅ -> sf-ready ✅ -> sf-start ◐ Task 1 code authored, test execution deferred -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳

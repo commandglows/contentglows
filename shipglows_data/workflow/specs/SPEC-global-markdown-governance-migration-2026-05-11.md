@@ -1,13 +1,13 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.0.1"
 project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 07:24:15 UTC"
-updated: "2026-05-11"
-updated_at: "2026-05-11 07:55:56 UTC"
-status: ready
+updated: "2026-08-20"
+updated_at: "2026-08-20 07:48:00 UTC"
+status: reviewed
 source_skill: sf-spec
 source_model: "gpt-5"
 scope: "migration"

@@ -48,9 +48,9 @@ class RunsScreen extends ConsumerWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.smart_toy_outlined, size: 64,
+                  Icon(Icons.smart_toy_outlined, size: AppSpacing.wide * 2,
                       color: theme.colorScheme.outlineVariant),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
                   Text(context.tr('No robot runs yet'),
                       style: TextStyle(color: theme.colorScheme.onSurfaceVariant)),
                 ],
@@ -61,7 +61,7 @@ class RunsScreen extends ConsumerWidget {
           return RefreshIndicator(
             onRefresh: () async => ref.invalidate(_runsProvider),
             child: ListView.builder(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.md),
               itemCount: runs.length,
               itemBuilder: (context, index) => _RunCard(run: runs[index]),
             ),
@@ -100,7 +100,7 @@ class _RunCard extends StatelessWidget {
     };
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: AppSpacing.xs),
       child: ListTile(
         leading: Icon(statusIcon, color: statusColor),
         title: Text(robotName, style: const TextStyle(fontWeight: FontWeight.w600)),
@@ -113,13 +113,20 @@ class _RunCard extends StatelessWidget {
           style: theme.textTheme.bodySmall,
         ),
         trailing: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.xs,
+            vertical: AppSpacing.xxs,
+          ),
           decoration: BoxDecoration(
             color: statusColor.withValues(alpha: 0.15),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(AppRadii.sm),
           ),
           child: Text(status,
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: statusColor)),
+              style: TextStyle(
+                fontSize: AppText.body,
+                fontWeight: FontWeight.w600,
+                color: statusColor,
+              )),
         ),
       ),
     );

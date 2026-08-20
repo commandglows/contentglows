@@ -1,11 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.1.0"
+artifact_version: "1.1.1"
 project: "app"
 created: "2026-04-27"
-updated: "2026-04-27"
-status: ready
+updated: "2026-08-20"
+updated_at: "2026-08-20 07:48:00 UTC"
+status: reviewed
 source_skill: sf-spec
 scope: "migration"
 owner: "Diane"

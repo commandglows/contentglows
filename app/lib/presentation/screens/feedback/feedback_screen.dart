@@ -9,6 +9,7 @@ import 'package:record/record.dart';
 import '../../../data/models/feedback_entry.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../providers/providers.dart';
+import '../../theme/app_theme.dart';
 import '../../widgets/app_error_view.dart';
 
 class FeedbackScreen extends ConsumerStatefulWidget {
@@ -58,7 +59,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(context.tr('Feedback'))),
       body: ListView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         children: [
           Text(
             context.tr(
@@ -68,7 +69,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
               context,
             ).textTheme.bodyMedium?.copyWith(height: 1.5),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg),
           _FeedbackCard(
             title: 'Text Feedback',
             subtitle: isSignedIn
@@ -94,16 +95,18 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
                     );
                   },
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm),
                 Align(
                   alignment: Alignment.centerRight,
                   child: FilledButton.icon(
                     onPressed: _isSubmittingText ? null : _submitText,
                     icon: _isSubmittingText
                         ? const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2),
+                            width: AppSpacing.md,
+                            height: AppSpacing.md,
+                            child: CircularProgressIndicator(
+                              strokeWidth: AppSpacing.xxs,
+                            ),
                           )
                         : const Icon(Icons.send_rounded),
                     label: Text(
@@ -114,7 +117,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           _FeedbackCard(
             title: 'Audio Feedback',
             subtitle: 'Record a short voice message, then send it.',
@@ -122,8 +125,8 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Wrap(
-                  spacing: 12,
-                  runSpacing: 12,
+                  spacing: AppSpacing.sm,
+                  runSpacing: AppSpacing.sm,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     FilledButton.icon(
@@ -153,10 +156,10 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
                         onPressed: _isSubmittingAudio ? null : _submitAudio,
                         icon: _isSubmittingAudio
                             ? const SizedBox(
-                                width: 16,
-                                height: 16,
+                                width: AppSpacing.md,
+                                height: AppSpacing.md,
                                 child: CircularProgressIndicator(
-                                  strokeWidth: 2,
+                                  strokeWidth: AppSpacing.xxs,
                                 ),
                               )
                             : const Icon(Icons.cloud_upload_outlined),
@@ -168,7 +171,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
                       ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm),
                 Text(
                   _audioStatusText(context),
                   style: Theme.of(context).textTheme.bodyMedium,
@@ -176,12 +179,12 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xl),
           Text(
             context.tr('Recent feedback sent'),
             style: Theme.of(context).textTheme.titleMedium,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
           recentSubmissions.when(
             data: (items) {
               if (items.isEmpty) {
@@ -413,7 +416,7 @@ class _FeedbackCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -421,14 +424,14 @@ class _FeedbackCard extends StatelessWidget {
               context.tr(title),
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xxs),
             Text(
               context.tr(subtitle),
               style: Theme.of(
                 context,
               ).textTheme.bodySmall?.copyWith(height: 1.4),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             child,
           ],
         ),

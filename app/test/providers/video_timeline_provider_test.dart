@@ -4,6 +4,24 @@ import 'package:app/providers/video_timeline_provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test('load uses canonical branded generation with the content id', () async {
+    final api = _FakeVideoTimelineApiService(
+      timeline: _timelineWithApprovedPreview(),
+    );
+    final controller = VideoTimelineController(
+      apiService: api,
+      contentId: 'content-1',
+    );
+    addTearDown(controller.dispose);
+
+    await controller.loadFromContentId();
+
+    expect(api.generatedContentIds, ['content-1']);
+    expect(api.generationTriggerSources, ['manual_create']);
+    expect(controller.state.timeline?.timelineId, 'timeline-1');
+    expect(controller.state.timeline?.contentId, 'content-1');
+  });
+
   test('requestFinalRender blocks when local draft is dirty', () async {
     final api = _FakeVideoTimelineApiService(
       timeline: _timelineWithApprovedPreview(),
@@ -61,6 +79,8 @@ class _FakeVideoTimelineApiService extends ApiService {
 
   VideoTimelineResponse timeline;
   int finalRenderCalls = 0;
+  final List<String> generatedContentIds = [];
+  final List<String?> generationTriggerSources = [];
 
   @override
   Future<BrandedVideoGenerationResponse> generateBrandedVideoFromContent({
@@ -71,6 +91,8 @@ class _FakeVideoTimelineApiService extends ApiService {
     String? triggerSource,
     String? clientRequestId,
   }) async {
+    generatedContentIds.add(contentId);
+    generationTriggerSources.add(triggerSource);
     final version = timeline.latestVersion ?? _versionFromTimeline(timeline);
     return BrandedVideoGenerationResponse(
       timeline: timeline,

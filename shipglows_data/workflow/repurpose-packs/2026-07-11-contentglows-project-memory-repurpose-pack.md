@@ -14,7 +14,7 @@ risk_level: high
 security_impact: yes
 docs_impact: yes
 source_type: conversation_transcript
-source_ref: docs/conversations/conversation-contentglows-memoire-projet-sobre-et-vectorielle-20260711-120903.md
+source_ref: shipglows_data/workflow/conversations/conversation-contentglows-memoire-projet-sobre-et-vectorielle-20260711-120903.md
 linked_systems:
   - lab/memory/
   - lab/api/services/project_intelligence_processor.py
@@ -24,7 +24,7 @@ linked_systems:
   - shipglows_data/product/app/product.md
   - shipglows_data/editorial/site/content-map.md
 depends_on:
-  - artifact: docs/conversations/conversation-contentglows-memoire-projet-sobre-et-vectorielle-20260711-120903.md
+  - artifact: shipglows_data/workflow/conversations/conversation-contentglows-memoire-projet-sobre-et-vectorielle-20260711-120903.md
     required_status: captured
 supersedes: []
 evidence:

@@ -3,9 +3,9 @@
 > **Priority:** 🔴 P0 blocker · 🟠 P1 high · 🟡 P2 normal · 🟢 P3 low · ⚪ deferred
 > **Status:** 📋 todo · 🔄 in progress · ✅ done · ⛔ blocked · 💤 deferred
 
-**Stack**: Astro 6.1, TypeScript, static Vercel deployment | **Phase**: Astro 6 cleanup shipped; Vercel post-ship verification pending
+**Stack**: Astro 7.1, TypeScript, static Vercel deployment | **Phase**: current site deployed on 2026-08-19; branding/canonical metadata verified live; provider-log verification remains
 
-**Top priority**: Verify the post-cleanup Vercel deployment logs use `npm@11.12.1`, then re-audit the marketing site.
+**Top priority**: Verify the successful 2026-08-19 Vercel deployment logs use `npm@11.12.1`, then re-audit the marketing site. This requires authenticated Vercel log access and is not a code task.
 
 ## Documentation Migration (2026-06-29)
 

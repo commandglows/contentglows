@@ -1,13 +1,13 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.0.2"
 project: "contentglows"
 created: "2026-05-10"
 created_at: "2026-05-10 08:52:41 UTC"
-updated: "2026-05-10"
-status: ready
-updated_at: "2026-05-10 09:03:00 UTC"
+updated: "2026-08-20"
+status: reviewed
+updated_at: "2026-08-20 13:05:55 UTC"
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: "audit-fix"
@@ -68,8 +68,8 @@ Quand l'app Flutter ou le site Astro rend une page, les couleurs, surfaces, poli
 - Etat de depart: `tools/design-tokens/contentglows_theme.json` existe, mais ne couvre pas assez de tokens semantiques ni responsives; Flutter et Astro ont encore beaucoup de valeurs visuelles directes.
 - Declencheur: un developpeur modifie les tokens partages puis regenere les sorties app/site.
 - Resultat visible: l'app et le site utilisent la palette inspiree du site, un dark theme coherent, une variante "app colors", et une densite mobile plus compacte sans texte disproportionne.
-- Effet systeme: les tokens Flutter generes exposent couleurs, surfaces, typo, spacing, radius, shadows, motion et breakpoints; le site consomme les memes valeurs via CSS variables; les pages n'ajoutent plus de nouveaux literals visuels hors allowlist.
-- Preuve de succes: `flutter analyze`, `npm run build`, `git diff --check`, un scan anti-literals avec seuils documentes, et une verification visuelle mobile/desktop des pages critiques.
+- Effet systeme: les tokens Flutter generes exposent couleurs, surfaces, typo, spacing, radius, shadows, motion et breakpoints; le site consomme les memes valeurs via CSS variables; ShipGlows controle les nouveaux literals visuels contre l'autorite design declaree.
+- Preuve de succes: `flutter analyze`, `npm run build`, `git diff --check`, le controle central de derive design ShipGlows et une verification visuelle mobile/desktop des pages critiques.
 
 ## Error Behavior
 
@@ -85,7 +85,7 @@ Le chantier precedent a cree une base commune, mais elle n'est pas encore un vra
 
 ## Solution
 
-Etendre `tools/design-tokens/contentglows_theme.json` en source unique semantique et responsive, renforcer le generateur pour produire des tokens Flutter complets et des CSS variables site, puis migrer les pages par lots vers ces tokens. Ajouter des garde-fous de scan pour empecher la reintroduction de literals visuels hors fichiers allowlistes.
+Etendre `tools/design-tokens/contentglows_theme.json` en source unique semantique et responsive, renforcer le generateur pour produire des tokens Flutter complets et des CSS variables site, puis migrer les pages par lots vers ces tokens. Confier la verification de derive au controle central ShipGlows, sans dupliquer cette infrastructure dans le projet.
 
 ## Scope In
 
@@ -96,7 +96,7 @@ Etendre `tools/design-tokens/contentglows_theme.json` en source unique semantiqu
 - Migration des fichiers Astro/CSS sous `site/src/**` vers `var(--...)`.
 - Correction de `ThemeMode.system` pour respecter le theme OS.
 - Remplacement de la compaction mobile globale par des tokens responsives explicites.
-- Ajout d'un script de verification anti-literals et d'une allowlist maintenable.
+- Classification des exceptions legitimes par le controle central ShipGlows, sans script de verification propre au projet.
 - Verification mobile prioritaire sur entree app/auth/settings/feed/navigation et pages site sign-in/sign-up/home/blog.
 
 ## Scope Out
@@ -250,19 +250,19 @@ Etendre `tools/design-tokens/contentglows_theme.json` en source unique semantiqu
   - Validate with : `npm run build` et lecture rapide de la page design.
   - Notes : Ne pas transformer la page design en landing page.
 
-- [ ] Tache 12 : Ajouter un garde-fou anti-literals
-  - Fichier : `tools/design-tokens/check_design_tokens.mjs` ou script equivalent; `package.json`/docs si pertinent
-  - Action : Scanner Flutter et Astro pour nouveaux `fontSize`, `EdgeInsets`, `BorderRadius.circular`, `Color(0x...)`, hex CSS, `rem/px` UI, transitions directes; appliquer une allowlist pour tokens, fichiers generes, demos et dimensions media.
+- [x] Tache 12 : Attribuer la verification de derive design a ShipGlows
+  - Fichier : aucun artefact projet; controle central ShipGlows existant
+  - Action : Utiliser la verification ShipGlows pour les nouveaux `fontSize`, `EdgeInsets`, `BorderRadius.circular`, `Color(0x...)`, hex CSS, `rem/px` UI et transitions directes; classifier les exceptions de marque, fichiers generes, demos et dimensions media dans cette autorite centrale.
   - User story link : empecher la regression.
   - Depends on : Taches 8 et 10.
-  - Validate with : script retourne 0 sur le repo migre et echoue sur un cas test local.
-  - Notes : Le seuil final doit etre explicite; eviter les faux positifs bloquants sur contenu non UI.
+  - Validate with : controle central ShipGlows lors des interventions design; aucune garde locale dupliquee.
+  - Notes : Decision operateur du 2026-08-20; ContentGlows consomme son design system, ShipGlows en verifie la coherence.
 
 - [ ] Tache 13 : Validation finale et preuve visuelle
   - Fichier : aucun ou rapport court dans `shipglows_data/workflow/qa/`
   - Action : Executer `dart format`, `flutter analyze`, `npm run build`, `git diff --check`, scan anti-literals, puis verifier desktop/mobile les pages critiques.
   - User story link : confiance avant ship.
-  - Depends on : Taches 1-12.
+  - Depends on : Taches 1-11 et controle central ShipGlows.
   - Validate with : resultats commandes + captures ou notes QA.
   - Notes : Stopper si auth/entry mobile ne montre plus les actions principales au-dessus du viewport.
 
@@ -282,7 +282,7 @@ Etendre `tools/design-tokens/contentglows_theme.json` en source unique semantiqu
 
 - Unit/Script: tester `tools/design-tokens/generate_app_theme_tokens.mjs` avec tokens valides et invalides si la structure le permet.
 - Static: `flutter analyze` pour l'app, `npm run build` pour le site, `git diff --check`.
-- Token audit: lancer le nouveau scan anti-literals et comparer les compteurs aux seuils attendus.
+- Token audit: utiliser le controle central ShipGlows et justifier les exceptions legitimes.
 - Manual QA mobile: app entry/auth/feed/settings sur largeur inferieure a 600px; verifier taille texte, espacement, actions visibles et absence d'overflow.
 - Manual QA desktop: site home/sign-in/sign-up/blog/design et app desktop pour verifier que la densite desktop n'a pas ete degradee.
 - Accessibility sanity: verifier contraste apparent light/dark, focus visible site, touch targets principaux.
@@ -290,7 +290,7 @@ Etendre `tools/design-tokens/contentglows_theme.json` en source unique semantiqu
 ## Risks
 
 - High: migration mecanique trop large qui casse des layouts Flutter denses.
-- Medium: faux positifs du scan anti-literals qui bloquent des dimensions legitimes.
+- Medium: faux positifs du controle central qui classent mal des dimensions legitimes.
 - Medium: dark theme visuellement incoherent si les overlays et surfaces ne sont pas testes.
 - Medium: divergence entre tokens JSON, Dart genere et CSS variables si le generateur ne couvre pas toute la source.
 - Low: documentation oubliee, rendant la maintenance du theme fragile.
@@ -302,7 +302,7 @@ Etendre `tools/design-tokens/contentglows_theme.json` en source unique semantiqu
 - Garder les migrations UI en lots petits pour pouvoir attribuer les regressions visuelles a un groupe de fichiers.
 - Ne pas ajouter de package sans justification; les APIs Flutter/Astro existantes suffisent.
 - Stop condition: si un flow auth, offline sync, provider ou route change de comportement, sortir du scope et demander validation.
-- Commandes de validation attendues: `node tools/design-tokens/generate_app_theme_tokens.mjs`, `dart format ...`, `flutter analyze`, `npm run build`, `git diff --check`, scan anti-literals.
+- Commandes de validation attendues hors mode no-local: `node tools/design-tokens/generate_app_theme_tokens.mjs`, `dart format ...`, `flutter analyze`, `npm run build`, `git diff --check`, puis controle central de derive design ShipGlows.
 
 ## Open Questions
 
@@ -342,6 +342,7 @@ Etendre `tools/design-tokens/contentglows_theme.json` en source unique semantiqu
 | 2026-05-30 20:46 UTC | sf-verify | GPT-5 Codex | Verification du lot P0 design tokens: generateur, Flutter test/analyze, Astro build, scan anti-literals, diff check, screenshots light/dark | verified | Cloturer et shipper le scope borne |
 | 2026-05-30 20:46 UTC | sf-end | GPT-5 Codex | Cloture du lot P0 design tokens avec trackers et changelog alignes | closed | sf-ship scope borne design tokens |
 | 2026-05-30 20:46 UTC | sf-ship | GPT-5 Codex | Ship du scope borne design tokens sur `main` | shipped | sf-prod si validation Vercel preview requise |
+| 2026-08-20 13:05 UTC | sg-design | GPT-5 | Migration bornee des surfaces Affiliations, Feedback et Runs vers les tokens Flutter existants; responsabilite de controle conservee dans ShipGlows | implemented — unverified | Executer les validations diff/analyse/visuelles lors d'une session autorisant l'execution locale |
 
 ## Current Chantier Flow
 
@@ -362,4 +363,5 @@ Etendre `tools/design-tokens/contentglows_theme.json` en source unique semantiqu
 - sf-verify: verified (2026-05-30 P0 slice, scan anti-literals passed: Flutter 68/128, Site 38/401).
 - sf-end: closed (2026-05-30 trackers and changelog updated for bounded P0 slice).
 - sf-ship: shipped (2026-05-30 bounded design-token scope).
-- Prochaine commande: sf-prod if matching Vercel preview validation is required.
+- sg-design: implemented — unverified (2026-08-20 scoped Flutter migration for Affiliations, Feedback, and Runs; no-local policy).
+- Prochaine action: poursuivre les lots Flutter restants; verifier ce lot lors d'une session autorisant l'execution locale.

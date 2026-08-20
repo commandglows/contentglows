@@ -1,6 +1,7 @@
 import 'package:app/data/models/app_access_state.dart';
 import 'package:app/data/models/brand_profile.dart';
 import 'package:app/data/models/content_item.dart';
+import 'package:app/data/models/persona.dart';
 import 'package:app/data/models/video_timeline.dart';
 import 'package:app/data/services/api_service.dart';
 import 'package:app/core/app_diagnostics.dart';
@@ -229,6 +230,164 @@ void main() {
       );
     },
   );
+
+  testWidgets(
+    'preview content identifies its linked persona',
+    (tester) async {
+      final api = await _pumpBrandProfilesScreen(
+        tester,
+        personas: const [Persona(id: 'persona-1', name: 'Founder')],
+        contentMetadata: const {
+          'content_complete': true,
+          'persona_id': 'persona-1',
+        },
+      );
+
+      await tester.tap(
+        find.widgetWithText(OutlinedButton, 'Generate video preview'),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('Audience: Founder'), findsOneWidget);
+      expect(api.brandedGenerationCalls, isEmpty);
+    },
+  );
+
+  testWidgets(
+    'preview content keeps a neutral state when its persona is unavailable',
+    (tester) async {
+      final api = await _pumpBrandProfilesScreen(
+        tester,
+        contentMetadata: const {
+          'content_complete': true,
+          'persona_id': 'deleted-persona',
+        },
+      );
+
+      await tester.tap(
+        find.widgetWithText(OutlinedButton, 'Generate video preview'),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('Audience unavailable'), findsOneWidget);
+      expect(api.brandedGenerationCalls, isEmpty);
+    },
+  );
+
+  testWidgets(
+    'preview requires video style setup before generation',
+    (tester) async {
+      final api = await _pumpBrandProfilesScreen(
+        tester,
+        hasActiveBlueprint: false,
+      );
+
+      await tester.tap(
+        find.widgetWithText(OutlinedButton, 'Generate video preview'),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Set up a video style'), findsOneWidget);
+      expect(
+        find.textContaining(
+          'prepare a branded video preview for this profile',
+        ),
+        findsOneWidget,
+      );
+      expect(api.brandedGenerationCalls, isEmpty);
+    },
+  );
+}
+
+Future<_FakeBrandProfilesApiService> _pumpBrandProfilesScreen(
+  WidgetTester tester, {
+  List<Persona> personas = const [],
+  Map<String, dynamic> contentMetadata = const {'content_complete': true},
+  bool hasActiveBlueprint = true,
+}) async {
+  tester.view.physicalSize = const Size(1280, 1400);
+  tester.view.devicePixelRatio = 1.0;
+  addTearDown(tester.view.reset);
+
+  SharedPreferences.setMockInitialValues(<String, Object>{});
+  final sharedPreferences = await SharedPreferences.getInstance();
+  final api = _FakeBrandProfilesApiService();
+  final activeProject = _project(id: 'project-1', name: 'Project 1');
+  final router = GoRouter(
+    initialLocation: '/settings/branding',
+    routes: [
+      GoRoute(
+        path: '/settings/branding',
+        builder: (context, state) => const BrandProfilesScreen(),
+      ),
+    ],
+  );
+  addTearDown(router.dispose);
+
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        apiServiceProvider.overrideWithValue(api),
+        activeProjectIdProvider.overrideWithValue('project-1'),
+        appAccessStateProvider.overrideWith(_FakeReadyAccessNotifier.new),
+        appDiagnosticsProvider.overrideWithValue(AppDiagnostics()),
+        sharedPrefsProvider.overrideWithValue(sharedPreferences),
+        projectsStateProvider.overrideWith(
+          (ref) async => ProjectsState(items: [activeProject]),
+        ),
+        activeProjectProvider.overrideWith((ref) => activeProject),
+        currentUserSettingsProvider.overrideWith(
+          () => _TestUserSettingsNotifier(
+            const AppSettings(
+              id: 'settings-1',
+              userId: 'user-1',
+              defaultProjectId: 'project-1',
+              projectSelectionMode: projectSelectionModeSelected,
+            ),
+          ),
+        ),
+        brandProfileBlueprintsStateProvider.overrideWith(
+          (ref) async => BrandProfileBlueprintsState(
+            items: hasActiveBlueprint
+                ? [
+                    BrandVideoBlueprint(
+                      id: 'blueprint-1',
+                      userId: 'user-1',
+                      projectId: 'project-1',
+                      brandProfileId: 'brand-1',
+                      name: 'Default',
+                      status: 'active',
+                      createdAt: DateTime.utc(2026, 7, 8, 12),
+                      updatedAt: DateTime.utc(2026, 7, 8, 12),
+                    ),
+                  ]
+                : const [],
+          ),
+        ),
+        pendingContentProvider.overrideWith(
+          () => _TestPendingContentNotifier([
+            ContentItem(
+              id: 'content-ready',
+              title: 'Ready title',
+              body: 'Ready body',
+              type: ContentType.blogPost,
+              status: ContentStatus.pending,
+              metadata: contentMetadata,
+              createdAt: DateTime.utc(2026, 7, 8, 12),
+            ),
+          ]),
+        ),
+        personasProvider.overrideWith((ref) async => personas),
+      ],
+      child: MaterialApp.router(
+        routerConfig: router,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+      ),
+    ),
+  );
+  await tester.pumpAndSettle();
+  return api;
 }
 
 class _FakeReadyAccessNotifier extends AppAccessNotifier {

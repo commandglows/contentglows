@@ -1,13 +1,13 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.0.1"
 project: "app"
 created: "2026-05-10"
 created_at: "2026-05-10 22:30:12 UTC"
-updated: "2026-05-10"
-updated_at: "2026-05-11 05:42:40 UTC"
-status: ready
+updated: "2026-08-20"
+updated_at: "2026-08-20 07:48:00 UTC"
+status: active
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: feature
