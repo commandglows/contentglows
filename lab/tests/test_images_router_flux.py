@@ -16,6 +16,8 @@ from api.models.ai_usage import (
     AIUsageScope,
 )
 from api.services.ai_usage_service import AIUsageQuotaRejected
+from api.services.ai_usage_policies import AIUsageFailureBehavior
+from api.models.ai_usage import ProviderCostMetadata
 from api.routers import images as router
 
 
@@ -47,6 +49,8 @@ class _FakeImageGenerationStore:
             "status": "queued",
             "job_id": kwargs["job_id"],
             "reservation_id": kwargs["reservation_id"],
+            "estimated_units": kwargs.get("estimated_units"),
+            "quota_status": kwargs.get("quota_status"),
             "prompt": kwargs["prompt"],
             "prompt_hash": "hash",
             "width": kwargs["width"],
@@ -103,6 +107,237 @@ def _usage_runtime(*, reserve_side_effect=None):
 
 def _usage_provider(runtime):
     return AsyncMock(return_value=runtime)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "provider_started, behavior, expected_method, expected_status",
+    [
+        (False, AIUsageFailureBehavior.REFUND, "release", "released"),
+        (True, AIUsageFailureBehavior.RELEASE, "release", "released"),
+        (True, AIUsageFailureBehavior.REFUND, "refund", "refunded"),
+    ],
+)
+async def test_failed_flux_usage_applies_configured_settlement(
+    provider_started,
+    behavior,
+    expected_method,
+    expected_status,
+):
+    service = SimpleNamespace(release=AsyncMock(), refund=AsyncMock())
+
+    status, outcome = await router._reconcile_failed_flux_usage(
+        ai_usage_service=service,
+        scope=AIUsageScope(user_id="user-1", project_id="project-1"),
+        reservation_id="reservation-1",
+        provider_started=provider_started,
+        failure_behavior=behavior,
+        provider_cost=None,
+        reason="provider_failed",
+    )
+
+    assert status == expected_status
+    assert outcome == expected_status
+    getattr(service, expected_method).assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_failed_flux_usage_stays_recoverable_when_settlement_is_interrupted():
+    service = SimpleNamespace(
+        release=AsyncMock(side_effect=RuntimeError("worker interrupted")),
+        refund=AsyncMock(),
+    )
+
+    status, outcome = await router._reconcile_failed_flux_usage(
+        ai_usage_service=service,
+        scope=AIUsageScope(user_id="user-1", project_id="project-1"),
+        reservation_id="reservation-1",
+        provider_started=False,
+        failure_behavior=AIUsageFailureBehavior.RELEASE,
+        provider_cost=None,
+        reason="worker_interrupted",
+    )
+
+    assert status == "reconciliation_pending"
+    assert outcome is None
+
+
+@pytest.mark.asyncio
+async def test_flux_worker_consumes_only_after_durable_bunny_asset(monkeypatch, tmp_path):
+    local_path = tmp_path / "flux-result.jpg"
+    local_path.write_bytes(b"image")
+    cost = ProviderCostMetadata(
+        provider="bfl",
+        provider_action="flux_image_generation",
+        model="flux-2-pro",
+        provider_request_id="bfl-1",
+        actual_cost="4.5",
+        cost_unit="provider_credit",
+        confidence="exact",
+        captured_at=datetime.now(UTC),
+    )
+    result = SimpleNamespace(
+        local_path=str(local_path),
+        provider_request_id="bfl-1",
+        provider_cost=4.5,
+        provider_cost_metadata=cost,
+        provider_metadata={"cost_evidence": cost.model_dump(mode="json", by_alias=True)},
+        model="flux-2-pro",
+        output_format="jpeg",
+    )
+    generator = SimpleNamespace(generate_to_file=lambda **kwargs: result)
+    monkeypatch.setattr(router, "FluxImageGenerator", lambda model: generator)
+    monkeypatch.setattr(router, "_record_generated_project_asset", lambda **kwargs: "asset-1")
+    store = SimpleNamespace(
+        mark_running=AsyncMock(),
+        mark_completed=AsyncMock(),
+        mark_failed=AsyncMock(),
+        update_reconciliation=AsyncMock(),
+    )
+    monkeypatch.setattr(router, "image_generation_store", store)
+    service = SimpleNamespace(
+        mark_provider_started=AsyncMock(),
+        consume=AsyncMock(),
+        release=AsyncMock(),
+        refund=AsyncMock(),
+    )
+    crew = SimpleNamespace(
+        cdn_manager=SimpleNamespace(
+            upload_with_optimizer=lambda **kwargs: {
+                "success": True,
+                "cdn_url": "https://assets.b-cdn.net/image.jpg",
+                "primary_url": "https://assets.b-cdn.net/image-800.jpg",
+                "responsive_urls": {"800": "https://assets.b-cdn.net/image-800.jpg"},
+            }
+        )
+    )
+
+    await router._run_flux_generation_job(
+        crew=crew,
+        generation_id="generation-1",
+        job_id="job-1",
+        project_id="project-1",
+        user_id="user-1",
+        profile_id="ai-blog-hero",
+        image_type="hero_image",
+        prompt="Hero",
+        model="flux-2-pro",
+        width=1280,
+        height=720,
+        seed=None,
+        output_format="jpeg",
+        safety_tolerance=2,
+        reference_urls=[],
+        file_name="hero.jpg",
+        alt_text="Hero",
+        path_type="articles",
+        ai_usage_service=service,
+        usage_scope=AIUsageScope(user_id="user-1", project_id="project-1"),
+        reservation_id="reservation-1",
+        failure_behavior=AIUsageFailureBehavior.REFUND,
+    )
+
+    service.mark_provider_started.assert_awaited_once()
+    service.consume.assert_awaited_once_with(
+        scope=AIUsageScope(user_id="user-1", project_id="project-1"),
+        reservation_id="reservation-1",
+        provider_cost=cost,
+    )
+    store.mark_completed.assert_awaited_once()
+    assert any(
+        call.kwargs.get("quota_status") == "consumed"
+        for call in store.update_reconciliation.await_args_list
+    )
+
+
+@pytest.mark.asyncio
+async def test_bunny_failure_refunds_without_consuming(monkeypatch, tmp_path):
+    local_path = tmp_path / "flux-result.jpg"
+    local_path.write_bytes(b"image")
+    cost = ProviderCostMetadata(
+        provider="bfl",
+        provider_action="flux_image_generation",
+        model="flux-2-pro",
+        provider_request_id="bfl-2",
+        actual_cost="3.5",
+        cost_unit="provider_credit",
+        confidence="exact",
+        captured_at=datetime.now(UTC),
+    )
+    result = SimpleNamespace(
+        local_path=str(local_path),
+        provider_request_id="bfl-2",
+        provider_cost=3.5,
+        provider_cost_metadata=cost,
+        provider_metadata={},
+        model="flux-2-pro",
+        output_format="jpeg",
+    )
+    monkeypatch.setattr(
+        router,
+        "FluxImageGenerator",
+        lambda model: SimpleNamespace(generate_to_file=lambda **kwargs: result),
+    )
+    store = SimpleNamespace(
+        mark_running=AsyncMock(),
+        mark_completed=AsyncMock(),
+        mark_failed=AsyncMock(),
+        update_reconciliation=AsyncMock(),
+    )
+    monkeypatch.setattr(router, "image_generation_store", store)
+    service = SimpleNamespace(
+        mark_provider_started=AsyncMock(),
+        consume=AsyncMock(),
+        release=AsyncMock(),
+        refund=AsyncMock(),
+    )
+    crew = SimpleNamespace(
+        cdn_manager=SimpleNamespace(
+            upload_with_optimizer=lambda **kwargs: {
+                "success": False,
+                "error": "Bunny unavailable",
+            }
+        )
+    )
+    scope = AIUsageScope(user_id="user-1", project_id="project-1")
+
+    await router._run_flux_generation_job(
+        crew=crew,
+        generation_id="generation-2",
+        job_id="job-2",
+        project_id="project-1",
+        user_id="user-1",
+        profile_id="ai-blog-hero",
+        image_type="hero_image",
+        prompt="Hero",
+        model="flux-2-pro",
+        width=1280,
+        height=720,
+        seed=None,
+        output_format="jpeg",
+        safety_tolerance=2,
+        reference_urls=[],
+        file_name="hero.jpg",
+        alt_text="Hero",
+        path_type="articles",
+        ai_usage_service=service,
+        usage_scope=scope,
+        reservation_id="reservation-2",
+        failure_behavior=AIUsageFailureBehavior.REFUND,
+    )
+
+    service.consume.assert_not_awaited()
+    service.refund.assert_awaited_once_with(
+        scope=scope,
+        reservation_id="reservation-2",
+        reason="cdn_upload_failed",
+        provider_cost=cost,
+    )
+    store.mark_failed.assert_awaited_once()
+    assert any(
+        call.kwargs.get("quota_status") == "refunded"
+        for call in store.update_reconciliation.await_args_list
+    )
 
 
 @pytest.mark.asyncio

@@ -56,11 +56,14 @@ from api.models.ai_usage import (
     AIUsageAction,
     AIUsageBillingMode,
     AIUsageScope,
+    ProviderCostMetadata,
 )
 from api.services.ai_usage_service import (
     AIUsageQuotaRejected,
+    AIUsageService,
     AIUsageTransitionConflict,
 )
+from api.services.ai_usage_policies import AIUsageFailureBehavior
 from api.services.ai_image_generation import generate_openai_image_to_file
 from api.services.flux_image_generation import (
     DEFAULT_FLUX_MODEL,
@@ -389,6 +392,38 @@ def _record_generated_project_asset(
         return None
 
 
+async def _reconcile_failed_flux_usage(
+    *,
+    ai_usage_service: AIUsageService,
+    scope: AIUsageScope,
+    reservation_id: str,
+    provider_started: bool,
+    failure_behavior: AIUsageFailureBehavior,
+    provider_cost: ProviderCostMetadata | None,
+    reason: str,
+) -> tuple[str, str | None]:
+    """Settle a failed generation idempotently or leave recoverable state."""
+    try:
+        if provider_started and failure_behavior is AIUsageFailureBehavior.REFUND:
+            await ai_usage_service.refund(
+                scope=scope,
+                reservation_id=reservation_id,
+                reason=reason,
+                provider_cost=provider_cost,
+            )
+            return "refunded", "refunded"
+        await ai_usage_service.release(
+            scope=scope,
+            reservation_id=reservation_id,
+            reason=reason,
+            provider_cost=provider_cost,
+        )
+        return "released", "released"
+    except Exception:
+        logger.exception("Flux failure usage reconciliation is pending")
+        return "reconciliation_pending", None
+
+
 async def _run_flux_generation_job(
     *,
     crew: "ImagePipeline",
@@ -409,10 +444,26 @@ async def _run_flux_generation_job(
     file_name: str,
     alt_text: str,
     path_type: str,
+    ai_usage_service: AIUsageService,
+    usage_scope: AIUsageScope,
+    reservation_id: str,
+    failure_behavior: AIUsageFailureBehavior,
 ) -> None:
     local_path: Optional[str] = None
+    provider_started = False
+    provider_cost_evidence = None
     try:
         await image_generation_store.mark_running(generation_id, user_id=user_id)
+        await ai_usage_service.mark_provider_started(
+            scope=usage_scope,
+            reservation_id=reservation_id,
+        )
+        provider_started = True
+        await image_generation_store.update_reconciliation(
+            generation_id,
+            user_id=user_id,
+            quota_status="provider_started",
+        )
         await _update_job_safely(job_id, status="running", progress=10, message="Flux generation started")
         generator = FluxImageGenerator(model=model)
         result = await asyncio.to_thread(
@@ -426,6 +477,7 @@ async def _run_flux_generation_job(
             safety_tolerance=safety_tolerance,
         )
         local_path = result.local_path
+        provider_cost_evidence = result.provider_cost_metadata
         await image_generation_store.mark_running(
             generation_id,
             user_id=user_id,
@@ -448,6 +500,17 @@ async def _run_flux_generation_job(
                 upload_result.get("error", "Bunny CDN upload failed."),
                 provider_request_id=result.provider_request_id,
                 provider_metadata=result.provider_metadata,
+                provider_cost_metadata=result.provider_cost_metadata,
+            )
+
+        cdn_url = upload_result.get("cdn_url")
+        if not cdn_url or not _is_durable_bunny_url(str(cdn_url)):
+            raise FluxImageGenerationError(
+                "cdn_asset_not_durable",
+                "Bunny CDN did not return a durable image URL.",
+                provider_request_id=result.provider_request_id,
+                provider_metadata=result.provider_metadata,
+                provider_cost_metadata=result.provider_cost_metadata,
             )
 
         responsive_urls = {str(k): v for k, v in upload_result.get("responsive_urls", {}).items()}
@@ -459,22 +522,73 @@ async def _run_flux_generation_job(
             image_type=image_type,
             model=result.model,
             file_name=file_name,
-            cdn_url=upload_result.get("cdn_url"),
+            cdn_url=str(cdn_url),
             primary_url=upload_result.get("primary_url"),
             responsive_urls=responsive_urls,
             output_format=result.output_format,
         )
-        await image_generation_store.mark_completed(
+        serialized_cost = (
+            provider_cost_evidence.model_dump(mode="json", by_alias=True)
+            if provider_cost_evidence is not None
+            else None
+        )
+        await image_generation_store.update_reconciliation(
             generation_id,
             user_id=user_id,
-            cdn_url=upload_result.get("cdn_url"),
-            primary_url=upload_result.get("primary_url"),
-            responsive_urls=responsive_urls,
-            asset_id=asset_id,
-            provider_request_id=result.provider_request_id,
-            provider_cost=result.provider_cost,
-            provider_metadata=result.provider_metadata,
+            quota_status="reconciliation_pending",
+            provider_cost_evidence=serialized_cost,
         )
+        try:
+            await ai_usage_service.consume(
+                scope=usage_scope,
+                reservation_id=reservation_id,
+                provider_cost=provider_cost_evidence,
+            )
+        except Exception:
+            logger.exception("Flux asset is durable but usage reconciliation is pending")
+            await _update_job_safely(
+                job_id,
+                status="reconciliation_pending",
+                progress=95,
+                message="Flux image stored; usage reconciliation pending",
+                generation_id=generation_id,
+                asset_id=asset_id,
+                reservation_id=reservation_id,
+            )
+            return
+        try:
+            await image_generation_store.mark_completed(
+                generation_id,
+                user_id=user_id,
+                cdn_url=str(cdn_url),
+                primary_url=upload_result.get("primary_url"),
+                responsive_urls=responsive_urls,
+                asset_id=asset_id,
+                provider_request_id=result.provider_request_id,
+                provider_cost=result.provider_cost,
+                provider_metadata=result.provider_metadata,
+            )
+            await image_generation_store.update_reconciliation(
+                generation_id,
+                user_id=user_id,
+                quota_status="consumed",
+                quota_outcome="consumed",
+                provider_cost_evidence=serialized_cost,
+                reconciled=True,
+            )
+        except Exception:
+            logger.exception("Flux usage consumed but generation history reconciliation is pending")
+            await _update_job_safely(
+                job_id,
+                status="reconciliation_pending",
+                progress=95,
+                message="Flux image stored; history reconciliation pending",
+                generation_id=generation_id,
+                asset_id=asset_id,
+                reservation_id=reservation_id,
+                quota_outcome="consumed",
+            )
+            return
         await _update_job_safely(
             job_id,
             status="completed",
@@ -484,6 +598,16 @@ async def _run_flux_generation_job(
             asset_id=asset_id,
         )
     except FluxImageGenerationError as exc:
+        provider_cost_evidence = exc.provider_cost_metadata or provider_cost_evidence
+        quota_status, quota_outcome = await _reconcile_failed_flux_usage(
+            ai_usage_service=ai_usage_service,
+            scope=usage_scope,
+            reservation_id=reservation_id,
+            provider_started=provider_started,
+            failure_behavior=failure_behavior,
+            provider_cost=provider_cost_evidence,
+            reason=exc.code,
+        )
         await image_generation_store.mark_failed(
             generation_id,
             user_id=user_id,
@@ -491,6 +615,18 @@ async def _run_flux_generation_job(
             error_message=exc.message,
             provider_request_id=exc.provider_request_id,
             provider_metadata=exc.provider_metadata,
+        )
+        await image_generation_store.update_reconciliation(
+            generation_id,
+            user_id=user_id,
+            quota_status=quota_status,
+            quota_outcome=quota_outcome,
+            provider_cost_evidence=(
+                provider_cost_evidence.model_dump(mode="json", by_alias=True)
+                if provider_cost_evidence is not None
+                else None
+            ),
+            reconciled=quota_status != "reconciliation_pending",
         )
         await _update_job_safely(
             job_id,
@@ -502,11 +638,32 @@ async def _run_flux_generation_job(
         )
     except Exception as exc:
         logger.exception("Unexpected Flux image generation job failure")
+        quota_status, quota_outcome = await _reconcile_failed_flux_usage(
+            ai_usage_service=ai_usage_service,
+            scope=usage_scope,
+            reservation_id=reservation_id,
+            provider_started=provider_started,
+            failure_behavior=failure_behavior,
+            provider_cost=provider_cost_evidence,
+            reason="internal_error",
+        )
         await image_generation_store.mark_failed(
             generation_id,
             user_id=user_id,
             error_code="internal_error",
             error_message=str(exc),
+        )
+        await image_generation_store.update_reconciliation(
+            generation_id,
+            user_id=user_id,
+            quota_status=quota_status,
+            quota_outcome=quota_outcome,
+            provider_cost_evidence=(
+                provider_cost_evidence.model_dump(mode="json", by_alias=True)
+                if provider_cost_evidence is not None
+                else None
+            ),
+            reconciled=quota_status != "reconciliation_pending",
         )
         await _update_job_safely(
             job_id,
@@ -1303,6 +1460,8 @@ async def generate_image_from_profile(
                     model=model,
                     job_id=job_id,
                     reservation_id=reservation.reservation_id,
+                    estimated_units=str(policy.estimated_units),
+                    quota_status="reserved",
                     prompt=prompt_used,
                     width=width,
                     height=height,
@@ -1357,6 +1516,10 @@ async def generate_image_from_profile(
                     file_name=resolved_file_name,
                     alt_text=resolved_alt_text,
                     path_type=resolved_path,
+                    ai_usage_service=ai_usage.service,
+                    usage_scope=scope,
+                    reservation_id=reservation.reservation_id,
+                    failure_behavior=policy.provider_failure_behavior,
                 )
             except Exception as exc:
                 await ai_usage.service.release(

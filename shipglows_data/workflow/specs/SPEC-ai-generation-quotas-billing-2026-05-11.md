@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.6"
+artifact_version: "1.0.7"
 project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 15:02:22 UTC"
 updated: "2026-08-20"
-updated_at: "2026-08-21 11:54:45 UTC"
+updated_at: "2026-08-21 13:12:20 UTC"
 status: active
 source_skill: sf-spec
 source_model: "gpt-5.5"
@@ -295,13 +295,13 @@ Add a backend-owned entitlement and usage ledger that gates managed AI generatio
   - Validate with: authored mocked BFL responses for complete provider-credit evidence, missing cost, malformed/negative/non-finite values, submit error, and post-submit provider failure retaining known cost evidence.
   - Notes: Official BFL documentation identifies `cost` as credits, so the domain contract records `provider_credit` and forbids attaching a currency. No conversion table or customer-facing price is encoded. Code authored on 2026-08-21; automated execution remains deferred by the operator's no-local policy, so this task is implemented — unverified.
 
-- [ ] Task 7: Reconcile usage after Bunny upload and job completion
-  - File: `lab/api/services/image_generation_store.py`
-  - Action: Persist reservation id, estimated units, actual provider cost, Bunny asset metadata, final quota status, release/refund/consume outcome, and error code on each generation. Consume user-facing units only when a durable asset/job result is produced; release/refund the reservation when the provider attempt fails before a durable result.
+- [x] Task 7: Reconcile usage after Bunny upload and job completion
+  - Files: `lab/api/routers/images.py`, `lab/api/services/image_generation_store.py`, `lab/api/models/images.py`
+  - Action: Persist reservation id, estimated units, typed provider-cost evidence, Bunny asset metadata, quota state/outcome, reconciliation timestamp, and error code. Mark provider start immediately before BFL, consume only after a validated durable Bunny URL, and release/refund failures through the configured policy.
   - User story link: Ensures the visible generation history matches ledger state.
   - Depends on: Tasks 5-6.
-  - Validate with: integration tests for success, provider failure, Bunny upload failure, worker crash simulation, and retry idempotency.
-  - Notes: If the Flux implementation stores generation history elsewhere, apply the same contract there.
+  - Validate with: authored store/worker tests for durable Bunny success before consumption, provider-start settlement selection, Bunny failure refund without consumption, interrupted settlement remaining recoverable, durable reconciliation fields, and existing idempotent usage-service settlement contracts.
+  - Notes: A durable asset with failed quota or history closure remains explicitly `reconciliation_pending`; it is never silently refunded after consumption. Temporary provider URLs are rejected as non-durable. Code authored on 2026-08-21; automated execution and schema application remain deferred by the operator's no-local policy, so this task is implemented — unverified.
 
 - [ ] Task 8: Extend job metadata for owner-scoped quota operations
   - File: `lab/api/services/job_store.py`
@@ -446,7 +446,8 @@ None for this implementation-ready enforcement foundation. Exact public prices, 
 | 2026-08-21 07:37:04 UTC | sg-development | GPT-5 Codex | Implemented Task 4 as an injected immutable action-policy registry with typed managed/BYOK invariants, provider/model routing metadata, internal usage-unit estimates, hard blocking, failure reconciliation behavior, and admin-override eligibility. | Implemented — unverified. Static contract/diff review only; no build, test, analyzer, provider call, or runtime workload was executed under the operator's no-local policy. | Run the focused policy tests in an authorized environment before wiring Flux preflight in Task 5. |
 | 2026-08-21 11:40:54 UTC | sg-development | GPT-5 Codex | Implemented Task 5 with lazy runtime composition, owner-scoped Flux reservation before durable queue/provider work, structured quota errors, reservation linkage, configured model routing, and release on pre-queue failure. | Implemented — unverified. Static contract/diff review only; no build, test, analyzer, migration, provider call, background job, or runtime workload was executed under the operator's no-local policy. | Run focused route/store tests in an authorized environment before implementing provider-cost normalization in Task 6. |
 | 2026-08-21 11:54:45 UTC | sg-development | GPT-5 Codex | Implemented Task 6 with explicit provider-credit cost units, strict BFL cost/megapixel normalization, unknown-cost evidence, request identifiers, UTC timing, duration, and evidence retention across post-submit failures. | Implemented — unverified. Static contract/diff review only; no build, test, analyzer, provider call, background job, or runtime workload was executed under the operator's no-local policy. | Run focused model/provider tests in an authorized environment before reconciling reservations and durable assets in Task 7. |
+| 2026-08-21 13:12:20 UTC | sg-development | GPT-5 Codex | Implemented Task 7 with provider-start tracking, durable-Bunny consumption gating, policy-driven release/refund, provider-cost evidence persistence, explicit reconciliation outcomes, and recoverable pending states. | Implemented — unverified. Static contract/diff review only; no build, test, analyzer, schema application, provider/CDN call, background job, or runtime workload was executed under the operator's no-local policy. | Run focused store/worker tests in an authorized environment before extending owner-scoped job metadata and recovery queries in Task 8. |
 
 ## Current Chantier Flow
 
-sf-spec ✅ -> sf-ready ✅ -> sf-start ◐ Tasks 1-6 code authored, execution deferred; Flux is gated and BFL provider-credit evidence is normalized -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳
+sf-spec ✅ -> sf-ready ✅ -> sf-start ◐ Tasks 1-7 code authored, execution deferred; Flux reservations now reconcile against durable Bunny outcomes -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳

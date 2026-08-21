@@ -26,6 +26,10 @@ IMAGE_GENERATION_COLUMNS = (
     "status",
     "job_id",
     "reservation_id",
+    "estimated_units",
+    "provider_cost_evidence_json",
+    "quota_status",
+    "quota_outcome",
     "prompt",
     "prompt_hash",
     "width",
@@ -47,6 +51,7 @@ IMAGE_GENERATION_COLUMNS = (
     "updated_at",
     "started_at",
     "completed_at",
+    "reconciled_at",
 )
 
 IMAGE_REFERENCE_COLUMNS = (
@@ -92,6 +97,10 @@ class ImageGenerationStore:
                 status TEXT NOT NULL,
                 job_id TEXT,
                 reservation_id TEXT,
+                estimated_units TEXT,
+                provider_cost_evidence_json TEXT NOT NULL DEFAULT '{}',
+                quota_status TEXT,
+                quota_outcome TEXT,
                 prompt TEXT NOT NULL,
                 prompt_hash TEXT NOT NULL,
                 width INTEGER NOT NULL,
@@ -112,7 +121,8 @@ class ImageGenerationStore:
                 created_at TEXT NOT NULL,
                 updated_at TEXT NOT NULL,
                 started_at TEXT,
-                completed_at TEXT
+                completed_at TEXT,
+                reconciled_at TEXT
             )
             """
         )
@@ -143,11 +153,19 @@ class ImageGenerationStore:
             "CREATE INDEX IF NOT EXISTS idx_image_reference_user ON ImageReference(user_id, created_at)",
         ):
             await self.db_client.execute(statement)
-        await self._ensure_column(
-            "ImageGeneration",
-            "reservation_id",
-            "TEXT",
-        )
+        for column_name, column_definition in (
+            ("reservation_id", "TEXT"),
+            ("estimated_units", "TEXT"),
+            ("provider_cost_evidence_json", "TEXT NOT NULL DEFAULT '{}'"),
+            ("quota_status", "TEXT"),
+            ("quota_outcome", "TEXT"),
+            ("reconciled_at", "TEXT"),
+        ):
+            await self._ensure_column(
+                "ImageGeneration",
+                column_name,
+                column_definition,
+            )
         await self.db_client.execute(
             "CREATE INDEX IF NOT EXISTS idx_image_generation_reservation ON ImageGeneration(reservation_id)"
         )
@@ -169,6 +187,8 @@ class ImageGenerationStore:
         reference_ids: list[str] | None = None,
         visual_memory_applied: bool = False,
         reservation_id: str | None = None,
+        estimated_units: str | None = None,
+        quota_status: str | None = None,
     ) -> dict[str, Any]:
         self._ensure_connected()
         now = datetime.utcnow().isoformat()
@@ -178,12 +198,13 @@ class ImageGenerationStore:
             INSERT INTO ImageGeneration (
                 id, project_id, user_id, profile_id, provider, model, status, job_id,
                 reservation_id,
+                estimated_units, provider_cost_evidence_json, quota_status, quota_outcome,
                 prompt, prompt_hash, width, height, seed, output_format, cdn_url,
                 primary_url, responsive_urls_json, reference_ids_json,
                 visual_memory_applied, provider_cost, provider_request_id,
                 error_code, error_message, asset_id, provider_metadata_json,
-                created_at, updated_at, started_at, completed_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                created_at, updated_at, started_at, completed_at, reconciled_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             [
                 generation_id,
@@ -195,6 +216,10 @@ class ImageGenerationStore:
                 "queued",
                 job_id,
                 reservation_id,
+                estimated_units,
+                "{}",
+                quota_status,
+                None,
                 prompt,
                 prompt_hash(prompt),
                 width,
@@ -214,6 +239,7 @@ class ImageGenerationStore:
                 "{}",
                 now,
                 now,
+                None,
                 None,
                 None,
             ],
@@ -320,6 +346,44 @@ class ImageGenerationStore:
                 error_message[:1000],
                 provider_request_id,
                 json.dumps(provider_metadata or {}),
+                now,
+                now,
+                generation_id,
+                user_id,
+            ],
+        )
+
+    async def update_reconciliation(
+        self,
+        generation_id: str,
+        *,
+        user_id: str,
+        quota_status: str,
+        quota_outcome: str | None = None,
+        provider_cost_evidence: dict[str, Any] | None = None,
+        reconciled: bool = False,
+    ) -> None:
+        """Persist recoverable quota state independently from job status."""
+        self._ensure_connected()
+        now = datetime.utcnow().isoformat()
+        await self.db_client.execute(
+            """
+            UPDATE ImageGeneration
+            SET quota_status = ?, quota_outcome = COALESCE(?, quota_outcome),
+                provider_cost_evidence_json = COALESCE(?, provider_cost_evidence_json),
+                reconciled_at = CASE WHEN ? THEN ? ELSE reconciled_at END,
+                updated_at = ?
+            WHERE id = ? AND user_id = ?
+            """,
+            [
+                quota_status,
+                quota_outcome,
+                (
+                    json.dumps(provider_cost_evidence)
+                    if provider_cost_evidence is not None
+                    else None
+                ),
+                1 if reconciled else 0,
                 now,
                 now,
                 generation_id,
@@ -539,6 +603,10 @@ def _generation_row_to_dict(row: tuple[Any, ...]) -> dict[str, Any]:
     data["responsive_urls"] = _loads_json(data.pop("responsive_urls_json"), {})
     data["reference_ids"] = _loads_json(data.pop("reference_ids_json"), [])
     data["provider_metadata"] = _loads_json(data.pop("provider_metadata_json"), {})
+    data["provider_cost_evidence"] = _loads_json(
+        data.pop("provider_cost_evidence_json"),
+        {},
+    )
     data["visual_memory_applied"] = bool(data["visual_memory_applied"])
     return data
 

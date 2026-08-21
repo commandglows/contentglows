@@ -38,6 +38,8 @@ async def test_image_generation_store_persists_generations_and_references():
         model="flux-2-pro",
         job_id="job-1",
         reservation_id="reservation-1",
+        estimated_units="2.5",
+        quota_status="reserved",
         prompt="A precise editorial hero image",
         width=1440,
         height=810,
@@ -50,6 +52,17 @@ async def test_image_generation_store_persists_generations_and_references():
     assert generation["reference_ids"] == [reference["id"]]
     assert generation["visual_memory_applied"] is True
     assert generation["reservation_id"] == "reservation-1"
+    assert generation["estimated_units"] == "2.5"
+    assert generation["quota_status"] == "reserved"
+
+    await store.update_reconciliation(
+        generation["id"],
+        user_id="user-1",
+        quota_status="consumed",
+        quota_outcome="consumed",
+        provider_cost_evidence={"actualCost": "4.5", "costUnit": "provider_credit"},
+        reconciled=True,
+    )
 
     await store.mark_completed(
         generation["id"],
@@ -67,6 +80,10 @@ async def test_image_generation_store_persists_generations_and_references():
     assert stored["cdn_url"] == "https://cdn.example.com/out.jpg"
     assert stored["asset_id"] == "asset-1"
     assert stored["responsive_urls"]["800"].endswith("out-800.jpg")
+    assert stored["quota_status"] == "consumed"
+    assert stored["quota_outcome"] == "consumed"
+    assert stored["provider_cost_evidence"]["costUnit"] == "provider_credit"
+    assert stored["reconciled_at"] is not None
 
 
 @pytest.mark.asyncio

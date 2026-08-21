@@ -312,6 +312,10 @@ class ImageGenerationRecord(BaseModel):
     status: str
     job_id: Optional[str] = None
     reservation_id: Optional[str] = None
+    estimated_units: Optional[str] = None
+    provider_cost_evidence: Dict[str, Any] = Field(default_factory=dict)
+    quota_status: Optional[str] = None
+    quota_outcome: Optional[str] = None
     prompt: str
     prompt_hash: str
     width: int
@@ -333,6 +337,7 @@ class ImageGenerationRecord(BaseModel):
     updated_at: str
     started_at: Optional[str] = None
     completed_at: Optional[str] = None
+    reconciled_at: Optional[str] = None
 
 
 class ImageGenerationListResponse(BaseModel):
