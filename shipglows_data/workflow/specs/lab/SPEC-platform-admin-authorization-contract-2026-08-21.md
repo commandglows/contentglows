@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.0.1"
 project: "contentglows"
 created: "2026-08-21"
 created_at: "2026-08-21 16:40:01 UTC"
 updated: "2026-08-21"
-updated_at: "2026-08-21 16:40:01 UTC"
+updated_at: "2026-08-21 17:49:43 UTC"
 status: ready
 source_skill: sg-docs
 source_model: "GPT-5 Codex"
@@ -32,7 +32,7 @@ evidence:
   - "Clerk official session-token documentation checked on 2026-08-21 documents signed custom claims but also documents refresh lag; token metadata is therefore not selected as the mutation authority."
   - "The AI quota spec requires a dedicated admin-auth contract before Task 10 when no reliable admin role system exists."
 next_review: "2026-09-21"
-next_step: "Implement Tasks 1-4 before resuming Task 10 of the AI quota chantier."
+next_step: "Run focused security tests in an authorized environment, then define Task 5 bootstrap/revocation operations before any real grant."
 ---
 
 # Platform Admin Authorization Contract
@@ -152,10 +152,14 @@ Audit records never store bearer tokens, raw authorization headers, secrets, or 
 
 ## Execution Plan
 
-- [ ] Task 1: Add storage-agnostic grant, capability, and audit contracts.
-- [ ] Task 2: Add an injected-client durable adapter with additive schema and compare-and-set grant versioning.
-- [ ] Task 3: Add the reusable FastAPI permission dependency and redacted error mapping.
-- [ ] Task 4: Author focused tests for unauthenticated, ungranted, wrong-capability, revoked, stale-claim, feedback-allowlisted, self-targeting, cross-tenant, store-failure, idempotency, and audit-atomicity cases.
+- [x] Task 1: Add storage-agnostic grant, capability, and audit contracts.
+  - Notes: Typed frozen models define the exact four-capability vocabulary, active/revoked grants, redacted audit evidence, authorized context, and an atomic grant-mutation contract. Auth and persistence infrastructure do not leak into the domain contract.
+- [x] Task 2: Add an injected-client durable adapter with additive schema and compare-and-set grant versioning.
+  - Notes: The adapter owns idempotent tables/indexes, current grant lookup, strict identity uniqueness, transactional compare-and-set grant mutation, denied/failed audit append, and atomic success-audit coupling. No unaudited public grant-save method exists.
+- [x] Task 3: Add the reusable FastAPI permission dependency and redacted error mapping.
+  - Notes: Every check reloads the durable grant, verifies actor identity and one exact capability, rejects revoked/foreign grants, returns generic `403`, and maps store/configuration failures to a redacted `503`. Email, feedback allowlists, org roles, token metadata, and client fields are not read.
+- [x] Task 4: Author focused tests for unauthenticated, ungranted, wrong-capability, revoked, stale-claim, feedback-allowlisted, self-targeting, cross-tenant, store-failure, idempotency, and audit-atomicity cases.
+  - Notes: Model, adapter, dependency-composition, stale-claim/allowlist, per-request revocation, exact capability, foreign-grant, self-target, redaction, idempotency, compare-and-set, and transaction rollback tests are authored. Route-level target validation remains part of Task 6 because no platform-admin product route is introduced by this foundation. Automated execution and schema application remain deferred by the operator's no-local policy; Tasks 1-4 are implemented — unverified.
 - [ ] Task 5: Define and document the bounded bootstrap/revocation operations before any production grant is created.
 - [ ] Task 6: Resume AI quota Task 10 using only the proven dependency and exact AI usage capabilities.
 
@@ -184,7 +188,8 @@ Clerk's official documentation checked on 2026-08-21 states that custom session 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
 | 2026-08-21 16:40:01 UTC | sg-docs | GPT-5 Codex | Audited the existing authorization boundary and formalized a fail-closed platform capability contract after no reusable global admin authority was found. | Ready contract created; no permissions, grants, endpoints, or production state changed. | Implement Tasks 1-4 before resuming AI quota Task 10. |
+| 2026-08-21 17:49:43 UTC | sg-development | GPT-5 Codex | Implemented Tasks 1-4 with storage-agnostic authorization models, an injected libSQL adapter, mandatory atomic audit coupling for successful grant mutations, a fail-closed FastAPI dependency, and adversarial tests. | Implemented — unverified. Static contract/diff review only; no build, test, analyzer, schema application, server, grant provisioning, or runtime workload was executed under the operator's no-local policy. | Run focused security tests in an authorized environment, then define bounded bootstrap and revocation operations in Task 5. |
 
 ## Current Chantier Flow
 
-spec ready ✅ -> authorization implementation ⏳ -> focused security verification ⏳ -> AI quota Task 10 blocked pending proof
+spec ready ✅ -> Tasks 1-4 implemented — unverified ◐ -> focused security verification ⏳ -> Task 5 bootstrap contract ⏳ -> AI quota Task 10 blocked pending proof
