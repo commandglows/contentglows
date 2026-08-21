@@ -269,7 +269,8 @@ export const homepageContent: Record<Locale, HomePageContent> = {
         title: 'Simple Pricing. Start Free.',
         description: 'No credit card required. Upgrade when your content scales.',
       },
-      note: 'All plans include AI generation costs, updates, and security patches. No hidden fees.',
+      note:
+        'Plan prices cover platform access, updates, and security patches. For compatible AI actions, use your own provider key (BYOK) or, where available, ContentGlows-managed usage billed separately on a pay-as-you-go basis. The app shows availability and usage before generation.',
       plans: [
         {
           name: 'Free',
@@ -322,7 +323,7 @@ export const homepageContent: Record<Locale, HomePageContent> = {
           billingNote: 'For serious content creators and agencies',
           features: [
             'Unlimited projects',
-            'Unlimited content',
+            'Unlimited workspace content (AI usage separate)',
             'All Creator features',
             'Competitor analysis',
             'Ranking position tracking',
@@ -375,9 +376,9 @@ export const homepageContent: Record<Locale, HomePageContent> = {
             'Register your affiliate programs with keywords. ContentGlows can surface relevant matches when the topic fits, and you control which programs are active.',
         },
         {
-          question: 'Are API costs included?',
+          question: 'How are AI usage costs handled?',
           answer:
-            'Yes. All AI generation costs (LLM, search, analysis) are included in your plan. No surprise bills. The pricing is what you see.',
+            'Your plan covers access to the ContentGlows platform. Compatible AI actions can use your own provider key (BYOK), billed directly by that provider. Where available, ContentGlows-managed AI usage is separate and pay as you go; the app checks availability and usage before generation. Exact public usage prices are not listed here yet.',
         },
         {
           question: 'Can I use it on mobile?',
@@ -572,7 +573,7 @@ export const homepageContent: Record<Locale, HomePageContent> = {
         description: 'Pas de carte bancaire requise. Tu upgrades quand ton contenu change d’échelle.',
       },
       note:
-        'Tous les plans incluent les coûts IA, les mises à jour et les correctifs de sécurité. Pas de frais cachés.',
+        'Le prix des plans couvre l’accès à la plateforme, les mises à jour et les correctifs de sécurité. Pour les actions IA compatibles, utilise ta propre clé fournisseur (BYOK) ou, lorsqu’il est disponible, l’usage géré par ContentGlows, facturé séparément à l’usage. L’app affiche la disponibilité et l’usage avant la génération.',
       plans: [
         {
           name: 'Free',
@@ -625,7 +626,7 @@ export const homepageContent: Record<Locale, HomePageContent> = {
           billingNote: 'Pour les créateurs sérieux et les agences',
           features: [
             'Projets illimités',
-            'Contenu illimité',
+            'Contenu illimité dans le workspace (usage IA séparé)',
             'Toutes les fonctions Creator',
             'Analyse concurrentielle',
             'Suivi des positions',
@@ -678,9 +679,9 @@ export const homepageContent: Record<Locale, HomePageContent> = {
             'Enregistre tes programmes affiliés avec leurs mots-clés. ContentGlows peut faire remonter les correspondances pertinentes quand le sujet colle, et tu gardes le contrôle sur les programmes actifs.',
         },
         {
-          question: 'Les coûts API sont-ils inclus ?',
+          question: 'Comment sont facturés les usages IA ?',
           answer:
-            'Oui. Tous les coûts de génération IA (LLM, recherche, analyse) sont inclus dans ton plan. Pas de facture surprise. Le prix affiché est le bon.',
+            'Ton plan couvre l’accès à la plateforme ContentGlows. Les actions IA compatibles peuvent utiliser ta propre clé fournisseur (BYOK), facturée directement par ce fournisseur. Lorsqu’il est disponible, l’usage IA géré par ContentGlows est séparé et facturé à l’usage ; l’app vérifie la disponibilité et l’usage avant la génération. Les tarifs publics précis de cet usage ne sont pas encore affichés ici.',
         },
         {
           question: 'Puis-je l’utiliser sur mobile ?',
