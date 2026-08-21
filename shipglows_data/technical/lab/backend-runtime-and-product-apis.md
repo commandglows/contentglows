@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.2.0"
+artifact_version: "1.3.0"
 project: lab
 created: "2026-06-29"
-updated: "2026-08-09"
+updated: "2026-08-21"
 status: reviewed
 source_skill: sf-docs
 scope: technical
@@ -27,6 +27,11 @@ evidence:
   - api/services/
   - api/routers/brand_profiles.py
   - api/models/brand_profile.py
+  - api/models/ai_usage.py
+  - api/services/ai_usage_service.py
+  - api/services/ai_usage_policies.py
+  - api/services/libsql_ai_usage_store.py
+  - api/routers/ai_usage.py
   - api/migrations/005_video_timelines.sql
   - shipglows_data/technical/lab/architecture.md
 depends_on:
@@ -287,6 +292,162 @@ Required environment:
 - optional `BFL_SAFETY_TOLERANCE`, default `2`, server-side only
 
 Startup ensures `ImageGeneration` and `ImageReference` tables when Turso is configured. If FLUX or Turso is not configured, the API returns an explicit error instead of falling back to Robolly/OpenAI.
+
+## Managed AI Usage and Provider-Cost Controls
+
+This subsystem accounts for internal usage units and provider-cost evidence. It
+does not define public prices, checkout, invoices, taxes, or plan packaging.
+Managed enforcement currently wraps the Flux path end to end. Other action
+names can be configured and inspected, but they must not be described as
+provider-enforced until their own call paths reserve and settle usage.
+
+### Runtime configuration
+
+The runtime is composed lazily. Non-managed routes do not require quota
+configuration. A managed route fails closed with `503` when any required value
+is absent or invalid:
+
+- `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` select the durable libSQL store.
+- `AI_USAGE_POLICIES_JSON` is a JSON list with exactly one policy per action.
+- `AI_USAGE_RESERVATION_TTL_SECONDS` defaults to `900` and must be between `60`
+  and `3600` seconds.
+
+Policy fields:
+
+- `action`: `flux_image_generation`, `bunny_upload`, `remotion_render`, or
+  `byok_metadata`.
+- `billing_mode`: `managed` or `byok`.
+- `estimated_units`: internal decimal units, never a currency or public price.
+- `limit_behavior`: currently only `hard_block`.
+- `provider_failure_behavior`: `release` or `refund`.
+- `provider` and `model`: required for managed policies and forbidden for BYOK
+  metadata.
+- `admin_override_eligible`: policy metadata only; it does not grant authority
+  or expose an override route.
+
+For the currently enforced Flux path, use provider `flux`, a configured model,
+positive `estimated_units`, `hard_block`, and `refund`. Before provider start,
+failed work releases reserved units. After provider start, `refund` returns the
+user-facing units while retaining any provider-cost evidence. The example in
+`lab/.env.example` deliberately keeps `estimated_units` as `REPLACE_ME`; a
+deployment owner must choose internal units before enabling managed traffic.
+
+A BYOK metadata policy must use action `byok_metadata`, zero units, no provider
+or model, and no admin override eligibility. BYOK calls do not create managed
+reservations or consume managed units.
+
+The lazy runtime ensures its dedicated entitlement, reservation, ledger,
+provider-cost, and adjustment tables. This is schema initialization, not proof
+that an entitlement exists. There is currently no supported public or admin API
+for granting managed units; privileged quota mutation remains disabled pending
+the separate platform-admin security proof. Do not seed, edit, or repair quota
+tables manually.
+
+### Enforcement sequence
+
+The Flux path applies this order:
+
+1. authenticate the user and verify project ownership;
+2. resolve the server-owned action policy and required units;
+3. atomically reserve units before queueing or calling BFL;
+4. persist the reservation on the generation and generic job records;
+5. mark `provider_started` immediately before the provider call;
+6. capture provider-cost evidence from the BFL submit response;
+7. upload the completed output to a durable Bunny URL;
+8. consume units only after durable delivery;
+9. release before provider start, or refund after provider start when the
+   policy requires it;
+10. retain `reconciliation_pending` when settlement or history persistence is
+    interrupted.
+
+Reservations and settlements are idempotent and scoped by user plus project.
+Compare-and-set store mutations prevent concurrent double spend. A reservation
+TTL does not itself run cleanup: `expire_stale_reservations` exists in the
+service, but no production scheduler is currently wired to call it. Pending
+states therefore require inspection and an authorized reconciliation path;
+they must not be reported as automatically healed.
+
+### Provider-cost evidence
+
+BFL `cost`, `input_mp`, and `output_mp` values are normalized without currency
+conversion. Evidence records include:
+
+- provider `bfl`, action, model, and provider request ID;
+- `actual_cost` when BFL supplies it, with `cost_unit=provider_credit`;
+- input/output megapixels when supplied;
+- confidence `exact` when cost exists, otherwise `unknown` with no fabricated
+  value;
+- an aware UTC capture timestamp and explicit unknown-value flags.
+
+Provider credits are not euros or dollars. Never convert them to money without
+a separately versioned pricing source. Raw provider responses, keys, signed
+URLs, and secrets are not part of the app-visible policy projection.
+
+Before enforcing `bunny_upload` or `remotion_render`, re-check the current
+official provider billing contract and record its retrieval date, unit,
+currency or credit semantics, rounding, minimums, and missing-value behavior.
+Then add a normalized cost adapter, immutable evidence tests, reserve-before-
+spend wiring, and idempotent settlement on that exact call path. A policy entry
+alone does not make either action enforced. For Flux, repeat the same freshness
+check before changing model routing or interpreting BFL credits; never reuse an
+old pricing table as current truth.
+
+### Authenticated read routes
+
+All routes require authentication. Project routes verify ownership before
+reading runtime state:
+
+- `GET /api/ai-usage/summary?project_id=<id>` returns server-resolved status for
+  every configured policy.
+- `POST /api/ai-usage/preflight` accepts only `projectId` and `action`; clients
+  cannot choose required units.
+- `GET /api/ai-usage/history?project_id=<id>&event=<event>&limit=<1..100>`
+  returns the scoped ledger.
+- `GET /api/ai-usage/reservations/pending?project_id=<id>&limit=<1..100>`
+  returns `reserved` and `provider_started` reservations.
+- `GET /api/ai-usage/policies` returns action, billing mode, estimated units,
+  limit behavior, and failure behavior. Provider, model, and override metadata
+  stay private.
+
+There are no admin mutation routes in this subsystem. Capability names in the
+platform-admin model are contracts, not proof that quota grants, refunds, or
+overrides are callable.
+
+### Support and reconciliation guide
+
+Structured quota errors use these stable codes:
+
+- `ai_quota_exhausted`: managed balance is below required units; HTTP `402`,
+  not retryable without an entitlement change.
+- `ai_entitlement_missing`: no active matching entitlement; HTTP `402`, not
+  retryable until entitlement state changes.
+- `ai_reservation_conflict`: concurrent reservation state changed; HTTP `409`,
+  retryable after refreshing current state.
+- `ai_usage_scope_invalid`: user/project/org scope is invalid; do not retry
+  until the caller scope is corrected.
+- `ai_generation_rate_limited`: wait for the supplied retry window when this
+  code is emitted by a provider-integrated action.
+
+Configuration failures currently return a plain `503` detail rather than a
+structured quota envelope. `provider_not_configured` identifies missing BFL
+credentials on Flux generation and must not be treated as exhausted quota.
+
+For a support case:
+
+1. confirm the authenticated project and action;
+2. read summary, history, and pending reservations through the owner-scoped
+   routes;
+3. correlate `reservationId`, `jobId`, provider request ID, quota status, and
+   provider-cost confidence without copying secrets or signed URLs;
+4. distinguish provider failure from quota rejection and from
+   `reconciliation_pending`;
+5. never edit balances directly or claim a refund succeeded from a failed job
+   status alone.
+
+The service settlement operations are replay-safe only when invoked through an
+authorized, scope-checked reconciliation flow with matching evidence. Until
+the admin/reconciliation route and its security proof exist, escalate pending
+mutations rather than changing durable records manually.
 
 ## Project Selection Contract
 

@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.16"
+artifact_version: "1.0.17"
 project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 15:02:22 UTC"
 updated: "2026-08-21"
-updated_at: "2026-08-21 20:36:48 UTC"
+updated_at: "2026-08-21 21:16:59 UTC"
 status: active
 source_skill: sf-spec
 source_model: "gpt-5.5"
@@ -362,13 +362,13 @@ Add a backend-owned entitlement and usage ledger that gates managed AI generatio
   - Validate with: content review and site build.
   - Notes: English and French pricing notes and FAQ copy now state that plan prices cover platform access, compatible BYOK actions are billed by the user's provider, and managed AI is separately metered PAYG only where available. The Pro unlimited claim is explicitly limited to workspace content, with AI usage separate. Contradictory included-cost/no-hidden-fee claims were removed; no usage price, credit quantity, checkout behavior, or availability promise was invented. Authored on 2026-08-21; build and rendered publication proof remain deferred by the operator's no-local policy, so this task is implemented — unverified.
 
-- [ ] Task 15: Add provider cost configuration documentation
+- [x] Task 15: Add provider cost configuration documentation
   - File: `lab/README.md`
   - Action: Document provider-cost config, cost metadata sources, quota enforcement sequence, reconciliation job, admin override rules, and support error codes.
   - User story link: Makes the system operable and explainable.
   - Depends on: Tasks 1-10.
   - Validate with: doc review against implemented env vars/routes.
-  - Notes: Include Flux/Bunny/Remotion freshness-check instructions for implementation time.
+  - Notes: The local Lab entrypoint now links to the canonical backend operations contract. That contract documents the exact environment fields and policy invariants, fail-closed lazy runtime, Flux reserve/provider-start/Bunny-durable/settlement sequence, BFL provider-credit evidence, authenticated owner-scoped read routes, stable support codes, and explicit Flux/Bunny/Remotion freshness gates. It also records current operational gaps instead of inventing them: no scheduled stale-reservation cleanup, no supported admin quota mutation route, and no end-to-end Bunny/Remotion enforcement yet. The env example now reflects the approved post-provider refund behavior. Authored on 2026-08-21; runtime and automated doc checks remain deferred except for the explicitly approved read-only governance topology audit, so this task is implemented — unverified.
 
 ## Acceptance Criteria
 
@@ -459,7 +459,8 @@ None for this implementation-ready enforcement foundation. Exact public prices, 
 | 2026-08-21 20:09:56 UTC | sg-development | GPT-5 Codex | Implemented Task 12 with active-project Riverpod quota state, explicit freshness timestamps, per-action preflight projection, generation-completion refresh, and fail-closed stale/offline behavior. | Implemented — unverified. Static diff/contract review only; no Flutter build, test, analyzer, formatter, server, or runtime workload was executed under the operator's no-local policy. | Run focused provider tests in an authorized environment before wiring quota state and recovery actions into app UI in Task 13. |
 | 2026-08-21 20:31:30 UTC | sg-design + sg-development | GPT-5 Codex | Implemented Task 13 with a tokenized quota surface inside AI runtime settings, managed/BYOK explanations, per-action availability, exact unit balances, fail-closed error states, refresh, and support recovery. | Implemented — unverified. Static token/diff review only; no Flutter build, widget test, analyzer, formatter, visual render, accessibility run, or drift scanner was executed under the operator's no-local policy. | Collect representative managed, BYOK, blocked, loading, error, mobile, desktop, light, dark, and dynamic-text proof in an authorized environment before claiming visual completion. |
 | 2026-08-21 20:36:48 UTC | sg-content + sg-development | GPT-5 Codex | Implemented Task 14 by replacing contradictory English/French included-AI-cost promises with platform-access, BYOK, conditional managed-PAYG, and pre-generation visibility language, while qualifying unlimited workspace content. | Implemented — unverified. Source claim review and static contradiction scan only; no Astro build, browser render, link check, or hosted publication proof was executed under the operator's no-local policy. | Review the rendered pricing and FAQ surfaces in an authorized environment before publication; document implemented provider-cost configuration in Task 15. |
+| 2026-08-21 21:16:59 UTC | sg-docs | GPT-5 Codex | Implemented Task 15 with canonical managed-usage operations documentation, exact policy/runtime configuration, provider-credit evidence semantics, enforcement sequence, support codes, freshness gates, and explicit reconciliation/admin gaps. | Implemented — unverified. The explicitly approved read-only governance topology audit reported compliant; static source/doc review was used otherwise, with no build, test, metadata linter, server, migration, or runtime workload. | Run focused backend/doc validation in an authorized environment; Task 10 remains blocked until platform-admin security proof, and production reconciliation scheduling remains unimplemented. |
 
 ## Current Chantier Flow
 
-sf-spec ✅ -> sf-ready ✅ -> sf-start ◐ Tasks 1-9 and 11-14 code authored, execution deferred; Task 10 blocked on platform-admin security proof; Task 15 is next -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳
+sf-spec ✅ -> sf-ready ✅ -> sf-start ◐ Tasks 1-9 and 11-15 code/docs authored, execution deferred; Task 10 blocked on platform-admin security proof; scheduled reconciliation remains an implementation gap -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳

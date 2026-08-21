@@ -9,6 +9,7 @@ This root README is now an entrypoint, not the canonical technical source of tru
 - Technical index: `shipglows_data/technical/lab/README.md`
 - Architecture: `shipglows_data/technical/lab/architecture.md`
 - Placement and publish API contract: `shipglows_data/technical/lab/backend-runtime-and-product-apis.md`
+- AI usage, quota, provider-cost, and reconciliation operations: `shipglows_data/technical/lab/backend-runtime-and-product-apis.md#managed-ai-usage-and-provider-cost-controls`
 - Context: `shipglows_data/technical/lab/context.md`
 - Workflow backlog: `shipglows_data/workflow/lab/TASKS.md`
 - QA log: `shipglows_data/workflow/qa/TEST_LOG.md`
@@ -36,6 +37,15 @@ Useful local checks:
 - `pytest lab/tests/test_project_generation_context_builder.py lab/tests/test_project_generation_context_store.py`
 - `pytest lab/tests/test_newsletter_generation_context.py lab/tests/test_psychology_generation_context.py`
 - `rg -n "mem0ai|from memory|import memory|get_memory_service|chromadb" lab --glob "*.py"`
+
+## Managed AI Usage
+
+Managed AI enforcement is fail-closed and configured through
+`AI_USAGE_POLICIES_JSON` plus `AI_USAGE_RESERVATION_TTL_SECONDS`. The canonical
+operations contract, including supported fields, provider-cost evidence,
+reconciliation limits, authenticated read routes, and support error codes,
+lives in the technical API document linked above. Do not treat policy units as
+customer-facing prices or manually repair quota tables.
 
 ## Rule
 
