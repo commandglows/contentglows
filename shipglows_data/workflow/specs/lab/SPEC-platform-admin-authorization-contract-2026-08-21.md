@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.1"
+artifact_version: "1.0.2"
 project: "contentglows"
 created: "2026-08-21"
 created_at: "2026-08-21 16:40:01 UTC"
 updated: "2026-08-21"
-updated_at: "2026-08-21 17:49:43 UTC"
+updated_at: "2026-08-21 18:13:51 UTC"
 status: ready
 source_skill: sg-docs
 source_model: "GPT-5 Codex"
@@ -32,7 +32,7 @@ evidence:
   - "Clerk official session-token documentation checked on 2026-08-21 documents signed custom claims but also documents refresh lag; token metadata is therefore not selected as the mutation authority."
   - "The AI quota spec requires a dedicated admin-auth contract before Task 10 when no reliable admin role system exists."
 next_review: "2026-09-21"
-next_step: "Run focused security tests in an authorized environment, then define Task 5 bootstrap/revocation operations before any real grant."
+next_step: "Run focused security and operations tests in an authorized environment before any real grant or AI quota Task 10 implementation."
 ---
 
 # Platform Admin Authorization Contract
@@ -122,6 +122,21 @@ Audit records never store bearer tokens, raw authorization headers, secrets, or 
 - Initial bootstrap is an explicit deployment operation scoped to exact Clerk user ids, with a recorded actor/reason and a post-bootstrap removal or disablement step.
 - Revocation takes effect on the next privileged request because the durable registry, not the session claim, is authoritative.
 
+### Bounded operations procedure
+
+The implementation provides a non-HTTP operations entrypoint that is not imported by the API. It remains fail-closed unless all four temporary deployment values are present and exact:
+
+- `CONTENTGLOWS_PLATFORM_ADMIN_OPERATIONS=enabled`
+- `PLATFORM_ADMIN_OPERATION_ID` equal to the one operation id supplied to the command
+- `PLATFORM_ADMIN_BOOTSTRAP_ACTOR_USER_IDS` containing the exact Clerk user id of the named operator
+- `PLATFORM_ADMIN_OPERATION_EXPIRES_AT` as an aware ISO-8601 timestamp no more than 15 minutes in the future
+
+Each invocation accepts one action (`grant` or `revoke`), one exact actor Clerk user id, one distinct target Clerk user id, one operation id, and one bounded reason. Grant accepts only capabilities from the closed enum; revoke rejects capability arguments. The operation id is the idempotency authority and cannot be replayed against another actor, target, action, reason, or capability set.
+
+Bootstrap audit evidence uses the audit-only marker `platform_admin:bootstrap`. This marker cannot be stored in a grant and does not impersonate any of the four user-admin capabilities.
+
+Before an authorized hosted execution, the operator must capture the intended actor, target, capability set, reason, operation id, and expiry in the deployment change record. Immediately after the single operation, remove or disable all four temporary values and confirm the resulting grant/audit pair through a read-only administrative proof. Never place real values in repository files, shell history, logs, screenshots, tickets, or client configuration.
+
 ## Scope In
 
 - Durable capability grants and revocation.
@@ -160,7 +175,8 @@ Audit records never store bearer tokens, raw authorization headers, secrets, or 
   - Notes: Every check reloads the durable grant, verifies actor identity and one exact capability, rejects revoked/foreign grants, returns generic `403`, and maps store/configuration failures to a redacted `503`. Email, feedback allowlists, org roles, token metadata, and client fields are not read.
 - [x] Task 4: Author focused tests for unauthenticated, ungranted, wrong-capability, revoked, stale-claim, feedback-allowlisted, self-targeting, cross-tenant, store-failure, idempotency, and audit-atomicity cases.
   - Notes: Model, adapter, dependency-composition, stale-claim/allowlist, per-request revocation, exact capability, foreign-grant, self-target, redaction, idempotency, compare-and-set, and transaction rollback tests are authored. Route-level target validation remains part of Task 6 because no platform-admin product route is introduced by this foundation. Automated execution and schema application remain deferred by the operator's no-local policy; Tasks 1-4 are implemented — unverified.
-- [ ] Task 5: Define and document the bounded bootstrap/revocation operations before any production grant is created.
+- [x] Task 5: Define and document the bounded bootstrap/revocation operations before any production grant is created.
+  - Notes: A non-HTTP operations service and entrypoint are authored with default-off activation, exact actor/operation matching, a maximum 15-minute aware expiry, distinct actor/target ids, closed capabilities, normalized reasons, atomic grant/audit mutations, compare-and-set revocation, and conflicting-replay rejection. Focused service and activation-gate tests are authored. No command, schema, grant, revocation, or production operation was executed; Task 5 is implemented — unverified.
 - [ ] Task 6: Resume AI quota Task 10 using only the proven dependency and exact AI usage capabilities.
 
 ## Security Stops
@@ -189,7 +205,8 @@ Clerk's official documentation checked on 2026-08-21 states that custom session 
 |----------|-------|-------|--------|--------|-----------|
 | 2026-08-21 16:40:01 UTC | sg-docs | GPT-5 Codex | Audited the existing authorization boundary and formalized a fail-closed platform capability contract after no reusable global admin authority was found. | Ready contract created; no permissions, grants, endpoints, or production state changed. | Implement Tasks 1-4 before resuming AI quota Task 10. |
 | 2026-08-21 17:49:43 UTC | sg-development | GPT-5 Codex | Implemented Tasks 1-4 with storage-agnostic authorization models, an injected libSQL adapter, mandatory atomic audit coupling for successful grant mutations, a fail-closed FastAPI dependency, and adversarial tests. | Implemented — unverified. Static contract/diff review only; no build, test, analyzer, schema application, server, grant provisioning, or runtime workload was executed under the operator's no-local policy. | Run focused security tests in an authorized environment, then define bounded bootstrap and revocation operations in Task 5. |
+| 2026-08-21 18:13:51 UTC | sg-development | GPT-5 Codex | Implemented Task 5 as a default-off, short-lived, exact-actor and exact-operation non-HTTP bootstrap/revocation path with atomic evidence and conflict-safe replay semantics. | Implemented — unverified. No command, test, analyzer, schema application, grant, revocation, server, or runtime workload was executed under the operator's no-local policy. | Run the focused authorization and operations suites in an authorized environment before any real grant or privileged quota route. |
 
 ## Current Chantier Flow
 
-spec ready ✅ -> Tasks 1-4 implemented — unverified ◐ -> focused security verification ⏳ -> Task 5 bootstrap contract ⏳ -> AI quota Task 10 blocked pending proof
+spec ready ✅ -> Tasks 1-5 implemented — unverified ◐ -> focused security verification ⏳ -> AI quota Task 10 blocked pending proof

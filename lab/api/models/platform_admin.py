@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from enum import Enum
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
@@ -15,6 +15,14 @@ class PlatformAdminCapability(str, Enum):
     AI_USAGE_OVERRIDE = "ai_usage:override"
 
 
+class PlatformAdminAuditCapability(str, Enum):
+    AI_USAGE_READ_ALL = "ai_usage:read_all"
+    AI_USAGE_ADJUST = "ai_usage:adjust"
+    AI_USAGE_REFUND = "ai_usage:refund"
+    AI_USAGE_OVERRIDE = "ai_usage:override"
+    PLATFORM_ADMIN_BOOTSTRAP = "platform_admin:bootstrap"
+
+
 class PlatformAdminGrantStatus(str, Enum):
     ACTIVE = "active"
     REVOKED = "revoked"
@@ -25,6 +33,11 @@ class PlatformAdminAuditOutcome(str, Enum):
     DENIED = "denied"
     CONFLICT = "conflict"
     FAILED = "failed"
+
+
+class PlatformAdminAuthorityKind(str, Enum):
+    DURABLE_GRANT = "durable_grant"
+    BOOTSTRAP_OPERATION = "bootstrap_operation"
 
 
 class PlatformAdminModel(BaseModel):
@@ -74,9 +87,18 @@ class PlatformAdminAuditEvent(PlatformAdminModel):
     event_id: str = Field(min_length=1, max_length=128, pattern=r"^\S+$")
     idempotency_key: str = Field(min_length=1, max_length=128, pattern=r"^\S+$")
     actor_user_id: str = Field(min_length=1, max_length=128, pattern=r"^\S+$")
+    authority_kind: PlatformAdminAuthorityKind = (
+        PlatformAdminAuthorityKind.DURABLE_GRANT
+    )
     grant_id: str | None = Field(default=None, min_length=1, max_length=128)
     grant_version: int | None = Field(default=None, ge=1)
-    capability: PlatformAdminCapability
+    bootstrap_operation_id: str | None = Field(
+        default=None,
+        min_length=1,
+        max_length=128,
+        pattern=r"^\S+$",
+    )
+    capability: PlatformAdminAuditCapability
     action: str = Field(min_length=1, max_length=128, pattern=r"^[a-z0-9_.:-]+$")
     target_user_id: str | None = Field(default=None, min_length=1, max_length=128)
     target_project_id: str | None = Field(default=None, min_length=1, max_length=128)
@@ -97,8 +119,23 @@ class PlatformAdminAuditEvent(PlatformAdminModel):
     def validate_grant_reference(self) -> "PlatformAdminAuditEvent":
         if (self.grant_id is None) != (self.grant_version is None):
             raise ValueError("grant id and version must be supplied together")
-        if self.outcome is PlatformAdminAuditOutcome.ALLOWED and self.grant_id is None:
-            raise ValueError("allowed admin action requires grant evidence")
+        if self.authority_kind is PlatformAdminAuthorityKind.DURABLE_GRANT:
+            if self.capability is PlatformAdminAuditCapability.PLATFORM_ADMIN_BOOTSTRAP:
+                raise ValueError("durable grant authority cannot claim bootstrap capability")
+            if self.bootstrap_operation_id is not None:
+                raise ValueError("durable grant authority cannot claim bootstrap evidence")
+            if (
+                self.outcome is PlatformAdminAuditOutcome.ALLOWED
+                and self.grant_id is None
+            ):
+                raise ValueError("allowed admin action requires grant evidence")
+        else:
+            if self.capability is not PlatformAdminAuditCapability.PLATFORM_ADMIN_BOOTSTRAP:
+                raise ValueError("bootstrap authority requires bootstrap capability")
+            if self.grant_id is not None or self.grant_version is not None:
+                raise ValueError("bootstrap authority cannot claim durable grant evidence")
+            if self.bootstrap_operation_id is None:
+                raise ValueError("bootstrap authority requires an operation id")
         return self
 
 
@@ -107,3 +144,25 @@ class AuthorizedPlatformAdmin(PlatformAdminModel):
     grant_id: str
     grant_version: int
     capability: PlatformAdminCapability
+
+
+class PlatformAdminBootstrapAuthority(PlatformAdminModel):
+    actor_user_id: str = Field(min_length=1, max_length=128, pattern=r"^\S+$")
+    operation_id: str = Field(min_length=1, max_length=128, pattern=r"^\S+$")
+    issued_at: datetime
+    expires_at: datetime
+
+    @field_validator("issued_at", "expires_at")
+    @classmethod
+    def require_aware_expiry(cls, value: datetime) -> datetime:
+        if value.tzinfo is None or value.utcoffset() is None:
+            raise ValueError("bootstrap expiry must be timezone-aware")
+        return value
+
+    @model_validator(mode="after")
+    def require_short_window(self) -> "PlatformAdminBootstrapAuthority":
+        if self.expires_at <= self.issued_at:
+            raise ValueError("bootstrap expiry must follow issuance")
+        if self.expires_at - self.issued_at > timedelta(minutes=15):
+            raise ValueError("bootstrap authority cannot exceed 15 minutes")
+        return self

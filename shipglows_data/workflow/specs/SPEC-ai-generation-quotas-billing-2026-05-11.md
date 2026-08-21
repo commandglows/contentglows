@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.11"
+artifact_version: "1.0.12"
 project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 15:02:22 UTC"
 updated: "2026-08-20"
-updated_at: "2026-08-21 17:49:43 UTC"
+updated_at: "2026-08-21 18:13:51 UTC"
 status: active
 source_skill: sf-spec
 source_model: "gpt-5.5"
@@ -44,7 +44,7 @@ depends_on:
   - artifact: "shipglows_data/technical/app/guidelines.md"
     artifact_version: "1.0.0"
   - artifact: "shipglows_data/workflow/specs/lab/SPEC-platform-admin-authorization-contract-2026-08-21.md"
-    artifact_version: "1.0.1"
+    artifact_version: "1.0.2"
     required_status: "ready"
     required_status: "reviewed"
   - artifact: "shipglows_data/technical/site/guidelines.md"
@@ -328,7 +328,7 @@ Add a backend-owned entitlement and usage ledger that gates managed AI generatio
   - User story link: Lets operators resolve support cases and abuse safely.
   - Depends on: Task 9 and implemented, security-verified Tasks 1-4 of the platform admin authorization contract.
   - Validate with: admin auth tests, non-admin rejection tests, adjustment audit tests, and idempotent refund tests.
-  - Notes: Implementation stopped on 2026-08-21 after repository evidence showed only a feedback-local email allowlist and no platform authority. The attached platform-admin contract now has its durable capability registry, fail-closed dependency, audit contract, and adversarial tests authored, but execution/proof remains deferred; Task 10 therefore remains blocked on security verification. Do not reuse or widen the feedback allowlist.
+  - Notes: Implementation stopped on 2026-08-21 after repository evidence showed only a feedback-local email allowlist and no platform authority. The attached platform-admin contract now has its durable capability registry, fail-closed dependency, audit contract, adversarial tests, and bounded bootstrap/revocation path authored, but execution/proof remains deferred; Task 10 therefore remains blocked on security verification. Do not reuse or widen the feedback allowlist.
 
 - [ ] Task 11: Wire Flutter usage models and API methods
   - File: `app/lib/data/services/api_service.dart`
@@ -454,6 +454,7 @@ None for this implementation-ready enforcement foundation. Exact public prices, 
 | 2026-08-21 16:10:04 UTC | sg-development | GPT-5 Codex | Implemented Task 9 with authenticated owner-scoped quota summary, server-resolved preflight, ledger history, pending reservations, and redacted app-visible policy routes. | Implemented — unverified. Static contract/diff review only; no build, test, analyzer, schema application, HTTP server, or runtime workload was executed under the operator's no-local policy. | Run focused route/store tests in an authorized environment before deciding whether Task 10 can proceed against a reliable admin authorization contract. |
 | 2026-08-21 16:40:01 UTC | sg-docs | GPT-5 Codex | Audited the admin boundary, rejected reuse of the feedback-only email allowlist, and attached a ready fail-closed platform capability contract for privileged operations. | Task 10 correctly blocked on implementation and security proof of the new authorization prerequisite; no endpoint, grant, permission, or production state changed. | Implement and verify the platform authorization foundation before resuming Task 10. |
 | 2026-08-21 17:49:43 UTC | sg-development | GPT-5 Codex | Implemented the attached platform-admin authorization foundation through its first four tasks, including exact capabilities, durable compare-and-set grants, atomic audit evidence, fail-closed dependency composition, and adversarial tests. | Implemented — unverified. Task 10 remains blocked because the security suites and schema have not run under the operator's no-local policy. | Run the focused authorization suites in an authorized environment before resuming privileged quota routes. |
+| 2026-08-21 18:13:51 UTC | sg-development | GPT-5 Codex | Implemented the attached authorization Task 5 with a default-off, short-window, non-HTTP grant/revoke operations path and exact replay/audit controls. | Implemented — unverified. No operations command or real privilege change was executed; Task 10 remains blocked on authorized security proof. | Run focused authorization/operations suites before privileged quota routes or any real grant. |
 
 ## Current Chantier Flow
 

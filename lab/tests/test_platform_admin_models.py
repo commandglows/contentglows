@@ -62,3 +62,27 @@ def test_revocation_cannot_precede_grant():
             revoked_at=NOW - timedelta(seconds=1),
             version=2,
         )
+
+
+def test_bootstrap_audit_requires_operation_evidence_not_a_fake_grant():
+    event = PlatformAdminAuditEvent(
+        event_id="event-1",
+        idempotency_key="platform-admin-bootstrap:operation-1",
+        actor_user_id="operator-1",
+        authority_kind="bootstrap_operation",
+        bootstrap_operation_id="operation-1",
+        capability="platform_admin:bootstrap",
+        action="platform_admin.grant",
+        target_user_id="user-2",
+        reason="Initial bounded operations grant",
+        after_ref="platform_admin_grant:grant-1:v1",
+        outcome="allowed",
+        created_at=NOW,
+    )
+    assert event.grant_id is None
+
+    with pytest.raises(ValidationError, match="cannot claim durable grant"):
+        PlatformAdminAuditEvent.model_validate(
+            event.model_dump()
+            | {"grant_id": "forged-grant", "grant_version": 1}
+        )
