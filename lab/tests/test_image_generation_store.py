@@ -37,6 +37,7 @@ async def test_image_generation_store_persists_generations_and_references():
         provider="flux",
         model="flux-2-pro",
         job_id="job-1",
+        reservation_id="reservation-1",
         prompt="A precise editorial hero image",
         width=1440,
         height=810,
@@ -48,6 +49,7 @@ async def test_image_generation_store_persists_generations_and_references():
     assert generation["status"] == "queued"
     assert generation["reference_ids"] == [reference["id"]]
     assert generation["visual_memory_applied"] is True
+    assert generation["reservation_id"] == "reservation-1"
 
     await store.mark_completed(
         generation["id"],

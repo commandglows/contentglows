@@ -25,6 +25,7 @@ IMAGE_GENERATION_COLUMNS = (
     "model",
     "status",
     "job_id",
+    "reservation_id",
     "prompt",
     "prompt_hash",
     "width",
@@ -90,6 +91,7 @@ class ImageGenerationStore:
                 model TEXT NOT NULL,
                 status TEXT NOT NULL,
                 job_id TEXT,
+                reservation_id TEXT,
                 prompt TEXT NOT NULL,
                 prompt_hash TEXT NOT NULL,
                 width INTEGER NOT NULL,
@@ -141,6 +143,14 @@ class ImageGenerationStore:
             "CREATE INDEX IF NOT EXISTS idx_image_reference_user ON ImageReference(user_id, created_at)",
         ):
             await self.db_client.execute(statement)
+        await self._ensure_column(
+            "ImageGeneration",
+            "reservation_id",
+            "TEXT",
+        )
+        await self.db_client.execute(
+            "CREATE INDEX IF NOT EXISTS idx_image_generation_reservation ON ImageGeneration(reservation_id)"
+        )
 
     async def create_generation(
         self,
@@ -158,6 +168,7 @@ class ImageGenerationStore:
         output_format: str = "jpeg",
         reference_ids: list[str] | None = None,
         visual_memory_applied: bool = False,
+        reservation_id: str | None = None,
     ) -> dict[str, Any]:
         self._ensure_connected()
         now = datetime.utcnow().isoformat()
@@ -166,12 +177,13 @@ class ImageGenerationStore:
             """
             INSERT INTO ImageGeneration (
                 id, project_id, user_id, profile_id, provider, model, status, job_id,
+                reservation_id,
                 prompt, prompt_hash, width, height, seed, output_format, cdn_url,
                 primary_url, responsive_urls_json, reference_ids_json,
                 visual_memory_applied, provider_cost, provider_request_id,
                 error_code, error_message, asset_id, provider_metadata_json,
                 created_at, updated_at, started_at, completed_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             [
                 generation_id,
@@ -182,6 +194,7 @@ class ImageGenerationStore:
                 model,
                 "queued",
                 job_id,
+                reservation_id,
                 prompt,
                 prompt_hash(prompt),
                 width,
@@ -492,6 +505,19 @@ class ImageGenerationStore:
             raise RuntimeError(
                 "Image generation store not configured. Set TURSO_DATABASE_URL and TURSO_AUTH_TOKEN."
             )
+
+    async def _ensure_column(
+        self,
+        table_name: str,
+        column_name: str,
+        column_definition: str,
+    ) -> None:
+        columns = await self.db_client.execute(f"PRAGMA table_info({table_name})")
+        if any(str(row[1]) == column_name for row in columns.rows):
+            return
+        await self.db_client.execute(
+            f"ALTER TABLE {table_name} ADD COLUMN {column_name} {column_definition}"
+        )
 
 
 def prompt_hash(prompt: str) -> str:

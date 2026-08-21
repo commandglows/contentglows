@@ -282,6 +282,8 @@ class GenerateImageFromProfileResponse(BaseModel):
     upload_time_ms: Optional[int] = Field(default=None, description="Upload + optimizer prep time")
     generation_id: Optional[str] = Field(default=None, description="Durable image generation record ID")
     job_id: Optional[str] = Field(default=None, description="Async image generation job ID")
+    reservation_id: Optional[str] = Field(default=None, description="Managed usage reservation ID")
+    quota_status: Optional[Dict[str, Any]] = Field(default=None, description="Quota state after reservation")
     status: Optional[str] = Field(default=None, description="Async generation status")
     model: Optional[str] = Field(default=None, description="Provider model used")
     width: Optional[int] = Field(default=None, description="Requested output width")
@@ -309,6 +311,7 @@ class ImageGenerationRecord(BaseModel):
     model: str
     status: str
     job_id: Optional[str] = None
+    reservation_id: Optional[str] = None
     prompt: str
     prompt_hash: str
     width: int

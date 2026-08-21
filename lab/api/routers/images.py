@@ -10,7 +10,7 @@ IMPORTANT: Uses lazy imports for heavy dependencies.
 """
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
-from datetime import datetime
+from datetime import datetime, timedelta
 import asyncio
 import time
 import json
@@ -45,6 +45,22 @@ from api.models.images import (
 from api.dependencies.auth import CurrentUser, require_current_user
 from api.dependencies.ownership import require_owned_project_id
 from api.dependencies import get_image_pipeline
+from api.dependencies.ai_usage import (
+    AIUsageRuntimeProvider,
+    get_ai_usage_runtime_provider,
+)
+from api.models.ai_usage import (
+    AIQuotaError,
+    AIQuotaErrorCode,
+    AIQuotaErrorKind,
+    AIUsageAction,
+    AIUsageBillingMode,
+    AIUsageScope,
+)
+from api.services.ai_usage_service import (
+    AIUsageQuotaRejected,
+    AIUsageTransitionConflict,
+)
 from api.services.ai_image_generation import generate_openai_image_to_file
 from api.services.flux_image_generation import (
     DEFAULT_FLUX_MODEL,
@@ -225,6 +241,59 @@ async def _ensure_image_generation_store() -> None:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
 
 
+def _quota_http_error(rejection: AIUsageQuotaRejected, *, provider: str) -> HTTPException:
+    status = rejection.status
+    code = status.reason_code or AIQuotaErrorCode.RESERVATION_CONFLICT
+    kind = {
+        AIQuotaErrorCode.EXHAUSTED: AIQuotaErrorKind.QUOTA,
+        AIQuotaErrorCode.ENTITLEMENT_MISSING: AIQuotaErrorKind.ENTITLEMENT,
+        AIQuotaErrorCode.RESERVATION_CONFLICT: AIQuotaErrorKind.CONFLICT,
+        AIQuotaErrorCode.SCOPE_INVALID: AIQuotaErrorKind.ENTITLEMENT,
+        AIQuotaErrorCode.RATE_LIMITED: AIQuotaErrorKind.RATE_LIMIT,
+    }[code]
+    error = AIQuotaError(
+        code=code,
+        kind=kind,
+        message=(
+            "Managed AI usage quota is exhausted."
+            if code is AIQuotaErrorCode.EXHAUSTED
+            else "Managed AI usage entitlement is unavailable."
+        ),
+        action=status.action,
+        billing_mode=AIUsageBillingMode.MANAGED,
+        provider=provider,
+        remaining_units=(
+            status.unit_remaining if code is AIQuotaErrorCode.EXHAUSTED else None
+        ),
+        required_units=(
+            status.required_units if code is AIQuotaErrorCode.EXHAUSTED else None
+        ),
+        retryable=False,
+        settings_path="/settings/ai-runtime",
+    )
+    return HTTPException(
+        status_code=402,
+        detail=error.model_dump(mode="json", by_alias=True),
+    )
+
+
+def _quota_conflict_http_error(*, provider: str) -> HTTPException:
+    error = AIQuotaError(
+        code=AIQuotaErrorCode.RESERVATION_CONFLICT,
+        kind=AIQuotaErrorKind.CONFLICT,
+        message="Managed AI usage reservation changed concurrently.",
+        action=AIUsageAction.FLUX_IMAGE_GENERATION,
+        billing_mode=AIUsageBillingMode.MANAGED,
+        provider=provider,
+        retryable=True,
+        settings_path="/settings/ai-runtime",
+    )
+    return HTTPException(
+        status_code=409,
+        detail=error.model_dump(mode="json", by_alias=True),
+    )
+
+
 def _generation_record(data: Dict[str, Any]) -> ImageGenerationRecord:
     return ImageGenerationRecord(**data)
 
@@ -330,6 +399,7 @@ async def _run_flux_generation_job(
     profile_id: str,
     image_type: str,
     prompt: str,
+    model: str,
     width: int,
     height: int,
     seed: Optional[int],
@@ -344,7 +414,7 @@ async def _run_flux_generation_job(
     try:
         await image_generation_store.mark_running(generation_id, user_id=user_id)
         await _update_job_safely(job_id, status="running", progress=10, message="Flux generation started")
-        generator = FluxImageGenerator()
+        generator = FluxImageGenerator(model=model)
         result = await asyncio.to_thread(
             generator.generate_to_file,
             prompt=prompt,
@@ -1048,6 +1118,7 @@ async def generate_image_from_profile(
     background_tasks: BackgroundTasks,
     crew: "ImagePipeline" = Depends(get_image_pipeline),
     current_user: CurrentUser = Depends(require_current_user),
+    ai_usage_provider: AIUsageRuntimeProvider = Depends(get_ai_usage_runtime_provider),
 ) -> GenerateImageFromProfileResponse:
     """Generate one image from a saved profile."""
     try:
@@ -1142,6 +1213,7 @@ async def generate_image_from_profile(
             }
             source_url = temp_local_path
         elif resolved_provider == "flux":
+            ai_usage = await ai_usage_provider()
             await _ensure_image_generation_store()
             prompt_used = _build_ai_prompt(
                 profile=profile,
@@ -1190,22 +1262,65 @@ async def generate_image_from_profile(
             reference_urls = [str(ref["cdn_url"]) for ref in references]
             visual_memory_applied = bool(reference_urls)
             job_id = f"flux_image_{uuid.uuid4()}"
-            model = _configured_flux_model()
-            generation = await image_generation_store.create_generation(
-                project_id=request.project_id,
+            try:
+                policy = ai_usage.policies.resolve(AIUsageAction.FLUX_IMAGE_GENERATION)
+            except ValueError as exc:
+                raise HTTPException(
+                    status_code=503,
+                    detail="Flux usage policy is not configured.",
+                ) from exc
+            if policy.provider != "flux" or not policy.model:
+                raise HTTPException(
+                    status_code=503,
+                    detail="Flux usage policy provider/model configuration is invalid.",
+                )
+            model = policy.model
+            scope = AIUsageScope(
                 user_id=current_user.user_id,
-                profile_id=request.profile_id,
-                provider="flux",
-                model=model,
-                job_id=job_id,
-                prompt=prompt_used,
-                width=width,
-                height=height,
-                seed=request.seed,
-                output_format=request.output_format,
-                reference_ids=reference_ids,
-                visual_memory_applied=visual_memory_applied,
+                project_id=request.project_id,
             )
+            try:
+                reservation = await ai_usage.service.reserve(
+                    scope=scope,
+                    action=AIUsageAction.FLUX_IMAGE_GENERATION,
+                    units=policy.estimated_units,
+                    idempotency_key=f"flux:{current_user.user_id}:{job_id}",
+                    expires_in=timedelta(seconds=ai_usage.reservation_ttl_seconds),
+                    provider=policy.provider,
+                    model=policy.model,
+                    job_id=job_id,
+                )
+            except AIUsageQuotaRejected as exc:
+                raise _quota_http_error(exc, provider="flux") from exc
+            except AIUsageTransitionConflict as exc:
+                raise _quota_conflict_http_error(provider="flux") from exc
+            try:
+                generation = await image_generation_store.create_generation(
+                    project_id=request.project_id,
+                    user_id=current_user.user_id,
+                    profile_id=request.profile_id,
+                    provider="flux",
+                    model=model,
+                    job_id=job_id,
+                    reservation_id=reservation.reservation_id,
+                    prompt=prompt_used,
+                    width=width,
+                    height=height,
+                    seed=request.seed,
+                    output_format=request.output_format,
+                    reference_ids=reference_ids,
+                    visual_memory_applied=visual_memory_applied,
+                )
+            except Exception as exc:
+                await ai_usage.service.release(
+                    scope=scope,
+                    reservation_id=reservation.reservation_id,
+                    reason="flux_generation_record_failed",
+                )
+                raise HTTPException(
+                    status_code=503,
+                    detail="Flux generation could not be queued.",
+                ) from exc
             try:
                 if job_store.db_client:
                     await job_store.upsert(
@@ -1217,29 +1332,45 @@ async def generate_image_from_profile(
                         generation_id=generation["id"],
                         project_id=request.project_id,
                         user_id=current_user.user_id,
+                        reservation_id=reservation.reservation_id,
                     )
             except Exception as exc:
                 logger.warning(f"Failed to persist Flux job row: {exc}")
-
-            background_tasks.add_task(
-                _run_flux_generation_job,
-                crew=crew,
-                generation_id=generation["id"],
-                job_id=job_id,
-                project_id=request.project_id,
-                user_id=current_user.user_id,
-                profile_id=request.profile_id,
-                image_type=image_type,
-                prompt=prompt_used,
-                width=width,
-                height=height,
-                seed=request.seed,
-                output_format=request.output_format,
-                safety_tolerance=_configured_flux_safety_tolerance(),
-                reference_urls=reference_urls,
-                file_name=resolved_file_name,
-                alt_text=resolved_alt_text,
-                path_type=resolved_path,
+            try:
+                background_tasks.add_task(
+                    _run_flux_generation_job,
+                    crew=crew,
+                    generation_id=generation["id"],
+                    job_id=job_id,
+                    project_id=request.project_id,
+                    user_id=current_user.user_id,
+                    profile_id=request.profile_id,
+                    image_type=image_type,
+                    prompt=prompt_used,
+                    model=model,
+                    width=width,
+                    height=height,
+                    seed=request.seed,
+                    output_format=request.output_format,
+                    safety_tolerance=_configured_flux_safety_tolerance(),
+                    reference_urls=reference_urls,
+                    file_name=resolved_file_name,
+                    alt_text=resolved_alt_text,
+                    path_type=resolved_path,
+                )
+            except Exception as exc:
+                await ai_usage.service.release(
+                    scope=scope,
+                    reservation_id=reservation.reservation_id,
+                    reason="flux_background_task_failed",
+                )
+                raise HTTPException(
+                    status_code=503,
+                    detail="Flux generation could not be queued.",
+                ) from exc
+            quota_status = await ai_usage.service.preflight(
+                scope=scope,
+                action=AIUsageAction.FLUX_IMAGE_GENERATION,
             )
             return GenerateImageFromProfileResponse(
                 success=True,
@@ -1253,6 +1384,8 @@ async def generate_image_from_profile(
                 path_type_used=resolved_path,
                 generation_id=generation["id"],
                 job_id=job_id,
+                reservation_id=reservation.reservation_id,
+                quota_status=quota_status.model_dump(mode="json", by_alias=True),
                 status=generation["status"],
                 model=model,
                 width=width,

@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.4"
+artifact_version: "1.0.5"
 project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 15:02:22 UTC"
 updated: "2026-08-20"
-updated_at: "2026-08-21 07:37:04 UTC"
+updated_at: "2026-08-21 11:40:54 UTC"
 status: active
 source_skill: sf-spec
 source_model: "gpt-5.5"
@@ -278,13 +278,13 @@ Add a backend-owned entitlement and usage ledger that gates managed AI generatio
   - Validate with: authored tests for illustrative free/creator/pro-style fixtures, duplicate and unknown actions, missing policy resolution, and unsafe managed/BYOK combinations, without asserting real business prices.
   - Notes: The registry reads no environment or persistence state and exposes no price or currency field. Fixture names, providers, models, and unit values are illustrative; exact customer-facing commercial packages stay out of scope. Code authored on 2026-08-21; automated execution remains deferred by the operator's no-local policy, so this task is implemented — unverified.
 
-- [ ] Task 5: Gate Flux image generation before provider calls
-  - File: `lab/api/routers/images.py`
-  - Action: Call the usage service before queueing/submitting managed Flux generation, attach reservation id to the job/generation record, and return quota status in the app-facing response.
+- [x] Task 5: Gate Flux image generation before provider calls
+  - Files: `lab/api/routers/images.py`, `lab/api/dependencies/ai_usage.py`, `lab/api/models/images.py`, `lab/api/services/image_generation_store.py`
+  - Action: Lazily compose the usage service only for managed Flux, resolve the injected Flux policy, reserve units after auth/project/reference validation but before generation/job/task creation, attach the reservation id to generation and job metadata, and return quota state in the app-facing response.
   - User story link: Blocks unaffordable AI images before operator spend happens.
   - Depends on: Tasks 1-4 and the Flux provider implementation.
-  - Validate with: API tests for enough quota, exhausted quota, rate limit, foreign project, and provider-not-called-on-block.
-  - Notes: Keep V1 abuse controls from the Flux spec active.
+  - Validate with: authored API tests for enough quota, exhausted quota with no generation/provider task, foreign-project rejection before quota lookup, reservation linkage, and release when durable generation creation fails. Existing app-wide `429` rate limiting and provider `429` normalization remain covered by their existing paths.
+  - Notes: Managed enforcement is fail-closed when database or policy configuration is absent/invalid. Runtime policy values are deployment-owned internal units supplied through configuration, not public prices. Robolly and OpenAI do not initialize the managed-usage runtime. Code authored on 2026-08-21; automated execution remains deferred by the operator's no-local policy, so this task is implemented — unverified.
 
 - [ ] Task 6: Capture Flux/BFL actual-cost metadata
   - File: `lab/api/services/flux_image_generation.py`
@@ -443,7 +443,8 @@ None for this implementation-ready enforcement foundation. Exact public prices, 
 | 2026-08-20 18:35:45 UTC | sg-development | GPT-5 Codex | Implemented Task 2 as a persistence-agnostic store port plus an injected-client libSQL adapter and reusable adapter-contract tests. | Implemented — unverified. Static boundary review and diff integrity pass; no build, test, analyzer, migration, or runtime workload was executed under the operator's no-local policy. | Implement Task 3 by extending the agnostic port with atomic compare-and-set reservation transitions after confirming the adapter transaction contract. |
 | 2026-08-20 19:15:54 UTC | sg-development | GPT-5 Codex | Implemented Task 3 with storage-agnostic quota decisions, atomic domain mutations, serialized libSQL transactions, compare-and-set concurrency control, idempotent reconciliation, stale expiry, and focused contract tests. | Implemented — unverified. Static contract/diff review only; no build, test, analyzer, migration, provider call, or runtime workload was executed under the operator's no-local policy. | Run the focused store/service tests in an authorized environment before integrating configurable action policies in Task 4. |
 | 2026-08-21 07:37:04 UTC | sg-development | GPT-5 Codex | Implemented Task 4 as an injected immutable action-policy registry with typed managed/BYOK invariants, provider/model routing metadata, internal usage-unit estimates, hard blocking, failure reconciliation behavior, and admin-override eligibility. | Implemented — unverified. Static contract/diff review only; no build, test, analyzer, provider call, or runtime workload was executed under the operator's no-local policy. | Run the focused policy tests in an authorized environment before wiring Flux preflight in Task 5. |
+| 2026-08-21 11:40:54 UTC | sg-development | GPT-5 Codex | Implemented Task 5 with lazy runtime composition, owner-scoped Flux reservation before durable queue/provider work, structured quota errors, reservation linkage, configured model routing, and release on pre-queue failure. | Implemented — unverified. Static contract/diff review only; no build, test, analyzer, migration, provider call, background job, or runtime workload was executed under the operator's no-local policy. | Run focused route/store tests in an authorized environment before implementing provider-cost normalization in Task 6. |
 
 ## Current Chantier Flow
 
-sf-spec ✅ -> sf-ready ✅ -> sf-start ◐ Tasks 1-4 code authored, execution deferred; agnostic store, atomic reconciliation, and configurable action policies added -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳
+sf-spec ✅ -> sf-ready ✅ -> sf-start ◐ Tasks 1-5 code authored, execution deferred; Flux is reservation-gated before queued provider work -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳
