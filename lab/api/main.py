@@ -77,6 +77,7 @@ from api.routers import (
     brand_profiles_router,
     brand_video_blueprints_router,
     video_source_intake_router,
+    ai_usage_router,
 )
 from api.routers.scheduler import router as scheduler_router
 from api.routers.templates import router as templates_router
@@ -537,6 +538,7 @@ app.include_router(video_timelines_router)
 app.include_router(brand_profiles_router)
 app.include_router(brand_video_blueprints_router)
 app.include_router(video_source_intake_router)
+app.include_router(ai_usage_router)
 
 
 # ─────────────────────────────────────────────────

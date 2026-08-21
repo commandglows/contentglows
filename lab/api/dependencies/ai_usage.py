@@ -12,6 +12,7 @@ from fastapi import HTTPException
 
 from api.services.ai_usage_policies import AIUsagePolicySet
 from api.services.ai_usage_service import AIUsageService
+from api.services.ai_usage_store import AIUsageStore
 from api.services.libsql_ai_usage_store import LibsqlAIUsageStore
 from utils.libsql_async import create_client
 
@@ -19,6 +20,7 @@ from utils.libsql_async import create_client
 @dataclass(frozen=True)
 class AIUsageRuntime:
     service: AIUsageService
+    store: AIUsageStore
     policies: AIUsagePolicySet
     reservation_ttl_seconds: int
 
@@ -69,9 +71,10 @@ async def get_ai_usage_runtime() -> AIUsageRuntime:
         store = LibsqlAIUsageStore(
             db_client=create_client(url=database_url, auth_token=auth_token)
         )
-        await store.ensure_tables()
+        await store.ensure_schema()
         _runtime = AIUsageRuntime(
             service=AIUsageService(store=store),
+            store=store,
             policies=policies,
             reservation_ttl_seconds=ttl_seconds,
         )

@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.8"
+artifact_version: "1.0.9"
 project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 15:02:22 UTC"
 updated: "2026-08-20"
-updated_at: "2026-08-21 13:50:24 UTC"
+updated_at: "2026-08-21 16:10:04 UTC"
 status: active
 source_skill: sf-spec
 source_model: "gpt-5.5"
@@ -311,13 +311,13 @@ Add a backend-owned entitlement and usage ledger that gates managed AI generatio
   - Validate with: authored additive-schema, legacy-consumer compatibility, owner/project isolation, reservation lookup, pending-state listing, and owner-reassignment rejection tests.
   - Notes: The generic job store now accepts an injected database client while preserving its environment-backed singleton, adds nullable owner/reservation/cost-control columns and indexes additively, retains legacy JSON metadata, and exposes scoped recovery queries without provider-specific concepts. Code authored on 2026-08-21; automated execution and schema application remain deferred by the operator's no-local policy, so this task is implemented — unverified.
 
-- [ ] Task 9: Add usage/quota API routes
+- [x] Task 9: Add usage/quota API routes
   - File: `lab/api/routers/ai_usage.py`
   - Action: Add authenticated endpoints for current quota summary, action preflight, usage history, pending reservations, and app-visible policy metadata. Add admin endpoints only behind an explicit admin authorization check.
   - User story link: Powers UI state before generation and gives support/ops visibility.
   - Depends on: Tasks 1-4 and Task 8.
-  - Validate with: route tests for user isolation, project isolation, admin-only access, structured errors, and no secret leakage.
-  - Notes: Use `require_current_user` and existing ownership helpers.
+  - Validate with: authored route tests for mandatory authentication, user/project isolation before runtime access, server-resolved preflight units, scoped history, recoverable reservation states, structured action validation, absence of admin routes, and redaction of internal provider/model/override metadata.
+  - Notes: The authenticated API now exposes quota summary, action preflight, usage history, pending reservations, and an app-visible policy projection. Project reads use the existing ownership guard; preflight units come exclusively from server policy; the runtime exposes its agnostic store port for read queries; no admin mutation or internal provider configuration is exposed. Code authored on 2026-08-21; automated execution remains deferred by the operator's no-local policy, so this task is implemented — unverified.
 
 - [ ] Task 10: Add admin/ops adjustment and override flow
   - File: `lab/api/routers/admin_ai_usage.py`
@@ -448,7 +448,8 @@ None for this implementation-ready enforcement foundation. Exact public prices, 
 | 2026-08-21 11:54:45 UTC | sg-development | GPT-5 Codex | Implemented Task 6 with explicit provider-credit cost units, strict BFL cost/megapixel normalization, unknown-cost evidence, request identifiers, UTC timing, duration, and evidence retention across post-submit failures. | Implemented — unverified. Static contract/diff review only; no build, test, analyzer, provider call, background job, or runtime workload was executed under the operator's no-local policy. | Run focused model/provider tests in an authorized environment before reconciling reservations and durable assets in Task 7. |
 | 2026-08-21 13:12:20 UTC | sg-development | GPT-5 Codex | Implemented Task 7 with provider-start tracking, durable-Bunny consumption gating, policy-driven release/refund, provider-cost evidence persistence, explicit reconciliation outcomes, and recoverable pending states. | Implemented — unverified. Static contract/diff review only; no build, test, analyzer, schema application, provider/CDN call, background job, or runtime workload was executed under the operator's no-local policy. | Run focused store/worker tests in an authorized environment before extending owner-scoped job metadata and recovery queries in Task 8. |
 | 2026-08-21 13:50:24 UTC | sg-development | GPT-5 Codex | Implemented Task 8 with additive generic job ownership, reservation and cost-control metadata, injected-client compatibility, legacy JSON preservation, scoped recovery queries, and focused migration/isolation tests. | Implemented — unverified. Static contract/diff review only; no build, test, analyzer, schema application, background job, or runtime workload was executed under the operator's no-local policy. | Run the focused job-store tests and apply the additive schema in an authorized environment before exposing authenticated usage/quota APIs in Task 9. |
+| 2026-08-21 16:10:04 UTC | sg-development | GPT-5 Codex | Implemented Task 9 with authenticated owner-scoped quota summary, server-resolved preflight, ledger history, pending reservations, and redacted app-visible policy routes. | Implemented — unverified. Static contract/diff review only; no build, test, analyzer, schema application, HTTP server, or runtime workload was executed under the operator's no-local policy. | Run focused route/store tests in an authorized environment before deciding whether Task 10 can proceed against a reliable admin authorization contract. |
 
 ## Current Chantier Flow
 
-sf-spec ✅ -> sf-ready ✅ -> sf-start ◐ Tasks 1-8 code authored, execution deferred; recoverable jobs are now owner-scoped through a generic additive store contract -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳
+sf-spec ✅ -> sf-ready ✅ -> sf-start ◐ Tasks 1-9 code authored, execution deferred; authenticated app-facing quota reads now preserve owner scope and server policy authority -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳

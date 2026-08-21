@@ -36,6 +36,7 @@ from .video_timelines import router as video_timelines_router
 from .brand_profiles import router as brand_profiles_router
 from .brand_video_blueprints import router as brand_video_blueprints_router
 from .video_source_intake import router as video_source_intake_router
+from .ai_usage import router as ai_usage_router
 
 __all__ = [
     "mesh_router",
@@ -79,4 +80,5 @@ __all__ = [
     "brand_profiles_router",
     "brand_video_blueprints_router",
     "video_source_intake_router",
+    "ai_usage_router",
 ]
