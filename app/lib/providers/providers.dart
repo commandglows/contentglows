@@ -15,6 +15,7 @@ import '../core/shared_preferences_provider.dart';
 import '../data/demo/demo_seed.dart';
 import '../data/models/affiliate_link.dart';
 import '../data/models/ai_runtime.dart';
+import '../data/models/ai_usage.dart';
 import '../data/models/drip_plan.dart';
 import '../data/models/app_access_state.dart';
 import '../data/models/app_bootstrap.dart';
@@ -3137,6 +3138,122 @@ final aiRuntimeSettingsProvider = FutureProvider<AIRuntimeSettings>((
     return AIRuntimeSettings.fallback();
   }
 });
+
+final aiUsageClockProvider = Provider<DateTime Function()>(
+  (ref) => DateTime.now,
+);
+
+final aiUsageStateProvider =
+    AsyncNotifierProvider<AIUsageNotifier, AIUsageSnapshot?>(
+      AIUsageNotifier.new,
+    );
+
+final aiUsagePreflightStateProvider =
+    Provider.family<AIUsagePreflightResponse?, AIUsageAction>((ref, action) {
+      final accessState = ref.watch(appAccessStateProvider).value;
+      final activeProjectId = ref.watch(activeProjectIdProvider);
+      final snapshot = ref.watch(aiUsageStateProvider).value;
+      if (accessState?.canUseWorkspaceData != true ||
+          snapshot?.projectId != activeProjectId) {
+        return null;
+      }
+      return snapshot?.preflights[action];
+    });
+
+final aiUsageQuotaProvider = Provider.family<AIQuotaStatus?, AIUsageAction>((
+  ref,
+  action,
+) {
+  final accessState = ref.watch(appAccessStateProvider).value;
+  final activeProjectId = ref.watch(activeProjectIdProvider);
+  final snapshot = ref.watch(aiUsageStateProvider).value;
+  if (accessState?.canUseWorkspaceData != true ||
+      snapshot?.projectId != activeProjectId) {
+    return null;
+  }
+  final preflight = snapshot?.preflights[action];
+  if (preflight != null) {
+    return preflight.quota;
+  }
+  for (final quota in snapshot?.summary.quotas ?? const <AIQuotaStatus>[]) {
+    if (quota.action == action) {
+      return quota;
+    }
+  }
+  return null;
+});
+
+class AIUsageNotifier extends AsyncNotifier<AIUsageSnapshot?> {
+  @override
+  Future<AIUsageSnapshot?> build() async {
+    final accessState = ref.watch(appAccessStateProvider).value;
+    final projectId = ref.watch(activeProjectIdProvider);
+    if (accessState?.canUseWorkspaceData != true || projectId == null) {
+      return null;
+    }
+    return _load(projectId);
+  }
+
+  Future<void> refresh() async {
+    final accessState = ref.read(appAccessStateProvider).value;
+    final projectId = ref.read(activeProjectIdProvider);
+    if (accessState?.canUseWorkspaceData != true || projectId == null) {
+      state = const AsyncData(null);
+      return;
+    }
+
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() => _load(projectId));
+  }
+
+  Future<AIUsagePreflightResponse> preflight(AIUsageAction action) async {
+    final accessState = ref.read(appAccessStateProvider).value;
+    final projectId = ref.read(activeProjectIdProvider);
+    if (accessState?.canUseWorkspaceData != true || projectId == null) {
+      throw const ApiException(
+        ApiErrorType.invalidResponse,
+        'An active project is required to check AI usage.',
+        code: 'ai_usage_project_required',
+        retryable: false,
+      );
+    }
+
+    final previous = state.value;
+    state = const AsyncLoading();
+    try {
+      final result = await ref
+          .read(apiServiceProvider)
+          .preflightAiUsage(projectId: projectId, action: action);
+      final current = previous != null && previous.projectId == projectId
+          ? previous
+          : await _load(projectId);
+      state = AsyncData(
+        current.withPreflight(
+          action,
+          result,
+          fetchedAt: ref.read(aiUsageClockProvider)(),
+        ),
+      );
+      return result;
+    } catch (error, stackTrace) {
+      state = AsyncError(error, stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<void> refreshAfterGeneration() => refresh();
+
+  Future<AIUsageSnapshot> _load(String projectId) async {
+    final summary = await ref
+        .read(apiServiceProvider)
+        .fetchAiUsageSummary(projectId: projectId);
+    return AIUsageSnapshot(
+      projectId: projectId,
+      summary: summary,
+      fetchedAt: ref.read(aiUsageClockProvider)(),
+    );
+  }
+}
 
 final publishAccountsStateProvider = FutureProvider<PublishAccountsState>((
   ref,

@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.13"
+artifact_version: "1.0.14"
 project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 15:02:22 UTC"
 updated: "2026-08-21"
-updated_at: "2026-08-21 19:39:26 UTC"
+updated_at: "2026-08-21 20:09:56 UTC"
 status: active
 source_skill: sf-spec
 source_model: "gpt-5.5"
@@ -338,13 +338,13 @@ Add a backend-owned entitlement and usage ledger that gates managed AI generatio
   - Validate with: Dart unit tests for JSON parsing, quota error mapping, retryable flags, and stale/offline behavior.
   - Notes: Flutter now has typed quota, policy, reservation, ledger, and provider-cost contracts; exact decimal units remain strings to avoid precision loss. The API client exposes uncached summary, preflight, history, pending-reservation, and policy reads, refuses demo quota fabrication, and maps actionable quota error fields. Tests were authored for parsing, request shape, structured errors, and demo-mode freshness. Code authored on 2026-08-21; automated execution remains deferred by the operator's no-local policy, so this task is implemented — unverified.
 
-- [ ] Task 12: Expose quota state through Riverpod
+- [x] Task 12: Expose quota state through Riverpod
   - File: `app/lib/providers/providers.dart`
   - Action: Add providers/notifiers for AI usage summary, per-action preflight, refresh after generation completion, and stale state handling.
   - User story link: Keeps generation buttons, settings, and history in sync.
   - Depends on: Task 11.
   - Validate with: provider tests or smallest practical widget/provider tests.
-  - Notes: Avoid making offline cache imply quota is current for paid actions.
+  - Notes: An active-project async notifier now loads only server-authoritative summaries, exposes per-action quota and preflight state, refreshes after generation completion, and replaces prior data with loading/error during refresh so offline failures cannot masquerade as current quota. Access loss or no active project clears the state. Provider tests cover initial load, preflight replacement, post-generation refresh, and stale-data removal. Code authored on 2026-08-21; automated execution remains deferred by the operator's no-local policy, so this task is implemented — unverified.
 
 - [ ] Task 13: Add app UI contract for generation state and quota errors
   - File: `app/lib/presentation/screens/settings/integrations_screen.dart`
@@ -456,7 +456,8 @@ None for this implementation-ready enforcement foundation. Exact public prices, 
 | 2026-08-21 17:49:43 UTC | sg-development | GPT-5 Codex | Implemented the attached platform-admin authorization foundation through its first four tasks, including exact capabilities, durable compare-and-set grants, atomic audit evidence, fail-closed dependency composition, and adversarial tests. | Implemented — unverified. Task 10 remains blocked because the security suites and schema have not run under the operator's no-local policy. | Run the focused authorization suites in an authorized environment before resuming privileged quota routes. |
 | 2026-08-21 18:13:51 UTC | sg-development | GPT-5 Codex | Implemented the attached authorization Task 5 with a default-off, short-window, non-HTTP grant/revoke operations path and exact replay/audit controls. | Implemented — unverified. No operations command or real privilege change was executed; Task 10 remains blocked on authorized security proof. | Run focused authorization/operations suites before privileged quota routes or any real grant. |
 | 2026-08-21 19:39:26 UTC | sg-development | GPT-5 Codex | Implemented Task 11 with precision-safe Flutter usage models, uncached authenticated quota reads, server-authoritative preflight requests, structured quota error mapping, and focused contract tests. | Implemented — unverified. Static diff/contract review only; no Flutter build, test, analyzer, formatter, server, or runtime workload was executed under the operator's no-local policy. | Run focused Dart tests in an authorized environment before exposing quota state through Riverpod in Task 12. |
+| 2026-08-21 20:09:56 UTC | sg-development | GPT-5 Codex | Implemented Task 12 with active-project Riverpod quota state, explicit freshness timestamps, per-action preflight projection, generation-completion refresh, and fail-closed stale/offline behavior. | Implemented — unverified. Static diff/contract review only; no Flutter build, test, analyzer, formatter, server, or runtime workload was executed under the operator's no-local policy. | Run focused provider tests in an authorized environment before wiring quota state and recovery actions into app UI in Task 13. |
 
 ## Current Chantier Flow
 
-sf-spec ✅ -> sf-ready ✅ -> sf-start ◐ Tasks 1-9 and 11 code authored, execution deferred; Task 10 blocked on platform-admin security proof; Task 12 is next -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳
+sf-spec ✅ -> sf-ready ✅ -> sf-start ◐ Tasks 1-9 and 11-12 code authored, execution deferred; Task 10 blocked on platform-admin security proof; Task 13 is next -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳

@@ -318,6 +318,41 @@ class AIUsagePolicyList {
       );
 }
 
+class AIUsageSnapshot {
+  AIUsageSnapshot({
+    required this.projectId,
+    required this.summary,
+    required this.fetchedAt,
+    Map<AIUsageAction, AIUsagePreflightResponse> preflights =
+        const <AIUsageAction, AIUsagePreflightResponse>{},
+  }) : preflights = Map<AIUsageAction, AIUsagePreflightResponse>.unmodifiable(
+         preflights,
+       );
+
+  final String projectId;
+  final AIUsageSummary summary;
+  final DateTime fetchedAt;
+  final Map<AIUsageAction, AIUsagePreflightResponse> preflights;
+
+  AIUsageSnapshot withPreflight(
+    AIUsageAction action,
+    AIUsagePreflightResponse preflight, {
+    required DateTime fetchedAt,
+  }) {
+    final quotas = <AIQuotaStatus>[
+      for (final quota in summary.quotas)
+        if (quota.action != action) quota,
+      preflight.quota,
+    ];
+    return AIUsageSnapshot(
+      projectId: projectId,
+      summary: AIUsageSummary(projectId: projectId, quotas: quotas),
+      fetchedAt: fetchedAt,
+      preflights: {...preflights, action: preflight},
+    );
+  }
+}
+
 String _requiredString(Map<String, dynamic> json, String key) {
   final value = _optionalString(json, key);
   if (value == null) throw FormatException('Missing $key');
