@@ -11,6 +11,7 @@ import '../demo/demo_seed.dart';
 import '../models/affiliate_link.dart';
 import '../models/ai_image_generation.dart';
 import '../models/ai_runtime.dart';
+import '../models/ai_usage.dart';
 import '../models/brand_profile.dart';
 import '../models/app_bootstrap.dart';
 import '../models/app_settings.dart';
@@ -54,6 +55,12 @@ class ApiException implements Exception {
     this.provider,
     this.settingsPath,
     this.retryable,
+    this.action,
+    this.billingMode,
+    this.remainingUnits,
+    this.requiredUnits,
+    this.retryAfterSeconds,
+    this.details = const <String, dynamic>{},
   });
 
   final ApiErrorType type;
@@ -68,6 +75,12 @@ class ApiException implements Exception {
   final String? provider;
   final String? settingsPath;
   final bool? retryable;
+  final String? action;
+  final String? billingMode;
+  final String? remainingUnits;
+  final String? requiredUnits;
+  final int? retryAfterSeconds;
+  final Map<String, dynamic> details;
 
   bool get isUnauthorized => type == ApiErrorType.unauthorized;
   bool get isOffline => type == ApiErrorType.offline;
@@ -4797,6 +4810,95 @@ class ApiService {
     }
   }
 
+  Future<AIUsageSummary> fetchAiUsageSummary({
+    required String projectId,
+  }) async {
+    _requireLiveAiUsage();
+    try {
+      final response = await _dio.get(
+        '/api/ai-usage/summary',
+        queryParameters: {'project_id': projectId},
+      );
+      return AIUsageSummary.fromJson(_asMap(response.data));
+    } on DioException catch (error) {
+      throw _mapDioException(error);
+    }
+  }
+
+  Future<AIUsagePreflightResponse> preflightAiUsage({
+    required String projectId,
+    required AIUsageAction action,
+  }) async {
+    _requireLiveAiUsage();
+    try {
+      final response = await _dio.post(
+        '/api/ai-usage/preflight',
+        data: {'projectId': projectId, 'action': action.apiValue},
+      );
+      return AIUsagePreflightResponse.fromJson(_asMap(response.data));
+    } on DioException catch (error) {
+      throw _mapDioException(error);
+    }
+  }
+
+  Future<AIUsageHistory> fetchAiUsageHistory({
+    required String projectId,
+    String? event,
+    int limit = 50,
+  }) async {
+    _requireLiveAiUsage();
+    try {
+      final response = await _dio.get(
+        '/api/ai-usage/history',
+        queryParameters: {
+          'project_id': projectId,
+          if (event != null) 'event': event,
+          'limit': limit,
+        },
+      );
+      return AIUsageHistory.fromJson(_asMap(response.data));
+    } on DioException catch (error) {
+      throw _mapDioException(error);
+    }
+  }
+
+  Future<AIUsagePendingReservations> fetchPendingAiUsageReservations({
+    required String projectId,
+    int limit = 50,
+  }) async {
+    _requireLiveAiUsage();
+    try {
+      final response = await _dio.get(
+        '/api/ai-usage/reservations/pending',
+        queryParameters: {'project_id': projectId, 'limit': limit},
+      );
+      return AIUsagePendingReservations.fromJson(_asMap(response.data));
+    } on DioException catch (error) {
+      throw _mapDioException(error);
+    }
+  }
+
+  Future<AIUsagePolicyList> fetchAiUsagePolicies() async {
+    _requireLiveAiUsage();
+    try {
+      final response = await _dio.get('/api/ai-usage/policies');
+      return AIUsagePolicyList.fromJson(_asMap(response.data));
+    } on DioException catch (error) {
+      throw _mapDioException(error);
+    }
+  }
+
+  void _requireLiveAiUsage() {
+    if (allowDemoData) {
+      throw const ApiException(
+        ApiErrorType.invalidResponse,
+        'AI usage data is unavailable in demo mode.',
+        code: 'ai_usage_unavailable',
+        retryable: false,
+      );
+    }
+  }
+
   Future<AIRuntimeSettings> updateAiRuntimeMode(String mode) async {
     if (allowDemoData) {
       return AIRuntimeSettings.fallback();
@@ -6414,6 +6516,12 @@ class ApiService {
             _stringField(envelope, 'settingsPath') ??
             _stringField(envelope, 'settings_path'),
         retryable: _boolField(envelope, 'retryable'),
+        action: _stringField(envelope, 'action'),
+        billingMode: _camelOrSnakeField(envelope, 'billingMode', 'billing_mode'),
+        remainingUnits: _camelOrSnakeField(envelope, 'remainingUnits', 'remaining_units'),
+        requiredUnits: _camelOrSnakeField(envelope, 'requiredUnits', 'required_units'),
+        retryAfterSeconds: _camelOrSnakeIntField(envelope, 'retryAfterSeconds', 'retry_after_seconds'),
+        details: _mapField(envelope, 'details'),
       );
     }
 
@@ -6436,6 +6544,12 @@ class ApiService {
             _stringField(envelope, 'settingsPath') ??
             _stringField(envelope, 'settings_path'),
         retryable: _boolField(envelope, 'retryable'),
+        action: _stringField(envelope, 'action'),
+        billingMode: _camelOrSnakeField(envelope, 'billingMode', 'billing_mode'),
+        remainingUnits: _camelOrSnakeField(envelope, 'remainingUnits', 'remaining_units'),
+        requiredUnits: _camelOrSnakeField(envelope, 'requiredUnits', 'required_units'),
+        retryAfterSeconds: _camelOrSnakeIntField(envelope, 'retryAfterSeconds', 'retry_after_seconds'),
+        details: _mapField(envelope, 'details'),
       );
     }
 
@@ -6457,6 +6571,12 @@ class ApiService {
             _stringField(envelope, 'settingsPath') ??
             _stringField(envelope, 'settings_path'),
         retryable: _boolField(envelope, 'retryable'),
+        action: _stringField(envelope, 'action'),
+        billingMode: _camelOrSnakeField(envelope, 'billingMode', 'billing_mode'),
+        remainingUnits: _camelOrSnakeField(envelope, 'remainingUnits', 'remaining_units'),
+        requiredUnits: _camelOrSnakeField(envelope, 'requiredUnits', 'required_units'),
+        retryAfterSeconds: _camelOrSnakeIntField(envelope, 'retryAfterSeconds', 'retry_after_seconds'),
+        details: _mapField(envelope, 'details'),
       );
     }
 
@@ -6475,6 +6595,12 @@ class ApiService {
           _stringField(envelope, 'settingsPath') ??
           _stringField(envelope, 'settings_path'),
       retryable: _boolField(envelope, 'retryable'),
+      action: _stringField(envelope, 'action'),
+      billingMode: _camelOrSnakeField(envelope, 'billingMode', 'billing_mode'),
+      remainingUnits: _camelOrSnakeField(envelope, 'remainingUnits', 'remaining_units'),
+      requiredUnits: _camelOrSnakeField(envelope, 'requiredUnits', 'required_units'),
+      retryAfterSeconds: _camelOrSnakeIntField(envelope, 'retryAfterSeconds', 'retry_after_seconds'),
+      details: _mapField(envelope, 'details'),
     );
   }
 
@@ -6610,6 +6736,33 @@ class ApiService {
     }
     final text = value.toString().trim();
     return text.isEmpty ? null : text;
+  }
+
+  String? _camelOrSnakeField(
+    Map<String, dynamic>? data,
+    String camelKey,
+    String snakeKey,
+  ) => _stringField(data, camelKey) ?? _stringField(data, snakeKey);
+
+  int? _camelOrSnakeIntField(
+    Map<String, dynamic>? data,
+    String camelKey,
+    String snakeKey,
+  ) {
+    final value = data?[camelKey] ?? data?[snakeKey];
+    return value is int ? value : int.tryParse(value?.toString() ?? '');
+  }
+
+  Map<String, dynamic> _mapField(
+    Map<String, dynamic>? data,
+    String key,
+  ) {
+    final value = data?[key];
+    return value is Map
+        ? Map<String, dynamic>.unmodifiable(
+            Map<String, dynamic>.from(value),
+          )
+        : const <String, dynamic>{};
   }
 
   bool? _boolField(Map<String, dynamic>? data, String key) {

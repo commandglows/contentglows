@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.12"
+artifact_version: "1.0.13"
 project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 15:02:22 UTC"
-updated: "2026-08-20"
-updated_at: "2026-08-21 18:13:51 UTC"
+updated: "2026-08-21"
+updated_at: "2026-08-21 19:39:26 UTC"
 status: active
 source_skill: sf-spec
 source_model: "gpt-5.5"
@@ -330,13 +330,13 @@ Add a backend-owned entitlement and usage ledger that gates managed AI generatio
   - Validate with: admin auth tests, non-admin rejection tests, adjustment audit tests, and idempotent refund tests.
   - Notes: Implementation stopped on 2026-08-21 after repository evidence showed only a feedback-local email allowlist and no platform authority. The attached platform-admin contract now has its durable capability registry, fail-closed dependency, audit contract, adversarial tests, and bounded bootstrap/revocation path authored, but execution/proof remains deferred; Task 10 therefore remains blocked on security verification. Do not reuse or widen the feedback allowlist.
 
-- [ ] Task 11: Wire Flutter usage models and API methods
+- [x] Task 11: Wire Flutter usage models and API methods
   - File: `app/lib/data/services/api_service.dart`
   - Action: Add typed methods for usage summary, action preflight, usage history, and quota-aware generation responses/errors.
   - User story link: Allows the app to show quota state and recoverable error actions.
   - Depends on: Task 9.
   - Validate with: Dart unit tests for JSON parsing, quota error mapping, retryable flags, and stale/offline behavior.
-  - Notes: Reuse existing `ApiException` envelope fields.
+  - Notes: Flutter now has typed quota, policy, reservation, ledger, and provider-cost contracts; exact decimal units remain strings to avoid precision loss. The API client exposes uncached summary, preflight, history, pending-reservation, and policy reads, refuses demo quota fabrication, and maps actionable quota error fields. Tests were authored for parsing, request shape, structured errors, and demo-mode freshness. Code authored on 2026-08-21; automated execution remains deferred by the operator's no-local policy, so this task is implemented — unverified.
 
 - [ ] Task 12: Expose quota state through Riverpod
   - File: `app/lib/providers/providers.dart`
@@ -455,7 +455,8 @@ None for this implementation-ready enforcement foundation. Exact public prices, 
 | 2026-08-21 16:40:01 UTC | sg-docs | GPT-5 Codex | Audited the admin boundary, rejected reuse of the feedback-only email allowlist, and attached a ready fail-closed platform capability contract for privileged operations. | Task 10 correctly blocked on implementation and security proof of the new authorization prerequisite; no endpoint, grant, permission, or production state changed. | Implement and verify the platform authorization foundation before resuming Task 10. |
 | 2026-08-21 17:49:43 UTC | sg-development | GPT-5 Codex | Implemented the attached platform-admin authorization foundation through its first four tasks, including exact capabilities, durable compare-and-set grants, atomic audit evidence, fail-closed dependency composition, and adversarial tests. | Implemented — unverified. Task 10 remains blocked because the security suites and schema have not run under the operator's no-local policy. | Run the focused authorization suites in an authorized environment before resuming privileged quota routes. |
 | 2026-08-21 18:13:51 UTC | sg-development | GPT-5 Codex | Implemented the attached authorization Task 5 with a default-off, short-window, non-HTTP grant/revoke operations path and exact replay/audit controls. | Implemented — unverified. No operations command or real privilege change was executed; Task 10 remains blocked on authorized security proof. | Run focused authorization/operations suites before privileged quota routes or any real grant. |
+| 2026-08-21 19:39:26 UTC | sg-development | GPT-5 Codex | Implemented Task 11 with precision-safe Flutter usage models, uncached authenticated quota reads, server-authoritative preflight requests, structured quota error mapping, and focused contract tests. | Implemented — unverified. Static diff/contract review only; no Flutter build, test, analyzer, formatter, server, or runtime workload was executed under the operator's no-local policy. | Run focused Dart tests in an authorized environment before exposing quota state through Riverpod in Task 12. |
 
 ## Current Chantier Flow
 
-sf-spec ✅ -> sf-ready ✅ -> sf-start ◐ Tasks 1-9 code authored, execution deferred; Task 10 blocked on the attached platform-admin authorization implementation and proof -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳
+sf-spec ✅ -> sf-ready ✅ -> sf-start ◐ Tasks 1-9 and 11 code authored, execution deferred; Task 10 blocked on platform-admin security proof; Task 12 is next -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳
