@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.17"
+artifact_version: "1.0.18"
 project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 15:02:22 UTC"
 updated: "2026-08-21"
-updated_at: "2026-08-21 21:16:59 UTC"
+updated_at: "2026-08-21 21:38:00 UTC"
 status: active
 source_skill: sf-spec
 source_model: "gpt-5.5"
@@ -368,7 +368,15 @@ Add a backend-owned entitlement and usage ledger that gates managed AI generatio
   - User story link: Makes the system operable and explainable.
   - Depends on: Tasks 1-10.
   - Validate with: doc review against implemented env vars/routes.
-  - Notes: The local Lab entrypoint now links to the canonical backend operations contract. That contract documents the exact environment fields and policy invariants, fail-closed lazy runtime, Flux reserve/provider-start/Bunny-durable/settlement sequence, BFL provider-credit evidence, authenticated owner-scoped read routes, stable support codes, and explicit Flux/Bunny/Remotion freshness gates. It also records current operational gaps instead of inventing them: no scheduled stale-reservation cleanup, no supported admin quota mutation route, and no end-to-end Bunny/Remotion enforcement yet. The env example now reflects the approved post-provider refund behavior. Authored on 2026-08-21; runtime and automated doc checks remain deferred except for the explicitly approved read-only governance topology audit, so this task is implemented — unverified.
+  - Notes: The local Lab entrypoint now links to the canonical backend operations contract. That contract documents the exact environment fields and policy invariants, fail-closed lazy runtime, Flux reserve/provider-start/Bunny-durable/settlement sequence, BFL provider-credit evidence, authenticated owner-scoped read routes, stable support codes, and explicit Flux/Bunny/Remotion freshness gates. At Task 15 authoring time it accurately recorded the missing scheduler; Task 16 now closes that source gap while the unsupported admin mutation route and absent end-to-end Bunny/Remotion enforcement remain explicit. The env example reflects both the approved post-provider refund behavior and bounded reconciliation configuration. Authored on 2026-08-21; runtime and automated doc checks remain deferred except for the explicitly approved read-only governance topology audit, so this task is implemented — unverified.
+
+- [x] Task 16: Schedule bounded AI usage reconciliation
+  - Files: `lab/api/services/ai_usage_reconciliation.py`, `lab/api/services/image_generation_store.py`, `lab/scheduler/scheduler_service.py`
+  - Action: Discover a bounded oldest-first batch, expire stale pre-provider reservations by exact user/project scope, settle failed generations from durable policy/evidence, consume successful work only when the persisted job contains durable asset evidence, and project already-terminal ledger states back to generation history.
+  - User story link: Restores reserved units after crashes and closes recoverable quota states without replaying provider work.
+  - Depends on: Tasks 3, 4, 7, and 8.
+  - Validate with: focused scheduler, candidate-store, expiration, idempotent settlement, tenant-scope, durable-evidence, ambiguous-state deferral, and concurrent replay tests.
+  - Notes: The existing scheduler invokes one bounded batch approximately every ten minutes. Candidate discovery is workflow-specific while every quota mutation remains behind the agnostic, scoped usage service/store contract. Ambiguous success states without persisted durable asset evidence are deferred; the scheduler never invokes BFL/Bunny, grants units, or performs admin mutations. Authored on 2026-08-21; automated execution and deployed multi-instance proof remain deferred by the operator's no-local policy, so this task is implemented — unverified.
 
 ## Acceptance Criteria
 
@@ -460,7 +468,8 @@ None for this implementation-ready enforcement foundation. Exact public prices, 
 | 2026-08-21 20:31:30 UTC | sg-design + sg-development | GPT-5 Codex | Implemented Task 13 with a tokenized quota surface inside AI runtime settings, managed/BYOK explanations, per-action availability, exact unit balances, fail-closed error states, refresh, and support recovery. | Implemented — unverified. Static token/diff review only; no Flutter build, widget test, analyzer, formatter, visual render, accessibility run, or drift scanner was executed under the operator's no-local policy. | Collect representative managed, BYOK, blocked, loading, error, mobile, desktop, light, dark, and dynamic-text proof in an authorized environment before claiming visual completion. |
 | 2026-08-21 20:36:48 UTC | sg-content + sg-development | GPT-5 Codex | Implemented Task 14 by replacing contradictory English/French included-AI-cost promises with platform-access, BYOK, conditional managed-PAYG, and pre-generation visibility language, while qualifying unlimited workspace content. | Implemented — unverified. Source claim review and static contradiction scan only; no Astro build, browser render, link check, or hosted publication proof was executed under the operator's no-local policy. | Review the rendered pricing and FAQ surfaces in an authorized environment before publication; document implemented provider-cost configuration in Task 15. |
 | 2026-08-21 21:16:59 UTC | sg-docs | GPT-5 Codex | Implemented Task 15 with canonical managed-usage operations documentation, exact policy/runtime configuration, provider-credit evidence semantics, enforcement sequence, support codes, freshness gates, and explicit reconciliation/admin gaps. | Implemented — unverified. The explicitly approved read-only governance topology audit reported compliant; static source/doc review was used otherwise, with no build, test, metadata linter, server, migration, or runtime workload. | Run focused backend/doc validation in an authorized environment; Task 10 remains blocked until platform-admin security proof, and production reconciliation scheduling remains unimplemented. |
+| 2026-08-21 21:38:00 UTC | sg-development + sg-engineering | GPT-5 Codex | Implemented Task 16 with bounded scheduler-driven stale expiry and evidence-gated reconciliation while preserving the agnostic quota store boundary. | Implemented — unverified. Contract tests were authored and static diff review performed; no build, test, analyzer, schema application, scheduler, provider call, or runtime workload was executed under the operator's no-local policy. | Run the focused reconciliation suites and deployed multi-instance scheduler proof in an authorized environment; Task 10 remains separately blocked on platform-admin security proof. |
 
 ## Current Chantier Flow
 
-sf-spec ✅ -> sf-ready ✅ -> sf-start ◐ Tasks 1-9 and 11-15 code/docs authored, execution deferred; Task 10 blocked on platform-admin security proof; scheduled reconciliation remains an implementation gap -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳
+sf-spec ✅ -> sf-ready ✅ -> sf-start ◐ Tasks 1-9 and 11-16 code/docs authored, execution deferred; Task 10 blocked on platform-admin security proof; reconciliation scheduler authored but not runtime-verified -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳

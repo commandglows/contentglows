@@ -89,6 +89,25 @@ async def test_scheduler_runs_bounded_media_reconciliation(monkeypatch):
 
 
 @pytest.mark.asyncio
+async def test_scheduler_runs_bounded_ai_usage_reconciliation(monkeypatch):
+    calls = []
+
+    class _Reconciler:
+        async def run_batch(self):
+            calls.append("run")
+            return SimpleNamespace(inspected=0)
+
+    monkeypatch.setattr(
+        "api.services.ai_usage_reconciliation.get_ai_usage_reconciliation_service",
+        lambda: _Reconciler(),
+    )
+
+    await SchedulerService()._reconcile_ai_usage()
+
+    assert calls == ["run"]
+
+
+@pytest.mark.asyncio
 async def test_auto_video_job_consumes_complete_content(monkeypatch):
     fake_svc = _FakeStatusService()
     fake_svc.contents = [

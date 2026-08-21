@@ -149,6 +149,7 @@ class ImageGenerationStore:
             "CREATE INDEX IF NOT EXISTS idx_image_generation_project ON ImageGeneration(project_id, created_at)",
             "CREATE INDEX IF NOT EXISTS idx_image_generation_user ON ImageGeneration(user_id, created_at)",
             "CREATE INDEX IF NOT EXISTS idx_image_generation_job ON ImageGeneration(job_id)",
+            "CREATE INDEX IF NOT EXISTS idx_image_generation_quota_reconciliation ON ImageGeneration(quota_status, updated_at)",
             "CREATE INDEX IF NOT EXISTS idx_image_reference_project ON ImageReference(project_id, approved, created_at)",
             "CREATE INDEX IF NOT EXISTS idx_image_reference_user ON ImageReference(user_id, created_at)",
         ):
@@ -419,6 +420,27 @@ class ImageGenerationStore:
             LIMIT ?
             """,
             [project_id, user_id, limit],
+        )
+        return [_generation_row_to_dict(row) for row in rs.rows]
+
+    async def list_quota_reconciliation_candidates(
+        self,
+        *,
+        limit: int = 100,
+    ) -> list[dict[str, Any]]:
+        """Return a bounded oldest-first batch without mutating quota state."""
+        self._ensure_connected()
+        fields = ", ".join(IMAGE_GENERATION_COLUMNS)
+        bounded_limit = max(1, min(limit, 500))
+        rs = await self.db_client.execute(
+            f"""
+            SELECT {fields} FROM ImageGeneration
+            WHERE reservation_id IS NOT NULL
+              AND quota_status IN ('reserved', 'reconciliation_pending')
+            ORDER BY updated_at ASC, id ASC
+            LIMIT ?
+            """,
+            [bounded_limit],
         )
         return [_generation_row_to_dict(row) for row in rs.rows]
 

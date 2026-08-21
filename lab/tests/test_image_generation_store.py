@@ -55,6 +55,9 @@ async def test_image_generation_store_persists_generations_and_references():
     assert generation["estimated_units"] == "2.5"
     assert generation["quota_status"] == "reserved"
 
+    candidates = await store.list_quota_reconciliation_candidates(limit=1)
+    assert [candidate["id"] for candidate in candidates] == [generation["id"]]
+
     await store.update_reconciliation(
         generation["id"],
         user_id="user-1",
@@ -84,6 +87,7 @@ async def test_image_generation_store_persists_generations_and_references():
     assert stored["quota_outcome"] == "consumed"
     assert stored["provider_cost_evidence"]["costUnit"] == "provider_credit"
     assert stored["reconciled_at"] is not None
+    assert await store.list_quota_reconciliation_candidates() == []
 
 
 @pytest.mark.asyncio

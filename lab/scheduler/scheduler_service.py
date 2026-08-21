@@ -67,6 +67,7 @@ class SchedulerService:
             self._reconcile_counter = 0
             await self._reconcile_frequency_jobs(svc)
             await self._reconcile_media_uploads()
+            await self._reconcile_ai_usage()
 
     async def _reconcile_media_uploads(self) -> None:
         """Run one bounded, multi-instance-safe media recovery batch."""
@@ -78,6 +79,19 @@ class SchedulerService:
             await get_video_source_media_reconciliation_service().run_batch()
         except Exception:
             logger.exception("Media upload reconciliation batch failed")
+
+    async def _reconcile_ai_usage(self) -> None:
+        """Run one bounded quota-recovery batch without replaying provider calls."""
+        try:
+            from api.services.ai_usage_reconciliation import (
+                get_ai_usage_reconciliation_service,
+            )
+
+            result = await get_ai_usage_reconciliation_service().run_batch()
+            if result.inspected:
+                logger.info("AI usage reconciliation batch: %s", result)
+        except Exception:
+            logger.exception("AI usage reconciliation batch failed")
 
     _DFS_JOB_TYPES = {"ingest_seo", "enrich_ideas", "ingest_competitors", "track_serp"}
 

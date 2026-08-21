@@ -1,7 +1,7 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.3.0"
+artifact_version: "1.3.1"
 project: lab
 created: "2026-06-29"
 updated: "2026-08-21"
@@ -311,6 +311,8 @@ is absent or invalid:
 - `AI_USAGE_POLICIES_JSON` is a JSON list with exactly one policy per action.
 - `AI_USAGE_RESERVATION_TTL_SECONDS` defaults to `900` and must be between `60`
   and `3600` seconds.
+- `AI_USAGE_RECONCILIATION_BATCH_SIZE` defaults to `100` and is bounded to
+  `1-500` candidates per scheduler batch.
 
 Policy fields:
 
@@ -361,11 +363,16 @@ The Flux path applies this order:
     interrupted.
 
 Reservations and settlements are idempotent and scoped by user plus project.
-Compare-and-set store mutations prevent concurrent double spend. A reservation
-TTL does not itself run cleanup: `expire_stale_reservations` exists in the
-service, but no production scheduler is currently wired to call it. Pending
-states therefore require inspection and an authorized reconciliation path;
-they must not be reported as automatically healed.
+Compare-and-set store mutations prevent concurrent double spend. The existing
+background scheduler now runs a bounded reconciliation batch approximately
+every ten minutes. It expires stale pre-provider reservations per exact
+user/project scope, projects already-terminal ledger state into generation
+history, settles failed generations from persisted policy/evidence, and
+consumes successful work only when the generic job record contains durable
+asset evidence. Ambiguous states remain `reconciliation_pending`; this worker
+never replays provider/CDN calls, grants units, or performs admin mutations.
+The implementation is authored but its automated and deployed multi-instance
+behavior remains unverified under the no-local-execution policy.
 
 ### Provider-cost evidence
 
