@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.14"
+artifact_version: "1.0.15"
 project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 15:02:22 UTC"
 updated: "2026-08-21"
-updated_at: "2026-08-21 20:09:56 UTC"
+updated_at: "2026-08-21 20:31:30 UTC"
 status: active
 source_skill: sf-spec
 source_model: "gpt-5.5"
@@ -346,13 +346,13 @@ Add a backend-owned entitlement and usage ledger that gates managed AI generatio
   - Validate with: provider tests or smallest practical widget/provider tests.
   - Notes: An active-project async notifier now loads only server-authoritative summaries, exposes per-action quota and preflight state, refreshes after generation completion, and replaces prior data with loading/error during refresh so offline failures cannot masquerade as current quota. Access loss or no active project clears the state. Provider tests cover initial load, preflight replacement, post-generation refresh, and stale-data removal. Code authored on 2026-08-21; automated execution remains deferred by the operator's no-local policy, so this task is implemented — unverified.
 
-- [ ] Task 13: Add app UI contract for generation state and quota errors
+- [x] Task 13: Add app UI contract for generation state and quota errors
   - File: `app/lib/presentation/screens/settings/integrations_screen.dart`
   - Action: Show managed PAYG/BYOK state, current quota summary, error states, and entry points for existing AI runtime/settings or support/admin request flows. Do not add checkout UX in this chantier.
   - User story link: Makes generation limits visible before the user hits a hard block.
   - Depends on: Task 12.
   - Validate with: manual app smoke for enough quota, exhausted quota, BYOK missing, and provider failure.
-  - Notes: Dedicated Image Robot UI files may be added by the Flux UI chantier; this task names settings as the existing place where AI runtime copy lives.
+  - Notes: The existing Integrations AI runtime card now includes a tokenized, semantic quota surface for managed and BYOK modes, per-action availability and exact remaining units, explicit loading/no-project/offline states, refresh, and support recovery for exhausted or missing entitlements. It does not expose prices, checkout, or admin controls. English/French copy and focused widget coverage were authored. Visual, accessibility, and automated proof remain deferred by the operator's no-local policy, so this task is implemented — unverified.
 
 - [ ] Task 14: Update marketing and support copy
   - File: `site/src/components/Pricing.astro`
@@ -457,7 +457,8 @@ None for this implementation-ready enforcement foundation. Exact public prices, 
 | 2026-08-21 18:13:51 UTC | sg-development | GPT-5 Codex | Implemented the attached authorization Task 5 with a default-off, short-window, non-HTTP grant/revoke operations path and exact replay/audit controls. | Implemented — unverified. No operations command or real privilege change was executed; Task 10 remains blocked on authorized security proof. | Run focused authorization/operations suites before privileged quota routes or any real grant. |
 | 2026-08-21 19:39:26 UTC | sg-development | GPT-5 Codex | Implemented Task 11 with precision-safe Flutter usage models, uncached authenticated quota reads, server-authoritative preflight requests, structured quota error mapping, and focused contract tests. | Implemented — unverified. Static diff/contract review only; no Flutter build, test, analyzer, formatter, server, or runtime workload was executed under the operator's no-local policy. | Run focused Dart tests in an authorized environment before exposing quota state through Riverpod in Task 12. |
 | 2026-08-21 20:09:56 UTC | sg-development | GPT-5 Codex | Implemented Task 12 with active-project Riverpod quota state, explicit freshness timestamps, per-action preflight projection, generation-completion refresh, and fail-closed stale/offline behavior. | Implemented — unverified. Static diff/contract review only; no Flutter build, test, analyzer, formatter, server, or runtime workload was executed under the operator's no-local policy. | Run focused provider tests in an authorized environment before wiring quota state and recovery actions into app UI in Task 13. |
+| 2026-08-21 20:31:30 UTC | sg-design + sg-development | GPT-5 Codex | Implemented Task 13 with a tokenized quota surface inside AI runtime settings, managed/BYOK explanations, per-action availability, exact unit balances, fail-closed error states, refresh, and support recovery. | Implemented — unverified. Static token/diff review only; no Flutter build, widget test, analyzer, formatter, visual render, accessibility run, or drift scanner was executed under the operator's no-local policy. | Collect representative managed, BYOK, blocked, loading, error, mobile, desktop, light, dark, and dynamic-text proof in an authorized environment before claiming visual completion. |
 
 ## Current Chantier Flow
 
-sf-spec ✅ -> sf-ready ✅ -> sf-start ◐ Tasks 1-9 and 11-12 code authored, execution deferred; Task 10 blocked on platform-admin security proof; Task 13 is next -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳
+sf-spec ✅ -> sf-ready ✅ -> sf-start ◐ Tasks 1-9 and 11-13 code authored, execution deferred; Task 10 blocked on platform-admin security proof; Task 14 is next -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳

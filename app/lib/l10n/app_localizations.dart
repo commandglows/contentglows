@@ -1501,6 +1501,41 @@ class AppLocalizations {
         'Impossible de charger l’état de l’intégration GitHub.',
     'Unable to load OpenRouter credential state.':
         'Impossible de charger l’état des identifiants OpenRouter.',
+    'AI image generation': 'Génération d’images IA',
+    'AI generation is temporarily rate limited. Wait, then refresh before retrying.':
+        'La génération IA est temporairement limitée. Attendez, puis actualisez avant de réessayer.',
+    'AI usage and limits': 'Usage et limites IA',
+    'Available': 'Disponible',
+    'BYOK AI metadata': 'Métadonnées IA BYOK',
+    'BYOK does not consume managed usage units':
+        'BYOK ne consomme pas d’unités gérées',
+    'BYOK uses your provider credentials. Managed usage units are not consumed.':
+        'BYOK utilise vos identifiants fournisseur. Aucune unité gérée n’est consommée.',
+    'Blocked': 'Bloqué',
+    'Check again': 'Vérifier à nouveau',
+    'Checking current AI usage...': 'Vérification de l’usage IA actuel...',
+    'Current AI usage is unavailable. No cached quota is shown for paid actions.':
+        'L’usage IA actuel est indisponible. Aucun quota en cache n’est affiché pour les actions payantes.',
+    'Contact support': 'Contacter le support',
+    'Managed AI is not enabled for this project. Contact support before trying again.':
+        'L’IA gérée n’est pas activée pour ce projet. Contactez le support avant de réessayer.',
+    'Managed AI is not available for this project':
+        'L’IA gérée n’est pas disponible pour ce projet',
+    'Managed AI usage is exhausted. Generation remains blocked before provider costs. Contact support to add PAYG usage.':
+        'L’usage IA géré est épuisé. La génération reste bloquée avant tout coût fournisseur. Contactez le support pour ajouter de l’usage PAYG.',
+    'Managed AI uses ContentGlows usage units. Generation is blocked before provider costs when units are unavailable.':
+        'L’IA gérée utilise les unités ContentGlows. La génération est bloquée avant tout coût fournisseur lorsque les unités sont indisponibles.',
+    'Media delivery': 'Livraison des médias',
+    'Refresh AI usage': 'Actualiser l’usage IA',
+    'Sign in and select a project to check AI usage.':
+        'Connectez-vous et sélectionnez un projet pour vérifier l’usage IA.',
+    'Usage and limits': 'Usage et limites',
+    'Usage unavailable': 'Usage indisponible',
+    'Video rendering': 'Rendu vidéo',
+    'Your provider key is missing. Add and validate it in the OpenRouter section below.':
+        'Votre clé fournisseur est absente. Ajoutez-la et validez-la dans la section OpenRouter ci-dessous.',
+    '{remaining} of {limit} units remaining':
+        '{remaining} unités restantes sur {limit}',
     'Une connexion GitHub est requise pour charger la liste des dépôts.':
         'Une connexion GitHub est requise pour charger la liste des dépôts.',
     'Une fenêtre navigateur s’est ouverte pour autoriser ContentGlows.':

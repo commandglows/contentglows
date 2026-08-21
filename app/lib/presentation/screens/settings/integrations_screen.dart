@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../data/models/ai_runtime.dart';
+import '../../../data/models/ai_usage.dart';
 import '../../../data/models/app_settings.dart';
 import '../../../data/models/auth_session.dart';
 import '../../../data/models/content_item.dart';
@@ -109,6 +111,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
     final searchConsoleProperties = ref.watch(searchConsolePropertiesProvider);
     final emailSourceStatus = ref.watch(emailSourceStatusProvider);
     final aiRuntimeSettings = ref.watch(aiRuntimeSettingsProvider);
+    final aiUsageState = ref.watch(aiUsageStateProvider);
     final openRouterCredential = ref.watch(openRouterCredentialStatusProvider);
     final publishAccountsState = ref.watch(publishAccountsStateProvider);
     final publishAccounts = ref.watch(publishAccountsProvider);
@@ -146,6 +149,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
                 SettingsBlock(
                   child: _buildAiRuntimeBody(
                     aiRuntimeSettings,
+                    aiUsageState: aiUsageState,
                     authSession: authSession,
                   ),
                 ),
@@ -398,17 +402,32 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
 
   Widget _buildAiRuntimeBody(
     AsyncValue<AIRuntimeSettings> state, {
+    required AsyncValue<AIUsageSnapshot?> aiUsageState,
     required AuthSession authSession,
   }) {
     final theme = Theme.of(context);
     final canManage = authSession.isAuthenticated && !authSession.isDemo;
 
     return state.when(
-      data: (settings) => AiRuntimeSettingsCard(
-        settings: settings,
-        canManage: canManage,
-        isUpdating: _isSavingRuntimeMode,
-        onModeSelected: canManage ? _setAiRuntimeMode : null,
+      data: (settings) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AiRuntimeSettingsCard(
+            settings: settings,
+            canManage: canManage,
+            isUpdating: _isSavingRuntimeMode,
+            onModeSelected: canManage ? _setAiRuntimeMode : null,
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          Divider(color: theme.colorScheme.outlineVariant),
+          const SizedBox(height: AppSpacing.md),
+          AIUsageQuotaCard(
+            state: aiUsageState,
+            selectedMode: settings.mode,
+            onRefresh: () => ref.read(aiUsageStateProvider.notifier).refresh(),
+            onContactSupport: () => context.push('/feedback'),
+          ),
+        ],
       ),
       loading: () => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -2585,6 +2604,312 @@ class _SearchConsoleMetaLine extends StatelessWidget {
       ],
     );
   }
+}
+
+class AIUsageQuotaCard extends StatelessWidget {
+  const AIUsageQuotaCard({
+    super.key,
+    required this.state,
+    required this.selectedMode,
+    required this.onRefresh,
+    this.onContactSupport,
+  });
+
+  final AsyncValue<AIUsageSnapshot?> state;
+  final String selectedMode;
+  final VoidCallback onRefresh;
+  final VoidCallback? onContactSupport;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Semantics(
+      container: true,
+      label: context.tr('AI usage and limits'),
+      child: Column(
+        key: const Key('ai-usage-quota-card'),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  context.tr('Usage and limits'),
+                  style: TextStyle(
+                    color: theme.colorScheme.onSurface,
+                    fontSize: AppText.base,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              IconButton(
+                key: const Key('ai-usage-refresh'),
+                onPressed: state.isLoading ? null : onRefresh,
+                tooltip: context.tr('Refresh AI usage'),
+                icon: const Icon(Icons.refresh_rounded),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            selectedMode == 'platform'
+                ? context.tr(
+                    'Managed AI uses ContentGlows usage units. Generation is blocked before provider costs when units are unavailable.',
+                  )
+                : context.tr(
+                    'BYOK uses your provider credentials. Managed usage units are not consumed.',
+                  ),
+            style: TextStyle(
+              color: theme.colorScheme.onSurfaceVariant,
+              fontSize: AppText.xs,
+              height: AppLineHeight.comfortable,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          state.when(
+            loading: () => const _AIUsageLoadingState(),
+            error: (error, _) => _AIUsageErrorState(
+              error: error,
+              onRefresh: onRefresh,
+              onContactSupport: onContactSupport,
+            ),
+            data: (snapshot) => _AIUsageDataState(
+              snapshot: snapshot,
+              selectedMode: selectedMode,
+              onContactSupport: onContactSupport,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AIUsageLoadingState extends StatelessWidget {
+  const _AIUsageLoadingState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const SizedBox(
+          width: AppSizes.iconHeading,
+          height: AppSizes.iconHeading,
+          child: CircularProgressIndicator(strokeWidth: AppStroke.loading),
+        ),
+        const SizedBox(width: AppSpacing.sm),
+        Expanded(child: Text(context.tr('Checking current AI usage...'))),
+      ],
+    );
+  }
+}
+
+class _AIUsageDataState extends StatelessWidget {
+  const _AIUsageDataState({
+    required this.snapshot,
+    required this.selectedMode,
+    this.onContactSupport,
+  });
+
+  final AIUsageSnapshot? snapshot;
+  final String selectedMode;
+  final VoidCallback? onContactSupport;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    if (snapshot == null) {
+      return Text(
+        context.tr('Sign in and select a project to check AI usage.'),
+        style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
+      );
+    }
+
+    final billingMode = selectedMode == 'platform' ? 'managed' : 'byok';
+    final quotas = snapshot!.summary.quotas
+        .where((quota) => quota.billingMode == billingMode)
+        .toList(growable: false);
+    if (quotas.isEmpty) {
+      return SettingsStatusPill(
+        label: selectedMode == 'platform'
+            ? context.tr('Managed AI is not available for this project')
+            : context.tr('BYOK does not consume managed usage units'),
+        color: selectedMode == 'platform'
+            ? AppTheme.warningColor
+            : AppTheme.infoColor,
+        icon: selectedMode == 'platform'
+            ? Icons.info_outline_rounded
+            : Icons.key_rounded,
+      );
+    }
+
+    return Column(
+      children: [
+        for (final quota in quotas) ...[
+          _AIUsageQuotaRow(
+            quota: quota,
+            onContactSupport: onContactSupport,
+          ),
+          if (quota != quotas.last) const SizedBox(height: AppSpacing.xs),
+        ],
+      ],
+    );
+  }
+}
+
+class _AIUsageQuotaRow extends StatelessWidget {
+  const _AIUsageQuotaRow({required this.quota, this.onContactSupport});
+
+  final AIQuotaStatus quota;
+  final VoidCallback? onContactSupport;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final color = quota.allowed ? AppTheme.approveColor : AppTheme.warningColor;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.sm),
+      decoration: BoxDecoration(
+        color: color.withAlpha(AppAlpha.low12),
+        borderRadius: BorderRadius.circular(AppRadii.md),
+        border: Border.all(color: color.withAlpha(AppAlpha.tint)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  _actionLabel(context, quota.action),
+                  style: TextStyle(
+                    color: theme.colorScheme.onSurface,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              SettingsStatusPill(
+                label: quota.allowed
+                    ? context.tr('Available')
+                    : context.tr('Blocked'),
+                color: color,
+                icon: quota.allowed
+                    ? Icons.check_circle_outline_rounded
+                    : Icons.block_rounded,
+              ),
+            ],
+          ),
+          if (quota.billingMode == 'managed') ...[
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              context.tr('{remaining} of {limit} units remaining', {
+                'remaining': _displayUnits(quota.unitRemaining),
+                'limit': _displayUnits(quota.unitLimit),
+              }),
+              style: TextStyle(
+                color: theme.colorScheme.onSurfaceVariant,
+                fontSize: AppText.xs,
+              ),
+            ),
+          ],
+          if (!quota.allowed && onContactSupport != null) ...[
+            const SizedBox(height: AppSpacing.sm),
+            TextButton.icon(
+              key: Key('ai-usage-contact-support-${quota.action.apiValue}'),
+              onPressed: onContactSupport,
+              icon: const Icon(Icons.forum_outlined),
+              label: Text(context.tr('Contact support')),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _AIUsageErrorState extends StatelessWidget {
+  const _AIUsageErrorState({
+    required this.error,
+    required this.onRefresh,
+    this.onContactSupport,
+  });
+
+  final Object error;
+  final VoidCallback onRefresh;
+  final VoidCallback? onContactSupport;
+
+  @override
+  Widget build(BuildContext context) {
+    final apiError = error is ApiException ? error as ApiException : null;
+    final canContactSupport =
+        apiError?.code == 'ai_quota_exhausted' ||
+        apiError?.code == 'ai_entitlement_missing';
+    final message = switch (apiError?.code) {
+      'ai_quota_exhausted' => context.tr(
+        'Managed AI usage is exhausted. Generation remains blocked before provider costs. Contact support to add PAYG usage.',
+      ),
+      'ai_entitlement_missing' => context.tr(
+        'Managed AI is not enabled for this project. Contact support before trying again.',
+      ),
+      'ai_runtime_user_credential_missing' => context.tr(
+        'Your provider key is missing. Add and validate it in the OpenRouter section below.',
+      ),
+      'ai_generation_rate_limited' => context.tr(
+        'AI generation is temporarily rate limited. Wait, then refresh before retrying.',
+      ),
+      _ => context.tr(
+        'Current AI usage is unavailable. No cached quota is shown for paid actions.',
+      ),
+    };
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SettingsStatusPill(
+          label: context.tr('Usage unavailable'),
+          color: AppTheme.warningColor,
+          icon: Icons.warning_amber_rounded,
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        Text(message),
+        const SizedBox(height: AppSpacing.sm),
+        Wrap(
+          spacing: AppSpacing.compact,
+          runSpacing: AppSpacing.compact,
+          children: [
+            OutlinedButton.icon(
+              key: const Key('ai-usage-error-refresh'),
+              onPressed: onRefresh,
+              icon: const Icon(Icons.refresh_rounded),
+              label: Text(context.tr('Check again')),
+            ),
+            if (canContactSupport && onContactSupport != null)
+              FilledButton.icon(
+                key: const Key('ai-usage-contact-support'),
+                onPressed: onContactSupport,
+                icon: const Icon(Icons.forum_outlined),
+                label: Text(context.tr('Contact support')),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+String _actionLabel(BuildContext context, AIUsageAction action) {
+  return switch (action) {
+    AIUsageAction.fluxImageGeneration => context.tr('AI image generation'),
+    AIUsageAction.bunnyUpload => context.tr('Media delivery'),
+    AIUsageAction.remotionRender => context.tr('Video rendering'),
+    AIUsageAction.byokMetadata => context.tr('BYOK AI metadata'),
+  };
+}
+
+String _displayUnits(String value) {
+  if (!value.contains('.')) return value;
+  final compact = value.replaceFirst(RegExp(r'0+$'), '');
+  return compact.endsWith('.') ? compact.substring(0, compact.length - 1) : compact;
 }
 
 /// AI runtime mode selector. Lifted from the legacy settings screen unchanged
