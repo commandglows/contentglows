@@ -9,8 +9,9 @@ from __future__ import annotations
 
 import asyncio
 import sqlite3
+from contextlib import asynccontextmanager
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, AsyncIterator
 
 import libsql
 
@@ -20,6 +21,33 @@ from utils.libsql_params import inline_null_params
 @dataclass
 class ResultSet:
     rows: list[tuple[Any, ...]]
+
+
+class Transaction:
+    """Connection-bound executor used only inside ``Client.transaction``."""
+
+    def __init__(self, conn: Any) -> None:
+        self._conn = conn
+
+    async def execute(
+        self,
+        statement: str,
+        args: list[Any] | tuple[Any, ...] | None = None,
+    ) -> ResultSet:
+        statement, params = inline_null_params(
+            statement,
+            list(args) if args is not None else [],
+        )
+
+        def _run() -> ResultSet:
+            cursor = self._conn.execute(statement, params)
+            try:
+                rows = cursor.fetchall()
+            except Exception:
+                rows = []
+            return ResultSet(rows=rows)
+
+        return await asyncio.to_thread(_run)
 
 
 class Client:
@@ -117,6 +145,33 @@ class Client:
                         retry_statement, retry_params = inline_null_params(statement, params)
                         return await asyncio.to_thread(_run, retry_statement, retry_params)
                     raise
+
+    @asynccontextmanager
+    async def transaction(self) -> AsyncIterator[Transaction]:
+        """Run multiple statements on one connection with commit or rollback.
+
+        The client lock stays held for the complete transaction, preventing
+        another coroutine using this client from interleaving a quota mutation.
+        """
+        lock = self._ensure_lock()
+        await lock.acquire()
+        conn: Any | None = None
+        try:
+            conn = self._ensure_connection()
+            await asyncio.to_thread(conn.execute, "BEGIN IMMEDIATE")
+            yield Transaction(conn)
+            await asyncio.to_thread(conn.commit)
+        except BaseException:
+            try:
+                if conn is not None:
+                    await asyncio.to_thread(conn.rollback)
+            except Exception as rollback_error:
+                raise RuntimeError(
+                    "transaction failed and rollback also failed"
+                ) from rollback_error
+            raise
+        finally:
+            lock.release()
 
     async def close(self) -> None:
         async with self._ensure_lock():

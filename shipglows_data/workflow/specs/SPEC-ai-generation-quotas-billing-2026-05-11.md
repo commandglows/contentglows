@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.1"
+artifact_version: "1.0.3"
 project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 15:02:22 UTC"
 updated: "2026-08-20"
-updated_at: "2026-08-20 08:35:06 UTC"
+updated_at: "2026-08-20 19:15:54 UTC"
 status: active
 source_skill: sf-spec
 source_model: "gpt-5.5"
@@ -64,6 +64,7 @@ evidence:
   - "User decision 2026-05-11: Lifetime Deal covers platform access with BYOK, not included operator-paid managed AI usage."
   - "User decision 2026-05-11: failed provider attempts should refund user-facing usage."
   - "User decision 2026-05-11: quota and PAYG limits are scoped by user."
+  - "Official Turso/libSQL sources checked on 2026-08-20 document explicit BEGIN/COMMIT/ROLLBACK transactions, immediate write transactions, and Python connection commit semantics."
 next_step: "/sf-start AI Generation Quotas, Billing, And Cost Controls"
 ---
 
@@ -253,21 +254,21 @@ Add a backend-owned entitlement and usage ledger that gates managed AI generatio
   - Validate with: model validation tests for Flux image, Bunny upload, Remotion render, BYOK metadata, and quota error envelopes.
   - Notes: Do not encode plan prices or included quantities here. Code authored on 2026-08-20; automated execution remains deferred by the operator's no-local-build policy.
 
-- [ ] Task 2: Create durable ledger and entitlement store
-  - File: `lab/api/services/ai_usage_store.py`
-  - Action: Implement Turso/libSQL-backed tables for entitlements, reservations, ledger entries, provider cost rows, and admin adjustments with idempotent startup ensures or migrations.
+- [x] Task 2: Create durable ledger and entitlement store
+  - Files: `lab/api/services/ai_usage_store.py`, `lab/api/services/libsql_ai_usage_store.py`
+  - Action: Define a persistence-agnostic `AIUsageStore` port, then implement an injected-client libSQL adapter with dedicated tables for entitlements, reservations, ledger entries, provider cost rows, and admin adjustments.
   - User story link: Makes quota state auditable and resilient across API restarts.
   - Depends on: Task 1.
-  - Validate with: SQLite/libSQL tests for insert, list by user/project, idempotent migration, and adjustment audit fields.
-  - Notes: Prefer dedicated tables over mutating `api_cost_log` into an enforcement table.
+  - Validate with: reusable adapter-contract tests for insert, list by user/project/org, idempotent schema setup, identity conflicts, provider-cost projections, and adjustment audit fields.
+  - Notes: The domain port exposes only validated usage models and stable store errors; schema lifecycle and the database client remain adapter-owned. Dedicated tables preserve `api_cost_log` as an operational cost source rather than turning it into the enforcement ledger. Code authored on 2026-08-20; automated execution remains deferred by the operator's no-local policy.
 
-- [ ] Task 3: Add atomic reservation and reconciliation service
-  - File: `lab/api/services/ai_usage_service.py`
-  - Action: Implement preflight, reserve, mark_provider_started, consume, release, refund, expire_stale_reservations, and summarize usage. Enforce concurrency with transactions or compare-and-set updates supported by the chosen libSQL path.
+- [x] Task 3: Add atomic reservation and reconciliation service
+  - Files: `lab/api/services/ai_usage_service.py`, `lab/api/services/ai_usage_store.py`, `lab/api/services/libsql_ai_usage_store.py`, `lab/utils/libsql_async.py`
+  - Action: Implement storage-agnostic preflight, reserve, mark_provider_started, consume, release, refund, expire_stale_reservations, and summarize usage. Express state changes as domain compare-and-set mutations; execute each entitlement/reservation/ledger/projection change in one serialized libSQL transaction.
   - User story link: Prevents simultaneous jobs from exceeding managed credits or limits.
   - Depends on: Task 2.
-  - Validate with: concurrent reservation tests, idempotent reconciliation tests, stale reservation expiry tests, and negative-balance rejection tests.
-  - Notes: If libSQL transaction semantics are insufficient, stop and reroute to an architecture decision before implementation.
+  - Validate with: reusable atomic adapter-contract tests plus focused concurrent reservation, idempotent reconciliation, stale expiry, tenant isolation, conflicting evidence, and negative-balance tests.
+  - Notes: The domain service and store port contain no database client or SQL dependency. The adapter uses an injected transaction-capable client, `BEGIN IMMEDIATE`, payload compare-and-set predicates, rollback, and idempotency recovery; official Turso/libSQL sources document those transaction primitives. Code authored on 2026-08-20; repository-specific transaction behavior and tests remain unexecuted under the operator's no-local policy, so this task is implemented — unverified rather than verified.
 
 - [ ] Task 4: Define configurable action policies without choosing pricing
   - File: `lab/api/services/ai_usage_policies.py`
@@ -439,7 +440,9 @@ None for this implementation-ready enforcement foundation. Exact public prices, 
 | 2026-05-11 15:38:45 UTC | sf-spec | GPT-5 Codex | Integrated product decisions for hard quota block, PAYG, LTD/BYOK separation, refund-on-failure, and user-scoped limits. | Draft updated; remaining blockers narrowed to unit/pricing/checkout/retry/ops details. | `/sf-ready shipglows_data/workflow/specs/SPEC-ai-generation-quotas-billing-2026-05-11.md` |
 | 2026-05-11 16:03:00 UTC | sf-ready | GPT-5 Codex | Ran strict readiness gate, resolved non-blocking commercial questions into Scope Out, clarified enforcement/refund/security/docs contracts, and checked BFL freshness evidence. | Ready. | `/sf-start AI Generation Quotas, Billing, And Cost Controls` |
 | 2026-08-20 08:35:06 UTC | 001-sg-build | GPT-5 Codex | Implemented Task 1 domain contracts for managed/BYOK usage, entitlements, reservations, ledger events, quota states/errors, provider-cost evidence, and guarded reservation transitions, with focused validation tests. | Code authored; Python AST and diff integrity checks pass. Automated tests intentionally not run because the operator prohibited local builds, tests, and artifacts. | Run the focused model tests in authorized CI before starting the durable ledger/store task. |
+| 2026-08-20 18:35:45 UTC | sg-development | GPT-5 Codex | Implemented Task 2 as a persistence-agnostic store port plus an injected-client libSQL adapter and reusable adapter-contract tests. | Implemented — unverified. Static boundary review and diff integrity pass; no build, test, analyzer, migration, or runtime workload was executed under the operator's no-local policy. | Implement Task 3 by extending the agnostic port with atomic compare-and-set reservation transitions after confirming the adapter transaction contract. |
+| 2026-08-20 19:15:54 UTC | sg-development | GPT-5 Codex | Implemented Task 3 with storage-agnostic quota decisions, atomic domain mutations, serialized libSQL transactions, compare-and-set concurrency control, idempotent reconciliation, stale expiry, and focused contract tests. | Implemented — unverified. Static contract/diff review only; no build, test, analyzer, migration, provider call, or runtime workload was executed under the operator's no-local policy. | Run the focused store/service tests in an authorized environment before integrating configurable action policies in Task 4. |
 
 ## Current Chantier Flow
 
-sf-spec ✅ -> sf-ready ✅ -> sf-start ◐ Task 1 code authored, test execution deferred -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳
+sf-spec ✅ -> sf-ready ✅ -> sf-start ◐ Tasks 1-3 code authored, execution deferred; agnostic store, atomic reservation, and reconciliation service added -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳
