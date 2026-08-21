@@ -72,6 +72,11 @@ class ProviderCostConfidence(str, Enum):
     UNKNOWN = "unknown"
 
 
+class ProviderCostUnit(str, Enum):
+    CURRENCY = "currency"
+    PROVIDER_CREDIT = "provider_credit"
+
+
 class AIQuotaErrorCode(str, Enum):
     EXHAUSTED = "ai_quota_exhausted"
     RATE_LIMITED = "ai_generation_rate_limited"
@@ -108,6 +113,7 @@ class ProviderCostMetadata(AIUsageModel):
     provider_request_id: str | None = Field(default=None, min_length=1, max_length=256)
     estimated_cost: NonNegativeCost | None = None
     actual_cost: NonNegativeCost | None = None
+    cost_unit: ProviderCostUnit = ProviderCostUnit.CURRENCY
     currency: str | None = Field(default=None, pattern=r"^[A-Z]{3}$")
     input_mp: Annotated[Decimal, Field(ge=0, max_digits=18, decimal_places=6)] | None = None
     output_mp: Annotated[Decimal, Field(ge=0, max_digits=18, decimal_places=6)] | None = None
@@ -124,8 +130,11 @@ class ProviderCostMetadata(AIUsageModel):
     @model_validator(mode="after")
     def validate_cost_evidence(self) -> "ProviderCostMetadata":
         has_cost = self.estimated_cost is not None or self.actual_cost is not None
-        if has_cost and self.currency is None:
-            raise ValueError("currency is required when a provider cost is present")
+        if self.cost_unit is ProviderCostUnit.CURRENCY:
+            if has_cost and self.currency is None:
+                raise ValueError("currency is required when a monetary provider cost is present")
+        elif self.currency is not None:
+            raise ValueError("provider-credit costs must not claim a currency")
         if self.confidence is ProviderCostConfidence.EXACT and self.actual_cost is None:
             raise ValueError("exact provider cost requires actual_cost")
         if self.confidence is ProviderCostConfidence.ESTIMATED:

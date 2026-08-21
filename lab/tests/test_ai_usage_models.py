@@ -180,11 +180,32 @@ def test_provider_cost_metadata_keeps_exact_estimated_and_unknown_distinct():
     assert estimated.estimated_cost == Decimal("0.01")
     assert unknown.actual_cost is None
 
+    credits = ProviderCostMetadata(
+        provider="bfl",
+        provider_action="flux_image_generation",
+        actual_cost="4.5",
+        cost_unit="provider_credit",
+        confidence="exact",
+        captured_at=NOW,
+    )
+
+    assert credits.currency is None
+
     with pytest.raises(ValidationError, match="currency is required"):
         ProviderCostMetadata(
             provider="bfl",
             provider_action="flux_image_generation",
             actual_cost="0.05",
+            confidence="exact",
+            captured_at=NOW,
+        )
+    with pytest.raises(ValidationError, match="must not claim a currency"):
+        ProviderCostMetadata(
+            provider="bfl",
+            provider_action="flux_image_generation",
+            actual_cost="4.5",
+            cost_unit="provider_credit",
+            currency="USD",
             confidence="exact",
             captured_at=NOW,
         )

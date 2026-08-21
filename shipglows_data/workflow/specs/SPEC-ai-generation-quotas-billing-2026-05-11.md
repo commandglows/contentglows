@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.5"
+artifact_version: "1.0.6"
 project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 15:02:22 UTC"
 updated: "2026-08-20"
-updated_at: "2026-08-21 11:40:54 UTC"
+updated_at: "2026-08-21 11:54:45 UTC"
 status: active
 source_skill: sf-spec
 source_model: "gpt-5.5"
@@ -65,6 +65,7 @@ evidence:
   - "User decision 2026-05-11: failed provider attempts should refund user-facing usage."
   - "User decision 2026-05-11: quota and PAYG limits are scoped by user."
   - "Official Turso/libSQL sources checked on 2026-08-20 document explicit BEGIN/COMMIT/ROLLBACK transactions, immediate write transactions, and Python connection commit semantics."
+  - "Official Black Forest Labs API reference checked on 2026-08-21 documents submit-response cost in provider credits plus nullable input_mp and output_mp fields."
 next_step: "/sf-start AI Generation Quotas, Billing, And Cost Controls"
 ---
 
@@ -286,13 +287,13 @@ Add a backend-owned entitlement and usage ledger that gates managed AI generatio
   - Validate with: authored API tests for enough quota, exhausted quota with no generation/provider task, foreign-project rejection before quota lookup, reservation linkage, and release when durable generation creation fails. Existing app-wide `429` rate limiting and provider `429` normalization remain covered by their existing paths.
   - Notes: Managed enforcement is fail-closed when database or policy configuration is absent/invalid. Runtime policy values are deployment-owned internal units supplied through configuration, not public prices. Robolly and OpenAI do not initialize the managed-usage runtime. Code authored on 2026-08-21; automated execution remains deferred by the operator's no-local policy, so this task is implemented — unverified.
 
-- [ ] Task 6: Capture Flux/BFL actual-cost metadata
-  - File: `lab/api/services/flux_image_generation.py`
-  - Action: Normalize BFL `cost`, `input_mp`, `output_mp`, model, request id, and timing fields into provider-cost metadata returned to the worker/router.
+- [x] Task 6: Capture Flux/BFL actual-cost metadata
+  - Files: `lab/api/models/ai_usage.py`, `lab/api/services/flux_image_generation.py`
+  - Action: Distinguish monetary costs from provider credits, then normalize BFL `cost`, `input_mp`, `output_mp`, model, request id, UTC timing fields, and duration into provider-cost metadata returned on success and retained on post-submit errors.
   - User story link: Lets users and ops compare estimated usage with actual provider spend.
   - Depends on: Task 5.
-  - Validate with: mocked BFL responses with cost present, cost missing, malformed cost, and provider error.
-  - Notes: Never hard-code BFL pricing as a product truth.
+  - Validate with: authored mocked BFL responses for complete provider-credit evidence, missing cost, malformed/negative/non-finite values, submit error, and post-submit provider failure retaining known cost evidence.
+  - Notes: Official BFL documentation identifies `cost` as credits, so the domain contract records `provider_credit` and forbids attaching a currency. No conversion table or customer-facing price is encoded. Code authored on 2026-08-21; automated execution remains deferred by the operator's no-local policy, so this task is implemented — unverified.
 
 - [ ] Task 7: Reconcile usage after Bunny upload and job completion
   - File: `lab/api/services/image_generation_store.py`
@@ -444,7 +445,8 @@ None for this implementation-ready enforcement foundation. Exact public prices, 
 | 2026-08-20 19:15:54 UTC | sg-development | GPT-5 Codex | Implemented Task 3 with storage-agnostic quota decisions, atomic domain mutations, serialized libSQL transactions, compare-and-set concurrency control, idempotent reconciliation, stale expiry, and focused contract tests. | Implemented — unverified. Static contract/diff review only; no build, test, analyzer, migration, provider call, or runtime workload was executed under the operator's no-local policy. | Run the focused store/service tests in an authorized environment before integrating configurable action policies in Task 4. |
 | 2026-08-21 07:37:04 UTC | sg-development | GPT-5 Codex | Implemented Task 4 as an injected immutable action-policy registry with typed managed/BYOK invariants, provider/model routing metadata, internal usage-unit estimates, hard blocking, failure reconciliation behavior, and admin-override eligibility. | Implemented — unverified. Static contract/diff review only; no build, test, analyzer, provider call, or runtime workload was executed under the operator's no-local policy. | Run the focused policy tests in an authorized environment before wiring Flux preflight in Task 5. |
 | 2026-08-21 11:40:54 UTC | sg-development | GPT-5 Codex | Implemented Task 5 with lazy runtime composition, owner-scoped Flux reservation before durable queue/provider work, structured quota errors, reservation linkage, configured model routing, and release on pre-queue failure. | Implemented — unverified. Static contract/diff review only; no build, test, analyzer, migration, provider call, background job, or runtime workload was executed under the operator's no-local policy. | Run focused route/store tests in an authorized environment before implementing provider-cost normalization in Task 6. |
+| 2026-08-21 11:54:45 UTC | sg-development | GPT-5 Codex | Implemented Task 6 with explicit provider-credit cost units, strict BFL cost/megapixel normalization, unknown-cost evidence, request identifiers, UTC timing, duration, and evidence retention across post-submit failures. | Implemented — unverified. Static contract/diff review only; no build, test, analyzer, provider call, background job, or runtime workload was executed under the operator's no-local policy. | Run focused model/provider tests in an authorized environment before reconciling reservations and durable assets in Task 7. |
 
 ## Current Chantier Flow
 
-sf-spec ✅ -> sf-ready ✅ -> sf-start ◐ Tasks 1-5 code authored, execution deferred; Flux is reservation-gated before queued provider work -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳
+sf-spec ✅ -> sf-ready ✅ -> sf-start ◐ Tasks 1-6 code authored, execution deferred; Flux is gated and BFL provider-credit evidence is normalized -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳

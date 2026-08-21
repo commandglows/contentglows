@@ -11,11 +11,19 @@ import socket
 import tempfile
 import time
 from dataclasses import dataclass, field
+from datetime import UTC, datetime
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
 import requests
+
+from api.models.ai_usage import (
+    ProviderCostConfidence,
+    ProviderCostMetadata,
+    ProviderCostUnit,
+)
 
 
 SUPPORTED_OUTPUT_FORMATS = {"jpeg", "png", "webp"}
@@ -36,6 +44,7 @@ class FluxImageGenerationError(Exception):
         status_code: int | None = None,
         provider_metadata: dict[str, Any] | None = None,
         provider_request_id: str | None = None,
+        provider_cost_metadata: ProviderCostMetadata | None = None,
     ) -> None:
         super().__init__(message)
         self.code = code
@@ -43,6 +52,7 @@ class FluxImageGenerationError(Exception):
         self.status_code = status_code
         self.provider_metadata = provider_metadata or {}
         self.provider_request_id = provider_request_id
+        self.provider_cost_metadata = provider_cost_metadata
 
 
 @dataclass
@@ -57,7 +67,11 @@ class FluxGenerationResult:
     output_format: str
     seed: int | None = None
     provider_cost: float | None = None
+    provider_cost_metadata: ProviderCostMetadata | None = None
     provider_metadata: dict[str, Any] = field(default_factory=dict)
+    started_at: datetime | None = None
+    completed_at: datetime | None = None
+    duration_ms: int | None = None
 
 
 class FluxImageGenerator:
@@ -122,7 +136,21 @@ class FluxImageGenerator:
             reference_urls=references,
             safety_tolerance=safety_tolerance,
         )
-        submitted = self._submit(payload)
+        started_at = datetime.now(UTC)
+        started_monotonic = time.monotonic()
+        try:
+            submitted = self._submit(payload)
+        except FluxImageGenerationError as exc:
+            failed_at = datetime.now(UTC)
+            exc.provider_metadata = {
+                **exc.provider_metadata,
+                "request_started_at": started_at.isoformat(),
+                "failed_at": failed_at.isoformat(),
+                "duration_ms": round((time.monotonic() - started_monotonic) * 1000),
+                "actual_cost_unknown": True,
+            }
+            raise
+        submitted_at = datetime.now(UTC)
         request_id = str(submitted.get("id") or "")
         polling_url = submitted.get("polling_url")
         if not request_id or not polling_url:
@@ -132,18 +160,53 @@ class FluxImageGenerator:
                 provider_metadata=_redacted_metadata(submitted),
             )
 
-        result_payload = self._poll_until_ready(
-            polling_url=str(polling_url),
+        provider_cost_metadata = normalize_bfl_cost_metadata(
+            submitted,
+            model=self.model,
             provider_request_id=request_id,
+            captured_at=submitted_at,
         )
-        sample_url = _extract_sample_url(result_payload)
-        if sample_url.startswith("/") and Path(sample_url).exists():
-            local_path = sample_url
-        else:
-            local_path = self._download_result(sample_url, output_format=output_format)
+        try:
+            result_payload = self._poll_until_ready(
+                polling_url=str(polling_url),
+                provider_request_id=request_id,
+            )
+            sample_url = _extract_sample_url(result_payload)
+            if sample_url.startswith("/") and Path(sample_url).exists():
+                local_path = sample_url
+            else:
+                local_path = self._download_result(sample_url, output_format=output_format)
+        except FluxImageGenerationError as exc:
+            failed_at = datetime.now(UTC)
+            if exc.provider_request_id is None:
+                exc.provider_request_id = request_id
+            if exc.provider_cost_metadata is None:
+                exc.provider_cost_metadata = provider_cost_metadata
+            exc.provider_metadata = {
+                **exc.provider_metadata,
+                "cost_evidence": provider_cost_metadata.model_dump(
+                    mode="json",
+                    by_alias=True,
+                ),
+                "request_started_at": started_at.isoformat(),
+                "submitted_at": submitted_at.isoformat(),
+                "failed_at": failed_at.isoformat(),
+                "duration_ms": round((time.monotonic() - started_monotonic) * 1000),
+            }
+            raise
+        completed_at = datetime.now(UTC)
+        duration_ms = round((time.monotonic() - started_monotonic) * 1000)
         provider_metadata = {
             "submit": _redacted_metadata(submitted),
             "result": _redacted_metadata(result_payload),
+            "cost_evidence": provider_cost_metadata.model_dump(
+                mode="json",
+                by_alias=True,
+            ),
+            "request_started_at": started_at.isoformat(),
+            "submitted_at": submitted_at.isoformat(),
+            "completed_at": completed_at.isoformat(),
+            "duration_ms": duration_ms,
         }
         return FluxGenerationResult(
             local_path=local_path,
@@ -153,8 +216,16 @@ class FluxImageGenerator:
             height=height,
             seed=seed,
             output_format=output_format,
-            provider_cost=_coerce_float(submitted.get("cost")),
+            provider_cost=(
+                float(provider_cost_metadata.actual_cost)
+                if provider_cost_metadata.actual_cost is not None
+                else None
+            ),
+            provider_cost_metadata=provider_cost_metadata,
             provider_metadata=provider_metadata,
+            started_at=started_at,
+            completed_at=completed_at,
+            duration_ms=duration_ms,
         )
 
     def _build_payload(
@@ -401,11 +472,51 @@ def _validate_public_url(url: str):
     return parsed
 
 
-def _coerce_float(value: Any) -> float | None:
-    try:
-        return None if value is None else float(value)
-    except (TypeError, ValueError):
+def normalize_bfl_cost_metadata(
+    submitted: dict[str, Any],
+    *,
+    model: str,
+    provider_request_id: str,
+    captured_at: datetime | None = None,
+) -> ProviderCostMetadata:
+    """Normalize BFL response evidence without converting credits to money."""
+    cost = _coerce_non_negative_decimal(submitted.get("cost"))
+    input_mp = _coerce_non_negative_decimal(submitted.get("input_mp"))
+    output_mp = _coerce_non_negative_decimal(submitted.get("output_mp"))
+    return ProviderCostMetadata(
+        provider="bfl",
+        provider_action="flux_image_generation",
+        model=model,
+        provider_request_id=provider_request_id,
+        actual_cost=cost,
+        cost_unit=ProviderCostUnit.PROVIDER_CREDIT,
+        input_mp=input_mp,
+        output_mp=output_mp,
+        confidence=(
+            ProviderCostConfidence.EXACT
+            if cost is not None
+            else ProviderCostConfidence.UNKNOWN
+        ),
+        captured_at=captured_at or datetime.now(UTC),
+        evidence={
+            "cost_source": "bfl_submit_response",
+            "actual_cost_unknown": cost is None,
+            "input_mp_unknown": input_mp is None,
+            "output_mp_unknown": output_mp is None,
+        },
+    )
+
+
+def _coerce_non_negative_decimal(value: Any) -> Decimal | None:
+    if value is None or isinstance(value, bool):
         return None
+    try:
+        normalized = Decimal(str(value))
+    except (InvalidOperation, TypeError, ValueError):
+        return None
+    if not normalized.is_finite() or normalized < 0:
+        return None
+    return normalized
 
 
 def _redacted_metadata(value: Any) -> dict[str, Any]:
