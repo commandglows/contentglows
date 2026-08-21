@@ -464,7 +464,13 @@ async def _run_flux_generation_job(
             user_id=user_id,
             quota_status="provider_started",
         )
-        await _update_job_safely(job_id, status="running", progress=10, message="Flux generation started")
+        await _update_job_safely(
+            job_id,
+            status="running",
+            progress=10,
+            message="Flux generation started",
+            cost_control_status="provider_started",
+        )
         generator = FluxImageGenerator(model=model)
         result = await asyncio.to_thread(
             generator.generate_to_file,
@@ -485,7 +491,13 @@ async def _run_flux_generation_job(
             provider_cost=result.provider_cost,
             provider_metadata=result.provider_metadata,
         )
-        await _update_job_safely(job_id, status="running", progress=70, message="Uploading generated image")
+        await _update_job_safely(
+            job_id,
+            status="running",
+            progress=70,
+            message="Uploading generated image",
+            cost_control_status="provider_started",
+        )
         upload_result = await asyncio.to_thread(
             crew.cdn_manager.upload_with_optimizer,
             source=local_path,
@@ -554,6 +566,7 @@ async def _run_flux_generation_job(
                 generation_id=generation_id,
                 asset_id=asset_id,
                 reservation_id=reservation_id,
+                cost_control_status="reconciliation_pending",
             )
             return
         try:
@@ -587,6 +600,7 @@ async def _run_flux_generation_job(
                 asset_id=asset_id,
                 reservation_id=reservation_id,
                 quota_outcome="consumed",
+                cost_control_status="reconciliation_pending",
             )
             return
         await _update_job_safely(
@@ -596,6 +610,8 @@ async def _run_flux_generation_job(
             message="Flux image generated",
             generation_id=generation_id,
             asset_id=asset_id,
+            reservation_id=reservation_id,
+            cost_control_status="consumed",
         )
     except FluxImageGenerationError as exc:
         provider_cost_evidence = exc.provider_cost_metadata or provider_cost_evidence
@@ -612,6 +628,8 @@ async def _run_flux_generation_job(
             generation_id,
             user_id=user_id,
             error_code=exc.code,
+            reservation_id=reservation_id,
+            cost_control_status=quota_status,
             error_message=exc.message,
             provider_request_id=exc.provider_request_id,
             provider_metadata=exc.provider_metadata,
@@ -651,6 +669,8 @@ async def _run_flux_generation_job(
             generation_id,
             user_id=user_id,
             error_code="internal_error",
+            reservation_id=reservation_id,
+            cost_control_status=quota_status,
             error_message=str(exc),
         )
         await image_generation_store.update_reconciliation(
@@ -1492,6 +1512,7 @@ async def generate_image_from_profile(
                         project_id=request.project_id,
                         user_id=current_user.user_id,
                         reservation_id=reservation.reservation_id,
+                        cost_control_status="reserved",
                     )
             except Exception as exc:
                 logger.warning(f"Failed to persist Flux job row: {exc}")

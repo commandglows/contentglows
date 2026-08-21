@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.7"
+artifact_version: "1.0.8"
 project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 15:02:22 UTC"
 updated: "2026-08-20"
-updated_at: "2026-08-21 13:12:20 UTC"
+updated_at: "2026-08-21 13:50:24 UTC"
 status: active
 source_skill: sf-spec
 source_model: "gpt-5.5"
@@ -303,13 +303,13 @@ Add a backend-owned entitlement and usage ledger that gates managed AI generatio
   - Validate with: authored store/worker tests for durable Bunny success before consumption, provider-start settlement selection, Bunny failure refund without consumption, interrupted settlement remaining recoverable, durable reconciliation fields, and existing idempotent usage-service settlement contracts.
   - Notes: A durable asset with failed quota or history closure remains explicitly `reconciliation_pending`; it is never silently refunded after consumption. Temporary provider URLs are rejected as non-durable. Code authored on 2026-08-21; automated execution and schema application remain deferred by the operator's no-local policy, so this task is implemented — unverified.
 
-- [ ] Task 8: Extend job metadata for owner-scoped quota operations
+- [x] Task 8: Extend job metadata for owner-scoped quota operations
   - File: `lab/api/services/job_store.py`
   - Action: Add explicit user_id, project_id, org_id nullable, reservation_id, and cost-control status fields or document a separate job linkage table if direct migration is too risky.
   - User story link: Allows users and operators to inspect pending generation jobs and recover stuck reservations.
   - Depends on: Task 2.
-  - Validate with: job store migration tests and owner-scoped query tests.
-  - Notes: Preserve existing job consumers; do not break deployment/content-generation jobs.
+  - Validate with: authored additive-schema, legacy-consumer compatibility, owner/project isolation, reservation lookup, pending-state listing, and owner-reassignment rejection tests.
+  - Notes: The generic job store now accepts an injected database client while preserving its environment-backed singleton, adds nullable owner/reservation/cost-control columns and indexes additively, retains legacy JSON metadata, and exposes scoped recovery queries without provider-specific concepts. Code authored on 2026-08-21; automated execution and schema application remain deferred by the operator's no-local policy, so this task is implemented — unverified.
 
 - [ ] Task 9: Add usage/quota API routes
   - File: `lab/api/routers/ai_usage.py`
@@ -447,7 +447,8 @@ None for this implementation-ready enforcement foundation. Exact public prices, 
 | 2026-08-21 11:40:54 UTC | sg-development | GPT-5 Codex | Implemented Task 5 with lazy runtime composition, owner-scoped Flux reservation before durable queue/provider work, structured quota errors, reservation linkage, configured model routing, and release on pre-queue failure. | Implemented — unverified. Static contract/diff review only; no build, test, analyzer, migration, provider call, background job, or runtime workload was executed under the operator's no-local policy. | Run focused route/store tests in an authorized environment before implementing provider-cost normalization in Task 6. |
 | 2026-08-21 11:54:45 UTC | sg-development | GPT-5 Codex | Implemented Task 6 with explicit provider-credit cost units, strict BFL cost/megapixel normalization, unknown-cost evidence, request identifiers, UTC timing, duration, and evidence retention across post-submit failures. | Implemented — unverified. Static contract/diff review only; no build, test, analyzer, provider call, background job, or runtime workload was executed under the operator's no-local policy. | Run focused model/provider tests in an authorized environment before reconciling reservations and durable assets in Task 7. |
 | 2026-08-21 13:12:20 UTC | sg-development | GPT-5 Codex | Implemented Task 7 with provider-start tracking, durable-Bunny consumption gating, policy-driven release/refund, provider-cost evidence persistence, explicit reconciliation outcomes, and recoverable pending states. | Implemented — unverified. Static contract/diff review only; no build, test, analyzer, schema application, provider/CDN call, background job, or runtime workload was executed under the operator's no-local policy. | Run focused store/worker tests in an authorized environment before extending owner-scoped job metadata and recovery queries in Task 8. |
+| 2026-08-21 13:50:24 UTC | sg-development | GPT-5 Codex | Implemented Task 8 with additive generic job ownership, reservation and cost-control metadata, injected-client compatibility, legacy JSON preservation, scoped recovery queries, and focused migration/isolation tests. | Implemented — unverified. Static contract/diff review only; no build, test, analyzer, schema application, background job, or runtime workload was executed under the operator's no-local policy. | Run the focused job-store tests and apply the additive schema in an authorized environment before exposing authenticated usage/quota APIs in Task 9. |
 
 ## Current Chantier Flow
 
-sf-spec ✅ -> sf-ready ✅ -> sf-start ◐ Tasks 1-7 code authored, execution deferred; Flux reservations now reconcile against durable Bunny outcomes -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳
+sf-spec ✅ -> sf-ready ✅ -> sf-start ◐ Tasks 1-8 code authored, execution deferred; recoverable jobs are now owner-scoped through a generic additive store contract -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳
