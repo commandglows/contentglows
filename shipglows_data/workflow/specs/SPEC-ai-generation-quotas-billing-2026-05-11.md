@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.3"
+artifact_version: "1.0.4"
 project: "contentglows"
 created: "2026-05-11"
 created_at: "2026-05-11 15:02:22 UTC"
 updated: "2026-08-20"
-updated_at: "2026-08-20 19:15:54 UTC"
+updated_at: "2026-08-21 07:37:04 UTC"
 status: active
 source_skill: sf-spec
 source_model: "gpt-5.5"
@@ -270,13 +270,13 @@ Add a backend-owned entitlement and usage ledger that gates managed AI generatio
   - Validate with: reusable atomic adapter-contract tests plus focused concurrent reservation, idempotent reconciliation, stale expiry, tenant isolation, conflicting evidence, and negative-balance tests.
   - Notes: The domain service and store port contain no database client or SQL dependency. The adapter uses an injected transaction-capable client, `BEGIN IMMEDIATE`, payload compare-and-set predicates, rollback, and idempotency recovery; official Turso/libSQL sources document those transaction primitives. Code authored on 2026-08-20; repository-specific transaction behavior and tests remain unexecuted under the operator's no-local policy, so this task is implemented — unverified rather than verified.
 
-- [ ] Task 4: Define configurable action policies without choosing pricing
-  - File: `lab/api/services/ai_usage_policies.py`
-  - Action: Add config-driven policy resolution for action type, provider, model, estimated internal `managed_usage_unit` amount, hard-limit behavior, provider-failure release/refund behavior, and admin override eligibility.
+- [x] Task 4: Define configurable action policies without choosing pricing
+  - Files: `lab/api/services/ai_usage_policies.py`, `lab/tests/test_ai_usage_policies.py`
+  - Action: Add an injected, immutable policy registry with typed resolution for action type, billing mode, provider, model, estimated internal `managed_usage_unit` amount, hard-limit behavior, provider-failure release/refund behavior, and admin override eligibility.
   - User story link: Allows PAYG enforcement to work without baking public prices into code.
   - Depends on: Task 3.
-  - Validate with: tests for sample free/creator/pro-style fixtures that prove policy behavior without asserting real business prices.
-  - Notes: Fixture names may be illustrative; exact customer-facing commercial packages stay out of scope.
+  - Validate with: authored tests for illustrative free/creator/pro-style fixtures, duplicate and unknown actions, missing policy resolution, and unsafe managed/BYOK combinations, without asserting real business prices.
+  - Notes: The registry reads no environment or persistence state and exposes no price or currency field. Fixture names, providers, models, and unit values are illustrative; exact customer-facing commercial packages stay out of scope. Code authored on 2026-08-21; automated execution remains deferred by the operator's no-local policy, so this task is implemented — unverified.
 
 - [ ] Task 5: Gate Flux image generation before provider calls
   - File: `lab/api/routers/images.py`
@@ -442,7 +442,8 @@ None for this implementation-ready enforcement foundation. Exact public prices, 
 | 2026-08-20 08:35:06 UTC | 001-sg-build | GPT-5 Codex | Implemented Task 1 domain contracts for managed/BYOK usage, entitlements, reservations, ledger events, quota states/errors, provider-cost evidence, and guarded reservation transitions, with focused validation tests. | Code authored; Python AST and diff integrity checks pass. Automated tests intentionally not run because the operator prohibited local builds, tests, and artifacts. | Run the focused model tests in authorized CI before starting the durable ledger/store task. |
 | 2026-08-20 18:35:45 UTC | sg-development | GPT-5 Codex | Implemented Task 2 as a persistence-agnostic store port plus an injected-client libSQL adapter and reusable adapter-contract tests. | Implemented — unverified. Static boundary review and diff integrity pass; no build, test, analyzer, migration, or runtime workload was executed under the operator's no-local policy. | Implement Task 3 by extending the agnostic port with atomic compare-and-set reservation transitions after confirming the adapter transaction contract. |
 | 2026-08-20 19:15:54 UTC | sg-development | GPT-5 Codex | Implemented Task 3 with storage-agnostic quota decisions, atomic domain mutations, serialized libSQL transactions, compare-and-set concurrency control, idempotent reconciliation, stale expiry, and focused contract tests. | Implemented — unverified. Static contract/diff review only; no build, test, analyzer, migration, provider call, or runtime workload was executed under the operator's no-local policy. | Run the focused store/service tests in an authorized environment before integrating configurable action policies in Task 4. |
+| 2026-08-21 07:37:04 UTC | sg-development | GPT-5 Codex | Implemented Task 4 as an injected immutable action-policy registry with typed managed/BYOK invariants, provider/model routing metadata, internal usage-unit estimates, hard blocking, failure reconciliation behavior, and admin-override eligibility. | Implemented — unverified. Static contract/diff review only; no build, test, analyzer, provider call, or runtime workload was executed under the operator's no-local policy. | Run the focused policy tests in an authorized environment before wiring Flux preflight in Task 5. |
 
 ## Current Chantier Flow
 
-sf-spec ✅ -> sf-ready ✅ -> sf-start ◐ Tasks 1-3 code authored, execution deferred; agnostic store, atomic reservation, and reconciliation service added -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳
+sf-spec ✅ -> sf-ready ✅ -> sf-start ◐ Tasks 1-4 code authored, execution deferred; agnostic store, atomic reconciliation, and configurable action policies added -> sf-verify ⏳ -> sf-end ⏳ -> sf-ship ⏳
