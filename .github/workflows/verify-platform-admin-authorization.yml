@@ -1,0 +1,53 @@
+name: Verify platform admin authorization
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: platform-admin-authorization-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  focused-security-proof:
+    name: Focused security proof
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: lab
+    steps:
+      - name: Check out the selected revision
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install focused locked test dependencies
+        run: >-
+          python -m pip install
+          pytest==9.1.1
+          pytest-asyncio==1.4.0
+          pydantic==2.13.4
+          fastapi==0.139.0
+          libsql==0.1.11
+          pyjwt[crypto]==2.13.0
+
+      - name: Run platform admin security suites
+        env:
+          CONTENTGLOWS_PLATFORM_ADMIN_OPERATIONS: disabled
+        run: >-
+          python -m pytest
+          tests/test_platform_admin_models.py
+          tests/test_platform_admin_store.py
+          tests/test_platform_admin_dependency.py
+          tests/test_platform_admin_operations.py
+          tests/test_platform_admin_grants_script.py
+          --strict-markers
+          --strict-config
+          --maxfail=1
+          -q
